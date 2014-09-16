@@ -10,6 +10,11 @@ case class Vect2(x: Int, y: Int) {
   def -(v: Vect2) = Vect2(x - v.x, y - v.y)
   def unary_- = Vect2(-x, -y)
 
+  def up = Vect2(x, y + 1)
+  def down = Vect2(x, y - 1)
+  def left = Vect2(x - 1, y)
+  def right = Vect2(x + 1, y)
+
   def distance(v: Vect2) = math.sqrt(sqrDistance(v))
   def sqrDistance(v: Vect2) = math.pow(x - v.x, 2) + math.pow(y - v.y, 2)
 

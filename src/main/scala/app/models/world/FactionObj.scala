@@ -12,12 +12,16 @@ trait FactionObjStats extends WObjectStats {
 
 /* Object that belongs to some faction and not just a world prop */
 trait FactionObj extends WObject {
-  def stats: FactionObjStats
-  var hp = stats.maxHp
-  var owner: Owner
+  type Stats <: FactionObjStats
+  val hp: Int
+  val owner: Owner
 
-  lazy val visibility = Bounds(
-    bounds.x.start - stats.visibility to bounds.x.end + stats.visibility,
-    bounds.y.start - stats.visibility to bounds.y.end + stats.visibility
-  )
+  lazy val visibility = {
+    val vis = stats.visibility
+    Bounds(
+      bounds.x.start - vis to bounds.x.end + vis,
+      bounds.y.start - vis to bounds.y.end + vis
+    )
+  }
+  def sees(obj: WObject) = visibility.intersects(obj.bounds)
 }

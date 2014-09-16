@@ -1,7 +1,7 @@
 package app.models.world.buildings
 
 import app.models.Owner
-import app.models.world.{Warpable, WarpableStats, Vect2}
+import app.models.world.{WObject, Warpable, WarpableStats, Vect2}
 import app.models.world.props.Asteroid
 
 object Extractor extends BuildingStats with WarpableStats {
@@ -11,8 +11,15 @@ object Extractor extends BuildingStats with WarpableStats {
   override val cost: Int = 4
 }
 
-class Extractor(
-  val position: Vect2, val asteroid: Asteroid, var owner: Owner
+case class Extractor(
+  id: WObject.Id, position: Vect2, asteroid: Asteroid, owner: Owner,
+  hp: Int=Extractor.maxHp, warpState: Int=Extractor.InitialWarpState
 ) extends Building with Warpable {
   override def stats = Extractor
+
+  override protected def advanceWarpState(self: Self, newState: Int) =
+    copy(warpState = newState)
+  override protected def self = this
+  override type Self = Extractor
+  override type Stats = Extractor.type
 }

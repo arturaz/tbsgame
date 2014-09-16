@@ -1,33 +1,38 @@
 package app.models.world
 
-import app.models.Team
 import app.models.world.buildings.{Spawner, WarpGate}
 import app.models.world.props.Asteroid
 import app.models.world.units.Wasp
+import app.models.{Player, Team}
 import implicits._
 import infrastructure.Log
 
 import scala.util.Random
 
-class World(var objects: Set[WObject]) {
-  val bounds = {
-    val xMin = objects.view.map(_.bounds).minBy(_.x.start).x.start
-    val xMax = objects.view.map(_.bounds).maxBy(_.x.end).x.end
-    val yMin = objects.view.map(_.bounds).minBy(_.y.start).y.start
-    val yMax = objects.view.map(_.bounds).maxBy(_.y.end).y.end
-    Bounds(xMin to xMax, yMin to yMax)
-  }
+case class World(bounds: Bounds, objects: Set[WObject]) {
+  def update[A <: WObject](before: A, after: A) =
+    copy(objects = objects - before + after)
 }
 
 object World {
-  def randomDirection = {
+  private[this] def randomDirection = {
     def rDir = Random.nextInt(3) - 1
     val hDir = rDir
     val vDir = Stream.continually(rDir).filter(d => hDir != 0 || d != 0).head
     Vect2(hDir, vDir)
   }
 
+  private[this] def bounds(objects: Set[WObject]) = {
+    val xMin = objects.view.map(_.bounds).minBy(_.x.start).x.start
+    val xMax = objects.view.map(_.bounds).maxBy(_.x.end).x.end
+    val yMin = objects.view.map(_.bounds).minBy(_.y.start).y.start
+    val yMax = objects.view.map(_.bounds).maxBy(_.y.end).y.end
+    Bounds(xMin to xMax, yMin to yMax)
+  }
+
   def create(
+    playersTeam: Team, waspsOwner: () => Player,
+    spawnerOwner: () => Player,
     startingPoint: Vect2 = Vect2(0, 0),
     endDistance: Int = 30,
     branches: Range = 2 to 12,
@@ -41,17 +46,16 @@ object World {
     safeDistance: Int = WarpGate.visibility + Wasp.visibility,
     waspsAtMaxDistance: Int = 3
   ) = {
-    val playerTeam = new Team
-    val aiTeam = new Team
-
-    val warpGate = new WarpGate(startingPoint, playerTeam)
+    val warpGate = WarpGate(WObject.newId, startingPoint, playersTeam)
     var objects = Set.apply[WObject](warpGate)
     // Main branch is also a branch.
     var branchesLeft = branches.random + 1
     var spawnersLeft = spawners
     Log.debug(s"Creating map. Branches: $branchesLeft")
 
-    def taken(bounds: Bounds) = objects.exists(_.bounds.intersects(bounds))
+    def pTaken(v: Vect2): Boolean = objects.exists(_.bounds.contains(v))
+    def bTaken(bounds: Bounds): Boolean =
+      objects.exists(_.bounds.intersects(bounds))
 
     def spawnBlob(bounds: Bounds, log: (=> String) => Unit): Unit = {
       val waspsNeeded = math.min(
@@ -79,23 +83,23 @@ object World {
           if (
             continueAsteroids &&
             Random.nextDouble() <= 0.25 &&
-            !taken(Bounds(objPos, Asteroid.size))
+            ! pTaken(objPos)
           ) {
             val resources = math.min(resourcesLeft, asteroidResources.random)
             resourcesLeft -= resources
             log(s"asteroid @ $objPos with $resources res, left: $resourcesLeft")
-            objects += new Asteroid(objPos, resources)
+            objects += Asteroid(WObject.newId, objPos, resources)
           }
           else if (
             continueWasps &&
             Random.nextDouble() <= 0.15 &&
             warpGate.bounds.perimeter.map(_.tileDistance(objPos)).
               forall(_ > safeDistance) &&
-            !taken(Bounds(objPos, Wasp.size))
+            ! pTaken(objPos)
           ) {
             waspsInBounds += 1
             log(s"wasp @ $objPos, left: ${waspsNeeded - waspsInBounds}")
-            objects += new Wasp(objPos, aiTeam)
+            objects += Wasp(WObject.newId, objPos, waspsOwner())
           }
         }
       }
@@ -131,9 +135,9 @@ object World {
 
       if (spawnersLeft > 0) {
         var spawnerPos = position
-        while (taken(Bounds(spawnerPos, Spawner.size))) spawnerPos += direction
+        while (bTaken(Bounds(spawnerPos, Spawner.size))) spawnerPos += direction
         log(s"Spawner @ $spawnerPos")
-        objects += new Spawner(spawnerPos, aiTeam)
+        objects += Spawner(WObject.newId, spawnerPos, spawnerOwner())
         spawnersLeft -= 1
       }
 
@@ -143,6 +147,6 @@ object World {
     (1 to 3).foreach { _ => spawnBlob(warpGate.visibility, Log.debug) }
     while (branchesLeft > 0) branch(warpGate.bounds.center)
 
-    new World(objects)
+    new World(bounds(objects) expandBy 5, objects)
   }
 }

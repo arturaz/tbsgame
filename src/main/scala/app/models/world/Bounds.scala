@@ -21,8 +21,10 @@ case class Bounds(x: Range, y: Range) {
     x.start > bounds.x.end || y.start > bounds.y.end
   )
 
-  def +(v: Vect2) = Bounds(v.x + x.start to v.x + x.end, v.y + y.start to v.y + x.end)
+  def +(v: Vect2) = Bounds(v.x + x.start to v.x + x.end, v.y + y.start to v.y + y.end)
   def -(v: Vect2) = this + -v
+
+  def expandBy(v: Int) = Bounds(x.start - v to x.end + v, y.start - v to y.end + v)
 
   override def toString =
     s"Bounds(${x.start}..${x.end} (${x.size}), ${y.start}..${y.end} (${y.size}))"

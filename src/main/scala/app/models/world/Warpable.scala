@@ -1,18 +1,21 @@
 package app.models.world
 
-trait WarpableStats {
+trait WarpableStats extends WObjectStats {
+  val InitialWarpState = 0
   val warpTime: Int
   val cost: Int
 }
 
 trait Warpable extends WObject {
-  def stats: WarpableStats
+  type Stats <: WarpableStats
 
-  private[this] var turnsSinceWarpStart = 0
-  def isWarpedIn = turnsSinceWarpStart == stats.warpTime
+  val warpState: Int
+  def isWarpingIn = warpState < stats.warpTime
+  def isWarpedIn = warpState == stats.warpTime
 
-  override def nextTurn() = {
-    super.nextTurn()
-    if (turnsSinceWarpStart < stats.warpTime) turnsSinceWarpStart += 1
-  }
+  override def nextTurn =
+    if (isWarpedIn) super.nextTurn
+    else advanceWarpState(super.nextTurn, warpState + 1)
+
+  protected def advanceWarpState(self: Self, newState: Int): Self
 }

@@ -7,7 +7,7 @@ import javax.imageio.ImageIO
 
 import app.models.world.props.Asteroid
 import app.models.world.units.Wasp
-import app.models.world.{WObject, World}
+import app.models.world.{Vect2, SizedWObject, WObject, World}
 import app.models.world.buildings.{Spawner, WarpGate}
 
 /**
@@ -27,10 +27,14 @@ object RenderPNG {
     def draw(wo: WObject, color: Color, text: String = ""): Unit = {
       val oldColor = g.getColor
       g.setColor(color)
+      val size = wo match {
+        case swo: SizedWObject => swo.stats.size
+        case _ => Vect2.one
+      }
       val (x, y, w, h) = (
         (wo.position.x - world.bounds.x.start) * CellSize,
         (wo.position.y - world.bounds.y.start) * CellSize,
-        wo.stats.size.x * CellSize, wo.stats.size.y * CellSize
+        size.x * CellSize, size.y * CellSize
       )
       g.fillRect(x, y, w, h)
       if (! text.isEmpty) {

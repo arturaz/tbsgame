@@ -1,21 +1,33 @@
 package app.models.world.units
 
 import app.models.Owner
-import app.models.world.{Vect2, FighterStats, Fighter}
+import app.models.world._
 
 object Wasp extends WUnitStats with FighterStats {
   override val attack: Range = 1 to 6
   override val defense: Range = 2 to 7
-  override val attackRange: Int = 3
+  override val attackRange = TileRange(3)
+  override val movement = TileRange(4)
   override val visibility: Int = 4
   override val maxHp: Int = 1
-  override val size: Vect2 = Vect2.one
   override val warpTime: Int = 0
   override val cost: Int = 0
 }
 
-class Wasp(
-  var position: Vect2, var owner: Owner
+case class Wasp(
+  id: WObject.Id, position: Vect2, owner: Owner,
+  hp: Int=Wasp.maxHp, hasAttacked: Boolean=false,
+  movementLeft: TileRange=Wasp.movement, warpState: Int=Wasp.InitialWarpState
 ) extends WUnit with Fighter {
+  type Self = Wasp
+  type Stats = Wasp.type
+  override protected def self = this
+
   override def stats = Wasp
+
+  override protected def setMoveValues(target: Vect2, movementLeft: TileRange) =
+    copy(position = target, movementLeft = movementLeft)
+  override protected def advanceWarpState(self: Self, newState: Int) =
+    copy(warpState = newState)
+  override protected def attacked = copy(hasAttacked = true)
 }

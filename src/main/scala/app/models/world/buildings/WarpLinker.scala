@@ -1,7 +1,7 @@
 package app.models.world.buildings
 
 import app.models.Owner
-import app.models.world.{Warpable, Vect2, WarpableStats}
+import app.models.world.{Vect2, WObject, Warpable, WarpableStats}
 
 object WarpLinker extends BuildingStats with WarpableStats {
   override val maxHp: Int = 2
@@ -10,8 +10,15 @@ object WarpLinker extends BuildingStats with WarpableStats {
   override val cost: Int = 3
 }
 
-class WarpLinker(
-  val position: Vect2, var owner: Owner
+case class WarpLinker(
+  id: WObject.Id, position: Vect2, owner: Owner,
+  hp: Int=WarpLinker.maxHp, warpState: Int=WarpLinker.InitialWarpState
 ) extends Building with Warpable {
   override def stats = WarpLinker
+
+  override protected def advanceWarpState(self: Self, newState: Int) =
+    copy(warpState = newState)
+  override protected def self = this
+  override type Self = WarpLinker
+  override type Stats = WarpLinker.type
 }
