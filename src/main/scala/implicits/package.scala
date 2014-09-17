@@ -7,7 +7,9 @@ import scala.util.Random
  */
 package object implicits {
   implicit class RangeExts(val r: Range) extends AnyVal {
-    def random = r.start + Random.nextInt(r.end - r.start)
+    def random =
+      if (r.isEmpty) r.start
+      else r.start + Random.nextInt(r.end - r.start)
   }
 
   implicit class IndexedSeqExts[A](val is: IndexedSeq[A]) extends AnyVal {

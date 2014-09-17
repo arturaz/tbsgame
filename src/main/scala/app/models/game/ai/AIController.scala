@@ -3,10 +3,11 @@ package app.models.game.ai
 import app.algorithms.Pathfinding
 import app.algorithms.Pathfinding.SearchRes
 import app.models.Player
-import app.models.game.events.Event
+import app.models.game.events.{AttackEvt, MoveEvt, Event}
 import app.models.world.units.WUnit
 import app.models.world.{FactionObj, Fighter, Warpable, World}
 import implicits._
+import infrastructure.Log
 
 import scala.util.Random
 
@@ -40,6 +41,7 @@ object AIController {
   }
 
   type ActionResult = (World, Vector[Event])
+  private[this] type EitherActionResult = Either[String, ActionResult]
 
   /* Simulate AI actions for all units. */
   def act(world: World, ai: Player): ActionResult = {
@@ -48,26 +50,30 @@ object AIController {
     units.foldLeft(
       (world, Vector.empty[Event])
     ) { case ((curWorld, curEvents), unit) =>
-      val (newWorld, newEvents) = act(curWorld, unit)
-      (newWorld, curEvents ++ newEvents)
+      act(curWorld, unit).fold(
+        err => {
+          Log.error(s"$ai unit $unit failed to act: $err")
+          (curWorld, Vector.empty)
+        },
+        {case (newWorld, newEvents) => (newWorld, curEvents ++ newEvents)}
+      )
     }
   }
 
-  def act(world: World, unit: WUnit with Fighter): ActionResult = {
+  def act(world: World, unit: WUnit with Fighter): EitherActionResult = {
     val team = unit.owner.team
     val visibleTargets =
       world.objects.view.
       collect { case o: FactionObj => o }.
       filter(o => o.owner.team != team && unit.sees(o)).
       toSeq
-    val obstacles = world.objects.
-      filter(o => unit.movementZone.exists(o.bounds.contains)).map(_.bounds)
+    val obstacles = unit.obstacles(world.objects).map(_.bounds)
     val attackableTargets =
       Pathfinding.attackSearch(unit, visibleTargets, obstacles)(_.bounds).
       /* Filter out those targets which we can't inflict damage to. */
       filter(_.value.stats.defense.start <= unit.stats.attack.end)
 
-    if (attackableTargets.isEmpty) (world, Vector.empty)
+    if (attackableTargets.isEmpty) Right(world, Vector.empty)
     else {
       val target = attackableTargets.reduce((a, b) =>
         AttackOrdering.compare(a, b) match {
@@ -82,35 +88,20 @@ object AIController {
 
   def moveAttack(
     world: World, unit: WUnit with Fighter, target: SearchRes[FactionObj]
-  ): ActionResult = {
-    val newWorld = unit.moveTo(target.path.last).right.flatMap {
-      _.attack(target.value).right.map { case (attack, attackUnit) =>
-        world.update(unit, attackUnit)
+  ): EitherActionResult = {
+    unit.moveTo(target.path.last).right.flatMap {
+      _.attack(target.value).right.map { case (attack, attackUnit) => (
+        world.update(unit, attackUnit).update(attack, target.value),
+        attack
+      ) }
+    }.right.map { case (newWorld, attack) =>
+      val moves = target.path.zipWithIndex.drop(1).map { case (v, idx) =>
+        MoveEvt(unit.id, v, unit.movementLeft.range - idx)
       }
+      val attackEvt = AttackEvt(unit.id, target.value.id, attack)
+      val events = moves :+ attackEvt
+
+      (newWorld, events)
     }
-    null
-//    unit.moveTo(target.path.last).right.map { movedUnit =>
-//    }
-//    val (moveWorld, moveUnit) = world.update(unit, )
-//    for {
-//      (world, unit) <-
-//      (attack, unit) <- unit.attack(target.value)
-//      (world, unit) <- world.update(unit, unit.attack())
-//    } yield 0
-//    world.update()
-//    val worldAfterMove = world.update(
-//      unit,
-//      unit.moveTo
-//    )
-//    val (attack, attackedUnit) = unit.attack(target.value)
-//    val worldAfterAttack = worldAfterMove.update(unit, attackedUnit)
-//
-//    val moves = target.path.zipWithIndex.drop(1).map { case (v, idx) =>
-//      MoveEvt(unit.id, v, unit.movementLeft.range - idx)
-//    }
-//    val attackEvt = AttackEvt(unit.id, target.value.id, attack)
-//    val events = moves :+ attackEvt
-//
-//    (worldAfterAttack, events)
   }
 }

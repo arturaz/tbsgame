@@ -22,4 +22,5 @@ case class Extractor(
   override protected def self = this
   override type Self = Extractor
   override type Stats = Extractor.type
+  override protected def withNewHp(hp: Int) = copy(hp = hp)
 }

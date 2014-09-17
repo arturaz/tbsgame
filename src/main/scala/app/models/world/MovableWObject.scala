@@ -12,11 +12,16 @@ trait MovableWObject extends WObject {
   val movementLeft: TileRange
   def movementZone = movementLeft.reachable(position)
 
-  protected def setMoveValues(position: Vect2, movementLeft: TileRange): Self
+  def obstacles(objects: Set[WObject]) =
+    objects.filter(o => movementZone.exists(o.bounds.contains))
+
+  override def nextTurn = setMoveValues(super.nextTurn, position, stats.movement)
+
+  protected def setMoveValues(self: Self, position: Vect2, movementLeft: TileRange): Self
   def moveTo(target: Vect2): Either[String, Self] = {
     val distance = position.tileDistance(target)
     if (distance <= movementLeft.range)
-      Right(setMoveValues(target, movementLeft - distance))
+      Right(setMoveValues(self, target, movementLeft - distance))
     else
       Left(s"Logic error: can't attack target - not enough movement." +
        s" [unit:$this target:$target]")

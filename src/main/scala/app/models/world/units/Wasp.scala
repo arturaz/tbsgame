@@ -25,9 +25,12 @@ case class Wasp(
 
   override def stats = Wasp
 
-  override protected def setMoveValues(target: Vect2, movementLeft: TileRange) =
-    copy(position = target, movementLeft = movementLeft)
+  override protected def setMoveValues(
+    self: Self, target: Vect2, movementLeft: TileRange
+  ) = self.copy(position = target, movementLeft = movementLeft)
   override protected def advanceWarpState(self: Self, newState: Int) =
-    copy(warpState = newState)
-  override protected def attacked = copy(hasAttacked = true)
+    self.copy(warpState = newState)
+  override protected def attacked(self: Self, value: Boolean) =
+    self.copy(hasAttacked = value)
+  override protected def withNewHp(hp: Int) = copy(hp = hp)
 }

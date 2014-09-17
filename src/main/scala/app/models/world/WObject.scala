@@ -4,6 +4,8 @@ import java.util.UUID
 
 trait WObjectStats
 
+
+
 object WObject {
   type Id = UUID
   def newId: Id = UUID.randomUUID()
@@ -16,6 +18,7 @@ trait WObject {
 
   val id: WObject.Id
   val position: Vect2
+
   def stats: Stats
   lazy val bounds = Bounds(position, Vect2.one)
 

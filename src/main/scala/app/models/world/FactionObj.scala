@@ -24,4 +24,8 @@ trait FactionObj extends WObject {
     )
   }
   def sees(obj: WObject) = visibility.intersects(obj.bounds)
+
+  def takeDamage: Option[Self] =
+    if (hp == 1) None else Some(withNewHp(hp - 1))
+  protected def withNewHp(hp: Int): Self
 }

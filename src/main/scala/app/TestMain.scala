@@ -10,6 +10,8 @@ import scala.util.Random
 
 object TestMain {
   def main(args: Array[String]): Unit = {
+    Random.setSeed(10)
+
     val playersTeam = Team(-1000)
     val waspPlayers = Vector.tabulate(4)(i => Player(i, s"wasp-ai-$i", Team(-i)))
     var oldWorld = World.create(
@@ -18,11 +20,11 @@ object TestMain {
         Player(id, s"ai-$id", Team(-id))
       }
     )
-    RenderPNG.world(oldWorld, "world-start")
 
-    var world: World = null
-    Stream.from(1).takeWhile(_ => world != oldWorld).foreach { turn =>
+    var world = oldWorld
+    Stream.from(1).takeWhile(i => i == 1 || world != oldWorld).foreach { turn =>
       println(s"Turn $turn starting.")
+      RenderPNG.world(world, f"world-$turn%03d")
       waspPlayers.zipWithIndex.foreach { case (aiPlayer, idx) =>
         println(s"$aiPlayer ($idx) is going.")
         val (newWorld, events) = AIController.act(world, aiPlayer)
@@ -31,6 +33,7 @@ object TestMain {
         world = newWorld
         RenderPNG.world(world, f"world-$turn%03d-$idx%03d")
       }
+      world = world.nextTurn
     }
   }
 }

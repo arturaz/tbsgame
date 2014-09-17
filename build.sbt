@@ -14,6 +14,8 @@ libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.1.0"
 
 val monocleLibVer = "0.5.1"
 
+libraryDependencies += "com.chuusai" %% "shapeless" % "2.0.0"
+
 libraryDependencies ++= Seq(
   "com.github.julien-truffaut"  %%  "monocle-core"    % monocleLibVer,
   "com.github.julien-truffaut"  %%  "monocle-generic" % monocleLibVer,

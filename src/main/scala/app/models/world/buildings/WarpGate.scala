@@ -16,4 +16,5 @@ case class WarpGate(
   override type Self = WarpGate
   override type Stats = WarpGate.type
   override protected def self = this
+  override protected def withNewHp(hp: Int) = copy(hp = hp)
 }

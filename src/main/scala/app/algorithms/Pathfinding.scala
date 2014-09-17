@@ -22,7 +22,7 @@ object Pathfinding {
     /* Only objects that are 1x1 sized can use this method. */
     origin: WUnit with Fighter, targets: Iterable[A], obstacles: Set[Bounds]
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = attackSearch(
-    origin.position, (origin: WUnit).stats.movement, origin.stats.attackRange,
+    origin.position, origin.movementLeft, origin.stats.attackRange,
     targets, obstacles
   )(aToBounds)
 
@@ -42,7 +42,7 @@ object Pathfinding {
     targets: Iterable[A], obstacles: Set[Bounds]
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = {
     def attackableTargets(from: Vect2): Iterable[A] = targets.filter { target =>
-      aToBounds(target).perimeter.exists(from.tileDistance(_) <= attackRange.range)
+      Fighter.canAttack(from, attackRange, aToBounds(target))
     }
     def attackableResults(from: Vect2, currentNode: Node): Map[A, SearchRes[A]] =
       attackableTargets(from).map { target =>

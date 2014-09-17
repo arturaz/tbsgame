@@ -7,4 +7,5 @@ object Log {
   var DebugEnabled = true
 
   def debug(s: => String) { if (DebugEnabled) println(s"[DEBUG]> $s")}
+  def error(s: String) = Console.err.println(s"[ERROR]> $s")
 }

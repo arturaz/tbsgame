@@ -18,6 +18,7 @@ case class WarpLinker(
 
   override protected def advanceWarpState(self: Self, newState: Int) =
     copy(warpState = newState)
+  override protected def withNewHp(hp: Int) = copy(hp = hp)
   override protected def self = this
   override type Self = WarpLinker
   override type Stats = WarpLinker.type

@@ -3,15 +3,25 @@ package app.models.world
 import app.models.world.buildings.{Spawner, WarpGate}
 import app.models.world.props.Asteroid
 import app.models.world.units.Wasp
-import app.models.{Player, Team}
+import app.models.{Attack, Player, Team}
 import implicits._
 import infrastructure.Log
 
 import scala.util.Random
 
 case class World(bounds: Bounds, objects: Set[WObject]) {
-  def update[A <: WObject](before: A, after: A) =
+  def nextTurn: World = copy(objects = objects.map(_.nextTurn))
+
+  def remove(before: WObject) = copy(objects = objects - before)
+
+  def update[A <: WObject](before: A, after: A): World =
     copy(objects = objects - before + after)
+
+  def update(attack: Attack, target: FactionObj): World =
+    if (attack.successful)
+      target.takeDamage.fold(remove(target))(update(target, _))
+    else
+      this
 }
 
 object World {

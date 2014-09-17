@@ -32,7 +32,7 @@ case class Bounds(x: Range, y: Range) {
 
 object Bounds {
   def apply(position: Vect2, size: Vect2): Bounds = Bounds(
-    position.x to (position.x + size.x),
-    position.y to (position.y + size.y)
+    position.x until (position.x + size.x),
+    position.y until (position.y + size.y)
   )
 }

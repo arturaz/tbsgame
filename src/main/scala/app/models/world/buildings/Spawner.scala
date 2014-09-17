@@ -17,4 +17,5 @@ case class Spawner(
   override type Self = Spawner
   override type Stats = Spawner.type
   override protected def self = this
+  override protected def withNewHp(hp: Int) = copy(hp = hp)
 }
