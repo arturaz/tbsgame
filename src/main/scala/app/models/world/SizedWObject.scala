@@ -5,7 +5,7 @@ trait SizedWObjectStats extends WObjectStats {
   val size: Vect2
 }
 
-trait SizedWObject extends WObject {
+trait SizedWObject extends WObject with Mobility[Mobility.Static.type] {
   type Stats <: SizedWObjectStats
 
   override lazy val bounds = Bounds(position, stats.size)

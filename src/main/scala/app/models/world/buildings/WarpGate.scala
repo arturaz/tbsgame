@@ -9,8 +9,8 @@ object WarpGate extends BuildingStats {
 }
 
 case class WarpGate(
-  id: WObject.Id, position: Vect2, owner: Owner,
-  hp: Int=WarpGate.maxHp
+  position: Vect2, owner: Owner,
+  id: WObject.Id=WObject.newId, hp: Int=WarpGate.maxHp
 ) extends Building {
   override def stats = WarpGate
   override type Self = WarpGate

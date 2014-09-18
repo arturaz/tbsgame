@@ -15,6 +15,8 @@ trait FactionObj extends WObject {
   type Stats <: FactionObjStats
   val hp: Int
   val owner: Owner
+  def isEnemy(o: FactionObj) = owner.team != o.owner.team
+  def isFriend(o: FactionObj) = ! isEnemy(o)
 
   lazy val visibility = {
     val vis = stats.visibility

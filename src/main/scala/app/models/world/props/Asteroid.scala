@@ -5,7 +5,8 @@ import app.models.world.{WObject, Vect2}
 object Asteroid extends PropStats
 
 case class Asteroid(
-  id: WObject.Id, position: Vect2, resources: Int
+  position: Vect2, resources: Int,
+  id: WObject.Id=WObject.newId
 ) extends Prop {
   override def stats = Asteroid
   override type Self = this.type

@@ -1,17 +1,18 @@
 package app.models.game.ai
 
-import app.algorithms.Pathfinding
 import app.algorithms.Pathfinding.SearchRes
+import app.algorithms.{Combat, Pathfinding}
 import app.models.Player
-import app.models.game.events.{AttackEvt, MoveEvt, Event}
+import app.models.game.events.Event
+import app.models.world._
 import app.models.world.units.WUnit
-import app.models.world.{FactionObj, Fighter, Warpable, World}
 import implicits._
 import infrastructure.Log
 
 import scala.util.Random
 
-object AIController {
+/* AI for units that have no central controlling entity. */
+object SingleMindAI {
   private[this] def srOrd[A](f: SearchRes[FactionObj] => A)(implicit ord: Ordering[A])
   : Ordering[SearchRes[FactionObj]] = Ordering.by(f)
   private[this] def fOrd[A](f: FactionObj => A)(implicit ord: Ordering[A])
@@ -40,11 +41,8 @@ object AIController {
     srOrd(_.movementNeeded)
   }
 
-  type ActionResult = (World, Vector[Event])
-  private[this] type EitherActionResult = Either[String, ActionResult]
-
   /* Simulate AI actions for all units. */
-  def act(world: World, ai: Player): ActionResult = {
+  def act(world: World, ai: Player): Combat.ActionResult = {
     val units = world.objects.
       collect { case o: WUnit with Fighter if o.owner == ai => o}
     units.foldLeft(
@@ -60,12 +58,11 @@ object AIController {
     }
   }
 
-  def act(world: World, unit: WUnit with Fighter): EitherActionResult = {
-    val team = unit.owner.team
+  def act(world: World, unit: WUnit with Fighter): Combat.EitherActionResult = {
     val visibleTargets =
       world.objects.view.
       collect { case o: FactionObj => o }.
-      filter(o => o.owner.team != team && unit.sees(o)).
+      filter(o => o.isEnemy(unit) && unit.sees(o)).
       toSeq
     val obstacles = unit.obstacles(world.objects).map(_.bounds)
     val attackableTargets =
@@ -82,26 +79,7 @@ object AIController {
           case 1 => b
         }
       )
-      moveAttack(world, unit, target)
-    }
-  }
-
-  def moveAttack(
-    world: World, unit: WUnit with Fighter, target: SearchRes[FactionObj]
-  ): EitherActionResult = {
-    unit.moveTo(target.path.last).right.flatMap {
-      _.attack(target.value).right.map { case (attack, attackUnit) => (
-        world.update(unit, attackUnit).update(attack, target.value),
-        attack
-      ) }
-    }.right.map { case (newWorld, attack) =>
-      val moves = target.path.zipWithIndex.drop(1).map { case (v, idx) =>
-        MoveEvt(unit.id, v, unit.movementLeft.range - idx)
-      }
-      val attackEvt = AttackEvt(unit.id, target.value.id, attack)
-      val events = moves :+ attackEvt
-
-      (newWorld, events)
+      Combat.moveAttack(world, unit, target)
     }
   }
 }

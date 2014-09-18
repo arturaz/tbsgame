@@ -1,6 +1,6 @@
 package app
 
-import app.models.game.ai.AIController
+import app.models.game.ai.SingleMindAI
 import app.models.world.World
 import app.models.{Player, Team}
 import implicits._
@@ -27,7 +27,7 @@ object TestMain {
       RenderPNG.world(world, f"world-$turn%03d")
       waspPlayers.zipWithIndex.foreach { case (aiPlayer, idx) =>
         println(s"$aiPlayer ($idx) is going.")
-        val (newWorld, events) = AIController.act(world, aiPlayer)
+        val (newWorld, events) = SingleMindAI.act(world, aiPlayer)
         events.foreach(println)
         oldWorld = world
         world = newWorld

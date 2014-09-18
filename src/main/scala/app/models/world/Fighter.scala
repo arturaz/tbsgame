@@ -8,12 +8,7 @@ import app.models.Attack
  */
 trait FighterStats extends FactionObjStats {
   val attack: Range
-  val attackRange: TileRange
-}
-
-object Fighter {
-  def canAttack(pos: Vect2, attackRange: TileRange, targetBounds: Bounds) =
-    targetBounds.perimeter.exists(pos.tileDistance(_) <= attackRange.range)
+  val attackRange: TileDistance
 }
 
 trait Fighter extends FactionObj {
@@ -25,7 +20,7 @@ trait Fighter extends FactionObj {
   override def nextTurn = attacked(super.nextTurn, false)
 
   def canAttack(obj: FactionObj) =
-    Fighter.canAttack(position, stats.attackRange, obj.bounds)
+    obj.bounds.withinTileDistance(position, stats.attackRange)
 
   def attack(obj: FactionObj): Either[String, (Attack, Self)] =
     if (hasAttacked) Left(s"$self has already attacked!")

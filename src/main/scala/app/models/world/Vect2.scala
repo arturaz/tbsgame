@@ -18,5 +18,7 @@ case class Vect2(x: Int, y: Int) {
   def distance(v: Vect2) = math.sqrt(sqrDistance(v))
   def sqrDistance(v: Vect2) = math.pow(x - v.x, 2) + math.pow(y - v.y, 2)
 
-  def tileDistance(v: Vect2) = math.abs(x - v.x) + math.abs(y - v.y)
+  def tileDistance(v: Vect2): TileDistance =
+    TileDistance(math.abs(x - v.x) + math.abs(y - v.y))
+  def tileDistance(b: Bounds): TileDistance = b.perimeter.map(tileDistance).min
 }

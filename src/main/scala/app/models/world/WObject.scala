@@ -4,8 +4,6 @@ import java.util.UUID
 
 trait WObjectStats
 
-
-
 object WObject {
   type Id = UUID
   def newId: Id = UUID.randomUUID()

@@ -12,8 +12,8 @@ import scala.util.Random
 case class World(bounds: Bounds, objects: Set[WObject]) {
   def nextTurn: World = copy(objects = objects.map(_.nextTurn))
 
-  def remove(before: WObject) = copy(objects = objects - before)
-
+  def add(obj: WObject) = copy(objects = objects + obj)
+  def remove(obj: WObject) = copy(objects = objects - obj)
   def update[A <: WObject](before: A, after: A): World =
     copy(objects = objects - before + after)
 
@@ -32,19 +32,14 @@ object World {
     Vect2(hDir, vDir)
   }
 
-  private[this] def bounds(objects: Set[WObject]) = {
-    val xMin = objects.view.map(_.bounds).minBy(_.x.start).x.start
-    val xMax = objects.view.map(_.bounds).maxBy(_.x.end).x.end
-    val yMin = objects.view.map(_.bounds).minBy(_.y.start).y.start
-    val yMax = objects.view.map(_.bounds).maxBy(_.y.end).y.end
-    Bounds(xMin to xMax, yMin to yMax)
-  }
+  private[this] def bounds(objects: Set[WObject]) =
+    objects.map(_.bounds).reduce(_ join _)
 
   def create(
     playersTeam: Team, waspsOwner: () => Player,
     spawnerOwner: () => Player,
     startingPoint: Vect2 = Vect2(0, 0),
-    endDistance: Int = 30,
+    endDistance: TileDistance = TileDistance(30),
     branches: Range = 2 to 12,
     spawners: Int = 2,
     jumpDistance: Range = 3 to 6,
@@ -53,10 +48,10 @@ object World {
     asteroidResources: Range = 5 to 20,
     directionChangeChance: Double = 0.2,
     branchChance: Double = 0.2,
-    safeDistance: Int = WarpGate.visibility + Wasp.visibility,
+    safeDistance: TileDistance = TileDistance(WarpGate.visibility + Wasp.visibility),
     waspsAtMaxDistance: Int = 3
   ) = {
-    val warpGate = WarpGate(WObject.newId, startingPoint, playersTeam)
+    val warpGate = WarpGate(startingPoint, playersTeam)
     var objects = Set.apply[WObject](warpGate)
     // Main branch is also a branch.
     var branchesLeft = branches.random + 1
@@ -70,8 +65,8 @@ object World {
     def spawnBlob(bounds: Bounds, log: (=> String) => Unit): Unit = {
       val waspsNeeded = math.min(
         (
-          bounds.center.tileDistance(startingPoint).toDouble *
-          waspsAtMaxDistance / endDistance
+          bounds.center.tileDistance(startingPoint).value.toDouble *
+          waspsAtMaxDistance / endDistance.value
         ).round.toInt,
         waspsAtMaxDistance
       )
@@ -83,34 +78,25 @@ object World {
           s"wasps: $waspsNeeded, already placed: $waspsInBounds"
       )
 
-      def continueAsteroids = resourcesLeft >= asteroidResources.start
-      def continueWasps = waspsInBounds < waspsNeeded
-      def continue = continueAsteroids || continueWasps
-
-      (0 to 10).takeWhile(_ => continue).foreach { idx =>
-        log(s"blob iteration $idx")
-        for (objPos <- bounds.points) {
-          if (
-            continueAsteroids &&
-            Random.nextDouble() <= 0.25 &&
-            ! pTaken(objPos)
-          ) {
-            val resources = math.min(resourcesLeft, asteroidResources.random)
-            resourcesLeft -= resources
-            log(s"asteroid @ $objPos with $resources res, left: $resourcesLeft")
-            objects += Asteroid(WObject.newId, objPos, resources)
-          }
-          else if (
-            continueWasps &&
-            Random.nextDouble() <= 0.15 &&
-            warpGate.bounds.perimeter.map(_.tileDistance(objPos)).
-              forall(_ > safeDistance) &&
-            ! pTaken(objPos)
-          ) {
-            waspsInBounds += 1
-            log(s"wasp @ $objPos, left: ${waspsNeeded - waspsInBounds}")
-            objects += Wasp(WObject.newId, objPos, waspsOwner())
-          }
+      for (objPos <- Random.shuffle(bounds.points)) {
+        if (
+          resourcesLeft >= asteroidResources.start &&
+          ! pTaken(objPos)
+        ) {
+          val resources = math.min(resourcesLeft, asteroidResources.random)
+          resourcesLeft -= resources
+          log(s"asteroid @ $objPos with $resources res, left: $resourcesLeft")
+          objects += Asteroid(objPos, resources)
+        }
+        else if (
+          waspsInBounds < waspsNeeded &&
+          warpGate.bounds.perimeter.map(_.tileDistance(objPos)).
+            forall(_ > safeDistance) &&
+          ! pTaken(objPos)
+        ) {
+          waspsInBounds += 1
+          log(s"wasp @ $objPos, left: ${waspsNeeded - waspsInBounds}")
+          objects += Wasp(objPos, waspsOwner())
         }
       }
 
@@ -147,7 +133,7 @@ object World {
         var spawnerPos = position
         while (bTaken(Bounds(spawnerPos, Spawner.size))) spawnerPos += direction
         log(s"Spawner @ $spawnerPos")
-        objects += Spawner(WObject.newId, spawnerPos, spawnerOwner())
+        objects += Spawner(spawnerPos, spawnerOwner())
         spawnersLeft -= 1
       }
 
