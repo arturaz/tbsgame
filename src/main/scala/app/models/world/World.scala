@@ -22,6 +22,10 @@ case class World(bounds: Bounds, objects: Set[WObject]) {
       target.takeDamage.fold(remove(target))(update(target, _))
     else
       this
+
+  lazy val owners = objects.collect { case fo: FactionObj => fo.owner }
+  lazy val teams = owners.map(_.team)
+  lazy val players = owners.collect { case p: Player => p }.toSet
 }
 
 object World {

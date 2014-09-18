@@ -13,9 +13,9 @@ object Combat {
     target: SearchRes[FactionObj], strict: Boolean=true
   ): EitherActionResult = {
     val moveTarget =
-//      if (!strict && unit.movementLeft < target.movementNeeded)
-//        target.path.limit(unit.movementLeft)
-//      else
+      if (!strict && unit.movementLeft < target.movementNeeded)
+        target.path.limit(unit.movementLeft)
+      else
         target.path
 
     unit.moveTo(moveTarget.vects.last).right.flatMap { movedUnit =>
@@ -39,5 +39,7 @@ object Combat {
 
   def moveAttackLoose(
     world: World, unit: MovableWObject with Fighter, target: SearchRes[FactionObj]
-  ): ActionResult = moveAttack(world, unit, target).right.get
+  ): ActionResult = moveAttack(world, unit, target, strict = false).fold(
+    err => throw new Exception(err), identity
+  )
 }

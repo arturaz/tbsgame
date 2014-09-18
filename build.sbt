@@ -2,6 +2,8 @@ name := "TBS Game"
 
 scalaVersion := "2.11.2"
 
+initialCommands in console := """import app.models._, world._, implicits._"""
+
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 
 resolvers += Resolver.sonatypeRepo("releases")
