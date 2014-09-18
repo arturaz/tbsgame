@@ -7,6 +7,7 @@ import implicits._
 import infrastructure.RenderPNG
 
 import scala.util.Random
+import app.models.game.events.Event
 
 object TestMain {
   def main(args: Array[String]): Unit = {
@@ -14,26 +15,24 @@ object TestMain {
 
     val playersTeam = Team(-1000)
     val waspPlayers = Vector.tabulate(4)(i => Player(i, s"wasp-ai-$i", Team(-i)))
-    var oldWorld = World.create(
+
+    var events = Vector.empty[Event]
+    Stream.from(1).takeWhile(i => i == 1 || events.isEmpty).foldLeft(World.create(
       playersTeam, () => waspPlayers.random.get, () => {
         val id = Random.nextInt()
         Player(id, s"ai-$id", Team(-id))
       }
-    )
-
-    var world = oldWorld
-    Stream.from(1).takeWhile(i => i == 1 || world != oldWorld).foreach { turn =>
+    )) { case (world, turn) =>
       println(s"Turn $turn starting.")
       RenderPNG.world(world, f"world-$turn%03d")
-      waspPlayers.zipWithIndex.foreach { case (aiPlayer, idx) =>
+      waspPlayers.zipWithIndex.foldLeft(world) { case (pWorld, (aiPlayer, idx)) =>
         println(s"$aiPlayer ($idx) is going.")
-        val (newWorld, events) = SingleMindAI.act(world, aiPlayer)
+        val (newWorld, newEvents) = SingleMindAI.act(pWorld, aiPlayer)
+        events = newEvents
         events.foreach(println)
-        oldWorld = world
-        world = newWorld
-        RenderPNG.world(world, f"world-$turn%03d-$idx%03d")
-      }
-      world = world.nextTurn
+        RenderPNG.world(pWorld, f"world-$turn%03d-$idx%03d")
+        newWorld
+      }.nextTurn
     }
   }
 }

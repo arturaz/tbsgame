@@ -1,17 +1,22 @@
 package app.models.world
 
-case class Bounds(x: Range, y: Range) {
-  lazy val points = for {
+case class Bounds(x: Range.Inclusive, y: Range.Inclusive) {
+  require(
+    x.size > 0 && y.size > 0,
+    s"Bounds size must be > 0: x=${rstr(x)} y=${rstr(y)}"
+  )
+
+  def points = for {
     xCoord <- Iterator.range(x.start, x.end + 1)
     yCoord <- Iterator.range(y.start, y.end + 1)
   } yield Vect2(xCoord, yCoord)
 
-  lazy val corners = Iterator(
+  def corners = Iterator(
     Vect2(x.start, y.start), Vect2(x.end, y.start), Vect2(x.end, y.end),
     Vect2(x.start, y.end)
   )
 
-  lazy val perimeter =
+  def perimeter =
     Iterator.range(x.start, x.end + 1).map(Vect2(_, y.start)) ++
     Iterator.range(y.start + 1, y.end + 1).map(Vect2(x.end, _)) ++
     Iterator.range(x.end - 1, x.start - 1, -1).map(Vect2(_, y.end)) ++
@@ -39,13 +44,18 @@ case class Bounds(x: Range, y: Range) {
 
   def expandBy(v: Int) = Bounds(x.start - v to x.end + v, y.start - v to y.end + v)
 
-  override def toString =
-    s"Bounds(${x.start}..${x.end} (${x.size}), ${y.start}..${y.end} (${y.size}))"
+  override def toString = {
+    s"Bounds(${rstr(x)} (${x.size}), ${rstr(y)} (${y.size}))"
+  }
+
+  private[this] def rstr(r: Range.Inclusive) = s"${r.start}..${r.end}"
 }
 
 object Bounds {
-  def apply(position: Vect2, size: Vect2): Bounds = Bounds(
-    position.x until (position.x + size.x),
-    position.y until (position.y + size.y)
-  )
+  def apply(position: Vect2, size: Vect2): Bounds = {
+    Bounds(
+      position.x to (position.x + size.x - 1),
+      position.y to (position.y + size.y - 1)
+    )
+  }
 }

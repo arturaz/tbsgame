@@ -13,9 +13,9 @@ object Combat {
     target: SearchRes[FactionObj], strict: Boolean=true
   ): EitherActionResult = {
     val moveTarget =
-      if (!strict && unit.movementLeft < target.movementNeeded)
-        target.path.limit(unit.movementLeft)
-      else
+//      if (!strict && unit.movementLeft < target.movementNeeded)
+//        target.path.limit(unit.movementLeft)
+//      else
         target.path
 
     unit.moveTo(moveTarget.vects.last).right.flatMap { movedUnit =>

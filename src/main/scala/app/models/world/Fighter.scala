@@ -24,7 +24,17 @@ trait Fighter extends FactionObj {
 
   def attack(obj: FactionObj): Either[String, (Attack, Self)] =
     if (hasAttacked) Left(s"$self has already attacked!")
-    else if (! canAttack(obj)) Left(s"$self cannot attack reach $obj!")
+    else if (! canAttack(obj)) {
+      println(obj)
+      println(obj.bounds)
+      println(obj.bounds.points.toList)
+      println(obj.bounds.corners.toList)
+      println(obj.bounds.perimeter.toList)
+      println(obj.bounds.center)
+      Left(s"$self cannot attack reach $obj - tile distance ${
+        obj.bounds.tileDistance(position)
+      } > attack range ${stats.attackRange}!")
+    }
     else Right((
       Attack(stats.attack.random, obj.stats.defense.random),
       attacked(self, true)

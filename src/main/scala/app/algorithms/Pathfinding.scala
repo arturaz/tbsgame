@@ -10,7 +10,7 @@ import scala.collection.immutable.Queue
 object Pathfinding {
   case class SearchRes[+A](value: A, movementNeeded: TileDistance, path: Path)
   /* First vect is always our starting position */
-  case class Path private (vects: Vector[Vect2]) {
+  case class Path private[Pathfinding] (vects: Vector[Vect2]) {
     def limit(distance: TileDistance) = Path(vects.take(distance.value + 1))
   }
 
@@ -19,7 +19,7 @@ object Pathfinding {
   ) {
     def path = Path(pathPoints)
     protected def pathPoints: Vector[Vect2] =
-      cameFrom.map(_.pathPoints).getOrElse(Vector.empty) ++: Vector(position)
+      cameFrom.fold(Vector.empty[Vect2])(_.pathPoints) ++: Vector(position)
   }
 
   /* Finds objects which can be attacked with fewest moves. */
