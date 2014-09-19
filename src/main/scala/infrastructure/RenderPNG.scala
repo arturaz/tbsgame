@@ -1,27 +1,41 @@
 package infrastructure
 
-import java.awt.{Font, Color}
 import java.awt.image.{BufferedImage, RenderedImage}
+import java.awt.{Color, Font}
 import java.io.File
 import javax.imageio.ImageIO
 
-import app.models.Owner
+import app.models.world._
 import app.models.world.buildings.{Spawner, WarpGate}
 import app.models.world.props.Asteroid
 import app.models.world.units.Wasp
-import app.models.world.{SizedWObject, Vect2, WObject, World}
-
-import scala.util.Random
+import app.models.{Owner, Player, Team}
 
 /**
  * Created by arturas on 2014-09-11.
  */
 object RenderPNG {
+  val Colors = Seq(
+    Color.black, Color.red, Color.black, Color.orange, Color.gray, Color.green,
+    Color.blue, Color.cyan, Color.pink, Color.yellow, Color.magenta, new Color(123, 64, 21)
+  )
+  var teamColorsLeft = Colors
+  var playerColorsLeft = Colors
+
   private[this] var colors = Map.empty[Owner, Color]
-  def getColor(p: Owner) = colors.getOrElse(p, {
-    val c = new Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
-    colors += p -> c
-    c
+  def getColor(o: Owner) = colors.getOrElse(o, {
+    val color = o match {
+      case t: Team =>
+        val c = teamColorsLeft.head
+        teamColorsLeft = teamColorsLeft.tail
+        c
+      case p: Player =>
+        val c = playerColorsLeft.head
+        playerColorsLeft = playerColorsLeft.tail
+        c
+    }
+    colors += o -> color
+    color
   })
 
   def world(world: World, path: String): Unit = {
@@ -55,13 +69,25 @@ object RenderPNG {
 
     def draw(wo: WObject, color: Color, text: String = ""): Unit = {
       val oldColor = g.getColor
-      g.setColor(color)
+
+      val (teamColor, playerColor) = wo match {
+        case fo: FactionObj => (getColor(fo.owner.team), getColor(fo.owner))
+        case _ => (color, color)
+      }
+
       val size = wo match {
         case swo: SizedWObject => swo.stats.size
         case _ => Vect2.one
       }
       val ((x, y), (w, h)) = (pngPos(wo.position), pngSize(size))
-      g.fillRect(x, y, w, h)
+
+      g.setColor(teamColor)
+      g.fillRect(x, y, w / 2, h / 2)
+      g.setColor(playerColor)
+      g.fillRect(x + w / 2, y, w / 2, h / 2)
+      g.setColor(color)
+      g.fillRect(x, y + h / 2, w, h / 2)
+
       if (! text.isEmpty) {
         g.setColor(Color.WHITE)
         write(text, x, y)
@@ -71,13 +97,13 @@ object RenderPNG {
 
     world.objects.foreach {
       case wg: WarpGate =>
-        draw(wg, Color.BLACK, s"${wg.hp}/${wg.stats.maxHp}")
+        draw(wg, Color.black, s"${wg.hp}/${wg.stats.maxHp}")
       case s: Spawner =>
         draw(s, new Color(115, 34, 34), s"${s.strength}: ${s.hp}/${s.stats.maxHp}")
       case asteroid: Asteroid =>
-        draw(asteroid, Color.GRAY, asteroid.resources.toString)
+        draw(asteroid, Color.gray, asteroid.resources.toString)
       case wasp: Wasp =>
-        draw(wasp, getColor(wasp.owner), "W")
+        draw(wasp, Color.red, "W")
     }
 
     save(image, s"$path.png")
