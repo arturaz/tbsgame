@@ -12,16 +12,28 @@ import scala.util.Random
 case class World(bounds: Bounds, objects: Set[WObject]) {
   def nextTurn: World = copy(objects = objects.map(_.nextTurn))
 
-  def add(obj: WObject) = copy(objects = objects + obj)
+  def add(obj: WObject) = {
+    // DEBUG CHECK
+    objects.find(o => obj.bounds.intersects(o.bounds)).foreach { o =>
+      throw new Exception(s"Adding $obj to world - intersection with $o")
+    }
+    copy(objects = objects + obj)
+  }
   def remove(obj: WObject) = copy(objects = objects - obj)
-  def update[A <: WObject](before: A, after: A): World =
-    copy(objects = objects - before + after)
+  def update[A <: WObject](before: A, after: A) = remove(before).add(after)
 
   def update(attack: Attack, target: FactionObj): World =
     if (attack.successful)
       target.takeDamage.fold(remove(target))(update(target, _))
     else
       this
+
+  def updateAll(pf: PartialFunction[WObject, WObject]) = {
+    val lpf = pf.lift
+    objects.foldLeft(this) { case (world, a) =>
+      lpf(a).fold(world)(world.update(a, _))
+    }
+  }
 
   lazy val owners = objects.collect { case fo: FactionObj => fo.owner }
   lazy val teams = owners.map(_.team)
@@ -83,9 +95,15 @@ object World {
       )
 
       for (objPos <- Random.shuffle(bounds.points)) {
+        // Have more space around asteroids
+        lazy val asteroidFreeSpace = {
+          val rnd = 1 to 3
+          Bounds(objPos, Vect2(rnd.random, rnd.random))
+        }
+
         if (
           resourcesLeft >= asteroidResources.start &&
-          ! pTaken(objPos)
+          ! bTaken(asteroidFreeSpace)
         ) {
           val resources = math.min(resourcesLeft, asteroidResources.random)
           resourcesLeft -= resources

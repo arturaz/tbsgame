@@ -40,12 +40,15 @@ object RenderPNG {
     )
     def pngSize(v: Vect2) = (v.x * CellSize, v.y * CellSize)
 
+    def write(s: String, x: Int, y: Int) =
+      g.drawString(s, x, y + CellSize)
+
     g.setColor(Color.black)
     val font = g.getFont
     g.setFont(new Font(font.getFontName, Font.PLAIN, 10))
     world.bounds.points.foreach { v =>
       val (x, y) = pngPos(v)
-      g.drawString(s"${v.x},${v.y}", x, y)
+      write(s"${v.x},${v.y}", x, y)
     }
     g.setColor(Color.white)
     g.setFont(font)
@@ -61,7 +64,7 @@ object RenderPNG {
       g.fillRect(x, y, w, h)
       if (! text.isEmpty) {
         g.setColor(Color.WHITE)
-        g.drawString(text, x, y + CellSize)
+        write(text, x, y)
       }
       g.setColor(oldColor)
     }
@@ -70,7 +73,7 @@ object RenderPNG {
       case wg: WarpGate =>
         draw(wg, Color.BLACK, s"${wg.hp}/${wg.stats.maxHp}")
       case s: Spawner =>
-        draw(s, new Color(115, 34, 34), s"${s.hp}/${s.stats.maxHp}")
+        draw(s, new Color(115, 34, 34), s"${s.strength}: ${s.hp}/${s.stats.maxHp}")
       case asteroid: Asteroid =>
         draw(asteroid, Color.GRAY, asteroid.resources.toString)
       case wasp: Wasp =>

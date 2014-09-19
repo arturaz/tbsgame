@@ -8,7 +8,7 @@ import scala.util.Random
 package object implicits {
   implicit class RangeExts(val r: Range) extends AnyVal {
     def random =
-      if (r.isEmpty) r.start
+      if (r.size < 2) r.start
       else r.start + Random.nextInt(r.end - r.start)
   }
 

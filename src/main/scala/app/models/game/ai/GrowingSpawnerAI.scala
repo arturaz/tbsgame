@@ -1,5 +1,6 @@
 package app.models.game.ai
 
+import app.algorithms.Pathfinding.SearchRes
 import app.algorithms.{Combat, Pathfinding}
 import app.models.Player
 import app.models.game.events.{Event, SpawnEvt}
@@ -54,14 +55,21 @@ object GrowingSpawnerAI {
     work(spawner.strength, world, readyUnits, Vector.empty)
   }
 
-  def act(world: World, unit: GrowingSpawner#Controlled): Result = {
-    val enemies = world.objects.collect {
-      case fo: FactionObj if fo.isEnemy(unit) => fo
-    }
-    Pathfinding.longRangeNearestAttackSearch(
-      unit, enemies, unit.obstacles(world.objects).map(_.bounds)
-    )(_.bounds).
-      fold((world, Vector.empty[Event]))(Combat.moveAttackLoose(world, unit, _))
+  def act(
+    world: World, unit: GrowingSpawner#Controlled
+  ): Result = {
+    val opt = for {
+      target <- world.objects.collect {
+        case fo: FactionObj if fo.isEnemy(unit) => fo
+      } match {
+        case s if s.isEmpty => None
+        case s => Some(s.minBy(_.bounds.tileDistance(unit.position)))
+      }
+      path <- Pathfinding.aStar(
+        unit, target, world.bounds, unit.obstacles(world.objects).map(_.bounds)
+      )
+    } yield SearchRes(target, path)
+    opt.fold((world, Vector.empty[Event]))(Combat.moveAttackLoose(world, unit, _))
   }
 
   private[this] def spawn(

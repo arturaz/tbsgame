@@ -16,11 +16,18 @@ case class Bounds(x: Range.Inclusive, y: Range.Inclusive) {
     Vect2(x.start, y.end)
   )
 
-  def perimeter =
-    Iterator.range(x.start, x.end + 1).map(Vect2(_, y.start)) ++
-    Iterator.range(y.start + 1, y.end + 1).map(Vect2(x.end, _)) ++
-    Iterator.range(x.end - 1, x.start - 1, -1).map(Vect2(_, y.end)) ++
-    Iterator.range(y.end - 1, y.start, -1).map(Vect2(x.start, _))
+  /* N-th perimeter, where n >= 0. If n > 0 returns a perimeter that is
+     n tiles away from these bounds */
+  def perimeterN(n: Int) = {
+    require(n >= 0, s"n should be positive, $n given")
+    val (xS, xE, yS, yE) = (x.start - n, x.end + n, y.start - n, y.end + n)
+
+    Iterator.range(xS, xE + 1).map(Vect2(_, yS)) ++
+    Iterator.range(yS + 1, yE + 1).map(Vect2(xE, _)) ++
+    Iterator.range(xE - 1, xS - 1, -1).map(Vect2(_, yE)) ++
+    Iterator.range(yE - 1, yS, -1).map(Vect2(xS, _))
+  }
+  def perimeter = perimeterN(0)
 
   lazy val center = Vect2(x.start + x.size / 2, y.start + y.size / 2)
 

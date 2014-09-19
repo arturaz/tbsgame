@@ -23,10 +23,8 @@ object Combat {
 
       movedUnit.attack(target.value).fold(
         err =>
-          if (! strict && moveTarget != target.path)
-            Right((world.update(unit, movedUnit), moves))
-          else
-            Left(err),
+          if (! strict) Right((world.update(unit, movedUnit), moves))
+          else Left(err),
         { case (attack, attackUnit) =>
           Right((
             world.update(unit, attackUnit).update(attack, target.value),
@@ -37,9 +35,10 @@ object Combat {
     }
   }
 
+  /* Tries to move attack, but does not fail if cannot. */
   def moveAttackLoose(
     world: World, unit: MovableWObject with Fighter, target: SearchRes[FactionObj]
   ): ActionResult = moveAttack(world, unit, target, strict = false).fold(
-    err => throw new Exception(err), identity
+    err => throw new Exception(s"[search res=$target]: $err]"), identity
   )
 }
