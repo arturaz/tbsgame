@@ -18,12 +18,19 @@ object GrowingSpawnerAI {
   type Result = (World, Vector[Event])
 
   def act(world: World, ai: Player): Result = {
-    world.objects.collect {
+    val spawners = world.objects.collect {
       case spawner: GrowingSpawner if spawner.owner == ai => spawner
-    }.foldLeft((world, Vector.empty[Event])) { case ((world, events), spawner) =>
-      val (newWorld, newEvents) = act(world, spawner)
-      (newWorld, events ++ newEvents)
     }
+
+    if (spawners.isEmpty)
+      SingleMindAI.act(world, ai)
+    else
+      spawners.foldLeft(
+        (world, Vector.empty[Event])
+      ) { case ((world, events), spawner) =>
+        val (newWorld, newEvents) = act(world, spawner)
+        (newWorld, events ++ newEvents)
+      }
   }
 
   def act(world: World, spawner: GrowingSpawner): Result = {
