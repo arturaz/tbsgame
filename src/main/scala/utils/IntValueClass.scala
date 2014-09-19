@@ -10,5 +10,9 @@ trait IntValueClass[A <: IntValueClass[_]] extends Any with Ordered[A] {
   def +(v: A) = self(value + v.value)
   def -(v: A) = self(value - v.value)
   def unary_-(v: A) = self(-value)
+
+  def isZero = value == 0
+  def isNotZero = ! isZero
+
   override def compare(that: A) = value.compareTo(that.value)
 }
