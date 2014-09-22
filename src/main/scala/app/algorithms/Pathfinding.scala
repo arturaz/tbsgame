@@ -128,12 +128,12 @@ object Pathfinding {
   }
 
   def aStar(
-    unit: MovableWObject with Fighter, target: WObject, worldBounds: Bounds,
+    unit: MovableWObject, target: Bounds, worldBounds: Bounds,
     obstacles: Set[Bounds]
   ): Option[Path] = {
     val start = unit.position
     val goal = Iterator.from(1).map { n =>
-      target.bounds.perimeterN(n).filterNot(obstructed(_, obstacles)) match {
+      target.perimeterN(n).filterNot(obstructed(_, obstacles)) match {
         case p if p.isEmpty => None
         case p => Some(p.minBy(unit.position.tileDistance))
       }

@@ -21,4 +21,6 @@ case class Vect2(x: Int, y: Int) {
   def tileDistance(v: Vect2): TileDistance =
     TileDistance(math.abs(x - v.x) + math.abs(y - v.y))
   def tileDistance(b: Bounds): TileDistance = b.perimeter.map(tileDistance).min
+
+  def toBounds = Bounds(this, Vect2.one)
 }

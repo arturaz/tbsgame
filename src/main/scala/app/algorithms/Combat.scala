@@ -2,7 +2,7 @@ package app.algorithms
 
 import app.algorithms.Pathfinding.SearchRes
 import app.models.game.events.{AttackEvt, Event, MoveEvt}
-import app.models.world.{FactionObj, Fighter, MovableWObject, World}
+import app.models.world.{OwnedObj, Fighter, MovableWObject, World}
 
 object Combat {
   type ActionResult = (World, Vector[Event])
@@ -10,7 +10,7 @@ object Combat {
 
   def moveAttack(
     world: World, unit: MovableWObject with Fighter,
-    target: SearchRes[FactionObj], strict: Boolean=true
+    target: SearchRes[OwnedObj], strict: Boolean=true
   ): EitherActionResult = {
     val moveTarget =
       if (!strict && unit.movementLeft < target.movementNeeded)
@@ -19,7 +19,7 @@ object Combat {
         target.path
 
     unit.moveTo(moveTarget.vects.last).right.flatMap { movedUnit =>
-      val moves = MoveEvt.fromPath(unit, moveTarget)
+      val moves = MoveEvt(unit, moveTarget)
 
       movedUnit.attack(target.value).fold(
         err =>
@@ -37,7 +37,7 @@ object Combat {
 
   /* Tries to move attack, but does not fail if cannot. */
   def moveAttackLoose(
-    world: World, unit: MovableWObject with Fighter, target: SearchRes[FactionObj]
+    world: World, unit: MovableWObject with Fighter, target: SearchRes[OwnedObj]
   ): ActionResult = moveAttack(world, unit, target, strict = false).fold(
     err => throw new Exception(s"[search res=$target]: $err]"), identity
   )

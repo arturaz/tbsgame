@@ -6,6 +6,7 @@ import app.models.world.{WObject, Vect2}
 object WarpGate extends BuildingStats {
   override val maxHp: Int = 35
   override val size: Vect2 = Vect2(6, 4)
+  override val isCritical: Boolean = true
 }
 
 case class WarpGate(

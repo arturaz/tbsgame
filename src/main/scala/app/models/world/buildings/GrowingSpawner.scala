@@ -3,11 +3,11 @@ package app.models.world.buildings
 import app.models.world.units.WUnit
 import app.models.world._
 
-trait GrowingSpawnerStats extends FactionObjStats {
+trait GrowingSpawnerStats extends OwnedObjStats {
   val DefaultTurnsPerStrength: Int
 }
 
-trait GrowingSpawner extends TurnCounter with FactionObj {
+trait GrowingSpawner extends TurnCounter with OwnedObj {
   type Self <: GrowingSpawner
   type Stats <: GrowingSpawnerStats
   type Controlled = WUnit with Fighter

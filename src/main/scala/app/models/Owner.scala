@@ -1,6 +1,6 @@
 package app.models
 
-import app.models.world.FactionObj
+import app.models.world.OwnedObj
 
 sealed trait Owner {
   def team: Team
@@ -10,9 +10,11 @@ case class Team(id: Int) extends Owner {
   override def team = this
 }
 object Player {
-  def unapply(fo: FactionObj) = fo.owner match {
+  type Id = Int
+
+  def unapply(fo: OwnedObj) = fo.owner match {
     case p: Player => Some(p)
     case _ => None
   }
 }
-case class Player(id: Int, name: String, team: Team) extends Owner
+case class Player(id: Player.Id, name: String, team: Team) extends Owner

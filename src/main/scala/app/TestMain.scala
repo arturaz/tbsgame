@@ -37,8 +37,8 @@ object TestMain {
         val (newWorld, events) = f(pWorld)
 //        events.foreach(println)
         if (events.nonEmpty) worlds :+= pWorld
-        newWorld
-      }.nextTurn
+        newWorld.teamTurnFinished(aiPlayer.team)
+      }.gameTurnFinished
 
       if (turn < maxTurns && newWorld.teams.size > 1)
         worlds ++ run(newWorld, maxTurns, turn + 1)

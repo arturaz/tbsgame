@@ -31,7 +31,9 @@ case class Bounds(x: Range.Inclusive, y: Range.Inclusive) {
 
   lazy val center = Vect2(x.start + x.size / 2, y.start + y.size / 2)
 
-  def contains(point: Vect2) = x.contains(point.x) && y.contains(point.y)
+  def contains(point: Vect2): Boolean = x.contains(point.x) && y.contains(point.y)
+  def contains(bounds: Bounds): Boolean = x.contains(bounds.x) && y.contains(bounds.y)
+
   def withinTileDistance(point: Vect2, distance: TileDistance) =
     perimeter.exists(point.tileDistance(_) <= distance)
   def tileDistance(point: Vect2) = point.tileDistance(this)

@@ -2,7 +2,7 @@ package app.models.game.ai
 
 import app.algorithms.Pathfinding.SearchRes
 import app.algorithms.{Combat, Pathfinding}
-import app.models.Player
+import app.models.Owner
 import app.models.game.events.Event
 import app.models.world._
 import app.models.world.units.WUnit
@@ -13,10 +13,10 @@ import scala.util.Random
 
 /* AI for units that have no central controlling entity. */
 object SingleMindAI {
-  private[this] def srOrd[A](f: SearchRes[FactionObj] => A)(implicit ord: Ordering[A])
-  : Ordering[SearchRes[FactionObj]] = Ordering.by(f)
-  private[this] def fOrd[A](f: FactionObj => A)(implicit ord: Ordering[A])
-  : Ordering[FactionObj] = Ordering.by(f)
+  private[this] def srOrd[A](f: SearchRes[OwnedObj] => A)(implicit ord: Ordering[A])
+  : Ordering[SearchRes[OwnedObj]] = Ordering.by(f)
+  private[this] def fOrd[A](f: OwnedObj => A)(implicit ord: Ordering[A])
+  : Ordering[OwnedObj] = Ordering.by(f)
 
   /* Ordering which implies worthyness of attacking a target. */
   private[this] val AttackOrdering = {
@@ -42,15 +42,15 @@ object SingleMindAI {
   }
 
   /* Simulate AI actions for all units. */
-  def act(world: World, ai: Player): Combat.ActionResult = {
+  def act(world: World, owner: Owner): Combat.ActionResult = {
     val units = world.objects.
-      collect { case o: WUnit with Fighter if o.owner == ai => o}
+      collect { case o: WUnit with Fighter if o.owner == owner => o }
     units.foldLeft(
       (world, Vector.empty[Event])
     ) { case ((curWorld, curEvents), unit) =>
       act(curWorld, unit).fold(
         err => {
-          Log.error(s"$ai unit $unit failed to act: $err")
+          Log.error(s"$owner unit $unit failed to act: $err")
           (curWorld, Vector.empty)
         },
         {case (newWorld, newEvents) => (newWorld, curEvents ++ newEvents)}
@@ -61,7 +61,7 @@ object SingleMindAI {
   def act(world: World, unit: WUnit with Fighter): Combat.EitherActionResult = {
     val visibleTargets =
       world.objects.view.
-      collect { case o: FactionObj => o }.
+      collect { case o: OwnedObj => o }.
       filter(o => o.isEnemy(unit) && unit.sees(o)).
       toSeq
     val obstacles = unit.obstacles(world.objects).map(_.bounds)

@@ -2,7 +2,9 @@ package app.models.world
 
 import java.util.UUID
 
-trait WObjectStats
+trait WObjectStats {
+  def bounds(position: Vect2) = Bounds(position, Vect2.one)
+}
 
 object WObject {
   type Id = UUID
@@ -18,8 +20,9 @@ trait WObject {
   val position: Vect2
 
   def stats: Stats
-  lazy val bounds = Bounds(position, Vect2.one)
+  lazy val bounds = stats.bounds(position)
 
   protected def self: Self
-  def nextTurn = self
+  /* Called when game turn is finished to get new copy of self. */
+  def gameTurnFinished = self
 }

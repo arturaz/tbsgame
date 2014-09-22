@@ -10,7 +10,11 @@ import infrastructure.Log
 import scala.util.Random
 
 case class World(bounds: Bounds, objects: Set[WObject]) {
-  def nextTurn: World = copy(objects = objects.map(_.nextTurn))
+  def gameTurnFinished: World = copy(objects = objects.map(_.gameTurnFinished))
+  def teamTurnFinished(team: Team) = copy(objects = objects.map {
+    case obj: OwnedObj if obj.owner.team == team => obj.teamTurnFinished
+    case o => o
+  })
 
   def add(obj: WObject) = {
     // DEBUG CHECK
@@ -20,9 +24,10 @@ case class World(bounds: Bounds, objects: Set[WObject]) {
     copy(objects = objects + obj)
   }
   def remove(obj: WObject) = copy(objects = objects - obj)
-  def update[A <: WObject](before: A, after: A) = remove(before).add(after)
+  def update[A <: WObject](before: A, after: A): World = remove(before).add(after)
+  def update[A <: WObject](before: A)(afterFn: A => A): World = update(before, afterFn(before))
 
-  def update(attack: Attack, target: FactionObj): World =
+  def update(attack: Attack, target: OwnedObj): World =
     if (attack.successful)
       target.takeDamage.fold(remove(target))(update(target, _))
     else
@@ -35,7 +40,12 @@ case class World(bounds: Bounds, objects: Set[WObject]) {
     }
   }
 
-  lazy val owners = objects.collect { case fo: FactionObj => fo.owner }
+  def isFree(b: Bounds) = bounds.contains(b)
+  def findObj(position: Vect2) = objects.find(_.position == position)
+  def find[A <: WObject](predicate: PartialFunction[WObject, A]): Option[A] =
+    objects.collectFirst(predicate)
+
+  lazy val owners = objects.collect { case fo: OwnedObj => fo.owner }
   lazy val teams = owners.map(_.team)
   lazy val players = owners.collect { case p: Player => p }.toSet
 }

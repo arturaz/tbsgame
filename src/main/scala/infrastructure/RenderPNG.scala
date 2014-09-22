@@ -71,7 +71,7 @@ object RenderPNG {
       val oldColor = g.getColor
 
       val (teamColor, playerColor) = wo match {
-        case fo: FactionObj => (getColor(fo.owner.team), getColor(fo.owner))
+        case fo: OwnedObj => (getColor(fo.owner.team), getColor(fo.owner))
         case _ => (color, color)
       }
 
