@@ -1,7 +1,8 @@
 package app.models.game
 
 import app.algorithms.Pathfinding
-import app.models.{Owner, Player}
+import app.models.game.Game.States
+import app.models.{TurnBased, Team, Owner, Player}
 import app.models.game.events._
 import app.models.world._
 import implicits._
@@ -15,8 +16,19 @@ object Game {
   val world = lenser(_.world)
   val states = lenser(_.states)
 
-  type Result = Either[String, Evented[Game]]
+  type ResultT[A] = Either[String, Evented[A]]
+  type Result = ResultT[Game]
   private type States = Map[Player, PlayerState]
+
+  def apply(world: World, startingResources: Int): Game = apply(
+    world, startingStates(world, startingResources, world.players)
+  )
+
+  def startingStates(
+    world: World, startingResources: Int, players: Iterable[Player]
+  ): States = players.map { player =>
+    player -> PlayerState(startingResources, world.actionsFor(player))
+  }.toMap
 
   private object Withs {
     private[this] def updateStates(game: Game, events: Events): Game = {
@@ -37,7 +49,7 @@ object Game {
       game.copy(states = newStates)
     }
 
-    private[this] def updateStates(evented: Evented[Game]): Evented[Game] =
+    def updateStates(evented: Evented[Game]): Evented[Game] =
       evented.mapE(updateStates)
 
     def withStateChanges(f: => Game.Result): Game.Result =
@@ -46,12 +58,11 @@ object Game {
     def withActions(playerId: Owner.Id, actionsNeeded: Int)(
       f: PlayerState => Game.Result
     )(state: PlayerState): Game.Result = {
-      if (state.actions.current < actionsNeeded)
+      if (state.actions < actionsNeeded)
         s"Not enough actions: needed $actionsNeeded, had $state".left
       else {
         val newState =
-          state |-> PlayerState.actions |->
-            PlayerState.Actions.current modify (_ - actionsNeeded)
+          state |-> PlayerState.actions modify (_ - actionsNeeded)
         val events =
           if (actionsNeeded > 0) Vector(ActionChangeEvt(playerId, newState.actions))
           else Vector.empty
@@ -84,28 +95,55 @@ object Game {
   }
 }
 
-trait GameLike {
+trait GameLike[A] {
   def warp(
     player: Player, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
-  ): Game.Result
+  ): Game.ResultT[A]
 
   def move(
     player: Player, from: Vect2, to: Vect2
-  ): Game.Result
+  ): Game.ResultT[A]
 
   def attack(
     player: Player, source: Vect2, target: Vect2
-  ): Game.Result
+  ): Game.ResultT[A]
 
   def special(
     player: Player, position: Vect2
-  ): Game.Result
+  ): Game.ResultT[A]
 }
 
-case class Game(
+case class Game private (
   world: World, states: Game.States
-) extends GameLike {
+) extends GameLike[Game] with TurnBased[Game] {
   import Game.Withs._
+
+  private[this] def fromWorldEvents(w: Evented[World]) =
+    w.map(updated) |> updateStates
+  private[this] def recalculatePlayerStates
+  (team: Team)(g: Evented[Game]): Evented[Game] =
+    g.map { game =>
+      val players = game.states.filterKeys(_.team == team)
+      val states = players.map { case (player, state) =>
+        player -> state.copy(actions = game.world.actionsFor(player))
+      }
+      game.updated(states)
+    }
+
+  def gameTurnStarted = world.gameTurnStarted |> fromWorldEvents
+  def gameTurnFinished = world.gameTurnFinished |> fromWorldEvents
+  def teamTurnStarted(team: Team) =
+    world.teamTurnStarted(team) |> fromWorldEvents |> recalculatePlayerStates(team)
+  def teamTurnFinished(team: Team) = world.teamTurnFinished(team) |> fromWorldEvents
+
+  def winner: Option[Team] = {
+    world.objects.collect {
+      case obj: OwnedObj if obj.companion.isCritical => obj.owner.team
+    } match {
+      case s if s.size == 1 => Some(s.head)
+      case _ => None
+    }
+  }
 
   def warp(
     player: Player, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
@@ -177,6 +215,8 @@ case class Game(
       obj.special(world).right.map(_.map(world => updated(world, player -> state)))
     } } } }
 
+  private[this] def updated(world: World): Game = copy(world = world)
+  private def updated(states: States): Game = copy(states = states)
   private[this] def updated(world: World, player: (Player, PlayerState)): Game =
     copy(world = world, states = states + player)
 

@@ -1,7 +1,6 @@
 package app.models.game.events
 
 import app.algorithms.Pathfinding
-import app.models.game.PlayerState
 import app.models.world._
 import app.models.{Attack, Owner}
 
@@ -35,5 +34,5 @@ case class ResourceChangeEvt(
 ) extends Event
 
 case class ActionChangeEvt(
-  player: Owner.Id, actions: PlayerState.Actions
+  player: Owner.Id, actions: Int
 ) extends Event

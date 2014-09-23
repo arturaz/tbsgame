@@ -4,14 +4,16 @@ import app.models.game.events.Evented
 import app.models.world.buildings.{Spawner, WarpGate}
 import app.models.world.props.Asteroid
 import app.models.world.units.Wasp
-import app.models.{Attack, Player, Team}
+import app.models.{TurnBased, Attack, Player, Team}
 import implicits._
 import infrastructure.Log
 
 import scala.reflect.ClassTag
 import scala.util.Random
 
-case class World(bounds: Bounds, objects: Set[WObject]) {
+case class World(
+  bounds: Bounds, objects: Set[WObject]
+) extends TurnBased[World] {
   private[this] def xTurnX[A : ClassTag](
     filter: A => Boolean, f: A => World => Evented[World]
   ) = objects.foldLeft(Evented(this)) {
@@ -27,6 +29,11 @@ case class World(bounds: Bounds, objects: Set[WObject]) {
   def gameTurnFinished = gameTurnX(_.gameTurnFinished)
   def teamTurnStarted(team: Team) = teamTurnX(team)(_.teamTurnStarted)
   def teamTurnFinished(team: Team) = teamTurnX(team)(_.teamTurnFinished)
+
+  def actionsFor(player: Player) = objects.collect {
+    case obj: GivingActions if obj.owner.team == player.team =>
+      obj.companion.actionsGiven
+  }.sum
 
   def add(obj: WObject) = {
     // DEBUG CHECK
