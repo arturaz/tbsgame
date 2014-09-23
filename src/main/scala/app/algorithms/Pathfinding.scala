@@ -31,7 +31,7 @@ object Pathfinding {
     origin: MovableWObject with Fighter, targets: Iterable[A],
     obstacles: Set[Bounds]
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = attackSearch(
-    origin.position, origin.movementLeft, origin.stats.attackRange,
+    origin.position, origin.movementLeft, origin.companion.attackRange,
     targets, obstacles
   )(aToBounds)
 
@@ -39,7 +39,7 @@ object Pathfinding {
   def attackSearch[A](
     origin: Fighter, targets: Iterable[A], obstacles: Set[Bounds]
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = attackSearch(
-    origin.position, TileDistance(0), origin.stats.attackRange,
+    origin.position, TileDistance(0), origin.companion.attackRange,
     targets, obstacles
   )(aToBounds)
 

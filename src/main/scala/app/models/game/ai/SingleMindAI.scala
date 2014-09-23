@@ -3,7 +3,7 @@ package app.models.game.ai
 import app.algorithms.Pathfinding.SearchRes
 import app.algorithms.{Combat, Pathfinding}
 import app.models.Owner
-import app.models.game.events.Event
+import app.models.game.events.Evented
 import app.models.world._
 import app.models.world.units.WUnit
 import implicits._
@@ -32,7 +32,7 @@ object SingleMindAI {
       fOrd(_.hp) orElse
       /* Attack ones with biggest damage output first. */
       fOrd {
-        case f: Fighter => f.stats.attack.end
+        case f: Fighter => f.companion.attack.end
         case _ => 0
       }.reverse
 
@@ -45,18 +45,21 @@ object SingleMindAI {
   def act(world: World, owner: Owner): Combat.ActionResult = {
     val units = world.objects.
       collect { case o: WUnit with Fighter if o.owner == owner => o }
-    units.foldLeft(
-      (world, Vector.empty[Event])
-    ) { case ((curWorld, curEvents), unit) =>
+    units.foldLeft(Evented(world)) { case (curWorld, unit) =>
       act(curWorld, unit).fold(
         err => {
           Log.error(s"$owner unit $unit failed to act: $err")
-          (curWorld, Vector.empty)
+          curWorld
         },
-        {case (newWorld, newEvents) => (newWorld, curEvents ++ newEvents)}
+        identity
       )
     }
   }
+
+  def act(
+    world: Evented[World], unit: WUnit with Fighter
+  ): Combat.EitherActionResult =
+    act(world.value, unit).right.map { world.events +: _ }
 
   def act(world: World, unit: WUnit with Fighter): Combat.EitherActionResult = {
     val visibleTargets =
@@ -68,9 +71,9 @@ object SingleMindAI {
     val attackableTargets =
       Pathfinding.attackSearch(unit, visibleTargets, obstacles)(_.bounds).
       /* Filter out those targets which we can't inflict damage to. */
-      filter(_.value.stats.defense.start <= unit.stats.attack.end)
+      filter(_.value.companion.defense.start <= unit.companion.attack.end)
 
-    if (attackableTargets.isEmpty) Right(world, Vector.empty)
+    if (attackableTargets.isEmpty) Right(Evented(world))
     else {
       val target = attackableTargets.reduce((a, b) =>
         AttackOrdering.compare(a, b) match {

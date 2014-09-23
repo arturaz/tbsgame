@@ -1,10 +1,11 @@
 package app.models.world.units
 
 import app.models.Player
-import app.models.game.events.MovementChangeEvt
+import app.models.game.events.{Evented, MovementChangeEvt}
 import app.models.world._
 
-object Corvette extends WUnitStats[Corvette] with FighterStats with SpecialActionStats {
+object Corvette extends WUnitCompanion[Corvette] 
+with FighterCompanion[Corvette] with SpecialActionCompanion {
   override val attack: Range = 2 to 7
   override val defense: Range = 2 to 7
   override val attackRange = TileDistance(3)
@@ -18,6 +19,16 @@ object Corvette extends WUnitStats[Corvette] with FighterStats with SpecialActio
   override val specialActionsNeeded: Int = 0
 
   override def warp(owner: Player, position: Vect2) = Corvette(position, owner)
+  override def setWarpState(newState: Int)(self: Corvette) =
+    self.copy(warpState = newState)
+  override def setMoveValues(position: Vect2, movementLeft: TileDistance)(self: Corvette) =
+    self.copy(position = position, movementLeft = movementLeft)
+  override def withMovedOrAttacked(value: Boolean)(self: Corvette) =
+    self.copy(movedOrAttacked = value)
+  override def withNewHp(hp: Int)(self: Corvette) =
+    self.copy(hp = hp)
+  override def attacked(value: Boolean)(self: Corvette) =
+    self.copy(hasAttacked = value)
 }
 
 case class Corvette(
@@ -27,32 +38,19 @@ case class Corvette(
   movedOrAttacked: Boolean=Corvette.InitialMovedOrAttacked
 ) extends WUnit with Fighter with SpecialAction {
   type Self = Corvette
-  type Stats = Corvette.type
+  type Companion = Corvette.type
   override protected def self = this
-
-  override def stats = Corvette
-
-  override protected def setMoveValues(
-    target: Vect2, movementLeft: TileDistance
-  )(self: Self) =
-    self.copy(position = target, movementLeft = movementLeft)
-  override protected def advanceWarpState(self: Self, newState: Int) =
-    self.copy(warpState = newState)
-  override protected def attacked(value: Boolean)(self: Self) =
-    self.copy(hasAttacked = value)
-  override protected def withNewHp(hp: Int) = copy(hp = hp)
-  override protected def withMovedOrAttacked(value: Boolean)(self: Self) =
-    self.copy(movedOrAttacked = value)
+  override def companion = Corvette
 
   override def special(world: World) = Either.cond(
     ! hasAttacked,
     {
       val updated = copy(
         hasAttacked = true,
-        movementLeft = movementLeft + stats.specialMovementAdded
+        movementLeft = movementLeft + companion.specialMovementAdded
       )
-      (
-        world.update(this, updated),
+      Evented(
+        world.updated(this, updated),
         Vector(MovementChangeEvt(updated.id, updated.movementLeft))
       )
     },

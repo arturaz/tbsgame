@@ -76,7 +76,7 @@ object RenderPNG {
       }
 
       val size = wo match {
-        case swo: SizedWObject => swo.stats.size
+        case swo: SizedWObject => swo.companion.size
         case _ => Vect2.one
       }
       val ((x, y), (w, h)) = (pngPos(wo.position), pngSize(size))
@@ -97,9 +97,9 @@ object RenderPNG {
 
     world.objects.foreach {
       case wg: WarpGate =>
-        draw(wg, Color.black, s"${wg.hp}/${wg.stats.maxHp}")
+        draw(wg, Color.black, s"${wg.hp}/${wg.companion.maxHp}")
       case s: Spawner =>
-        draw(s, new Color(115, 34, 34), s"${s.strength}: ${s.hp}/${s.stats.maxHp}")
+        draw(s, new Color(115, 34, 34), s"${s.strength}: ${s.hp}/${s.companion.maxHp}")
       case asteroid: Asteroid =>
         draw(asteroid, Color.gray, asteroid.resources.toString)
       case wasp: Wasp =>

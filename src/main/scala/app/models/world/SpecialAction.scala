@@ -1,14 +1,18 @@
 package app.models.world
 
-import app.models.game.events.Event
+import app.models.game.events.Evented
+
+trait SpecialActionOps extends WObjectOps
 
 trait SpecialActionStats extends WObjectStats {
   val specialActionsNeeded: Int
 }
 
+trait SpecialActionCompanion extends SpecialActionOps with SpecialActionStats
+
 trait SpecialAction extends WObject {
   type Self <: SpecialAction
-  type Stats <: SpecialActionStats
+  type Companion <: SpecialActionOps with SpecialActionStats
 
-  def special(world: World): Either[String, (World, Vector[Event])]
+  def special(world: World): Either[String, Evented[World]]
 }

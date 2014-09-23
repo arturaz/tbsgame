@@ -1,6 +1,13 @@
 package app.models.world
 
-import app.models.{Player, Owner}
+import implicits._
+
+import app.models.game.events.Evented
+import app.models.{Owner, Player}
+
+trait OwnedObjOps[Self] extends WObjectOps {
+  def withNewHp(hp: Int)(self: Self): Self
+}
 
 trait OwnedObjStats extends WObjectStats {
   val maxHp: Int
@@ -13,16 +20,20 @@ trait OwnedObjStats extends WObjectStats {
   protected def emptyRange = 0 until 0
 }
 
+trait OwnedObjCompanion[Self]
+extends OwnedObjOps[Self] with OwnedObjStats
+
 /* Object that belongs to some faction and not just a world prop */
 trait OwnedObj extends WObject {
-  type Stats <: OwnedObjStats
+  type Companion <: OwnedObjOps[Self] with OwnedObjStats
+
   val hp: Int
   val owner: Owner
   def isEnemy(o: OwnedObj) = owner.team != o.owner.team
   def isFriend(o: OwnedObj) = ! isEnemy(o)
 
   lazy val visibility = {
-    val vis = stats.visibility
+    val vis = companion.visibility
     Bounds(
       bounds.x.start - vis to bounds.x.end + vis,
       bounds.y.start - vis to bounds.y.end + vis
@@ -31,11 +42,17 @@ trait OwnedObj extends WObject {
   def sees(obj: WObject) = visibility.intersects(obj.bounds)
 
   def takeDamage: Option[Self] =
-    if (hp == 1) None else Some(withNewHp(hp - 1))
-  protected def withNewHp(hp: Int): Self
+    if (hp == 1) None else Some(self |> companion.withNewHp(hp - 1))
 
-  /* Called when team turn is finished to get a new version of self. */
-  def teamTurnFinished = self
+  def teamTurnStartedSelf(world: World): Evented[(World, Self)] =
+    Evented((world, self))
+  final def teamTurnStarted(world: World): Evented[World] =
+    teamTurnStartedSelf(world).map(_._1)
+
+  def teamTurnFinishedSelf(world: World): Evented[(World, Self)] =
+    Evented((world, self))
+  final def teamTurnFinished(world: World): Evented[World] =
+    teamTurnFinishedSelf(world).map(_._1)
 }
 
 trait PlayerObj extends OwnedObj {

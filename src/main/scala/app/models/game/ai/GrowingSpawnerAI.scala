@@ -3,7 +3,7 @@ package app.models.game.ai
 import app.algorithms.Pathfinding.SearchRes
 import app.algorithms.{Combat, Pathfinding}
 import app.models.Owner
-import app.models.game.events.{Event, WarpEvt}
+import app.models.game.events.{Evented, WarpEvt}
 import app.models.world.buildings.GrowingSpawner
 import app.models.world.{OwnedObj, World}
 import infrastructure.Log
@@ -15,7 +15,7 @@ import scala.util.Random
  * Created by arturas on 2014-09-18.
  */
 object GrowingSpawnerAI {
-  type Result = (World, Vector[Event])
+  type Result = Evented[World]
 
   def act(world: World, owner: Owner): Result = {
     val spawners = world.objects.collect {
@@ -25,32 +25,30 @@ object GrowingSpawnerAI {
     if (spawners.isEmpty)
       SingleMindAI.act(world, owner)
     else
-      spawners.foldLeft(
-        (world, Vector.empty[Event])
-      ) { case ((world, events), spawner) =>
-        val (newWorld, newEvents) = act(world, spawner)
-        (newWorld, events ++ newEvents)
+      spawners.foldLeft(Evented(world)) { case (w, spawner) =>
+        w.events +: act(w.value, spawner)
       }
   }
 
   def act(world: World, spawner: GrowingSpawner): Result = {
     @tailrec def work(
-      actionsLeft: Int, world: World, readyUnits: List[spawner.Controlled],
-      events: Vector[Event]
+      actionsLeft: Int, world: Evented[World], readyUnits: List[spawner.Controlled]
     ): Result = actionsLeft match {
-      case i if i <= 0 => (world, events)
+      case i if i <= 0 => world
       case _ =>
         val newActions = actionsLeft - 1
         readyUnits match {
         case unit :: rest =>
-          val (nWorld, evts) = act(world, unit)
-          work(newActions, nWorld, rest, events ++ evts)
-        case Nil => spawn(world, spawner) match {
+          work(newActions, world.flatMap(act(_, unit)), rest)
+        case Nil => spawn(world.value, spawner) match {
           case Left(err) =>
             Log.error(err)
-            (world, events)
+            world
           case Right((nWorld, unit, event)) =>
-            work(newActions, nWorld, unit :: readyUnits, events :+ event)
+            work(
+              newActions, Evented(nWorld, world.events :+ event),
+              unit :: readyUnits
+            )
         }
       }
     }
@@ -60,7 +58,7 @@ object GrowingSpawnerAI {
         if unit.owner == spawner.owner && ! unit.hasAttacked => unit
     }.toList
 
-    work(spawner.strength, world, readyUnits, Vector.empty)
+    work(spawner.strength, Evented(world), readyUnits)
   }
 
   def act(
@@ -78,7 +76,7 @@ object GrowingSpawnerAI {
         unit.obstacles(world.objects).map(_.bounds)
       )
     } yield SearchRes(target, path)
-    opt.fold((world, Vector.empty[Event]))(Combat.moveAttackLoose(world, unit, _))
+    opt.fold(Evented(world))(Combat.moveAttackLoose(world, unit, _))
   }
 
   private[this] def spawn(

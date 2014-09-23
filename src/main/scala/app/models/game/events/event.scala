@@ -1,8 +1,9 @@
 package app.models.game.events
 
 import app.algorithms.Pathfinding
-import app.models.{Player, Attack}
+import app.models.game.PlayerState
 import app.models.world._
+import app.models.{Attack, Owner}
 
 sealed trait Event
 
@@ -30,5 +31,9 @@ case class MovementChangeEvt(
 ) extends Event
 
 case class ResourceChangeEvt(
-  obj: Either[WObject.Id, Player.Id], resourceDiff: Int
+  obj: Either[WObject.Id, Owner.Id], resourceDiff: Int
+) extends Event
+
+case class ActionChangeEvt(
+  player: Owner.Id, actions: PlayerState.Actions
 ) extends Event

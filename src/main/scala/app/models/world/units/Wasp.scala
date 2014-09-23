@@ -3,7 +3,7 @@ package app.models.world.units
 import app.models.Player
 import app.models.world._
 
-object Wasp extends WUnitStats[Wasp] with FighterStats {
+object Wasp extends WUnitCompanion[Wasp] with FighterCompanion[Wasp] {
   override val attack: Range = 1 to 6
   override val defense: Range = 2 to 7
   override val attackRange = TileDistance(3)
@@ -14,6 +14,15 @@ object Wasp extends WUnitStats[Wasp] with FighterStats {
   override val cost: Int = 0
 
   override def warp(owner: Player, position: Vect2) = Wasp(position, owner)
+  override def setWarpState(newState: Int)(self: Wasp) =
+    self.copy(warpState = newState)
+  override def setMoveValues(position: Vect2, movementLeft: TileDistance)(self: Wasp) =
+    self.copy(position = position, movementLeft = movementLeft)
+  override def withMovedOrAttacked(value: Boolean)(self: Wasp) =
+    self.copy(movedOrAttacked = value)
+  override def withNewHp(hp: Int)(self: Wasp) =
+    self.copy(hp = hp)
+  override def attacked(value: Boolean)(self: Wasp) = self.copy(hasAttacked = value)
 }
 
 case class Wasp(
@@ -23,20 +32,7 @@ case class Wasp(
   movedOrAttacked: Boolean=Corvette.InitialMovedOrAttacked
 ) extends WUnit with Fighter {
   type Self = Wasp
-  type Stats = Wasp.type
+  type Companion = Wasp.type
   override protected def self = this
-
-  override def stats = Wasp
-
-  override protected def setMoveValues(
-    target: Vect2, movementLeft: TileDistance
-  )(self: Self) =
-    self.copy(position = target, movementLeft = movementLeft)
-  override protected def advanceWarpState(self: Self, newState: Int) =
-    self.copy(warpState = newState)
-  override protected def attacked(value: Boolean)(self: Self) =
-    self.copy(hasAttacked = value)
-  override protected def withNewHp(hp: Int) = copy(hp = hp)
-  override protected def withMovedOrAttacked(value: Boolean)(self: Self) =
-    self.copy(movedOrAttacked = value)
+  override def companion = Wasp
 }

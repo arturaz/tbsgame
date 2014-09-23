@@ -1,5 +1,6 @@
 package app.models.world
 
+import app.models.game.events.Evented
 import app.models.world.buildings.{Spawner, WarpGate}
 import app.models.world.props.Asteroid
 import app.models.world.units.Wasp
@@ -7,14 +8,25 @@ import app.models.{Attack, Player, Team}
 import implicits._
 import infrastructure.Log
 
+import scala.reflect.ClassTag
 import scala.util.Random
 
 case class World(bounds: Bounds, objects: Set[WObject]) {
-  def gameTurnFinished: World = copy(objects = objects.map(_.gameTurnFinished))
-  def teamTurnFinished(team: Team) = copy(objects = objects.map {
-    case obj: OwnedObj if obj.owner.team == team => obj.teamTurnFinished
-    case o => o
-  })
+  private[this] def xTurnX[A : ClassTag](
+    filter: A => Boolean, f: A => World => Evented[World]
+  ) = objects.foldLeft(Evented(this)) {
+    case (w, o: A) if filter(o) => w.laterFlatMap(f(o))
+    case (w, o) => w
+  }
+  private[this] def gameTurnX(f: WObject => World => Evented[World]) =
+    xTurnX[WObject](_ => true, f)
+  private[this] def teamTurnX(team: Team)(f: OwnedObj => World => Evented[World]) =
+    xTurnX[OwnedObj](_.owner.team == team, f)
+
+  def gameTurnStarted = gameTurnX(_.gameTurnStarted)
+  def gameTurnFinished = gameTurnX(_.gameTurnFinished)
+  def teamTurnStarted(team: Team) = teamTurnX(team)(_.teamTurnStarted)
+  def teamTurnFinished(team: Team) = teamTurnX(team)(_.teamTurnFinished)
 
   def add(obj: WObject) = {
     // DEBUG CHECK
@@ -24,19 +36,19 @@ case class World(bounds: Bounds, objects: Set[WObject]) {
     copy(objects = objects + obj)
   }
   def remove(obj: WObject) = copy(objects = objects - obj)
-  def update[A <: WObject](before: A, after: A): World = remove(before).add(after)
-  def update[A <: WObject](before: A)(afterFn: A => A): World = update(before, afterFn(before))
+  def updated[A <: WObject](before: A, after: A): World = remove(before).add(after)
+  def update[A <: WObject](before: A)(afterFn: A => A): World = updated(before, afterFn(before))
 
   def update(attack: Attack, target: OwnedObj): World =
     if (attack.successful)
-      target.takeDamage.fold(remove(target))(update(target, _))
+      target.takeDamage.fold(remove(target))(updated(target, _))
     else
       this
 
   def updateAll(pf: PartialFunction[WObject, WObject]) = {
     val lpf = pf.lift
     objects.foldLeft(this) { case (world, a) =>
-      lpf(a).fold(world)(world.update(a, _))
+      lpf(a).fold(world)(world.updated(a, _))
     }
   }
 

@@ -1,11 +1,11 @@
 package app.algorithms
 
 import app.algorithms.Pathfinding.SearchRes
-import app.models.game.events.{AttackEvt, Event, MoveEvt}
-import app.models.world.{OwnedObj, Fighter, MovableWObject, World}
+import app.models.game.events.{AttackEvt, Evented, MoveEvt}
+import app.models.world.{Fighter, MovableWObject, OwnedObj, World}
 
 object Combat {
-  type ActionResult = (World, Vector[Event])
+  type ActionResult = Evented[World]
   type EitherActionResult = Either[String, ActionResult]
 
   def moveAttack(
@@ -23,11 +23,11 @@ object Combat {
 
       movedUnit.attack(target.value).fold(
         err =>
-          if (! strict) Right((world.update(unit, movedUnit), moves))
+          if (! strict) Right(Evented(world.updated(unit, movedUnit), moves))
           else Left(err),
         { case (attack, attackUnit) =>
-          Right((
-            world.update(unit, attackUnit).update(attack, target.value),
+          Right(Evented(
+            world.updated(unit, attackUnit).update(attack, target.value),
             moves :+ AttackEvt(unit.id, target.value.id, attack)
           ))
         }
