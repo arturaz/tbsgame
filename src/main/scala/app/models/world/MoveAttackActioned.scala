@@ -1,7 +1,5 @@
 package app.models.world
 
-import implicits._
-
 trait MoveAttackActionedOps[Self] extends OwnedObjOps[Self] {
   def withMovedOrAttacked(value: Boolean)(self: Self): Self
 }
@@ -18,10 +16,4 @@ trait MoveAttackActioned extends OwnedObj {
   type Companion <: MoveAttackActionedOps[Self] with MoveAttackActionedStats
 
   val movedOrAttacked: Boolean
-
-  override def teamTurnFinishedSelf(world: World) =
-    super.teamTurnFinishedSelf(world) |>
-    selfUpdate(
-      _ |> companion.withMovedOrAttacked(companion.InitialMovedOrAttacked)
-    )
 }

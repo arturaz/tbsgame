@@ -31,9 +31,10 @@ with Mobility[Mobility.Movable.type] {
     // TODO: fix the optimization
     objects/*.filter(o => movementZone.exists(o.bounds.contains))*/
 
-  override def teamTurnFinishedSelf(world: World) =
-    super.teamTurnFinishedSelf(world) |>
-    selfUpdate(companion.resetMovementLeft)
+  override def teamTurnStartedSelf(world: World) =
+    super.teamTurnStartedSelf(world) |>
+    selfUpdate(companion.resetMovementLeft) |>
+    selfUpdate(_ |> companion.withMovedOrAttacked(companion.InitialMovedOrAttacked))
 
   def moveTo(target: Vect2): Either[String, Self] = {
     val distance = position.tileDistance(target)

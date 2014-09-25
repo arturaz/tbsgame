@@ -17,7 +17,7 @@ trait TurnCounter extends WObject {
   type Companion <: TurnCounterOps[Self] with TurnCounterStats
   val turns: Int
 
-  override def gameTurnFinishedSelf(world: World) =
-    super.gameTurnFinishedSelf(world) |>
+  override def gameTurnStartedSelf(world: World) =
+    super.gameTurnStartedSelf(world) |>
     selfUpdate(companion.incTurns)
 }

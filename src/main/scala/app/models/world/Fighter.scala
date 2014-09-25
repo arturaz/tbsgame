@@ -28,7 +28,7 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
   protected def resetAttack(data: Evented[(World, Self)]) =
     data |>
     selfUpdate(_ |> companion.attacked(false)) |>
-    selfUpdate(_ |> companion.withMovedOrAttacked(false))
+    selfUpdate(_ |> companion.withMovedOrAttacked(companion.InitialMovedOrAttacked))
 
   def canAttack(obj: OwnedObj) =
     obj.bounds.withinTileDistance(position, companion.attackRange)

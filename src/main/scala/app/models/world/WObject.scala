@@ -14,6 +14,7 @@ trait WObjectCompanion extends WObjectOps with WObjectStats
 
 object WObject {
   type Id = UUID
+  type WorldSelfUpdate[Self] = Evented[(World, Self)]
   @inline def newId: Id = UUID.randomUUID()
 }
 
@@ -21,6 +22,7 @@ object WObject {
 trait WObject {
   type Self <: WObject
   type Companion <: WObjectOps with WObjectStats
+  type WorldSelfUpdate = WObject.WorldSelfUpdate[Self]
 
   val id: WObject.Id
   val position: Vect2
@@ -30,18 +32,16 @@ trait WObject {
 
   protected def self: Self
 
-  def gameTurnStartedSelf(world: World): Evented[(World, Self)] =
-    Evented((world, self))
+  def gameTurnStartedSelf(world: World): WorldSelfUpdate = Evented((world, self))
   final def gameTurnStarted(world: World): Evented[World] =
     gameTurnStartedSelf(world).map(_._1)
 
-  def gameTurnFinishedSelf(world: World): Evented[(World, Self)] =
-    Evented((world, self))
+  def gameTurnFinishedSelf(world: World): WorldSelfUpdate = Evented((world, self))
   final def gameTurnFinished(world: World): Evented[World] =
     gameTurnFinishedSelf(world).map(_._1)
   
   protected def selfUpdate
-  (f: Self => Self)(evented: Evented[(World, Self)]): Evented[(World, Self)] =
+  (f: Self => Self)(evented: WorldSelfUpdate): WorldSelfUpdate =
     evented.map { case (world, self) =>
       val newSelf = f(self)
       (world.updated(self, newSelf), newSelf)

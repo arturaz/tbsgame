@@ -44,13 +44,11 @@ trait OwnedObj extends WObject {
   def takeDamage: Option[Self] =
     if (hp == 1) None else Some(self |> companion.withNewHp(hp - 1))
 
-  def teamTurnStartedSelf(world: World): Evented[(World, Self)] =
-    Evented((world, self))
+  def teamTurnStartedSelf(world: World): WorldSelfUpdate = Evented((world, self))
   final def teamTurnStarted(world: World): Evented[World] =
     teamTurnStartedSelf(world).map(_._1)
 
-  def teamTurnFinishedSelf(world: World): Evented[(World, Self)] =
-    Evented((world, self))
+  def teamTurnFinishedSelf(world: World): WorldSelfUpdate = Evented((world, self))
   final def teamTurnFinished(world: World): Evented[World] =
     teamTurnFinishedSelf(world).map(_._1)
 }

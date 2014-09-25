@@ -1,12 +1,13 @@
 package app.models.world
 
 import app.models.game.ai.SingleMindAI
-import app.models.game.events.Evented
 import implicits._
 import infrastructure.Log
 
 trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
-  def attackReachable(data: Evented[(World, Self)]): Evented[(World, Self)] =
+  def attackReachable(
+    data: WObject.WorldSelfUpdate[Self]
+  ): WObject.WorldSelfUpdate[Self] =
     data.flatMap { case orig @ (world, self) =>
       val targets = world.objects.collect {
         case obj: OwnedObj if
@@ -22,7 +23,7 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
             Log.error(s"$self tried to attack reachable $target, but failed: $err")
             data
           },
-          _.map(_.asInstanceOf[(World, Self)]) /* Type system hack. */
+          _.asInstanceOf[WObject.WorldSelfUpdate[Self]] /* Type system hack. */
         )
       }
     }

@@ -45,14 +45,14 @@ case class Extractor(
   override type Self = Extractor
   override type Companion = Extractor.type
 
-  override def teamTurnStartedSelf(world: World) = {
-    super.teamTurnStartedSelf(world).laterOptFlatMap { case (newWorld, newSelf) =>
+  override def teamTurnStartedSelf(w: World) = {
+    super.teamTurnStartedSelf(w).laterOptFlatMap { case (world, self) =>
       findAsteroid(world).fold(
         err => {
           Log.error(s"Can't find asteroid when team turn started for $this: $err")
           None
         },
-        a => Some(turnStartExtractResources(newWorld)(a).map((_, newSelf)))
+        a => Some(turnStartExtractResources(world)(a).map((_, self)))
       )
     }
   }
