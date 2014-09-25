@@ -6,6 +6,7 @@ import app.models.{Player, Team}
 import implicits._
 
 object TurnBasedGame {
+  type Result = Game.ResultT[TurnBasedGame]
   type StartedGame = Either[String, Evented[TurnBasedGame]]
 
   def apply(world: World, startingResources: Int): StartedGame =
@@ -28,10 +29,24 @@ object TurnBasedGame {
 case class TurnBasedGame private (
   game: Game, currentTeam: Team, readyTeams: Vector[Team], actedTeams: Vector[Team]
 ) extends GameLike[TurnBasedGame] {
-  override def warp(player: Player, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]) = ???
-  override def move(player: Player, from: Vect2, to: Vect2) = ???
-  override def special(player: Player, position: Vect2) = ???
-  override def attack(player: Player, source: Vect2, target: Vect2) = ???
+  def canAct(player: Player) = player.team == currentTeam
+
+  def playerDo(player: Player)(f: Player => Game.Result): TurnBasedGame.Result =
+    if (canAct(player)) f(player).right.map(_.map(game => copy(game = game)))
+    else s"$player cannot act, because current team is $currentTeam".left
+
+  override def warp(
+    player: Player, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
+  ) = playerDo(player)(game.warp(_, position, warpable))
+
+  override def move(player: Player, from: Vect2, to: Vect2) =
+    playerDo(player)(game.move(_, from, to))
+
+  override def special(player: Player, position: Vect2) =
+    playerDo(player)(game.special(_, position))
+
+  override def attack(player: Player, source: Vect2, target: Vect2) =
+    playerDo(player)(game.attack(_, source, target))
 
   def nextTeamTurn: Evented[TurnBasedGame] =
     game.teamTurnFinished(currentTeam).flatMap { g =>

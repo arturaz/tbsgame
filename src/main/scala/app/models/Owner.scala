@@ -11,6 +11,9 @@ object Owner {
 
 sealed trait Owner {
   def team: Team
+  
+  def isFriendOf(other: Owner) = team == other.team
+  def isEnemyOf(other: Owner) = ! isFriendOf(other)
 }
 
 case class Team(id: Owner.Id=Owner.newId) extends Owner {

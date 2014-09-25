@@ -19,27 +19,38 @@ object SingleMindAI {
   : Ordering[OwnedObj] = Ordering.by(f)
 
   /* Ordering which implies worthyness of attacking a target. */
-  private[this] val AttackOrdering = {
-    val factionObjOrd =
-      /* Fighters must be dealt with first */
-      fOrd(_.isInstanceOf[Fighter]).reverse orElse
-      /* Warping in objects must be dealt with first */
-      fOrd {
-        case w: Warpable => w.isWarpingIn
-        case _ => false
-      }.reverse orElse
-      /* Attack ones with least HP first. */
-      fOrd(_.hp) orElse
-      /* Attack ones with biggest damage output first. */
-      fOrd {
-        case f: Fighter => f.companion.attack.end
-        case _ => 0
-      }.reverse
+  val AttackOwnedObjOrd =
+    /* Fighters must be dealt with first */
+    fOrd(_.isInstanceOf[Fighter]).reverse orElse
+    /* Warping in objects must be dealt with first */
+    fOrd {
+      case w: Warpable => w.isWarpingIn
+      case _ => false
+    }.reverse orElse
+    /* Attack ones with least HP first. */
+    fOrd(_.hp) orElse
+    /* Attack ones with biggest damage output first. */
+    fOrd {
+      case f: Fighter => f.companion.attack.end
+      case _ => 0
+    }.reverse
 
-    srOrd(_.value)(factionObjOrd) orElse
+  val AttackSearchResOrdering = {
+    srOrd(_.value)(AttackOwnedObjOrd) orElse
     /* Least movement required. */
     srOrd(_.movementNeeded)
   }
+
+  /* Order by attack ordering, then if equal, by random. */
+  def atkOrdRndLt[A](ord: Ordering[A])(a: A, b: A): A = ord.compare(a, b) match {
+    case -1 => a
+    case 0 => if (Random.nextBoolean()) a else b
+    case 1 => b
+  }
+  def atkOrdRndLtOO(a: OwnedObj, b: OwnedObj) =
+    atkOrdRndLt(AttackOwnedObjOrd)(a, b)
+  def atkOrdRndLtSR(a: SearchRes[OwnedObj], b: SearchRes[OwnedObj]) =
+    atkOrdRndLt(AttackSearchResOrdering)(a, b)
 
   /* Simulate AI actions for all units. */
   def act(world: World, owner: Owner): Combat.ActionResult = {
@@ -75,13 +86,7 @@ object SingleMindAI {
 
     if (attackableTargets.isEmpty) Right(Evented(world))
     else {
-      val target = attackableTargets.reduce((a, b) =>
-        AttackOrdering.compare(a, b) match {
-          case -1 => a
-          case 0 => if (Random.nextBoolean()) a else b
-          case 1 => b
-        }
-      )
+      val target = attackableTargets.reduce(atkOrdRndLt(AttackSearchResOrdering))
       Combat.moveAttack(world, unit, target)
     }
   }

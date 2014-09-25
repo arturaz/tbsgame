@@ -3,7 +3,8 @@ package app.models.world.buildings
 import app.models.Player
 import app.models.world._
 
-object LaserTower extends BuildingCompanion[LaserTower] with FighterCompanion[LaserTower]
+object LaserTower extends BuildingCompanion[LaserTower]
+with ReactiveFighterCompanion[LaserTower]
 with EmptySpaceWarpableCompanion[LaserTower] {
   override val maxHp: Int = 3
   override val size: Vect2 = Vect2.one
@@ -11,7 +12,6 @@ with EmptySpaceWarpableCompanion[LaserTower] {
   override val cost: Int = 10
   override val attack: Range = 2 to 14
   override val attackRange: TileDistance = TileDistance(5)
-  override val moveAttackActionsNeeded: Int = 2
 
   override def warp(owner: Player, position: Vect2) =
     LaserTower(position, owner)
@@ -29,7 +29,7 @@ case class LaserTower(
   id: WObject.Id=WObject.newId, hp: Int=LaserTower.maxHp,
   warpState: Int=LaserTower.InitialWarpState, hasAttacked: Boolean=false,
   movedOrAttacked: Boolean=LaserTower.InitialMovedOrAttacked
-) extends PlayerBuilding with Warpable with Fighter {
+) extends PlayerBuilding with Warpable with ReactiveFighter {
   override def companion = LaserTower
   override protected def self = this
   override type Self = LaserTower

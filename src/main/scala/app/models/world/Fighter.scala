@@ -1,6 +1,7 @@
 package app.models.world
 
 import app.models.Attack
+import app.models.game.events.{AttackEvt, Evented}
 import implicits._
 
 trait FighterOps[Self] extends OwnedObjOps[Self]
@@ -21,8 +22,11 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
 
   val hasAttacked: Boolean
 
-  override def teamTurnFinishedSelf(world: World) =
-    super.teamTurnFinishedSelf(world) |>
+  override def teamTurnStartedSelf(world: World) =
+    super.teamTurnStartedSelf(world) |> resetAttack
+
+  protected def resetAttack(data: Evented[(World, Self)]) =
+    data |>
     selfUpdate(_ |> companion.attacked(false)) |>
     selfUpdate(_ |> companion.withMovedOrAttacked(false))
 
@@ -39,4 +43,21 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
       Attack(companion.attack.random, obj.companion.defense.random),
       self |> companion.attacked(true) |> companion.withMovedOrAttacked(true)
     ).right
+
+  def attack(
+    obj: OwnedObj, world: World
+  ): Either[String, Evented[(World, Self, Attack)]] = {
+    attack(obj).right.map { case (attack, attacked) =>
+      Evented(
+        (world.updated(this, attacked).update(attack, obj), attacked, attack),
+        Vector(AttackEvt(id, obj.id, attack))
+      )
+    }
+  }
+
+  def attackWS(obj: OwnedObj, world: World): Either[String, Evented[(World, Self)]] =
+    attack(obj, world).right.map(_.map { case (w, s, _) => (w, s) })
+
+  def attackW(obj: OwnedObj, world: World): Either[String, Evented[World]] =
+    attack(obj, world).right.map(_.map(_._1))
 }

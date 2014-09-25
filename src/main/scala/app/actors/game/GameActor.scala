@@ -1,9 +1,9 @@
 package app.actors.game
 
-import akka.actor.{ActorRef, Actor}
-import app.models.{Team, Player}
-import app.models.game.{PlayerState, Game}
-import app.models.world.{GivingActions, World}
+import akka.actor.{Actor, ActorRef}
+import app.models.game.TurnBasedGame
+import app.models.world.World
+import app.models.{Player, Team}
 
 object GameActor {
   val StartingResources = 25
@@ -19,14 +19,7 @@ class GameActor(
 
   private[this] var game = {
     val world = World.create(playerTeam, () => ai, () => ai)
-    val actions = PlayerState.Actions(world.objects.collect {
-      case obj: GivingActions if obj.owner == startingPlayer =>
-        obj.companion.actionsGiven
-    }.sum)
-    Game(
-      world,
-      Map(startingPlayer -> PlayerState(GameActor.StartingResources, actions))
-    )
+    TurnBasedGame(world, GameActor.StartingResources)
   }
 
   def receive = {

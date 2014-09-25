@@ -151,20 +151,22 @@ case class Game private (
     withStateChanges {
     withState(player) {
     withActions(player.id, 1) {
-    withResources(warpable.cost) { state =>
+    withResources(warpable.cost) {
+    withVisibility(player, position) { state =>
       warpable.warp(world, player, position).right.map { warpedIn =>
         Evented(
           updated(world.add(warpedIn), player -> state),
           Vector(WarpEvt(warpedIn))
         )
       }
-    } } } }
+    } } } } }
 
   def move(
     player: Player, from: Vect2, to: Vect2
   ): Game.Result =
     withStateChanges {
     withState(player) {
+    withVisibility(player, to) {
     withMoveObj(player, from) {
     withMoveAttackAction(player.id) { (obj, state) =>
       Pathfinding.aStar(
@@ -178,13 +180,14 @@ case class Game private (
           )
         }
       )
-    } } } }
+    } } } } }
 
   def attack(
     player: Player, source: Vect2, target: Vect2
   ): Game.Result =
     withStateChanges {
     withState(player) {
+    withVisibility(player, target) {
     withAttackObj(player, source) {
     withMoveAttackAction(player.id) { (obj, state) =>
       world.find {
@@ -192,18 +195,11 @@ case class Game private (
           targetObj
       }.fold2(
         s"Can't find target at $target for $player".left,
-        targetObj => obj.attack(targetObj).right.map {
-        case (attack, attacked) =>
-          Evented(
-            updated(
-              world.updated(obj, attacked).update(attack, targetObj),
-              player -> state
-            ),
-            Vector(AttackEvt(obj.id, targetObj.id, attack))
-          )
-        }
+        targetObj => obj.attackW(targetObj, world).right.map { _.map { world =>
+          updated(world, player -> state)
+        } }
       )
-    } } } }
+    } } } } }
 
   def special(
     player: Player, position: Vect2
@@ -222,6 +218,12 @@ case class Game private (
 
   private[this] def withState(player: Player)(f: PlayerState => Game.Result) =
     states.get(player).fold2(Left(s"No player state for $player: $states"), f)
+
+  private[this] def withVisibility(
+    player: Player, position: Vect2
+  )(f: PlayerState => Game.Result)(state: PlayerState): Game.Result =
+    if (world.isVisibleFor(player, position)) f(state)
+    else s"$player does not see $position".left
 
   private[this] type ObjFn[A] = A => PlayerState => Game.Result
 

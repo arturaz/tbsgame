@@ -4,7 +4,7 @@ import app.models.game.events.Evented
 import app.models.world.buildings.{Spawner, WarpGate}
 import app.models.world.props.Asteroid
 import app.models.world.units.Wasp
-import app.models.{TurnBased, Attack, Player, Team}
+import app.models._
 import implicits._
 import infrastructure.Log
 
@@ -60,6 +60,15 @@ case class World(
   }
 
   def isFree(b: Bounds) = bounds.contains(b)
+
+  private[this] def isVisibleFor(owner: Owner, f: Bounds => Boolean) =
+    objects.view.collect { case obj: OwnedObj if obj.owner.isFriendOf(owner) => obj }.
+      exists { obj => f(obj.visibility) }
+  def isVisibleFor(owner: Owner, b: Bounds): Boolean =
+    isVisibleFor(owner, _.intersects(b))
+  def isVisibleFor(owner: Owner, v: Vect2): Boolean =
+    isVisibleFor(owner, _.contains(v))
+
   def findObj(position: Vect2) = objects.find(_.position == position)
   def find[A <: WObject](predicate: PartialFunction[WObject, A]): Option[A] =
     objects.collectFirst(predicate)
