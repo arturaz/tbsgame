@@ -23,7 +23,5 @@ case class WarpLinker(
   warpState: Int=WarpLinker.InitialWarpState
 ) extends PlayerBuilding with Warpable {
   override def companion = WarpLinker
-  override protected def self = this
-  override type Self = WarpLinker
   override type Companion = WarpLinker.type
 }

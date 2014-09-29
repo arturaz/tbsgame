@@ -2,7 +2,7 @@ package app.models.game
 
 import app.models.game.events.Evented
 import app.models.world.{World, Vect2, Warpable, WarpableCompanion}
-import app.models.{Player, Team}
+import app.models.{Human, Team}
 import implicits._
 
 object TurnBasedGame {
@@ -29,24 +29,24 @@ object TurnBasedGame {
 case class TurnBasedGame private (
   game: Game, currentTeam: Team, readyTeams: Vector[Team], actedTeams: Vector[Team]
 ) extends GameLike[TurnBasedGame] {
-  def canAct(player: Player) = player.team == currentTeam
+  def canAct(human: Human) = human.team == currentTeam
 
-  def playerDo(player: Player)(f: Player => Game.Result): TurnBasedGame.Result =
-    if (canAct(player)) f(player).right.map(_.map(game => copy(game = game)))
-    else s"$player cannot act, because current team is $currentTeam".left
+  def humanDo(human: Human)(f: Human => Game.Result): TurnBasedGame.Result =
+    if (canAct(human)) f(human).right.map(_.map(game => copy(game = game)))
+    else s"$human cannot act, because current team is $currentTeam".left
 
   override def warp(
-    player: Player, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
-  ) = playerDo(player)(game.warp(_, position, warpable))
+    human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
+  ) = humanDo(human)(game.warp(_, position, warpable))
 
-  override def move(player: Player, from: Vect2, to: Vect2) =
-    playerDo(player)(game.move(_, from, to))
+  override def move(human: Human, from: Vect2, to: Vect2) =
+    humanDo(human)(game.move(_, from, to))
 
-  override def special(player: Player, position: Vect2) =
-    playerDo(player)(game.special(_, position))
+  override def special(human: Human, position: Vect2) =
+    humanDo(human)(game.special(_, position))
 
-  override def attack(player: Player, source: Vect2, target: Vect2) =
-    playerDo(player)(game.attack(_, source, target))
+  override def attack(human: Human, source: Vect2, target: Vect2) =
+    humanDo(human)(game.attack(_, source, target))
 
   def nextTeamTurn: Evented[TurnBasedGame] =
     game.teamTurnFinished(currentTeam).flatMap { g =>
@@ -61,4 +61,6 @@ case class TurnBasedGame private (
         )
       }
     }
+
+  def currentTeamHasHumans = game.world.humans.exists(_.team == currentTeam)
 }

@@ -1,6 +1,8 @@
 package app.models.world
 
+import app.models.game.ai.GrowingSpawnerAI
 import app.models.game.events.Evented
+import app.models.world.WObject.Id
 import app.models.world.buildings.{Spawner, WarpGate}
 import app.models.world.props.Asteroid
 import app.models.world.units.Wasp
@@ -8,27 +10,21 @@ import app.models._
 import implicits._
 import infrastructure.Log
 
+import scala.annotation.tailrec
 import scala.reflect.ClassTag
 import scala.util.Random
 
 case class World(
   bounds: Bounds, objects: Set[WObject]
 ) extends TurnBased[World] {
-  private[this] def xTurnX[A : ClassTag](
-    filter: A => Boolean, f: A => World => Evented[World]
-  ) = objects.foldLeft(Evented(this)) {
-    case (w, o: A) if filter(o) => w.laterFlatMap(f(o))
-    case (w, o) => w
-  }
-  private[this] def gameTurnX(f: WObject => World => Evented[World]) =
-    xTurnX[WObject](_ => true, f)
-  private[this] def teamTurnX(team: Team)(f: OwnedObj => World => Evented[World]) =
-    xTurnX[OwnedObj](_.owner.team == team, f)
+  import World._
 
-  def gameTurnStarted = gameTurnX(_.gameTurnStarted)
-  def gameTurnFinished = gameTurnX(_.gameTurnFinished)
-  def teamTurnStarted(team: Team) = teamTurnX(team)(_.teamTurnStarted)
-  def teamTurnFinished(team: Team) = teamTurnX(team)(_.teamTurnFinished)
+  def gameTurnStarted = this |> gameTurnX(_.gameTurnStarted)
+  def gameTurnFinished = this |> gameTurnX(_.gameTurnFinished)
+  def teamTurnStarted(team: Team) =
+    this |> teamTurnX(team)(_.teamTurnStarted) |> runAI(team)
+  def teamTurnFinished(team: Team) =
+    this |> teamTurnX(team)(_.teamTurnFinished)
 
   def actionsFor(player: Player) = objects.collect {
     case obj: GivingActions if obj.owner.team == player.team =>
@@ -44,13 +40,11 @@ case class World(
   }
   def remove(obj: WObject) = copy(objects = objects - obj)
   def updated[A <: WObject](before: A, after: A): World = remove(before).add(after)
-  def update[A <: WObject](before: A)(afterFn: A => A): World = updated(before, afterFn(before))
-
-  def update(attack: Attack, target: OwnedObj): World =
-    if (attack.successful)
-      target.takeDamage.fold(remove(target))(updated(target, _))
-    else
-      this
+  def updated[A <: WObject](before: A, after: Option[A]): World = {
+    val w = remove(before)
+    after.fold(w)(w.add)
+  }
+  def updated[A <: WObject](before: A)(afterFn: A => A): World = updated(before, afterFn(before))
 
   def updateAll(pf: PartialFunction[WObject, WObject]) = {
     val lpf = pf.lift
@@ -64,21 +58,71 @@ case class World(
   private[this] def isVisibleFor(owner: Owner, f: Bounds => Boolean) =
     objects.view.collect { case obj: OwnedObj if obj.owner.isFriendOf(owner) => obj }.
       exists { obj => f(obj.visibility) }
-  def isVisibleFor(owner: Owner, b: Bounds): Boolean =
+
+  /* Is any part of the bounds visible to owner */
+  def isVisiblePartial(owner: Owner, b: Bounds): Boolean =
     isVisibleFor(owner, _.intersects(b))
+  /* Is all of the bounds visible to owner. */
+  def isVisibleFull(owner: Owner, b: Bounds): Boolean =
+    b.points.forall(isVisibleFor(owner, _)) /* TODO: optimize me */
   def isVisibleFor(owner: Owner, v: Vect2): Boolean =
     isVisibleFor(owner, _.contains(v))
+
+  def reactTo[A <: OwnedObj](obj: A): WObject.WorldObjOptUpdate[A] = {
+    @tailrec def react(
+      reactors: Iterable[ReactiveFighter], current: WObject.WorldObjOptUpdate[A]
+    ): WObject.WorldObjOptUpdate[A] =
+      if (reactors.isEmpty) current
+      else current.value match {
+        case (_, None) => current
+        case (world, Some(currentObj)) =>
+          val reaction = reactors.head.reactTo(currentObj, world)
+          val newWorld = current.events +: reaction.value
+          if (! reaction.abortReacting) react(reactors.tail, newWorld)
+          else newWorld
+      }
+
+    val reactors = objects.collect { case rFighter: ReactiveFighter => rFighter }
+    react(reactors, Evented((this, Some(obj))))
+  }
 
   def findObj(position: Vect2) = objects.find(_.position == position)
   def find[A <: WObject](predicate: PartialFunction[WObject, A]): Option[A] =
     objects.collectFirst(predicate)
+  def contains(id: Id): Boolean = objects.exists(_.id == id)
 
   lazy val owners = objects.collect { case fo: OwnedObj => fo.owner }
   lazy val teams = owners.map(_.team)
   lazy val players = owners.collect { case p: Player => p }.toSet
+  lazy val humans = players.collect { case h: Human => h }.toSet
+  lazy val bots = players.collect { case b: Bot => b }.toSet
 }
 
 object World {
+  private def xTurnX[A : ClassTag](
+    filter: A => Boolean, f: A => World => Evented[World]
+    )(world: World) = world.objects.foldLeft(Evented(world)) {
+    case (w, o: A) if filter(o) => w.laterFlatMap(f(o))
+    case (w, o) => w
+  }
+
+  private def gameTurnX(
+    f: WObject => World => Evented[World]
+    )(world: World) =
+    xTurnX[WObject](_ => true, f)(world)
+
+  private def teamTurnX(
+    team: Team
+    )(f: OwnedObj => World => Evented[World])(world: World) =
+    xTurnX[OwnedObj](_.owner.team == team, f)(world)
+
+  private def runAI(team: Team)(e: Evented[World]) = {
+    val bots = e.value.bots.filter(_.team == team)
+    bots.foldLeft(e) { case (fEvtWorld, bot) =>
+      fEvtWorld.flatMap { fWorld => GrowingSpawnerAI.act(fWorld, bot) }
+    }
+  }
+
   private[this] def randomDirection = {
     def rDir = Random.nextInt(3) - 1
     val hDir = rDir
@@ -90,8 +134,8 @@ object World {
     objects.map(_.bounds).reduce(_ join _)
 
   def create(
-    playersTeam: Team, waspsOwner: () => Player,
-    spawnerOwner: () => Player,
+    playersTeam: Team, waspsOwner: () => Bot,
+    spawnerOwner: () => Bot,
     startingPoint: Vect2 = Vect2(0, 0),
     endDistance: TileDistance = TileDistance(30),
     branches: Range = 2 to 12,

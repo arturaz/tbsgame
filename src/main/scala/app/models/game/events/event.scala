@@ -21,8 +21,8 @@ case class MoveEvt(
   obj: WObject.Id, to: Vect2, movesLeft: TileDistance
 ) extends Event
 
-case class AttackEvt(
-  attacker: WObject.Id, defender: WObject.Id, attack: Attack
+case class AttackEvt[D <: OwnedObj](
+  attacker: Fighter, defender: (D, Option[D]), attack: Attack
 ) extends Event
 
 case class MovementChangeEvt(

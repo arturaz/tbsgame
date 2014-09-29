@@ -19,3 +19,5 @@ trait Building extends SizedWObject with OwnedObj {
 }
 
 trait PlayerBuilding extends Building with PlayerObj
+trait HumanBuilding extends Building with HumanObj
+trait BotBuilding extends Building with BotObj

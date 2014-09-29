@@ -1,8 +1,8 @@
 package app.models.world.buildings
 
-import app.models.Player
+import app.models.Bot
 import app.models.world.units.Wasp
-import app.models.world.{Vect2, WObject}
+import app.models.world.{Vect2, WObject, World}
 
 object Spawner extends BuildingCompanion[Spawner] with GrowingSpawnerCompanion[Spawner] {
   override val maxHp: Int = 10
@@ -18,15 +18,13 @@ object Spawner extends BuildingCompanion[Spawner] with GrowingSpawnerCompanion[S
 }
 
 case class Spawner(
-  position: Vect2, owner: Player,
+  position: Vect2, owner: Bot,
   id: WObject.Id=WObject.newId,
   turnsPerStrength: Int=Spawner.DefaultTurnsPerStrength,
   turns: Int=0, hp: Int=Spawner.maxHp
-) extends PlayerBuilding with GrowingSpawner {
+) extends BotBuilding with GrowingSpawner {
   override def companion = Spawner
-  override type Self = Spawner
   override type Companion = Spawner.type
-  override protected def self = this
 
-  override def spawn(position: Vect2) = Wasp(position, owner)
+  override def spawn(world: World, position: Vect2) = Wasp.warp(world, owner, position)
 }

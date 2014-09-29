@@ -3,7 +3,7 @@ package app.models.game.events
 /**
  * Created by arturas on 2014-09-23.
  */
-case class Evented[A](value: A, events: Events=Vector.empty) {
+case class Evented[+A](value: A, events: Events=Vector.empty) {
   def +:(earlierEvents: Events): Evented[A] = copy(events = earlierEvents ++ events)
   def :+(laterEvents: Events): Evented[A] = copy(events = events ++ laterEvents)
 
@@ -13,10 +13,6 @@ case class Evented[A](value: A, events: Events=Vector.empty) {
 
   def flatMap[B](f: A => Evented[B]) = laterFlatMap(f)
   def laterFlatMap[B](f: A => Evented[B]) = events +: f(value)
-  def laterOptFlatMap(f: A => Option[Evented[A]]) =
-    laterFlatMap(a => f(a).fold(this)(identity))
 
   def earlierFlatMap[B](f: A => Evented[B]) = f(value) :+ events
-  def earlierOptFlatMap(f: A => Option[Evented[A]]) =
-    earlierFlatMap(a => f(a).fold(this)(identity))
 }

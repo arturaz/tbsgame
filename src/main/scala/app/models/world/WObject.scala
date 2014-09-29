@@ -14,15 +14,19 @@ trait WObjectCompanion extends WObjectOps with WObjectStats
 
 object WObject {
   type Id = UUID
-  type WorldSelfUpdate[Self] = Evented[(World, Self)]
+  /* A world update where a new World and Obj is returned. */
+  type WorldObjUpdate[Obj] = Evented[(World, Obj)]
+  /* A world update where a new World and Optional Obj (it might have been destroyed in a
+     reaction) is returned. */
+  type WorldObjOptUpdate[Obj] = WorldObjUpdate[Option[Obj]]
   @inline def newId: Id = UUID.randomUUID()
 }
 
 /* World object */
 trait WObject {
-  type Self <: WObject
+  type Self = this.type
   type Companion <: WObjectOps with WObjectStats
-  type WorldSelfUpdate = WObject.WorldSelfUpdate[Self]
+  type WorldSelfUpdate = WObject.WorldObjUpdate[Self]
 
   val id: WObject.Id
   val position: Vect2
@@ -30,7 +34,7 @@ trait WObject {
   def companion: Companion
   lazy val bounds = companion.bounds(position)
 
-  protected def self: Self
+  def self: Self = this
 
   def gameTurnStartedSelf(world: World): WorldSelfUpdate = Evented((world, self))
   final def gameTurnStarted(world: World): Evented[World] =

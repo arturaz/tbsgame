@@ -28,5 +28,6 @@ package object implicits {
     def |>[B](f: A => B) = f(a)
     def left[B]: Either[A, B] = Left(a)
     def right[B]: Either[B, A] = Right(a)
+    def mapVal[B](f: A => B) = f(a)
   }
 }

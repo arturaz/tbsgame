@@ -20,7 +20,7 @@ with SpecialActionCompanion {
   val specialExtracts = 2
   override val specialActionsNeeded: Int = 1
 
-  override def warp(world: World, owner: Player, position: Vect2) = {
+  override def warpWOReactionImpl(world: World, owner: Player, position: Vect2) = {
     val b = bounds(position)
     val objects = world.objects.filter(_.bounds == b)
     val isAsteroid = objects.exists(_.isInstanceOf[Asteroid])
@@ -41,20 +41,18 @@ case class Extractor(
   warpState: Int=Extractor.InitialWarpState
 ) extends PlayerBuilding with Warpable with SpecialAction {
   override def companion = Extractor
-  override protected def self = this
-  override type Self = Extractor
   override type Companion = Extractor.type
 
   override def teamTurnStartedSelf(w: World) = {
-    super.teamTurnStartedSelf(w).laterOptFlatMap { case (world, self) =>
+    super.teamTurnStartedSelf(w).mapVal { upd => upd.flatMap { case (world, self) =>
       findAsteroid(world).fold(
         err => {
           Log.error(s"Can't find asteroid when team turn started for $this: $err")
-          None
+          upd
         },
-        a => Some(turnStartExtractResources(world)(a).map((_, self)))
+        a => turnStartExtractResources(world)(a).map((_, self))
       )
-    }
+    } }
   }
 
   private[this] def findAsteroid(world: World): Either[String, Asteroid] = {
@@ -68,7 +66,7 @@ case class Extractor(
     world: World, howMuch: Int
   )(asteroid: Asteroid): Evented[World] = {
     Evented(
-      world.update(asteroid)(_ |-> Asteroid.resources modify (_ - howMuch)),
+      world.updated(asteroid)(_ |-> Asteroid.resources modify (_ - howMuch)),
       Vector(
         ResourceChangeEvt(asteroid.id.left, -howMuch),
         ResourceChangeEvt(owner.id.right, howMuch)

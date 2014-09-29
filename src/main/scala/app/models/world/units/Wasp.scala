@@ -31,8 +31,7 @@ case class Wasp(
   movementLeft: TileDistance=Wasp.movement, warpState: Int=Wasp.InitialWarpState,
   movedOrAttacked: Boolean=Corvette.InitialMovedOrAttacked
 ) extends WUnit with Fighter {
-  type Self = Wasp
+  type CompanionSelf = Wasp
   type Companion = Wasp.type
-  override protected def self = this
   override def companion = Wasp
 }

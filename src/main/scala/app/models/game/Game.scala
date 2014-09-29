@@ -1,8 +1,7 @@
 package app.models.game
 
-import app.algorithms.Pathfinding
+import app.models._
 import app.models.game.Game.States
-import app.models.{TurnBased, Team, Owner, Player}
 import app.models.game.events._
 import app.models.world._
 import implicits._
@@ -18,32 +17,32 @@ object Game {
 
   type ResultT[A] = Either[String, Evented[A]]
   type Result = ResultT[Game]
-  private type States = Map[Player, PlayerState]
+  private type States = Map[Human, HumanState]
 
   def apply(world: World, startingResources: Int): Game = apply(
-    world, startingStates(world, startingResources, world.players)
+    world, startingStates(world, startingResources, world.humans)
   )
 
   def startingStates(
-    world: World, startingResources: Int, players: Iterable[Player]
-  ): States = players.map { player =>
-    player -> PlayerState(startingResources, world.actionsFor(player))
+    world: World, startingResources: Int, humans: Iterable[Human]
+  ): States = humans.map { human =>
+    human -> HumanState(startingResources, world.actionsFor(human))
   }.toMap
 
   private object Withs {
     private[this] def updateStates(game: Game, events: Events): Game = {
-      val players = game.states.keys.map(p => p.id -> p).toMap
+      val humans = game.states.keys.map(h => h.id -> h).toMap
       def update(states: Game.States, id: Owner.Id)(
-        f: PlayerState => PlayerState
-        ) = {
-        val player = players(id)
-        val state = states(player)
-        states + (player -> f(state))
+        f: HumanState => HumanState
+      ) = {
+        val human = humans(id)
+        val state = states(human)
+        states + (human -> f(state))
       }
 
       val newStates = events.foldLeft(game.states) {
         case (fStates, ResourceChangeEvt(Right(id), diff)) =>
-          update(fStates, id)(_ |-> PlayerState.resources modify (_ + diff))
+          update(fStates, id)(_ |-> HumanState.resources modify (_ + diff))
         case (fStates, _) => fStates
       }
       game.copy(states = newStates)
@@ -55,41 +54,41 @@ object Game {
     def withStateChanges(f: => Game.Result): Game.Result =
       f.right.map(updateStates)
 
-    def withActions(playerId: Owner.Id, actionsNeeded: Int)(
-      f: PlayerState => Game.Result
-    )(state: PlayerState): Game.Result = {
+    def withActions(human: Human, actionsNeeded: Int)(
+      f: HumanState => Game.Result
+    )(state: HumanState): Game.Result = {
       if (state.actions < actionsNeeded)
         s"Not enough actions: needed $actionsNeeded, had $state".left
       else {
         val newState =
-          state |-> PlayerState.actions modify (_ - actionsNeeded)
+          state |-> HumanState.actions modify (_ - actionsNeeded)
         val events =
-          if (actionsNeeded > 0) Vector(ActionChangeEvt(playerId, newState.actions))
+          if (actionsNeeded > 0) Vector(ActionChangeEvt(human.id, newState.actions))
           else Vector.empty
         f(newState).right.map(events +: _)
       }
     }
 
     def withMoveAttackAction[A <: MoveAttackActioned](
-      playerId: Owner.Id
-    )(f: (A, PlayerState) => Game.Result)(obj: A)(state: PlayerState): Game.Result =
+      human: Human
+    )(f: (A, HumanState) => Game.Result)(obj: A)(state: HumanState): Game.Result =
       withActions(
-        playerId,
+        human,
         if (obj.movedOrAttacked) 0 else obj.companion.moveAttackActionsNeeded
       )(f(obj, _))(state)
 
     def withSpecialAction[A <: SpecialAction](
-      playerId: Owner.Id
-    )(f: A => PlayerState => Game.Result)(obj: A)(state: PlayerState): Game.Result =
-      withActions(playerId, obj.companion.specialActionsNeeded)(f(obj))(state)
+      human: Human
+    )(f: A => HumanState => Game.Result)(obj: A)(state: HumanState): Game.Result =
+      withActions(human, obj.companion.specialActionsNeeded)(f(obj))(state)
 
     def withResources(
       resourcesNeeded: Int
-    )(f: PlayerState => Game.Result)(state: PlayerState): Game.Result = {
+    )(f: HumanState => Game.Result)(state: HumanState): Game.Result = {
       if (state.resources < resourcesNeeded)
         s"Not enough resources: needed $resourcesNeeded, had $state".left
       else f(
-        state |-> PlayerState.resources modify (_ - resourcesNeeded)
+        state |-> HumanState.resources modify (_ - resourcesNeeded)
       )
     }
   }
@@ -97,35 +96,35 @@ object Game {
 
 trait GameLike[A] {
   def warp(
-    player: Player, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
+    human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
   ): Game.ResultT[A]
 
   def move(
-    player: Player, from: Vect2, to: Vect2
+    human: Human, from: Vect2, to: Vect2
   ): Game.ResultT[A]
 
   def attack(
-    player: Player, source: Vect2, target: Vect2
+    human: Human, source: Vect2, target: Vect2
   ): Game.ResultT[A]
 
   def special(
-    player: Player, position: Vect2
+    human: Human, position: Vect2
   ): Game.ResultT[A]
 }
 
 case class Game private (
   world: World, states: Game.States
 ) extends GameLike[Game] with TurnBased[Game] {
-  import Game.Withs._
+  import app.models.game.Game.Withs._
 
   private[this] def fromWorldEvents(w: Evented[World]) =
     w.map(updated) |> updateStates
-  private[this] def recalculatePlayerStates
+  private[this] def recalculateStates
   (team: Team)(g: Evented[Game]): Evented[Game] =
     g.map { game =>
-      val players = game.states.filterKeys(_.team == team)
-      val states = players.map { case (player, state) =>
-        player -> state.copy(actions = game.world.actionsFor(player))
+      val teamStates = game.states.filterKeys(_.team == team)
+      val states = teamStates.map { case (human, state) =>
+        human -> state.copy(actions = game.world.actionsFor(human))
       }
       game.updated(states)
     }
@@ -133,7 +132,7 @@ case class Game private (
   def gameTurnStarted = world.gameTurnStarted |> fromWorldEvents
   def gameTurnFinished = world.gameTurnFinished |> fromWorldEvents
   def teamTurnStarted(team: Team) =
-    world.teamTurnStarted(team) |> fromWorldEvents |> recalculatePlayerStates(team)
+    world.teamTurnStarted(team) |> fromWorldEvents |> recalculateStates(team)
   def teamTurnFinished(team: Team) = world.teamTurnFinished(team) |> fromWorldEvents
 
   def winner: Option[Team] = {
@@ -146,110 +145,99 @@ case class Game private (
   }
 
   def warp(
-    player: Player, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
+    human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
   ): Game.Result =
     withStateChanges {
-    withState(player) {
-    withActions(player.id, 1) {
+    withState(human) {
+    withActions(human, 1) {
     withResources(warpable.cost) {
-    withVisibility(player, position) { state =>
-      warpable.warp(world, player, position).right.map { warpedIn =>
-        Evented(
-          updated(world.add(warpedIn), player -> state),
-          Vector(WarpEvt(warpedIn))
-        )
-      }
+    withVisibility(human, position) { state =>
+      warpable.warpW(world, human, position).right.map { _.map {
+        updated(_, human -> state)
+      } }
     } } } } }
 
   def move(
-    player: Player, from: Vect2, to: Vect2
+    human: Human, from: Vect2, to: Vect2
   ): Game.Result =
     withStateChanges {
-    withState(player) {
-    withVisibility(player, to) {
-    withMoveObj(player, from) {
-    withMoveAttackAction(player.id) { (obj, state) =>
-      Pathfinding.aStar(
-        obj, to.toBounds, world.bounds, obj.obstacles(world.objects).map(_.bounds)
-      ).fold2(
-        s"Can't find path from $from to $to for $obj".left,
-        path => obj.moveTo(to).right.map { moved =>
-          Evented(
-            updated(world.updated(obj, moved), player -> state),
-            MoveEvt(obj, path)
-          )
-        }
-      )
+    withState(human) {
+    withVisibility(human, to) {
+    withMoveObj(human, from) {
+    withMoveAttackAction(human) { (obj, state) =>
+      obj.moveTo(world, to).right.map { _.map { case (w, _) =>
+        updated(w, human -> state)
+      } }
     } } } } }
 
   def attack(
-    player: Player, source: Vect2, target: Vect2
+    human: Human, source: Vect2, target: Vect2
   ): Game.Result =
     withStateChanges {
-    withState(player) {
-    withVisibility(player, target) {
-    withAttackObj(player, source) {
-    withMoveAttackAction(player.id) { (obj, state) =>
+    withState(human) {
+    withVisibility(human, target) {
+    withAttackObj(human, source) {
+    withMoveAttackAction(human) { (obj, state) =>
       world.find {
         case targetObj: OwnedObj if targetObj.bounds.contains(target) =>
           targetObj
       }.fold2(
-        s"Can't find target at $target for $player".left,
+        s"Can't find target at $target for $human".left,
         targetObj => obj.attackW(targetObj, world).right.map { _.map { world =>
-          updated(world, player -> state)
+          updated(world, human -> state)
         } }
       )
     } } } } }
 
   def special(
-    player: Player, position: Vect2
+    human: Human, position: Vect2
   ): Game.Result =
     withStateChanges {
-    withState(player) {
-    withSpecialObj(player, position) {
-    withSpecialAction(player.id) { obj => state =>
-      obj.special(world).right.map(_.map(world => updated(world, player -> state)))
+    withState(human) {
+    withSpecialObj(human, position) {
+    withSpecialAction(human) { obj => state =>
+      obj.special(world).right.map(_.map(world => updated(world, human -> state)))
     } } } }
 
-  private[this] def updated(world: World): Game = copy(world = world)
+  private def updated(world: World): Game = copy(world = world)
   private def updated(states: States): Game = copy(states = states)
-  private[this] def updated(world: World, player: (Player, PlayerState)): Game =
-    copy(world = world, states = states + player)
+  private[this] def updated(world: World, human: (Human, HumanState)): Game =
+    copy(world = world, states = states + human)
 
-  private[this] def withState(player: Player)(f: PlayerState => Game.Result) =
-    states.get(player).fold2(Left(s"No player state for $player: $states"), f)
+  private[this] def withState(human: Human)(f: HumanState => Game.Result) =
+    states.get(human).fold2(Left(s"No state for $human: $states"), f)
 
   private[this] def withVisibility(
-    player: Player, position: Vect2
-  )(f: PlayerState => Game.Result)(state: PlayerState): Game.Result =
-    if (world.isVisibleFor(player, position)) f(state)
-    else s"$player does not see $position".left
+    human: Human, position: Vect2
+  )(f: HumanState => Game.Result)(state: HumanState): Game.Result =
+    if (world.isVisibleFor(human, position)) f(state)
+    else s"$human does not see $position".left
 
-  private[this] type ObjFn[A] = A => PlayerState => Game.Result
+  private[this] type ObjFn[A] = A => HumanState => Game.Result
 
   private[this] def withObj[A <: OwnedObj : ClassTag](
-    player: Player, position: Vect2
-  )(f: ObjFn[A])(state: PlayerState): Game.Result = {
+    human: Human, position: Vect2
+  )(f: ObjFn[A])(state: HumanState): Game.Result = {
     world.find {
-      case obj: A if obj.position == position && obj.owner == player => obj
+      case obj: A if obj.position == position && obj.owner == human => obj
     }.fold2(
-      s"Cannot find object belonging to $player in $position".left,
+      s"Cannot find object belonging to $human in $position".left,
       obj => f(obj)(state)
     )
   }
 
-  private[this] def withMoveObj(player: Player, position: Vect2)(
+  private[this] def withMoveObj(human: Human, position: Vect2)(
     f: ObjFn[OwnedObj with MovableWObject]
-  )(state: PlayerState): Game.Result =
-    withObj(player, position)(f)(state)
+  )(state: HumanState): Game.Result =
+    withObj(human, position)(f)(state)
 
-  private[this] def withAttackObj(player: Player, position: Vect2)(
+  private[this] def withAttackObj(human: Human, position: Vect2)(
     f: ObjFn[OwnedObj with Fighter]
-  )(state: PlayerState): Game.Result =
-    withObj(player, position)(f)(state)
+  )(state: HumanState): Game.Result =
+    withObj(human, position)(f)(state)
 
-  private[this] def withSpecialObj(player: Player, position: Vect2)(
+  private[this] def withSpecialObj(human: Human, position: Vect2)(
     f: ObjFn[OwnedObj with SpecialAction]
-  )(state: PlayerState): Game.Result =
-    withObj(player, position)(f)(state)
+  )(state: HumanState): Game.Result =
+    withObj(human, position)(f)(state)
 }

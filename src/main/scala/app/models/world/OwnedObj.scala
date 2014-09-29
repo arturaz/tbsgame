@@ -1,9 +1,8 @@
 package app.models.world
 
-import implicits._
-
 import app.models.game.events.Evented
-import app.models.{Owner, Player}
+import app.models.{Player, Bot, Human, Owner}
+import implicits._
 
 trait OwnedObjOps[Self] extends WObjectOps {
   def withNewHp(hp: Int)(self: Self): Self
@@ -25,7 +24,8 @@ extends OwnedObjOps[Self] with OwnedObjStats
 
 /* Object that belongs to some faction and not just a world prop */
 trait OwnedObj extends WObject {
-  type Companion <: OwnedObjOps[Self] with OwnedObjStats
+  type CompanionSelf <: OwnedObj
+  type Companion <: OwnedObjOps[CompanionSelf] with OwnedObjStats
 
   val hp: Int
   val owner: Owner
@@ -53,6 +53,6 @@ trait OwnedObj extends WObject {
     teamTurnFinishedSelf(world).map(_._1)
 }
 
-trait PlayerObj extends OwnedObj {
-  val owner: Player
-}
+trait PlayerObj extends OwnedObj { val owner: Player }
+trait HumanObj extends PlayerObj { val owner: Human }
+trait BotObj extends PlayerObj { val owner: Bot }

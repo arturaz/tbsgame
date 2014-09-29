@@ -1,20 +1,29 @@
 package app.models.world
 
+import app.algorithms.Pathfinding
+import app.algorithms.Pathfinding.Path
+import app.models.game.events.Evented
 import implicits._
 
-trait MovableWObjectOps[Self <: WObject]
+trait MovableWObjectOps[Self <: MovableWObject]
 extends WObjectOps with MoveAttackActionedOps[Self]
 { _: MovableWObjectStats =>
   def setMoveValues(position: Vect2, movementLeft: TileDistance)(self: Self): Self
   def resetMovementLeft(self: Self) =
     self |> setMoveValues(self.position, movement)
+
+  def moveTo(target: Vect2)(self: Self): Self = {
+    self |>
+      setMoveValues(target, self.movementLeft - self.position.tileDistance(target)) |>
+      withMovedOrAttacked(true)
+  }
 }
 
 trait MovableWObjectStats extends WObjectStats with MoveAttackActionedStats {
   val movement: TileDistance
 }
 
-trait MovableWObjectCompanion[Self <: WObject]
+trait MovableWObjectCompanion[Self <: MovableWObject]
 extends MovableWObjectOps[Self] with MovableWObjectStats
 
 /* Objects that can move. All such objects have 1x1 size. */
@@ -36,16 +45,36 @@ with Mobility[Mobility.Movable.type] {
     selfUpdate(companion.resetMovementLeft) |>
     selfUpdate(_ |> companion.withMovedOrAttacked(companion.InitialMovedOrAttacked))
 
-  def moveTo(target: Vect2): Either[String, Self] = {
-    val distance = position.tileDistance(target)
-    if (distance <= movementLeft)
-      Right(
-        self |>
-          companion.setMoveValues(target, movementLeft - distance) |>
-          companion.withMovedOrAttacked(true)
-      )
+  def moveTo(
+    world: World, path: Path
+  ): Either[String, WObject.WorldObjOptUpdate[Self]] = {
+    if (path.movementNeeded > movementLeft)
+      s"$this needed ${path.movementNeeded} movement for $path, had $movementLeft".left
+    else if (path.vects.head != position)
+      s"Starting $path vect != $this position".left
     else
-      Left(s"Logic error: can't attack target - not enough movement." +
-       s" [unit:$this target:$target]")
+      travel(path.vects, Evented((world, Some(self)))).right
+  }
+
+  def moveTo(
+    world: World, target: Vect2
+  ): Either[String, WObject.WorldObjOptUpdate[Self]] = {
+    Pathfinding.aStar(
+      self, target.toBounds, world.bounds, obstacles(world.objects).map(_.bounds)
+    ).fold2(
+      s"Can't find path from $position to $target for $self".left,
+      moveTo(world, _)
+    )
+  }
+
+  private[this] def travel(
+    vects: Seq[Vect2], current: WObject.WorldObjOptUpdate[Self]
+  ): WObject.WorldObjOptUpdate[Self] = {
+    if (vects.isEmpty) current
+    else current.flatMap {
+      case (world, Some(self)) =>
+        travel(vects.tail, self |> companion.moveTo(vects.head) |> world.reactTo)
+      case (_, None) => current
+    }
   }
 }

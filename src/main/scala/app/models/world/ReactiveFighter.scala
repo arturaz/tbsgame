@@ -1,19 +1,17 @@
 package app.models.world
 
 import app.models.game.ai.SingleMindAI
+import app.models.game.events.Evented
 import implicits._
 import infrastructure.Log
 
 trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
   def attackReachable(
-    data: WObject.WorldSelfUpdate[Self]
-  ): WObject.WorldSelfUpdate[Self] =
+    data: WObject.WorldObjUpdate[Self]
+  ): WObject.WorldObjUpdate[Self] =
     data.flatMap { case orig @ (world, self) =>
       val targets = world.objects.collect {
-        case obj: OwnedObj if
-          obj.owner.isEnemyOf(self.owner) && world.isVisibleFor(self.owner, obj.bounds) &&
-          self.canAttack(obj)
-        => obj
+        case obj: OwnedObj if self.canAttack(obj, world) => obj
       }
       if (targets.isEmpty) data
       else {
@@ -23,7 +21,7 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
             Log.error(s"$self tried to attack reachable $target, but failed: $err")
             data
           },
-          _.asInstanceOf[WObject.WorldSelfUpdate[Self]] /* Type system hack. */
+          identity
         )
       }
     }
@@ -37,10 +35,32 @@ trait ReactiveFighterCompanion[Self <: ReactiveFighter] extends ReactiveFighterO
 with ReactiveFighterStats
 
 trait ReactiveFighter extends Fighter {
-  type Self <: ReactiveFighter
-  type Companion <: ReactiveFighterOps[Self] with ReactiveFighterStats
+//  type Self <: ReactiveFighter
+  type Companion <: ReactiveFighterOps[this.type] with ReactiveFighterStats
 
   /* Needed to be able to react to other player actions. */
   override def teamTurnFinishedSelf(world: World) =
     super.teamTurnFinishedSelf(world) |> resetAttack |> companion.attackReachable
+
+  /* Attacks the target if he can. Returns None if there was no reaction. */
+  def reactToOpt[A <: OwnedObj](
+    obj: A, world: World
+  ): Option[Reaction[WObject.WorldObjOptUpdate[A]]] =
+    attack(obj, world).right.toOption.map { 
+      case evt @ Evented((newWorld, _, attack, newObj), _) =>
+        Reaction(evt.copy(value = (newWorld, newObj)), abortReacting = newObj.isEmpty)
+    }
+
+  /* Attacks the target if he can. */
+  def reactTo[A <: OwnedObj](
+    obj: A, world: World
+  ): Reaction[WObject.WorldObjOptUpdate[A]] =
+    reactToOpt(obj, world).fold2(
+      Reaction(Evented((world, Some(obj.self))), abortReacting = false),
+      identity
+    )
+}
+
+case class Reaction[A](value: A, abortReacting: Boolean) {
+  def map[B](f: A => B) = copy(value = f(value))
 }

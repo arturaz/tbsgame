@@ -1,8 +1,9 @@
 package app.algorithms
 
 import app.algorithms.Pathfinding.SearchRes
-import app.models.game.events.{AttackEvt, Evented, MoveEvt}
-import app.models.world.{Fighter, MovableWObject, OwnedObj, World}
+import app.models.game.events.Evented
+import app.models.world._
+import implicits._
 
 object Combat {
   type ActionResult = Evented[World]
@@ -18,20 +19,16 @@ object Combat {
       else
         target.path
 
-    unit.moveTo(moveTarget.vects.last).right.flatMap { movedUnit =>
-      val moves = MoveEvt(unit, moveTarget)
-
-      movedUnit.attack(target.value).fold(
-        err =>
-          if (! strict) Right(Evented(world.updated(unit, movedUnit), moves))
-          else Left(err),
-        { case (attack, attackUnit) =>
-          Right(Evented(
-            world.updated(unit, attackUnit).update(attack, target.value),
-            moves :+ AttackEvt(unit.id, target.value.id, attack)
-          ))
-        }
-      )
+    unit.moveTo(world, moveTarget).right.flatMap { movedEvtWorldSelf =>
+      lazy val movedEvtWorld = movedEvtWorldSelf.map(_._1)
+      movedEvtWorldSelf.value match {
+        case (newWorld, Some(movedUnit)) =>
+          movedUnit.attackW(target.value, newWorld).fold(
+            err => if (! strict) movedEvtWorld.right else err.left,
+            attackedEvtWorld => (movedEvtWorldSelf.events +: attackedEvtWorld).right
+          )
+        case (_, None) => movedEvtWorld.right
+      }
     }
   }
 

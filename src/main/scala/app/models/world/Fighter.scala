@@ -30,33 +30,52 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
     selfUpdate(_ |> companion.attacked(false)) |>
     selfUpdate(_ |> companion.withMovedOrAttacked(companion.InitialMovedOrAttacked))
 
-  def canAttack(obj: OwnedObj) =
+  def canReachAttack(obj: OwnedObj) =
     obj.bounds.withinTileDistance(position, companion.attackRange)
 
-  def attack(obj: OwnedObj): Either[String, (Attack, Self)] =
-    if (hasAttacked) Left(s"$self has already attacked!")
-    else if (! canAttack(obj))
-      s"$self cannot attack reach $obj - tile distance ${
+  def cantAttackReason(obj: OwnedObj, world: World): Option[String] = {
+    if (hasAttacked) Some(s"$self has already attacked!")
+    else if (! world.isVisiblePartial(owner, obj.bounds))
+      Some(s"$self cannot see $obj")
+    else if (! canReachAttack(obj))
+      Some(s"$self cannot attack reach $obj - tile distance ${
         obj.bounds.tileDistance(position)
-      } > attack range ${companion.attackRange}!".left
-    else (
-      Attack(companion.attack.random, obj.companion.defense.random),
-      self |> companion.attacked(true) |> companion.withMovedOrAttacked(true)
-    ).right
+      } > attack range ${companion.attackRange}!")
+    else None
+  }
 
-  def attack(
-    obj: OwnedObj, world: World
-  ): Either[String, Evented[(World, Self, Attack)]] = {
-    attack(obj).right.map { case (attack, attacked) =>
+  def canAttack(obj: OwnedObj, world: World) = cantAttackReason(obj, world).isEmpty
+
+  private[this] def attackSimple[Target <: OwnedObj](
+    obj: Target, world: World
+  ): Either[String, (Attack, Self, Option[Target])] =
+    cantAttackReason(obj, world).fold2({
+      val attack = Attack(companion.attack.random, obj.companion.defense.random)
+      (
+        attack,
+        self |> companion.attacked(true) |> companion.withMovedOrAttacked(true),
+        attack(obj)
+      ).right
+    }, _.left)
+
+  def attack[Target <: OwnedObj](
+    obj: Target, world: World
+  ): Either[String, Evented[(World, Self, Attack, Option[Target])]] = {
+    attackSimple(obj, world).right.map { case (attack, attacked, newObj) =>
       Evented(
-        (world.updated(this, attacked).update(attack, obj), attacked, attack),
-        Vector(AttackEvt(id, obj.id, attack))
+        (
+          world.updated(this, attacked).updated(obj, newObj),
+          attacked, attack, newObj
+        ),
+        Vector(AttackEvt(attacked, obj -> newObj, attack))
       )
     }
   }
 
-  def attackWS(obj: OwnedObj, world: World): Either[String, Evented[(World, Self)]] =
-    attack(obj, world).right.map(_.map { case (w, s, _) => (w, s) })
+  def attackWS(
+    obj: OwnedObj, world: World
+  ): Either[String, WObject.WorldObjUpdate[Self]] =
+    attack(obj, world).right.map(_.map { t => (t._1, t._2) })
 
   def attackW(obj: OwnedObj, world: World): Either[String, Evented[World]] =
     attack(obj, world).right.map(_.map(_._1))
