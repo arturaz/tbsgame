@@ -21,7 +21,7 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
             Log.error(s"$self tried to attack reachable $target, but failed: $err")
             data
           },
-          identity
+          _.map { case (w, s) => (w, s.asInstanceOf[Self]) }
         )
       }
     }
@@ -35,8 +35,8 @@ trait ReactiveFighterCompanion[Self <: ReactiveFighter] extends ReactiveFighterO
 with ReactiveFighterStats
 
 trait ReactiveFighter extends Fighter {
-//  type Self <: ReactiveFighter
-  type Companion <: ReactiveFighterOps[this.type] with ReactiveFighterStats
+  type Self <: ReactiveFighter
+  type Companion <: ReactiveFighterOps[Self] with ReactiveFighterStats
 
   /* Needed to be able to react to other player actions. */
   override def teamTurnFinishedSelf(world: World) =
@@ -56,7 +56,7 @@ trait ReactiveFighter extends Fighter {
     obj: A, world: World
   ): Reaction[WObject.WorldObjOptUpdate[A]] =
     reactToOpt(obj, world).fold2(
-      Reaction(Evented((world, Some(obj.self))), abortReacting = false),
+      Reaction(Evented((world, Some(obj))), abortReacting = false),
       identity
     )
 }

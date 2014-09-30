@@ -20,5 +20,5 @@ case class WarpGate(
   override def companion = WarpGate
   override type Self = WarpGate
   override type Companion = WarpGate.type
-  override protected def self = this
+  override def self = this
 }

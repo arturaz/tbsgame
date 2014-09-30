@@ -16,6 +16,7 @@ trait GrowingSpawnerCompanion[Self <: GrowingSpawner]
 extends GrowingSpawnerOps[Self] with GrowingSpawnerStats
 
 trait GrowingSpawner extends TurnCounter with BotObj {
+  type Self <: GrowingSpawner
   type Companion <: GrowingSpawnerOps[Self] with GrowingSpawnerStats
   type Controlled = WUnit with Fighter
 

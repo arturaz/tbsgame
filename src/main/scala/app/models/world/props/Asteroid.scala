@@ -16,5 +16,5 @@ case class Asteroid(
   override def companion = Asteroid
   override type Self = this.type
   override type Companion = Asteroid.type
-  override protected def self = this
+  override def self = this
 }

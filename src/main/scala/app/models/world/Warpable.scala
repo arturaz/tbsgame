@@ -49,7 +49,8 @@ trait WarpableCompanion[Self <: Warpable] extends WarpableOps[Self]
 with WarpableStats
 
 trait Warpable extends OwnedObj {
-  type Companion <: WarpableOps[this.type] with WarpableStats
+  type Self <: Warpable
+  type Companion <: WarpableOps[Self] with WarpableStats
 
   val warpState: Int
   def isWarpingIn = warpState < companion.warpTime

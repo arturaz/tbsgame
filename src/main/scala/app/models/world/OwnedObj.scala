@@ -24,8 +24,8 @@ extends OwnedObjOps[Self] with OwnedObjStats
 
 /* Object that belongs to some faction and not just a world prop */
 trait OwnedObj extends WObject {
-  type CompanionSelf <: OwnedObj
-  type Companion <: OwnedObjOps[CompanionSelf] with OwnedObjStats
+  type Self <: OwnedObj
+  type Companion <: OwnedObjOps[Self] with OwnedObjStats
 
   val hp: Int
   val owner: Owner

@@ -22,6 +22,8 @@ case class WarpLinker(
   id: WObject.Id=WObject.newId, hp: Int=WarpLinker.maxHp,
   warpState: Int=WarpLinker.InitialWarpState
 ) extends PlayerBuilding with Warpable {
+  type Self = WarpLinker
+  def self = this
   override def companion = WarpLinker
   override type Companion = WarpLinker.type
 }

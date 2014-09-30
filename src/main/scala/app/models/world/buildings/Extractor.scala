@@ -40,6 +40,8 @@ case class Extractor(
   id: WObject.Id=WObject.newId, hp: Int=Extractor.maxHp,
   warpState: Int=Extractor.InitialWarpState
 ) extends PlayerBuilding with Warpable with SpecialAction {
+  type Self = Extractor
+  def self = this
   override def companion = Extractor
   override type Companion = Extractor.type
 

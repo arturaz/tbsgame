@@ -39,7 +39,7 @@ case class Corvette(
 ) extends WUnit with Fighter with SpecialAction {
   type Self = Corvette
   type Companion = Corvette.type
-  override protected def self = this
+  override def self = this
   override def companion = Corvette
 
   override def special(world: World) = Either.cond(

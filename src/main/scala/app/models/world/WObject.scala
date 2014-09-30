@@ -24,7 +24,7 @@ object WObject {
 
 /* World object */
 trait WObject {
-  type Self = this.type
+  type Self <: WObject
   type Companion <: WObjectOps with WObjectStats
   type WorldSelfUpdate = WObject.WorldObjUpdate[Self]
 
@@ -34,7 +34,7 @@ trait WObject {
   def companion: Companion
   lazy val bounds = companion.bounds(position)
 
-  def self: Self = this
+  def self: Self
 
   def gameTurnStartedSelf(world: World): WorldSelfUpdate = Evented((world, self))
   final def gameTurnStarted(world: World): Evented[World] =

@@ -23,6 +23,8 @@ case class Spawner(
   turnsPerStrength: Int=Spawner.DefaultTurnsPerStrength,
   turns: Int=0, hp: Int=Spawner.maxHp
 ) extends BotBuilding with GrowingSpawner {
+  type Self = Spawner
+  def self = this
   override def companion = Spawner
   override type Companion = Spawner.type
 

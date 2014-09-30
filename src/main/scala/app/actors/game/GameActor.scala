@@ -3,7 +3,7 @@ package app.actors.game
 import akka.actor.{Actor, ActorRef}
 import app.models.game.TurnBasedGame
 import app.models.world.World
-import app.models.{Player, Team}
+import app.models.{Bot, Player, Team}
 
 object GameActor {
   val StartingResources = 25
@@ -15,7 +15,7 @@ class GameActor(
   startingPlayer: Player, startingPlayerRef: ActorRef
 ) extends Actor {
   private[this] val playerTeam = Team()
-  private[this] val ai = Player("Worg", Team())
+  private[this] val ai = Bot(Team())
 
   private[this] var game = {
     val world = World.create(playerTeam, () => ai, () => ai)

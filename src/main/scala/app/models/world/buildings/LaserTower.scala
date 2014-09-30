@@ -30,6 +30,8 @@ case class LaserTower(
   warpState: Int=LaserTower.InitialWarpState, hasAttacked: Boolean=false,
   movedOrAttacked: Boolean=LaserTower.InitialMovedOrAttacked
 ) extends PlayerBuilding with Warpable with ReactiveFighter {
+  type Self = LaserTower
+  def self = this
   override def companion = LaserTower
   override type Companion = LaserTower.type
 }
