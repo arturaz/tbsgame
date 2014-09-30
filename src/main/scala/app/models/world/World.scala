@@ -134,8 +134,8 @@ object World {
     objects.map(_.bounds).reduce(_ join _)
 
   def create(
-    playersTeam: Team, waspsOwner: () => Bot,
-    spawnerOwner: () => Bot,
+    playersTeam: Team, waspsOwner: => Bot,
+    spawnerOwner: => Bot,
     startingPoint: Vect2 = Vect2(0, 0),
     endDistance: TileDistance = TileDistance(30),
     branches: Range = 2 to 12,
@@ -200,7 +200,7 @@ object World {
         ) {
           waspsInBounds += 1
           log(s"wasp @ $objPos, left: ${waspsNeeded - waspsInBounds}")
-          objects += Wasp(objPos, waspsOwner())
+          objects += Wasp(objPos, waspsOwner)
         }
       }
 
@@ -237,7 +237,7 @@ object World {
         var spawnerPos = position
         while (bTaken(Bounds(spawnerPos, Spawner.size))) spawnerPos += direction
         log(s"Spawner @ $spawnerPos")
-        objects += Spawner(spawnerPos, spawnerOwner())
+        objects += Spawner(spawnerPos, spawnerOwner)
         spawnersLeft -= 1
       }
 

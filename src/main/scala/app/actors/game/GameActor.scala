@@ -18,7 +18,7 @@ class GameActor(
   private[this] val ai = Bot(Team())
 
   private[this] var game = {
-    val world = World.create(playerTeam, () => ai, () => ai)
+    val world = World.create(playerTeam, ai, ai)
     TurnBasedGame(world, GameActor.StartingResources)
   }
 
