@@ -35,6 +35,7 @@ trait WObject {
   lazy val bounds = companion.bounds(position)
 
   def self: Self
+  def asOwnedObj: Option[OwnedObj] = None
 
   def gameTurnStartedSelf(world: World): WorldSelfUpdate = Evented((world, self))
   final def gameTurnStarted(world: World): Evented[World] =
@@ -43,11 +44,16 @@ trait WObject {
   def gameTurnFinishedSelf(world: World): WorldSelfUpdate = Evented((world, self))
   final def gameTurnFinished(world: World): Evented[World] =
     gameTurnFinishedSelf(world).map(_._1)
-  
+
+  protected def selfEventedUpdate
+  (f: (World, Self) => Evented[Self])(evented: WorldSelfUpdate): WorldSelfUpdate =
+    evented.flatMap { case (world, self) =>
+      f(world, self).flatMap { newSelf =>
+        world.updated(self, newSelf).map((_, newSelf))
+      }
+    }
+
   protected def selfUpdate
   (f: Self => Self)(evented: WorldSelfUpdate): WorldSelfUpdate =
-    evented.map { case (world, self) =>
-      val newSelf = f(self)
-      (world.updated(self, newSelf), newSelf)
-    }
+    selfEventedUpdate((_, self) => Evented(f(self)))(evented)
 }

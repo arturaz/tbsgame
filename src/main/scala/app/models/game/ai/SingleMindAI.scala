@@ -70,7 +70,7 @@ object SingleMindAI {
   def act(
     world: Evented[World], unit: WUnit with Fighter
   ): Combat.EitherActionResult =
-    act(world.value, unit).right.map { world.events +: _ }
+    act(world.value, unit).right.map { world.events ++: _ }
 
   def act(world: World, unit: WUnit with Fighter): Combat.EitherActionResult = {
     val visibleTargets =

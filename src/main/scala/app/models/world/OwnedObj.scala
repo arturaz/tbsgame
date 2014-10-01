@@ -29,8 +29,11 @@ trait OwnedObj extends WObject {
 
   val hp: Int
   val owner: Owner
+  def isWarpingIn = false
+  def isWarpedIn = ! isWarpingIn
   def isEnemy(o: OwnedObj) = owner.team != o.owner.team
   def isFriend(o: OwnedObj) = ! isEnemy(o)
+  override def asOwnedObj = Some(this)
 
   lazy val visibility = {
     val vis = companion.visibility

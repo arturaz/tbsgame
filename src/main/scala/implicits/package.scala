@@ -25,9 +25,9 @@ package object implicits {
   }
 
   implicit class AnyExts[A](val a: A) extends AnyVal {
-    def |>[B](f: A => B) = f(a)
-    def left[B]: Either[A, B] = Left(a)
-    def right[B]: Either[B, A] = Right(a)
-    def mapVal[B](f: A => B) = f(a)
+    @inline def |>[B](f: A => B) = f(a)
+    @inline def left[B]: Either[A, B] = Left(a)
+    @inline def right[B]: Either[B, A] = Right(a)
+    @inline def mapVal[B](f: A => B) = f(a)
   }
 }

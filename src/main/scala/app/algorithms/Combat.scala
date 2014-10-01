@@ -25,7 +25,7 @@ object Combat {
         case (newWorld, Some(movedUnit)) =>
           movedUnit.attackW(target.value, newWorld).fold(
             err => if (! strict) movedEvtWorld.right else err.left,
-            attackedEvtWorld => (movedEvtWorldSelf.events +: attackedEvtWorld).right
+            attackedEvtWorld => (movedEvtWorldSelf.events ++: attackedEvtWorld).right
           )
         case (_, None) => movedEvtWorld.right
       }

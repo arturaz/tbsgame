@@ -1,12 +1,12 @@
 package app.models.world
 
+import app.models._
 import app.models.game.ai.GrowingSpawnerAI
-import app.models.game.events.Evented
+import app.models.game.events.{Evented, TurnEndedEvt, TurnStartedEvt}
 import app.models.world.WObject.Id
 import app.models.world.buildings.{Spawner, WarpGate}
 import app.models.world.props.Asteroid
 import app.models.world.units.Wasp
-import app.models._
 import implicits._
 import infrastructure.Log
 
@@ -14,42 +14,63 @@ import scala.annotation.tailrec
 import scala.reflect.ClassTag
 import scala.util.Random
 
-case class World(
-  bounds: Bounds, objects: Set[WObject]
+case class World private (
+  bounds: Bounds, objects: Set[WObject], visibilityMap: VisibilityMap
 ) extends TurnBased[World] {
-  import World._
+  import app.models.world.World._
 
-  def gameTurnStarted = this |> gameTurnX(_.gameTurnStarted)
-  def gameTurnFinished = this |> gameTurnX(_.gameTurnFinished)
+  def gameTurnStarted = Evented(this) |> gameTurnX(_.gameTurnStarted)
+  def gameTurnFinished = Evented(this) |> gameTurnX(_.gameTurnFinished)
   def teamTurnStarted(team: Team) =
-    this |> teamTurnX(team)(_.teamTurnStarted) |> runAI(team)
+    Evented(this, Vector(TurnStartedEvt(team))) |> teamTurnX(team)(_.teamTurnStarted) |>
+    runAI(team)
   def teamTurnFinished(team: Team) =
-    this |> teamTurnX(team)(_.teamTurnFinished)
+    Evented(this, Vector(TurnEndedEvt(team))) |> teamTurnX(team)(_.teamTurnFinished)
 
   def actionsFor(player: Player) = objects.collect {
     case obj: GivingActions if obj.owner.team == player.team =>
       obj.companion.actionsGiven
   }.sum
 
-  def add(obj: WObject) = {
+  private[this] def changeWithVisibility(obj: WObject)(
+    fo: (Set[WObject], WObject) => Set[WObject]
+  )(fv: (VisibilityMap, OwnedObj) => Evented[VisibilityMap]): Evented[World] = {
+    val newWorld = copy(objects = fo(objects, obj))
+    obj.asOwnedObj.fold2(
+      Evented(newWorld), fv(visibilityMap, _).map(newWorld.updated)
+    )
+  }
+
+  def add(obj: WObject): Evented[World] = {
     // DEBUG CHECK
     objects.find(o => obj.bounds.intersects(o.bounds)).foreach { o =>
       throw new Exception(s"Adding $obj to world - intersection with $o")
     }
-    copy(objects = objects + obj)
+    changeWithVisibility(obj)(_ + _)(_ + _)
   }
-  def remove(obj: WObject) = copy(objects = objects - obj)
-  def updated[A <: WObject](before: A, after: A): World = remove(before).add(after)
-  def updated[A <: WObject](before: A, after: Option[A]): World = {
-    val w = remove(before)
-    after.fold(w)(w.add)
+
+  def remove(obj: WObject): Evented[World] = changeWithVisibility(obj)(_ - _)(_ - _)
+  def updated[A <: WObject](before: A, after: A): Evented[World] = {
+    val newWorld = copy(objects = objects - before + after)
+    (before.asOwnedObj, after.asOwnedObj) match {
+      case (Some(bOO), Some(aOO)) => visibilityMap.updated(bOO, aOO).map(newWorld.updated)
+      case _ => Evented(newWorld)
+    }
   }
-  def updated[A <: WObject](before: A)(afterFn: A => A): World = updated(before, afterFn(before))
+  def updated[A <: WObject](before: A, after: Option[A]): Evented[World] =
+    after.fold(remove(before))(a => updated(before, a))
+  def updated[A <: WObject](before: A)(afterFn: A => A): Evented[World] =
+    updated(before, afterFn(before))
+  private def updated(objects: Set[WObject]): World = copy(objects = objects)
+  private def updated(map: VisibilityMap): World = copy(visibilityMap = map)
 
   def updateAll(pf: PartialFunction[WObject, WObject]) = {
-    val lpf = pf.lift
-    objects.foldLeft(this) { case (world, a) =>
-      lpf(a).fold(world)(world.updated(a, _))
+    val liftedPf = pf.lift
+    objects.foldLeft(Evented(this)) { case (evtWorld, beforeObj) =>
+      liftedPf(beforeObj).fold2(
+        evtWorld,
+        obj => evtWorld.flatMap(w => w.updated(beforeObj, obj))
+      )
     }
   }
 
@@ -59,14 +80,17 @@ case class World(
     objects.view.collect { case obj: OwnedObj if obj.owner.isFriendOf(owner) => obj }.
       exists { obj => f(obj.visibility) }
 
+  def visibleBy(owner: Owner): World =
+    copy(objects = objects.filter(o => isVisiblePartial(owner, o.bounds)))
+
   /* Is any part of the bounds visible to owner */
   def isVisiblePartial(owner: Owner, b: Bounds): Boolean =
-    isVisibleFor(owner, _.intersects(b))
+    visibilityMap.isVisiblePartial(owner, b)
   /* Is all of the bounds visible to owner. */
   def isVisibleFull(owner: Owner, b: Bounds): Boolean =
-    b.points.forall(isVisibleFor(owner, _)) /* TODO: optimize me */
+    visibilityMap.isVisibleFull(owner, b)
   def isVisibleFor(owner: Owner, v: Vect2): Boolean =
-    isVisibleFor(owner, _.contains(v))
+    visibilityMap.isVisible(owner, v)
 
   def reactTo[A <: OwnedObj](obj: A): WObject.WorldObjOptUpdate[A] = {
     @tailrec def react(
@@ -77,7 +101,7 @@ case class World(
         case (_, None) => current
         case (world, Some(currentObj)) =>
           val reaction = reactors.head.reactTo(currentObj, world)
-          val newWorld = current.events +: reaction.value
+          val newWorld = current.events ++: reaction.value
           if (! reaction.abortReacting) react(reactors.tail, newWorld)
           else newWorld
       }
@@ -101,19 +125,19 @@ case class World(
 object World {
   private def xTurnX[A : ClassTag](
     filter: A => Boolean, f: A => World => Evented[World]
-    )(world: World) = world.objects.foldLeft(Evented(world)) {
+  )(world: Evented[World]) = world.value.objects.foldLeft(world) {
     case (w, o: A) if filter(o) => w.laterFlatMap(f(o))
     case (w, o) => w
   }
 
   private def gameTurnX(
     f: WObject => World => Evented[World]
-    )(world: World) =
+  )(world: Evented[World]) =
     xTurnX[WObject](_ => true, f)(world)
 
   private def teamTurnX(
     team: Team
-    )(f: OwnedObj => World => Evented[World])(world: World) =
+  )(f: OwnedObj => World => Evented[World])(world: Evented[World]) =
     xTurnX[OwnedObj](_.owner.team == team, f)(world)
 
   private def runAI(team: Team)(e: Evented[World]) = {
@@ -247,6 +271,6 @@ object World {
     (1 to 3).foreach { _ => spawnBlob(warpGate.visibility, Log.debug) }
     while (branchesLeft > 0) branch(warpGate.bounds.center)
 
-    new World(bounds(objects) expandBy 5, objects)
+    new World(bounds(objects) expandBy 5, objects, VisibilityMap(objects))
   }
 }

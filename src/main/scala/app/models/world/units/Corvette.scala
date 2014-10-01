@@ -1,7 +1,7 @@
 package app.models.world.units
 
 import app.models.Player
-import app.models.game.events.{Evented, MovementChangeEvt}
+import app.models.game.events.MovementChangeEvt
 import app.models.world._
 
 object Corvette extends WUnitCompanion[Corvette] 
@@ -49,10 +49,8 @@ case class Corvette(
         hasAttacked = true,
         movementLeft = movementLeft + companion.specialMovementAdded
       )
-      Evented(
-        world.updated(this, updated),
-        Vector(MovementChangeEvt(updated.id, updated.movementLeft))
-      )
+      world.updated(this, updated) :+
+        MovementChangeEvt(world, updated, updated.movementLeft)
     },
     s"Cannot toggle special action for $this: already attacked!"
   )

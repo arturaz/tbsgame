@@ -31,9 +31,19 @@ case class TurnBasedGame private (
 ) extends GameLike[TurnBasedGame] {
   def canAct(human: Human) = human.team == currentTeam
 
+  def update(f: => Game.Result): TurnBasedGame.Result =
+    f.right.map(_.map(updated))
+  def updated(game: Game) = copy(game = game)
+
   def humanDo(human: Human)(f: Human => Game.Result): TurnBasedGame.Result =
-    if (canAct(human)) f(human).right.map(_.map(game => copy(game = game)))
+    if (canAct(human)) update(f(human))
     else s"$human cannot act, because current team is $currentTeam".left
+
+  override def join(human: Human, startingResources: Int) =
+    update(game.join(human, startingResources))
+
+  override def leave(human: Human) =
+    update(game.leave(human))
 
   override def warp(
     human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
@@ -47,6 +57,8 @@ case class TurnBasedGame private (
 
   override def attack(human: Human, source: Vect2, target: Vect2) =
     humanDo(human)(game.attack(_, source, target))
+
+  override def consumeActions(human: Human) = humanDo(human)(game.consumeActions)
 
   def nextTeamTurn: Evented[TurnBasedGame] =
     game.teamTurnFinished(currentTeam).flatMap { g =>
@@ -62,5 +74,6 @@ case class TurnBasedGame private (
       }
     }
 
-  def currentTeamHasHumans = game.world.humans.exists(_.team == currentTeam)
+  def currentTeamActionsLeft = game.actionsLeftFor(currentTeam)
+  def currentTeamFinished = currentTeamActionsLeft == 0
 }

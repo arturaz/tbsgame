@@ -62,13 +62,10 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
     obj: Target, world: World
   ): Either[String, Evented[(World, Self, Attack, Option[Target])]] = {
     attackSimple(obj, world).right.map { case (attack, attacked, newObj) =>
-      Evented(
-        (
-          world.updated(this, attacked).updated(obj, newObj),
-          attacked, attack, newObj
-        ),
-        Vector(AttackEvt(attacked, obj -> newObj, attack))
-      )
+      (
+        AttackEvt(world, attacked, obj -> newObj, attack) +:
+        world.updated(this, attacked)
+      ).flatMap(_.updated(obj, newObj)).map((_, attacked, attack, newObj))
     }
   }
 

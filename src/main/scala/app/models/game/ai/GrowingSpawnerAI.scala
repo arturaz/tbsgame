@@ -28,7 +28,7 @@ object GrowingSpawnerAI {
       SingleMindAI.act(world, owner)
     else
       spawners.foldLeft(Evented(world)) { case (w, spawner) =>
-        w.events +: act(w.value, spawner)
+        w.events ++: act(w.value, spawner)
       }
   }
 
@@ -48,7 +48,7 @@ object GrowingSpawnerAI {
               world
             case Right(newWorld) =>
               work(
-                newActions, world.events +: newWorld.map(_._1),
+                newActions, world.events ++: newWorld.map(_._1),
                 newWorld.value._2.fold2(List.empty, List(_)) ::: readyUnits
               )
         }

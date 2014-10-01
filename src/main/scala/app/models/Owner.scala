@@ -22,8 +22,10 @@ case class Team(id: Owner.Id=Owner.newId) extends Owner {
 }
 
 trait Player extends Owner {
-  def isPlayer: Boolean
-  def isBot = ! isPlayer
+  def isHuman: Boolean
+  def asHuman: Option[Human]
+  def isBot = ! isHuman
+  def asBot: Option[Bot]
 }
 
 object Player {
@@ -35,9 +37,13 @@ object Player {
 case class Human(
   name: String, team: Team, id: Owner.Id=Owner.newId
 ) extends Player {
-  def isPlayer = true
+  override def isHuman = true
+  override def asHuman = Some(this)
+  override def asBot = None
 }
 
 case class Bot(team: Team, id: Owner.Id=Owner.newId) extends Player {
-  def isPlayer = false
+  override def isHuman = false
+  override def asHuman = None
+  override def asBot = Some(this)
 }

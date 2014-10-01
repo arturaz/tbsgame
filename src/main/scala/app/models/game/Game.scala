@@ -23,36 +23,35 @@ object Game {
     world, startingStates(world, startingResources, world.humans)
   )
 
+  def startingState(world: World, startingResources: Int, human: Human) =
+    HumanState(startingResources, world.actionsFor(human))
+
   def startingStates(
     world: World, startingResources: Int, humans: Iterable[Human]
   ): States = humans.map { human =>
-    human -> HumanState(startingResources, world.actionsFor(human))
+    human -> startingState(world, startingResources, human)
   }.toMap
 
   private object Withs {
-    private[this] def updateStates(game: Game, events: Events): Game = {
+    private[this] def updateHumanStates(game: Game, events: Events): Game = {
       val humans = game.states.keys.map(h => h.id -> h).toMap
-      def update(states: Game.States, id: Owner.Id)(
+      def update(states: Game.States, human: Human)(
         f: HumanState => HumanState
-      ) = {
-        val human = humans(id)
-        val state = states(human)
-        states + (human -> f(state))
-      }
+      ) = states + (human -> f(states(human)))
 
       val newStates = events.foldLeft(game.states) {
-        case (fStates, ResourceChangeEvt(Right(id), diff)) =>
-          update(fStates, id)(_ |-> HumanState.resources modify (_ + diff))
+        case (fStates, ResourceChangeEvt(Right(human), diff)) =>
+          update(fStates, human)(_ |-> HumanState.resources modify (_ + diff))
         case (fStates, _) => fStates
       }
       game.copy(states = newStates)
     }
 
-    def updateStates(evented: Evented[Game]): Evented[Game] =
-      evented.mapE(updateStates)
+    def updateHumanStates(evented: Evented[Game]): Evented[Game] =
+      evented.mapE(updateHumanStates)
 
     def withStateChanges(f: => Game.Result): Game.Result =
-      f.right.map(updateStates)
+      f.right.map(updateHumanStates)
 
     def withActions(human: Human, actionsNeeded: Int)(
       f: HumanState => Game.Result
@@ -63,9 +62,9 @@ object Game {
         val newState =
           state |-> HumanState.actions modify (_ - actionsNeeded)
         val events =
-          if (actionsNeeded > 0) Vector(ActionChangeEvt(human.id, newState.actions))
+          if (actionsNeeded > 0) Vector(ActionChangeEvt(human, newState.actions))
           else Vector.empty
-        f(newState).right.map(events +: _)
+        f(newState).right.map(events ++: _)
       }
     }
 
@@ -95,21 +94,17 @@ object Game {
 }
 
 trait GameLike[A] {
+  def join(human: Human, startingResources: Int): Game.ResultT[A]
+  def leave(human: Human): Game.ResultT[A]
+
   def warp(
     human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
   ): Game.ResultT[A]
 
-  def move(
-    human: Human, from: Vect2, to: Vect2
-  ): Game.ResultT[A]
-
-  def attack(
-    human: Human, source: Vect2, target: Vect2
-  ): Game.ResultT[A]
-
-  def special(
-    human: Human, position: Vect2
-  ): Game.ResultT[A]
+  def move(human: Human, from: Vect2, to: Vect2): Game.ResultT[A]
+  def attack(human: Human, source: Vect2, target: Vect2): Game.ResultT[A]
+  def special(human: Human, position: Vect2): Game.ResultT[A]
+  def consumeActions(human: Human): Game.ResultT[A]
 }
 
 case class Game private (
@@ -118,21 +113,28 @@ case class Game private (
   import app.models.game.Game.Withs._
 
   private[this] def fromWorldEvents(w: Evented[World]) =
-    w.map(updated) |> updateStates
-  private[this] def recalculateStates
+    w.map(updated) |> updateHumanStates
+
+  private[this] def recalculateActions
   (team: Team)(g: Evented[Game]): Evented[Game] =
-    g.map { game =>
+    g.flatMap { game =>
       val teamStates = game.states.filterKeys(_.team == team)
-      val states = teamStates.map { case (human, state) =>
-        human -> state.copy(actions = game.world.actionsFor(human))
-      }
-      game.updated(states)
+      teamStates.foldLeft(Evented(teamStates)) { case (e, (human, state)) =>
+        val newActions = game.world.actionsFor(human)
+        if (state.actions == newActions) e
+        else e.flatMap { curStates =>
+          Evented(
+            curStates + (human -> state.copy(actions = game.world.actionsFor(human))),
+            Vector(ActionChangeEvt(human, newActions))
+          )
+        }
+      }.map(game.updated)
     }
 
   def gameTurnStarted = world.gameTurnStarted |> fromWorldEvents
   def gameTurnFinished = world.gameTurnFinished |> fromWorldEvents
   def teamTurnStarted(team: Team) =
-    world.teamTurnStarted(team) |> fromWorldEvents |> recalculateStates(team)
+    world.teamTurnStarted(team) |> fromWorldEvents |> recalculateActions(team)
   def teamTurnFinished(team: Team) = world.teamTurnFinished(team) |> fromWorldEvents
 
   def winner: Option[Team] = {
@@ -142,6 +144,30 @@ case class Game private (
       case s if s.size == 1 => Some(s.head)
       case _ => None
     }
+  }
+
+  def actionsLeftFor(team: Team) =
+    states.view.filter(_._1.team == team).map(_._2.actions).sum
+
+  def join(human: Human, startingResources: Int) = {
+    def evt(newState: HumanState) = Evented(
+      updated(world, human -> newState), Vector(JoinEvt(human, newState))
+    ).right
+
+    states.get(human).fold2(
+      evt(Game.startingState(world, startingResources, human)),
+      state =>
+        if (state.active) s"$human is already in the game!".left
+        else evt(state |-> HumanState.active set true)
+    )
+  }
+
+  def leave(human: Human) = withState(human) { state =>
+    Evented(
+      updated(
+        world, human -> (state |-> HumanState.active set false)
+      ), Vector(LeaveEvt(human))
+    ).right
   }
 
   def warp(
@@ -198,6 +224,15 @@ case class Game private (
     withSpecialAction(human) { obj => state =>
       obj.special(world).right.map(_.map(world => updated(world, human -> state)))
     } } } }
+
+  def consumeActions(human: Human): Game.Result =
+    withState(human) { state =>
+      val actions = 0
+      Evented(
+        updated(world, human -> state.copy(actions = 0)),
+        Vector(ActionChangeEvt(human, actions))
+      ).right
+    }
 
   private def updated(world: World): Game = copy(world = world)
   private def updated(states: States): Game = copy(states = states)

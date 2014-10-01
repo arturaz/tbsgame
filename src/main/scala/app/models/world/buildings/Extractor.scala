@@ -67,11 +67,9 @@ case class Extractor(
   private[this] def extractResources(
     world: World, howMuch: Int
   )(asteroid: Asteroid): Evented[World] = {
-    Evented(
-      world.updated(asteroid)(_ |-> Asteroid.resources modify (_ - howMuch)),
-      Vector(
-        ResourceChangeEvt(asteroid.id.left, -howMuch),
-        ResourceChangeEvt(owner.id.right, howMuch)
+    world.updated(asteroid)(_ |-> Asteroid.resources modify (_ - howMuch)) :++ (
+      Vector(ResourceChangeEvt((world, asteroid).left, -howMuch)) ++ owner.asHuman.fold2(
+        Vector.empty, h => Vector(ResourceChangeEvt(h.right, howMuch))
       )
     )
   }

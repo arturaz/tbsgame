@@ -1,38 +1,67 @@
 package app.models.game.events
 
-import app.algorithms.Pathfinding
+import app.models.game.HumanState
 import app.models.world._
-import app.models.{Attack, Owner}
+import app.models.{Team, Attack, Human, Owner}
 
-sealed trait Event
-
-case class WarpEvt(obj: Warpable) extends Event
-
-object MoveEvt {
-  def apply(
-    unit: MovableWObject, path: Pathfinding.Path
-  ): Vector[MoveEvt] =
-    path.vects.view.zipWithIndex.drop(1).take(unit.movementLeft.value).
-    map { case (v, idx) =>
-      MoveEvt(unit.id, v, unit.movementLeft - TileDistance(idx))
-    }.to[Vector]
+sealed trait Event {
+  def visibleBy(owner: Owner): Boolean
 }
+
+trait AlwaysVisibleEvent extends Event {
+  override def visibleBy(owner: Owner) = true
+}
+
+trait BoundedEvent extends Event {
+  def world: World
+  def bounds: Bounds
+  def visibleBy(owner: Owner) = world.isVisiblePartial(owner, bounds)
+}
+
+case class JoinEvt(human: Human, state: HumanState) extends AlwaysVisibleEvent
+case class LeaveEvt(human: Human) extends AlwaysVisibleEvent
+case class TurnStartedEvt(team: Team) extends AlwaysVisibleEvent
+case class TurnEndedEvt(team: Team) extends AlwaysVisibleEvent
+
+case class VisibilityChangeEvt(
+  team: Team, positions: Vector[Vect2], visible: Boolean
+) extends Event {
+  override def visibleBy(owner: Owner) = owner.team == team
+}
+
+case class WarpEvt(world: World, obj: Warpable) extends BoundedEvent {
+  def bounds = obj.bounds
+}
+
 case class MoveEvt(
-  obj: WObject.Id, to: Vect2, movesLeft: TileDistance
-) extends Event
+  world: World, obj: MovableWObject, to: Vect2, movesLeft: TileDistance
+) extends BoundedEvent {
+  def bounds = obj.bounds
+}
 
 case class AttackEvt[D <: OwnedObj](
-  attacker: Fighter, defender: (D, Option[D]), attack: Attack
-) extends Event
+  world: World, attacker: Fighter, defender: (D, Option[D]), attack: Attack
+) extends BoundedEvent {
+  def bounds = defender._1.bounds
+}
 
 case class MovementChangeEvt(
-  obj: WObject.Id, movementLeft: TileDistance
-) extends Event
+  world: World, obj: MovableWObject, movementLeft: TileDistance
+) extends BoundedEvent {
+  def bounds = obj.bounds
+}
 
 case class ResourceChangeEvt(
-  obj: Either[WObject.Id, Owner.Id], resourceDiff: Int
-) extends Event
+  obj: Either[(World, WObject), Human], resourceDiff: Int
+) extends Event {
+  override def visibleBy(owner: Owner) = obj.fold(
+    { case (world, wObj) => world.isVisiblePartial(owner, wObj.bounds) },
+    owner.isFriendOf
+  )
+}
 
 case class ActionChangeEvt(
-  player: Owner.Id, actions: Int
-) extends Event
+  human: Human, actions: Int
+) extends Event {
+  override def visibleBy(owner: Owner) = human.isFriendOf(owner)
+}

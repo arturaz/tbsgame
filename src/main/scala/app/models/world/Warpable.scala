@@ -24,7 +24,7 @@ trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
     world: World, player: Player, position: Vect2
   ): Either[String, WObject.WorldObjOptUpdate[Self]] =
     warpWOReaction(world, player, position).right.map { warpedIn =>
-      Evented(world.add(warpedIn), Vector(WarpEvt(warpedIn))).
+      (Vector(WarpEvt(world, warpedIn)) ++: world.add(warpedIn)).
         flatMap(_.reactTo(warpedIn))
     }
 
@@ -34,9 +34,12 @@ trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
     warp(world, player, position).right.map { _.map(_._1) }
 
   def setWarpState(newState: Int)(self: Self): Self
-  def nextWarpState(self: Self) =
-    if (self.isWarpedIn) self
-    else self |> setWarpState(self.warpState + 1)
+  def nextWarpState(world: World, self: Self) =
+    if (self.isWarpedIn) Evented(self)
+    else {
+      val newSelf = self |> setWarpState(self.warpState + 1)
+      Evented(newSelf, Vector(WarpEvt(world, newSelf)))
+    }
 }
 
 trait WarpableStats extends OwnedObjStats {
@@ -53,12 +56,11 @@ trait Warpable extends OwnedObj {
   type Companion <: WarpableOps[Self] with WarpableStats
 
   val warpState: Int
-  def isWarpingIn = warpState < companion.warpTime
-  def isWarpedIn = warpState == companion.warpTime
+  override def isWarpingIn = warpState < companion.warpTime
 
   override def teamTurnStartedSelf(world: World) =
     super.teamTurnStartedSelf(world) |>
-    selfUpdate(companion.nextWarpState)
+    selfEventedUpdate(companion.nextWarpState)
 }
 
 trait EmptySpaceWarpableOps[Self <: Warpable] { _: WarpableOps[Self] =>
