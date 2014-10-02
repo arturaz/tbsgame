@@ -67,11 +67,13 @@ case class Extractor(
   private[this] def extractResources(
     world: World, howMuch: Int
   )(asteroid: Asteroid): Evented[World] = {
-    world.updated(asteroid)(_ |-> Asteroid.resources modify (_ - howMuch)) :++ (
-      Vector(ResourceChangeEvt((world, asteroid).left, -howMuch)) ++ owner.asHuman.fold2(
-        Vector.empty, h => Vector(ResourceChangeEvt(h.right, howMuch))
-      )
-    )
+    val res = asteroid.resources min howMuch
+
+    val newSelf = asteroid |-> Asteroid.resources modify (_ - res)
+    (
+      world.updated(asteroid, newSelf) :+
+      ResourceChangeEvt((world, asteroid).left, newSelf.resources)
+    ).flatMap(_.addResources(owner, howMuch).right.get)
   }
 
   private[this] def turnStartExtractResources(world: World) =
@@ -81,9 +83,8 @@ case class Extractor(
     val extracts = companion.specialExtracts
     findAsteroid(world).right.flatMap { asteroid =>
       Either.cond(
-        asteroid.resources >= extracts, asteroid,
-        s"Not enough resources to extract from asteroid. Needed ${
-          extracts}, had ${asteroid.resources}"
+        asteroid.resources >= 0, asteroid,
+        s"No resources left in the asteroid"
       )
     }.right.map(extractResources(world, extracts))
   }

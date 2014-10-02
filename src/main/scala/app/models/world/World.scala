@@ -2,7 +2,7 @@ package app.models.world
 
 import app.models._
 import app.models.game.ai.GrowingSpawnerAI
-import app.models.game.events.{Evented, TurnEndedEvt, TurnStartedEvt}
+import app.models.game.events.{ResourceChangeEvt, Evented, TurnEndedEvt, TurnStartedEvt}
 import app.models.world.WObject.Id
 import app.models.world.buildings.{Spawner, WarpGate}
 import app.models.world.props.Asteroid
@@ -15,7 +15,9 @@ import scala.reflect.ClassTag
 import scala.util.Random
 
 case class World private (
-  bounds: Bounds, objects: Set[WObject], visibilityMap: VisibilityMap
+  bounds: Bounds, objects: Set[WObject],
+  resourcesMap: Map[Player, Int],
+  visibilityMap: VisibilityMap
 ) extends TurnBased[World] {
   import app.models.world.World._
 
@@ -63,6 +65,7 @@ case class World private (
     updated(before, afterFn(before))
   private def updated(objects: Set[WObject]): World = copy(objects = objects)
   private def updated(map: VisibilityMap): World = copy(visibilityMap = map)
+  private def updated(resources: Map[Player, Int]): World = copy(resourcesMap = resources)
 
   def updateAll(pf: PartialFunction[WObject, WObject]) = {
     val liftedPf = pf.lift
@@ -74,7 +77,26 @@ case class World private (
     }
   }
 
-  def isFree(b: Bounds) = bounds.contains(b)
+  def resources(player: Player) = resourcesMap.getOrElse(player, 0)
+
+  def addResources(player: Player, count: Int): Either[String, Evented[World]] = {
+    val curRes = resources(player)
+    if (count < 0 && curRes < -count) s"Had $curRes, wanted to add $count!".left
+    else {
+      val newRes = resources(player) + count
+      Evented(
+        updated(resourcesMap updated(player, newRes)),
+        player.asHuman.fold2(
+          Vector.empty, h => Vector(ResourceChangeEvt(h.right, newRes))
+        )
+      ).right
+    }
+  }
+
+  def subResources(player: Player, count: Int): Either[String, Evented[World]] =
+    addResources(player, -count)
+
+  def canWarp(b: Bounds) = bounds.contains(b) && ! objects.exists(_.bounds.intersects(b))
 
   private[this] def isVisibleFor(owner: Owner, f: Bounds => Boolean) =
     objects.view.collect { case obj: OwnedObj if obj.owner.isFriendOf(owner) => obj }.
@@ -271,6 +293,9 @@ object World {
     (1 to 3).foreach { _ => spawnBlob(warpGate.visibility, Log.debug) }
     while (branchesLeft > 0) branch(warpGate.bounds.center)
 
-    new World(bounds(objects) expandBy 5, objects, VisibilityMap(objects))
+    new World(
+      bounds(objects) expandBy 5, objects, Map.empty,
+      VisibilityMap(objects)
+    )
   }
 }

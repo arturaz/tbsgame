@@ -52,7 +52,7 @@ case class MovementChangeEvt(
 }
 
 case class ResourceChangeEvt(
-  obj: Either[(World, WObject), Human], resourceDiff: Int
+  obj: Either[(World, WObject), Human], newValue: Int
 ) extends Event {
   override def visibleBy(owner: Owner) = obj.fold(
     { case (world, wObj) => world.isVisiblePartial(owner, wObj.bounds) },

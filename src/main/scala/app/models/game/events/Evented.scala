@@ -1,5 +1,7 @@
 package app.models.game.events
 
+import implicits._
+
 object Evented {
   def fromTuple[A](t: (A, Events)): Evented[A] = Evented(t._1, t._2)
 }
@@ -18,4 +20,8 @@ case class Evented[+A](value: A, events: Events=Vector.empty) {
   def laterFlatMap[B](f: A => Evented[B]) = events ++: f(value)
 
   def earlierFlatMap[B](f: A => Evented[B]) = f(value) :++ events
+
+  def flatten[B](implicit ev: A <:< Evented[B]) = flatMap(ev)
+  def extract[B, C](implicit ev: A <:< Either[B, C]) =
+    value.fold(_.left, Evented(_, events).right)
 }

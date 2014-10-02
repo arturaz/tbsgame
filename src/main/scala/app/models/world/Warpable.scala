@@ -70,7 +70,7 @@ trait EmptySpaceWarpableOps[Self <: Warpable] { _: WarpableOps[Self] =>
     world: World, owner: Player, position: Vect2
   ): Either[String, Self] = {
     val b = bounds(position)
-    if (! world.isFree(b)) s"Can't warp in because $b is taken in $world".left
+    if (! world.canWarp(b)) s"Can't warp in because $b is taken in $world".left
     else warp(owner, position).right
   }
 }

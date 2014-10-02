@@ -16,7 +16,7 @@ object GameActor {
     case class Join(human: Human)
     case class Leave(human: Human)
     case class Warp(
-      human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
+      human: Human, position: Vect2, warpable: WarpableCompanion[Warpable]
     )
     case class Move(human: Human, from: Vect2, to: Vect2)
     case class Attack(human: Human, source: Vect2, target: Vect2)

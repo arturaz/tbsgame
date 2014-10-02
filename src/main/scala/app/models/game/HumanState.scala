@@ -5,11 +5,7 @@ import monocle.Lenser
 object HumanState {
   private[this] val lenser = Lenser[HumanState]
 
-  val resources = lenser(_.resources)
   val actions = lenser(_.actions)
-  val active = lenser(_.active)
 }
 
-case class HumanState(
-  resources: Int, actions: Int, active: Boolean=true
-)
+case class HumanState(actions: Int)
