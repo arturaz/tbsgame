@@ -2,6 +2,8 @@ name := "TBS Game"
 
 scalaVersion := "2.11.2"
 
+scalacOptions := Seq("-feature", "-deprecation", "-unchecked")
+
 initialCommands in console := """import app.models._, world._, implicits._"""
 
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
