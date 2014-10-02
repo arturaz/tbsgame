@@ -10,7 +10,7 @@ object TurnBasedGame {
   type StartedGame = Either[String, Evented[TurnBasedGame]]
 
   def apply(world: World, startingResources: Int): StartedGame =
-    apply(Game(world, startingResources))
+    Game(world, startingResources).right.flatMap(apply)
 
   def apply(game: Game): StartedGame = {
     val teams = game.world.teams.toVector

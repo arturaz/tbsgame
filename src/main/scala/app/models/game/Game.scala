@@ -19,17 +19,14 @@ object Game {
   type Result = ResultT[Game]
   private type States = Map[Human, HumanState]
 
-  def apply(world: World, startingResources: Int): Game = {
-    require(
-      startingResources >= 0,
-      s"starting resources must be positive, was $startingResources"
-    )
-    apply(
-      world.humans.foldLeft(Evented(world)) { case (eWorld, human) =>
-        eWorld.flatMap(_.addResources(human, startingResources).right.get)
-      }.value,
-      startingStates(world, world.humans)
-    )
+  def apply(world: World, startingResources: Int): Either[String, Game] = {
+    world.humans.foldLeft(Evented(world).right[String]) {
+      case (left: Left[_, _], _) => left
+      case (Right(eWorld), human) =>
+        eWorld.map(_.addResources(human, startingResources)).extractFlatten
+    }.right.map { evtWorld =>
+      apply(evtWorld.value, startingStates(world, world.humans))
+    }
   }
 
   def startingState(world: World, human: Human) =
@@ -138,10 +135,10 @@ case class Game private (
     )
 
     states.get(human).fold2(
-      evt(Game.startingState(world, human)).flatMap { g =>
-        if (g.world.resourcesMap.contains(human)) Evented(g)
-        else g.world.addResources(human, startingResources).right.get.map(updated)
-      }.right,
+      evt(Game.startingState(world, human)).map { g =>
+        if (g.world.resourcesMap.contains(human)) Evented(g).right
+        else g.world.addResources(human, startingResources).right.map(_.map(updated))
+      }.extractFlatten,
       state => s"$human is already in the game!".left
     )
   }

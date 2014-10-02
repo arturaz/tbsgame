@@ -52,7 +52,16 @@ case class Extractor(
           Log.error(s"Can't find asteroid when team turn started for $this: $err")
           upd
         },
-        a => turnStartExtractResources(world)(a).map((_, self))
+        asteroid => {
+          if (asteroid.resources == 0) upd
+          else turnStartExtractResources(world)(asteroid).fold(
+            err => {
+              Log.error(s"Error while extracting resources on turn start for $this: $err")
+              upd
+            },
+            _.map((_, self))
+          )
+        }
       )
     } }
   }
@@ -66,14 +75,18 @@ case class Extractor(
 
   private[this] def extractResources(
     world: World, howMuch: Int
-  )(asteroid: Asteroid): Evented[World] = {
-    val res = asteroid.resources min howMuch
+  )(asteroid: Asteroid): Either[String, Evented[World]] = {
+    if (howMuch < 0) s"howMuch ($howMuch) has to be positive!".left
+    else if (asteroid.resources == 0) s"No resources left in $asteroid!".left
+    else {
+      val res = asteroid.resources min howMuch
 
-    val newSelf = asteroid |-> Asteroid.resources modify (_ - res)
-    (
-      world.updated(asteroid, newSelf) :+
-      ResourceChangeEvt((world, asteroid).left, newSelf.resources)
-    ).flatMap(_.addResources(owner, howMuch).right.get)
+      val newSelf = asteroid |-> Asteroid.resources modify (_ - res)
+      (
+        world.updated(asteroid, newSelf) :+
+        ResourceChangeEvt((world, asteroid).left, newSelf.resources)
+      ).map(_.addResources(owner, howMuch)).extractFlatten
+    }
   }
 
   private[this] def turnStartExtractResources(world: World) =
@@ -81,11 +94,6 @@ case class Extractor(
 
   def special(world: World) = {
     val extracts = companion.specialExtracts
-    findAsteroid(world).right.flatMap { asteroid =>
-      Either.cond(
-        asteroid.resources >= 0, asteroid,
-        s"No resources left in the asteroid"
-      )
-    }.right.map(extractResources(world, extracts))
+    findAsteroid(world).right.flatMap(extractResources(world, extracts))
   }
 }

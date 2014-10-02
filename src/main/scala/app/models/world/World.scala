@@ -81,7 +81,8 @@ case class World private (
 
   def addResources(player: Player, count: Int): Either[String, Evented[World]] = {
     val curRes = resources(player)
-    if (count < 0 && curRes < -count) s"Had $curRes, wanted to add $count!".left
+    if (count < 0 && curRes < -count)
+      s"Had $curRes, wanted to subtract ${-count}!".left
     else {
       val newRes = resources(player) + count
       Evented(
