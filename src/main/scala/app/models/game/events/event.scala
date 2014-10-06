@@ -33,10 +33,15 @@ case class WarpEvt(world: World, obj: Warpable) extends BoundedEvent {
   def bounds = obj.bounds
 }
 
+case class ObjVisibleEvt(world: World, obj: WObject) extends BoundedEvent {
+  def bounds = obj.bounds
+}
+
 case class MoveEvt(
   world: World, obj: MovableWObject, to: Vect2, movesLeft: TileDistance
-) extends BoundedEvent {
-  def bounds = obj.bounds
+) extends Event {
+  override def visibleBy(owner: Owner) =
+    world.isVisibleFor(owner, obj.position) || world.isVisibleFor(owner, to)
 }
 
 case class AttackEvt[D <: OwnedObj](

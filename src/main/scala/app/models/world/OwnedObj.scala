@@ -1,7 +1,7 @@
 package app.models.world
 
 import app.models.game.events.Evented
-import app.models.{Player, Bot, Human, Owner}
+import app.models.{Bot, Human, Owner, Player}
 import implicits._
 
 trait OwnedObjOps[Self] extends WObjectOps {
@@ -54,6 +54,14 @@ trait OwnedObj extends WObject {
   def teamTurnFinishedSelf(world: World): WorldSelfUpdate = Evented((world, self))
   final def teamTurnFinished(world: World): Evented[World] =
     teamTurnFinishedSelf(world).map(_._1)
+
+  override protected def selfEventedUpdate(
+    f: (World, Self) => Evented[Self]
+  )(evented: WorldSelfUpdate) = evented |> super.selfEventedUpdate(f) |> { evt =>
+    evt.flatMap { case (world, self) =>
+      World.revealObjects(self.owner.team, Evented(world, evt.events)).map((_, self))
+    }
+  }
 }
 
 trait PlayerObj extends OwnedObj { val owner: Player }

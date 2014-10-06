@@ -34,7 +34,7 @@ trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
     warp(world, player, position).right.map { _.map(_._1) }
 
   def setWarpState(newState: Int)(self: Self): Self
-  def nextWarpState(world: World, self: Self) =
+  def nextWarpState(world: World, self: Self): Evented[Self] =
     if (self.isWarpedIn) Evented(self)
     else {
       val newSelf = self |> setWarpState(self.warpState + 1)

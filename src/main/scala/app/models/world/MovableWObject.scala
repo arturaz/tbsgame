@@ -72,8 +72,14 @@ with Mobility[Mobility.Movable.type] {
   ): WObject.WorldObjOptUpdate[Self] = {
     if (vects.isEmpty) current
     else current.flatMap {
-      case (world, Some(self)) =>
-        travel(vects.tail, self |> companion.moveTo(vects.head) |> world.reactTo)
+      case (world, Some(self)) => travel(
+        vects.tail,
+        {
+          val newSelf = self |> companion.moveTo(vects.head)
+          val newEvtWorld = world.updated(self, newSelf)
+          World.revealObjects(owner.team, newEvtWorld).flatMap(_.reactTo(newSelf))
+        }
+      )
       case (_, None) => current
     }
   }

@@ -2,7 +2,7 @@ package app.models.world
 
 import app.models._
 import app.models.game.ai.GrowingSpawnerAI
-import app.models.game.events.{ResourceChangeEvt, Evented, TurnEndedEvt, TurnStartedEvt}
+import app.models.game.events._
 import app.models.world.WObject.Id
 import app.models.world.buildings.{Spawner, WarpGate}
 import app.models.world.props.Asteroid
@@ -115,6 +115,10 @@ case class World private (
   def isVisibleFor(owner: Owner, v: Vect2): Boolean =
     visibilityMap.isVisible(owner, v)
 
+  def objectsIn(vects: Vector[Vect2]): Set[WObject] =
+    if (vects.isEmpty) Set.empty
+    else objects.filter(obj => vects.exists(obj.bounds.contains))
+
   def reactTo[A <: OwnedObj](obj: A): WObject.WorldObjOptUpdate[A] = {
     @tailrec def react(
       reactors: Iterable[ReactiveFighter], current: WObject.WorldObjOptUpdate[A]
@@ -146,6 +150,18 @@ case class World private (
 }
 
 object World {
+  def revealObjects(team: Team, evtWorld: Evented[World]): Evented[World] = {
+    val newVisiblePoints = evtWorld.events.collect {
+      case evt: VisibilityChangeEvt if evt.visible && evt.team == team =>
+        evt.positions
+    }.flatten
+    evtWorld.flatMap { newWorld =>
+      val newVisibleObjs = newWorld.objectsIn(newVisiblePoints)
+      val newVisibleObjEvents = newVisibleObjs.map(ObjVisibleEvt(newWorld, _))
+      Evented(newWorld, newVisibleObjEvents.toVector)
+    }
+  }
+
   private def xTurnX[A : ClassTag](
     filter: A => Boolean, f: A => World => Evented[World]
   )(world: Evented[World]) = world.value.objects.foldLeft(world) {
