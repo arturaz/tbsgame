@@ -1,0 +1,227 @@
+import "base.proto";
+
+/* Server Out messages */
+
+message GameFromServer {
+  optional Events events = 1;
+  optional Error error = 2;
+
+  optional Init init = 1000;
+}
+
+message Init {
+  required base.Bounds bounds = 1;
+  repeated WObject objects = 2 [packed = true];
+  repeated Vect2 visible_points = 3 [packed = true];
+  repeated Team teams = 4 [packed = true];
+  repeated Player players = 5 [packed = true];
+  repeated Resources resources = 6 [packed = true];
+}
+
+message Events {
+  repeated Event events = 1 [packed = true];
+}
+
+message Error {
+  required string error = 1;
+}
+
+/* Data */
+
+message Team {
+  required base.UUID id = 1;
+}
+
+message Player { // {{{
+  required string name = 1;
+  required base.UUID id = 2;
+  required base.UUID team_id = 3;
+} // }}}
+
+message Resources { // {{{
+  required base.UUID player_id = 1;
+  required uint32 amount = 2;
+} // }}}
+
+message WObject { // {{{
+  enum Kind {
+    P_ASTEROID = 1;
+    B_WARP_GATE = 2;
+    B_EXTRACTOR = 3;
+    B_WARP_LINKER = 4;
+    B_SPAWNER = 5;
+    B_LASER_TOWER = 6;
+    U_CORVETTE = 7;
+    U_WASP = 8;
+  }
+
+  /* Trait properties */
+
+  message SizedObj {
+    required base.Vect2 size = 1;
+  }
+
+  message OwnedObj {
+    required base.UUID owner_id = 1;
+    required bool is_critical = 2;
+    required base.ValWithMax hp = 3;
+    required base.Range defense = 4;
+    required uint32 visibility = 5;
+  }
+
+  message GivingActions {
+    required uint32 actions_given = 1;
+  }
+
+  message Warpable {
+    required base.ValWithMax warp_state = 1;
+    required uint32 cost = 2;
+  }
+
+  message SpecialAction {
+    required uint32 actions_needed = 1;
+  }
+
+  message Fighter {
+    required base.Range attack = 1;
+    required uint32 attack_range = 2;
+    required bool attacked = 3;
+  }
+
+  message MoveAttackActioned {
+    required uint32 actions_needed = 1; 
+    required bool moved_or_attacked = 2;
+  }
+  
+  message Movable {
+    required uint32 movement = 1;
+  }
+
+  /* Concrete implementations */
+
+  message Asteroid {
+    required uint32 resources = 1;
+  }
+
+  message Extractor {
+    required uint32 turn_start_extracts = 1;
+    required uint32 special_extracts = 2;
+  }
+
+  message Corvette {
+    required uint32 special_movement_added = 1;
+  }
+
+  /* Properties */
+
+  required base.UUID id = 1;
+  required base.Vect2 position = 2;
+  required Kind kind = 3;
+
+  /* Trait properties */
+  optional SizedObj sized_obj = 1000;
+  optional OwnedObj owned_obj = 1001;
+  optional GivingActions giving_actions = 1002;
+  optional Warpable warpable = 1003;
+  optional SpecialAction special_action = 1004;
+  optional Fighter fighter = 1005;
+  optional MoveAttackActioned move_attack_actioned = 1006;
+  optional Movable movable = 1007;
+
+  /* Concrete implementation properties */
+  optional Asteroid asteroid = 2000;
+  optional Extractor extractor = 2001;
+  optional Corvette corvette = 2002;
+} // }}}
+
+/* Events */
+
+message Event { // {{{
+  optional TurnStartedEvt turn_started = 1;
+  optional TurnEndedEvt turn_ended = 2;
+  optional VisibilityChangeEvt visibility_change = 3;
+  optional WarpEvt warp = 4;
+  optional ObjVisibleEvt obj_visible = 5;
+  optional MoveEvt move = 6;
+  optional AttackEvt attack = 7;
+  optional MovementChangeEvt movement_change = 8;
+  optional MovedOrAttackedChangeEvt moved_or_attacked_change = 9;
+  optional ResourceChangeEvt resource_change = 10;
+  optional ActionsChangeEvt actions_change = 11;
+
+  optional JoinEvt join = 1000;
+  optional LeaveEvt leave = 1001;
+} // }}}
+
+message JoinEvt {
+  required Player player = 1;
+  required uint32 actions = 2;
+}
+
+message LeaveEvt {
+  required base.UUID player_id = 1;
+}
+
+message TurnStartedEvt {
+  required base.UUID team_id = 1;
+}
+
+message TurnEndedEvt {
+  required base.UUID team_id = 1;
+}
+
+message VisibilityChangeEvt {
+  required bool visible = 1;
+  repeated base.Vect2 positions = 2 [packed = true];
+}
+
+message WarpEvt {
+  required WObject object = 1;
+}
+
+message ObjVisibleEvt {
+  required WObject object = 1;
+}
+
+message MoveEvt {
+  required base.UUID obj_id = 1;
+  required base.Vect2 from = 2;
+  required base.Vect2 to = 3;
+  required uint32 moves_left = 4;
+}
+
+message AttackEvt {
+  required base.UUID attacker_id = 1;
+  required base.Vect2 attacker_position = 2;
+  required base.UUID defender_id = 3;
+  required uint32 hp_left = 4;
+  required Attack attack = 5;
+}
+
+message Attack {
+  required uint32 attacker_roll = 1;
+  required uint32 defender_roll = 2;
+  required bool successful = 3;
+}
+
+message MovementChangeEvt {
+  required base.UUID obj_id = 1;
+  required uint32 new_movement = 2;
+}
+
+message MovedOrAttackedChangeEvt {
+  required base.UUID obj_id = 1;
+  required bool moved_or_attacked = 2;
+}
+
+message ResourceChangeEvt {
+  // One or other.
+  optional base.UUID obj_id = 1;
+  optional base.UUID player_id = 2;
+  required uint32 new_resources = 3;
+}
+
+message ActionsChangeEvt {
+  required base.UUID player_id = 1;
+  required uint32 new_actions = 2;
+}

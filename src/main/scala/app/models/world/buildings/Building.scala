@@ -8,7 +8,6 @@ _: SizedWObjectStats =>
 
 trait BuildingStats extends SizedWObjectStats with OwnedObjStats {
   override val visibility = 3
-  override val defense = emptyRange
 }
 
 trait BuildingCompanion[Self] extends BuildingOps[Self] with BuildingStats

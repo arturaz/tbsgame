@@ -9,6 +9,7 @@ with EmptySpaceWarpableCompanion[WarpLinker] {
   override val size: Vect2 = Vect2(1, 1)
   override val warpTime: Int = 2
   override val cost: Int = 3
+  override val defense: Range = 2 to 5
 
   override def warp(owner: Player, position: Vect2) =
     WarpLinker(position, owner)

@@ -38,10 +38,10 @@ case class ObjVisibleEvt(world: World, obj: WObject) extends BoundedEvent {
 }
 
 case class MoveEvt(
-  world: World, obj: MovableWObject, to: Vect2, movesLeft: TileDistance
+  world: World, oldObj: MovableWObject, to: Vect2, movesLeft: TileDistance
 ) extends Event {
   override def visibleBy(owner: Owner) =
-    world.isVisibleFor(owner, obj.position) || world.isVisibleFor(owner, to)
+    world.isVisibleFor(owner, oldObj.position) || world.isVisibleFor(owner, to)
 }
 
 case class AttackEvt[D <: OwnedObj](
@@ -51,9 +51,15 @@ case class AttackEvt[D <: OwnedObj](
 }
 
 case class MovementChangeEvt(
-  world: World, obj: MovableWObject, movementLeft: TileDistance
+  world: World, changedObj: MovableWObject
 ) extends BoundedEvent {
-  def bounds = obj.bounds
+  def bounds = changedObj.bounds
+}
+
+case class MovedOrAttackedChangeEvt(
+  world: World, changedObj: MoveAttackActioned
+) extends BoundedEvent {
+  def bounds = changedObj.bounds
 }
 
 case class ResourceChangeEvt(
@@ -65,7 +71,7 @@ case class ResourceChangeEvt(
   )
 }
 
-case class ActionChangeEvt(
+case class ActionsChangeEvt(
   human: Human, actions: Int
 ) extends Event {
   override def visibleBy(owner: Owner) = human.isFriendOf(owner)

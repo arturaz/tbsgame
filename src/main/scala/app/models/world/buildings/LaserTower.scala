@@ -12,6 +12,7 @@ with EmptySpaceWarpableCompanion[LaserTower] {
   override val cost: Int = 10
   override val attack: Range = 2 to 14
   override val attackRange: TileDistance = TileDistance(5)
+  override val defense: Range = 3 to 8
 
   override def warp(owner: Player, position: Vect2) =
     LaserTower(position, owner)
@@ -22,6 +23,7 @@ with EmptySpaceWarpableCompanion[LaserTower] {
   override def withMovedOrAttacked(value: Boolean)(self: LaserTower) =
     self.copy(movedOrAttacked = value)
   override def withNewHp(hp: Int)(self: LaserTower) = self.copy(hp = hp)
+
 }
 
 case class LaserTower(

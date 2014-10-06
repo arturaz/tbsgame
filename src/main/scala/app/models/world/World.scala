@@ -103,8 +103,10 @@ case class World private (
     objects.view.collect { case obj: OwnedObj if obj.owner.isFriendOf(owner) => obj }.
       exists { obj => f(obj.visibility) }
 
-  def visibleBy(owner: Owner): World =
-    copy(objects = objects.filter(o => isVisiblePartial(owner, o.bounds)))
+  def visibleBy(owner: Owner): World = copy(
+    objects = objects.filter(o => isVisiblePartial(owner, o.bounds)),
+    resourcesMap = resourcesMap.filter { case (player, _) => owner.isFriendOf(player) }
+  )
 
   /* Is any part of the bounds visible to owner */
   def isVisiblePartial(owner: Owner, b: Bounds): Boolean =

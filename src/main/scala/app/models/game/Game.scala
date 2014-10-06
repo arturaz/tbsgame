@@ -48,7 +48,7 @@ object Game {
         val newState =
           state |-> HumanState.actions modify (_ - actionsNeeded)
         val events =
-          if (actionsNeeded > 0) Vector(ActionChangeEvt(human, newState.actions))
+          if (actionsNeeded > 0) Vector(ActionsChangeEvt(human, newState.actions))
           else Vector.empty
         f(newState).right.map(events ++: _)
       }
@@ -105,7 +105,7 @@ case class Game private (
         else e.flatMap { curStates =>
           Evented(
             curStates + (human -> state.copy(actions = game.world.actionsFor(human))),
-            Vector(ActionChangeEvt(human, newActions))
+            Vector(ActionsChangeEvt(human, newActions))
           )
         }
       }.map(game.updated)
@@ -203,7 +203,7 @@ case class Game private (
       val actions = 0
       Evented(
         updated(world, human -> state.copy(actions = 0)),
-        Vector(ActionChangeEvt(human, actions))
+        Vector(ActionsChangeEvt(human, actions))
       ).right
     }
 

@@ -49,8 +49,7 @@ case class Corvette(
         hasAttacked = true,
         movementLeft = movementLeft + companion.specialMovementAdded
       )
-      world.updated(this, updated) :+
-        MovementChangeEvt(world, updated, updated.movementLeft)
+      world.updated(this, updated) :+ MovementChangeEvt(world, updated)
     },
     s"Cannot toggle special action for $this: already attacked!"
   )

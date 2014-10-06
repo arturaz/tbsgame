@@ -2,20 +2,37 @@ package app.models.world
 
 import app.algorithms.Pathfinding
 import app.algorithms.Pathfinding.Path
-import app.models.game.events.Evented
+import app.models.game.events.{MoveEvt, MovedOrAttackedChangeEvt, MovementChangeEvt, Evented}
 import implicits._
 
 trait MovableWObjectOps[Self <: MovableWObject]
 extends WObjectOps with MoveAttackActionedOps[Self]
 { _: MovableWObjectStats =>
   def setMoveValues(position: Vect2, movementLeft: TileDistance)(self: Self): Self
-  def resetMovementLeft(self: Self) =
+
+  private[this] def resetMovementLeft(self: Self): Self =
     self |> setMoveValues(self.position, movement)
 
-  def moveTo(target: Vect2)(self: Self): Self = {
+  def resetMovementLeft(world: World, self: Self): Evented[Self] = {
+    val newSelf = resetMovementLeft(self)
+    Evented(newSelf, MovementChangeEvt(world, newSelf))
+  }
+
+  private[this] def moveTo(target: Vect2)(self: Self): Self =
     self |>
       setMoveValues(target, self.movementLeft - self.position.tileDistance(target)) |>
       withMovedOrAttacked(true)
+
+  def moveTo(world: World, target: Vect2)(self: Self): Evented[Self] = {
+    val newSelf = moveTo(target)(self)
+    Evented(
+      newSelf,
+      Vector(MoveEvt(world, self, target, newSelf.movementLeft)) ++ (
+        if (self.movedOrAttacked != newSelf.movedOrAttacked)
+          Vector(MovedOrAttackedChangeEvt(world, newSelf))
+        else Vector.empty
+      )
+    )
   }
 }
 
@@ -42,7 +59,7 @@ with Mobility[Mobility.Movable.type] {
 
   override def teamTurnStartedSelf(world: World) =
     super.teamTurnStartedSelf(world) |>
-    selfUpdate(companion.resetMovementLeft) |>
+    selfEventedUpdate(companion.resetMovementLeft) |>
     selfUpdate(_ |> companion.withMovedOrAttacked(companion.InitialMovedOrAttacked))
 
   def moveTo(
@@ -74,11 +91,12 @@ with Mobility[Mobility.Movable.type] {
     else current.flatMap {
       case (world, Some(self)) => travel(
         vects.tail,
-        {
-          val newSelf = self |> companion.moveTo(vects.head)
-          val newEvtWorld = world.updated(self, newSelf)
-          World.revealObjects(owner.team, newEvtWorld).flatMap(_.reactTo(newSelf))
-        }
+        for {
+          newSelf <- self |> companion.moveTo(world, vects.head)
+          newEvtWorld = world.updated(self, newSelf)
+          world <- World.revealObjects(owner.team, newEvtWorld)
+          t <- world.reactTo(newSelf)
+        } yield t
       )
       case (_, None) => current
     }

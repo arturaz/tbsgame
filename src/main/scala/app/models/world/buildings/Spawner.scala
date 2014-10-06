@@ -8,6 +8,7 @@ object Spawner extends BuildingCompanion[Spawner] with GrowingSpawnerCompanion[S
   override val maxHp: Int = 10
   override val size: Vect2 = Vect2(2, 2)
   override val isCritical: Boolean = true
+  override val defense: Range = emptyRange
   val DefaultTurnsPerStrength = 6
 
   override def withNewHp(hp: Int)(self: Spawner) = self.copy(hp = hp)
@@ -15,6 +16,7 @@ object Spawner extends BuildingCompanion[Spawner] with GrowingSpawnerCompanion[S
     self.copy(turnsPerStrength = value)
   override def withTurns(turns: Int)(self: Spawner) =
     self.copy(turns = turns)
+
 }
 
 case class Spawner(
