@@ -15,6 +15,7 @@ trait BuildingCompanion[Self] extends BuildingOps[Self] with BuildingStats
 /* Building existing in game world. */
 trait Building extends SizedWObject with OwnedObj {
   type Companion <: BuildingOps[Self] with BuildingStats
+  override def givesWarpVisibility = true
 }
 
 trait PlayerBuilding extends Building with PlayerObj

@@ -8,11 +8,11 @@ sealed trait Event {
   def visibleBy(owner: Owner): Boolean
 }
 
-trait AlwaysVisibleEvent extends Event {
+sealed trait AlwaysVisibleEvent extends Event {
   override def visibleBy(owner: Owner) = true
 }
 
-trait BoundedEvent extends Event {
+sealed trait BoundedEvent extends Event {
   def world: World
   def bounds: Bounds
   def visibleBy(owner: Owner) = world.isVisiblePartial(owner, bounds)

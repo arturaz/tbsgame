@@ -6,6 +6,9 @@ case class Bounds(x: Range.Inclusive, y: Range.Inclusive) {
     s"Bounds size must be > 0: x=${rstr(x)} y=${rstr(y)}"
   )
 
+  def start = Vect2(x.start, y.start)
+  def end = Vect2(x.end, y.end)
+
   def points = for {
     xCoord <- Iterator.range(x.start, x.end + 1)
     yCoord <- Iterator.range(y.start, y.end + 1)

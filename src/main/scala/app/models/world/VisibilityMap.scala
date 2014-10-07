@@ -59,6 +59,9 @@ case class VisibilityMap private (
   def isVisibleFull(team: Team, bounds: Bounds): Boolean =
     bounds.points.forall(isVisible(team, _))
 
+  def filter(owner: Owner): VisibilityMap =
+    copy(map = map.filterKeys { case (_, team) => team == owner.team })
+
   def +(obj: OwnedObj): Evented[VisibilityMap] =
     this + (pointsOf(obj), obj.owner.team)
   def +(points: TraversableOnce[Vect2], team: Team): Evented[VisibilityMap] =

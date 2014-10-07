@@ -105,7 +105,8 @@ case class World private (
 
   def visibleBy(owner: Owner): World = copy(
     objects = objects.filter(o => isVisiblePartial(owner, o.bounds)),
-    resourcesMap = resourcesMap.filter { case (player, _) => owner.isFriendOf(player) }
+    resourcesMap = resourcesMap.filter { case (player, _) => owner.isFriendOf(player) },
+    visibilityMap = visibilityMap.filter(owner)
   )
 
   /* Is any part of the bounds visible to owner */
@@ -116,6 +117,12 @@ case class World private (
     visibilityMap.isVisibleFull(owner, b)
   def isVisibleFor(owner: Owner, v: Vect2): Boolean =
     visibilityMap.isVisible(owner, v)
+  def isValidForWarp(owner: Owner, v: Vect2): Boolean =
+    objects.exists {
+      case oo: OwnedObj if oo.givesWarpVisibility && owner.isFriendOf(oo.owner) =>
+        oo.visibility.contains(v)
+      case _ => false
+    }
 
   def objectsIn(vects: Vector[Vect2]): Set[WObject] =
     if (vects.isEmpty) Set.empty

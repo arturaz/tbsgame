@@ -11,12 +11,12 @@ trait OwnedObjOps[Self] extends WObjectOps {
 trait OwnedObjStats extends WObjectStats {
   val maxHp: Int
   val visibility: Int
-  val defense: Range
+  val defense: Range.Inclusive
   /* If team has no critical objects it cannot do any more actions and
      loses the game. */
   val isCritical: Boolean = false
 
-  protected def emptyRange = 0 until 0
+  protected def emptyRange = 0 to -1
 }
 
 trait OwnedObjCompanion[Self]
@@ -33,6 +33,7 @@ trait OwnedObj extends WObject {
   def isWarpedIn = ! isWarpingIn
   def isEnemy(o: OwnedObj) = owner.team != o.owner.team
   def isFriend(o: OwnedObj) = ! isEnemy(o)
+  def givesWarpVisibility: Boolean
   override def asOwnedObj = Some(this)
 
   lazy val visibility = {

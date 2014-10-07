@@ -10,7 +10,7 @@ with MoveAttackActionedOps[Self] {
 }
 
 trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
-  val attack: Range
+  val attack: Range.Inclusive
   val attackRange: TileDistance
 }
 

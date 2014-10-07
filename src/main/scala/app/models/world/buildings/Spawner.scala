@@ -8,7 +8,7 @@ object Spawner extends BuildingCompanion[Spawner] with GrowingSpawnerCompanion[S
   override val maxHp: Int = 10
   override val size: Vect2 = Vect2(2, 2)
   override val isCritical: Boolean = true
-  override val defense: Range = emptyRange
+  override val defense = emptyRange
   val DefaultTurnsPerStrength = 6
 
   override def withNewHp(hp: Int)(self: Spawner) = self.copy(hp = hp)

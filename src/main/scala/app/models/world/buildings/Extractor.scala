@@ -14,7 +14,7 @@ with SpecialActionCompanion {
   override val size: Vect2 = Vect2.one
   override val warpTime: Int = 1
   override val cost: Int = 4
-  override val defense: Range = 2 to 7
+  override val defense = 2 to 7
   /* How much resources does turn start extract? */
   val turnStartExtracts = 1
   /* How much resources does special action extract? */

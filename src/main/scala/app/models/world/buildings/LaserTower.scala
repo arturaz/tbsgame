@@ -10,9 +10,9 @@ with EmptySpaceWarpableCompanion[LaserTower] {
   override val size: Vect2 = Vect2.one
   override val warpTime: Int = 1
   override val cost: Int = 10
-  override val attack: Range = 2 to 14
+  override val attack = 2 to 14
   override val attackRange: TileDistance = TileDistance(5)
-  override val defense: Range = 3 to 8
+  override val defense = 3 to 8
 
   override def warp(owner: Player, position: Vect2) =
     LaserTower(position, owner)

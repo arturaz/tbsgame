@@ -10,9 +10,11 @@ trait WUnitStats extends OwnedObjStats with MovableWObjectStats
 with WarpableStats
 
 trait WUnitCompanion[Self <: WUnit] extends WUnitOps[Self] with WUnitStats
+with EmptySpaceWarpableCompanion[Self]
 
 /* World unit */
 trait WUnit extends PlayerObj with MovableWObject with Warpable {
   type Self <: WUnit
   type Companion <: WUnitOps[Self] with WUnitStats
+  override def givesWarpVisibility = false
 }

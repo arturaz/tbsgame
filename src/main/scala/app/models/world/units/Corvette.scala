@@ -6,8 +6,8 @@ import app.models.world._
 
 object Corvette extends WUnitCompanion[Corvette] 
 with FighterCompanion[Corvette] with SpecialActionCompanion {
-  override val attack: Range = 2 to 7
-  override val defense: Range = 2 to 7
+  override val attack = 2 to 7
+  override val defense = 2 to 7
   override val attackRange = TileDistance(3)
   override val movement = TileDistance(3)
   override val visibility: Int = 4

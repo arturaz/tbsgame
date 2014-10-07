@@ -1,5 +1,13 @@
-import "game.proto"
+package messages;
+
+option java_package = "netmsg";
+
+import "game.proto";
+
+message FromClient {
+  optional game.FromClient game = 1;
+}
 
 message FromServer {
-  optional GameFromServer game = 1;  
+  optional game.FromServer game = 1;  
 }

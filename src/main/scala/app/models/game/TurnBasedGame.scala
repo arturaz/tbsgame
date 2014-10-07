@@ -1,7 +1,7 @@
 package app.models.game
 
 import app.models.game.events.Evented
-import app.models.world.{World, Vect2, Warpable, WarpableCompanion}
+import app.models.world._
 import app.models.{Human, Team}
 import implicits._
 
@@ -49,14 +49,14 @@ case class TurnBasedGame private (
     human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
   ) = humanDo(human)(game.warp(_, position, warpable))
 
-  override def move(human: Human, from: Vect2, to: Vect2) =
-    humanDo(human)(game.move(_, from, to))
+  override def move(human: Human, id: WObject.Id, to: Vect2) =
+    humanDo(human)(game.move(_, id, to))
 
-  override def special(human: Human, position: Vect2) =
-    humanDo(human)(game.special(_, position))
+  override def special(human: Human, id: WObject.Id) =
+    humanDo(human)(game.special(_, id))
 
-  override def attack(human: Human, source: Vect2, target: Vect2) =
-    humanDo(human)(game.attack(_, source, target))
+  override def attack(human: Human, id: WObject.Id, targetId: WObject.Id) =
+    humanDo(human)(game.attack(_, id, targetId))
 
   override def consumeActions(human: Human) = humanDo(human)(game.consumeActions)
 

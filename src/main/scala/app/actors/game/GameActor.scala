@@ -3,31 +3,37 @@ package app.actors.game
 import akka.actor.{Actor, ActorRef}
 import app.models.game.TurnBasedGame
 import app.models.game.events.{Evented, TurnStartedEvt, Events => GEvents}
-import app.models.world.{Vect2, Warpable, WarpableCompanion, World}
+import app.models.world._
 import app.models.{Bot, Human, Team}
 import infrastructure.Log
+import language.existentials
 
 import scala.annotation.tailrec
 
 object GameActor {
   val StartingResources = 25
+  val HumanTeam = Team()
+  val AiTeam = Team()
 
+  sealed trait In
   object In {
-    case class Join(human: Human)
-    case class Leave(human: Human)
+    case class Join(human: Human) extends In
+    case class Leave(human: Human) extends In
     case class Warp(
-      human: Human, position: Vect2, warpable: WarpableCompanion[Warpable]
-    )
-    case class Move(human: Human, from: Vect2, to: Vect2)
-    case class Attack(human: Human, source: Vect2, target: Vect2)
-    case class Special(human: Human, position: Vect2)
-    case class ConsumeActions(human: Human)
+      human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
+    ) extends In
+    case class Move(human: Human, id: WObject.Id, to: Vect2) extends In
+    case class Attack(human: Human, id: WObject.Id, targetId: WObject.Id) extends In
+    case class Special(human: Human, id: WObject.Id) extends In
+    case class ConsumeActions(human: Human) extends In
   }
 
+  sealed trait Out
   object Out {
-    case class Init(world: World)
-    case class Events(events: GEvents)
-    case class Error(error: String)
+    case class Joined(human: Human) extends Out
+    case class Init(world: World) extends Out
+    case class Events(events: GEvents) extends Out
+    case class Error(error: String) extends Out
   }
 
   private def init(human: Human, ref: ActorRef, world: World): Unit = {
@@ -56,9 +62,8 @@ class GameActor(
   private[this] var clients = Map(startingHuman -> startingHumanRef)
 
   private[this] var game = {
-    val playerTeam = Team()
-    val ai = Bot(Team())
-    val world = World.create(playerTeam, ai, ai)
+    val ai = Bot(AiTeam)
+    val world = World.create(HumanTeam, ai, ai)
     TurnBasedGame(world, GameActor.StartingResources).right.map(nextReadyTeam).fold(
       err => throw new IllegalStateException(s"Cannot initialize game: $err"),
       evented => {
@@ -71,6 +76,7 @@ class GameActor(
 
   def receive = {
     case In.Join(human) =>
+      sender() ! Out.Joined(human)
       val ref = sender()
       update(
         ref,
@@ -83,18 +89,23 @@ class GameActor(
         }
       )
     case In.Leave(human) =>
-      update(sender(), _.leave(human).right.map { evtTbg =>
-        clients -= human
-        evtTbg
-      })
+      if (clients.contains(human)) {
+        update(sender(), _.leave(human).right.map { evtTbg =>
+          clients -= human
+          evtTbg
+        })
+      }
+      else {
+        sender ! Out.Error(s"No human $human is joined.")
+      }
     case In.Warp(human, position, warpable) =>
       update(sender(), _.warp(human, position, warpable))
-    case In.Move(human, from, to) =>
-      update(sender(), _.move(human, from, to))
-    case In.Attack(human, source, target) =>
-      update(sender(), _.attack(human, source, target))
-    case In.Special(human, position) =>
-      update(sender(), _.special(human, position))
+    case In.Move(human, id, to) =>
+      update(sender(), _.move(human, id, to))
+    case In.Attack(human, id, target) =>
+      update(sender(), _.attack(human, id, target))
+    case In.Special(human, id) =>
+      update(sender(), _.special(human, id))
     case In.ConsumeActions(human) =>
       update(sender(), _.consumeActions(human))
   }

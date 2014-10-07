@@ -39,9 +39,9 @@ object Game {
   }.toMap
 
   private object Withs {
-    def withActions(human: Human, actionsNeeded: Int)(
+    def withActions(human: Human, actionsNeeded: Int, state: HumanState)(
       f: HumanState => Game.Result
-    )(state: HumanState): Game.Result = {
+    ): Game.Result = {
       if (state.actions < actionsNeeded)
         s"Not enough actions: needed $actionsNeeded, had $state".left
       else {
@@ -55,17 +55,18 @@ object Game {
     }
 
     def withMoveAttackAction[A <: MoveAttackActioned](
-      human: Human
-    )(f: (A, HumanState) => Game.Result)(obj: A)(state: HumanState): Game.Result =
+      human: Human, state: HumanState
+    )(f: (A, HumanState) => Game.Result)(obj: A): Game.Result =
       withActions(
         human,
-        if (obj.movedOrAttacked) 0 else obj.companion.moveAttackActionsNeeded
-      )(f(obj, _))(state)
+        if (obj.movedOrAttacked) 0 else obj.companion.moveAttackActionsNeeded,
+        state
+      )(f(obj, _))
 
     def withSpecialAction[A <: SpecialAction](
-      human: Human
-    )(f: A => HumanState => Game.Result)(obj: A)(state: HumanState): Game.Result =
-      withActions(human, obj.companion.specialActionsNeeded)(f(obj))(state)
+      human: Human, state: HumanState
+    )(f: A => HumanState => Game.Result)(obj: A): Game.Result =
+      withActions(human, obj.companion.specialActionsNeeded, state)(f(obj))
 
     def withResources(
       human: Human, resourcesNeeded: Int, world: World
@@ -82,9 +83,9 @@ trait GameLike[A] {
     human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
   ): Game.ResultT[A]
 
-  def move(human: Human, from: Vect2, to: Vect2): Game.ResultT[A]
-  def attack(human: Human, source: Vect2, target: Vect2): Game.ResultT[A]
-  def special(human: Human, position: Vect2): Game.ResultT[A]
+  def move(human: Human, id: WObject.Id, to: Vect2): Game.ResultT[A]
+  def attack(human: Human, id: WObject.Id, targetId: WObject.Id): Game.ResultT[A]
+  def special(human: Human, id: WObject.Id): Game.ResultT[A]
   def consumeActions(human: Human): Game.ResultT[A]
 }
 
@@ -150,21 +151,21 @@ case class Game private (
   def warp(
     human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
   ): Game.Result =
-    withState(human) {
-    withActions(human, 1) { state =>
+    withState(human) { state =>
+    withActions(human, 1, state) { state =>
     withResources(human, warpable.cost, world) { evtWorld =>
-    withVisibility(human, position) {
+    withWarpVisibility(human, position) {
       evtWorld.map { warpable.warpW(_, human, position).right.map { _.map {
         updated(_, human -> state)
       } } }.extract.right.map(_.flatten)
     } } } }
 
   def move(
-    human: Human, from: Vect2, to: Vect2
+    human: Human, id: WObject.Id, to: Vect2
   ): Game.Result =
-    withState(human) {
-    withMoveObj(human, from) {
-    withMoveAttackAction(human) { (obj, state) =>
+    withState(human) { state =>
+    withMoveObj(human, id) {
+    withMoveAttackAction(human, state) { (obj, state) =>
     withVisibility(human, to) {
       obj.moveTo(world, to).right.map { _.map { case (w, _) =>
         updated(w, human -> state)
@@ -172,29 +173,24 @@ case class Game private (
     } } } }
 
   def attack(
-    human: Human, source: Vect2, target: Vect2
+    human: Human, id: WObject.Id, targetId: WObject.Id
   ): Game.Result =
-    withState(human) {
-    withAttackObj(human, source) {
-    withMoveAttackAction(human) { (obj, state) =>
-    withVisibility(human, target) {
-      world.find {
-        case targetObj: OwnedObj if targetObj.bounds.contains(target) =>
-          targetObj
-      }.fold2(
-        s"Can't find target at $target for $human".left,
-        targetObj => obj.attackW(targetObj, world).right.map { _.map { world =>
-          updated(world, human -> state)
-        } }
-      )
-    } } } }
+    withState(human) { state =>
+    withAttackObj(human, id) {
+    withMoveAttackAction(human, state) { (obj, state) =>
+    withTargetObj(targetId) { targetObj =>
+    withVisibility(human, targetObj) {
+      obj.attackW(targetObj, world).right.map { _.map { world =>
+        updated(world, human -> state)
+      } }
+    } } } } }
 
   def special(
-    human: Human, position: Vect2
+    human: Human, id: WObject.Id
   ): Game.Result =
-    withState(human) {
-    withSpecialObj(human, position) {
-    withSpecialAction(human) { obj => state =>
+    withState(human) { state =>
+    withSpecialObj(human, id) {
+    withSpecialAction(human, state) { obj => state =>
       obj.special(world).right.map(_.map(world => updated(world, human -> state)))
     } } }
 
@@ -221,31 +217,50 @@ case class Game private (
     if (world.isVisibleFor(human, position)) f
     else s"$human does not see $position".left
 
-  private[this] type ObjFn[A] = A => HumanState => Game.Result
+  private[this] def withVisibility(
+    human: Human, obj: OwnedObj
+  )(f: => Game.Result): Game.Result =
+    if (world.isVisiblePartial(human, obj.bounds)) f
+    else s"$human does not see $obj".left
+
+  private[this] def withWarpVisibility(
+    human: Human, position: Vect2
+  )(f: => Game.Result): Game.Result =
+    if (world.isValidForWarp(human, position)) f
+    else s"$human cannot warp into $position".left
+
+  private[this] type ObjFn[A] = A => Game.Result
 
   private[this] def withObj[A <: OwnedObj : ClassTag](
-    human: Human, position: Vect2
-  )(f: ObjFn[A])(state: HumanState): Game.Result = {
+    id: WObject.Id
+  )(f: ObjFn[A]): Game.Result = {
     world.find {
-      case obj: A if obj.position == position && obj.owner == human => obj
-    }.fold2(
-      s"Cannot find object belonging to $human in $position".left,
-      obj => f(obj)(state)
-    )
+      case obj: A if obj.id == id => obj
+    }.fold2(s"Cannot find object with id $id".left, f)
   }
 
-  private[this] def withMoveObj(human: Human, position: Vect2)(
+  private[this] def withHumanObj[A <: OwnedObj : ClassTag](
+    human: Human, id: WObject.Id
+  )(f: ObjFn[A]): Game.Result = {
+    withObj[A](id) { obj =>
+      if (obj.owner == human) f(obj)
+      else s"Cannot find object belonging to $human with id $id".left
+    }
+  }
+
+  private[this] def withMoveObj(human: Human, id: WObject.Id)(
     f: ObjFn[OwnedObj with MovableWObject]
-  )(state: HumanState): Game.Result =
-    withObj(human, position)(f)(state)
+  ): Game.Result = withHumanObj(human, id)(f)
 
-  private[this] def withAttackObj(human: Human, position: Vect2)(
+  private[this] def withAttackObj(human: Human, id: WObject.Id)(
     f: ObjFn[OwnedObj with Fighter]
-  )(state: HumanState): Game.Result =
-    withObj(human, position)(f)(state)
+  ): Game.Result = withHumanObj(human, id)(f)
 
-  private[this] def withSpecialObj(human: Human, position: Vect2)(
+  private[this] def withSpecialObj(human: Human, id: WObject.Id)(
     f: ObjFn[OwnedObj with SpecialAction]
-  )(state: HumanState): Game.Result =
-    withObj(human, position)(f)(state)
+  ): Game.Result = withHumanObj(human, id)(f)
+
+  private[this] def withTargetObj(id: WObject.Id)(
+    f: ObjFn[OwnedObj with SpecialAction]
+  ): Game.Result = withObj(id)(f)
 }

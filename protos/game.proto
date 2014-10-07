@@ -1,28 +1,84 @@
+package game;
+
 import "base.proto";
+
+option java_package = "netmsg";
+
+/* Client Out messages */
+
+message FromClient {
+  optional MWarp warp = 1;
+  optional MMove move = 2;
+  optional MAttack attack = 3;
+  optional MSpecial special = 4;
+
+  optional MJoin join = 1000;
+  optional MLeave leave = 1001;
+  optional MConsumeActions consume_actions = 1002;
+}
+
+message MJoin {
+  required string name = 1;
+}
+
+message MLeave {}
+
+message MWarp {
+  enum HumanWarpable {
+    B_EXTRACTOR = 1;
+    B_WARP_LINKER = 2;
+    B_LASER_TOWER = 3;
+    U_CORVETTE = 4;
+  }
+
+  required base.Vect2 position = 1;
+  required HumanWarpable warpable = 2;
+}
+
+message MMove {
+  required base.UUID id = 1;
+  required base.Vect2 target = 2;
+}
+
+message MAttack {
+  required base.UUID id = 1;
+  required base.UUID target_id = 2;
+}
+
+message MSpecial {
+  required base.UUID id = 1;
+}
+
+message MConsumeActions {}
 
 /* Server Out messages */
 
-message GameFromServer {
-  optional Events events = 1;
-  optional Error error = 2;
+message FromServer {
+  optional MEvents events = 1;
+  optional MError error = 2;
 
-  optional Init init = 1000;
+  optional MJoined joined = 1000;
+  optional MInit init = 1001;
 }
 
-message Init {
+message MJoined {
+  required Player player = 1;
+}
+
+message MInit {
   required base.Bounds bounds = 1;
-  repeated WObject objects = 2 [packed = true];
-  repeated Vect2 visible_points = 3 [packed = true];
-  repeated Team teams = 4 [packed = true];
-  repeated Player players = 5 [packed = true];
-  repeated Resources resources = 6 [packed = true];
+  repeated WObject objects = 2;
+  repeated base.Vect2 visible_points = 3;
+  repeated Team teams = 4;
+  repeated Player players = 5;
+  repeated Resources resources = 6;
 }
 
-message Events {
-  repeated Event events = 1 [packed = true];
+message MEvents {
+  repeated Event events = 1;
 }
 
-message Error {
+message MError {
   required string error = 1;
 }
 
@@ -55,7 +111,7 @@ message WObject { // {{{
     U_WASP = 8;
   }
 
-  /* Trait properties */
+  /* Trait properties {{{ */
 
   message SizedObj {
     required base.Vect2 size = 1;
@@ -97,7 +153,9 @@ message WObject { // {{{
     required uint32 movement = 1;
   }
 
-  /* Concrete implementations */
+  /* End of Trait properties }}} */
+
+  /* Concrete implementations {{{ */
 
   message Asteroid {
     required uint32 resources = 1;
@@ -111,6 +169,8 @@ message WObject { // {{{
   message Corvette {
     required uint32 special_movement_added = 1;
   }
+
+  /* End of Concrete implementations }}} */
 
   /* Properties */
 
@@ -172,7 +232,7 @@ message TurnEndedEvt {
 
 message VisibilityChangeEvt {
   required bool visible = 1;
-  repeated base.Vect2 positions = 2 [packed = true];
+  repeated base.Vect2 positions = 2;
 }
 
 message WarpEvt {
