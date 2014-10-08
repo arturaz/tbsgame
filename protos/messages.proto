@@ -3,11 +3,14 @@ package messages;
 option java_package = "netmsg";
 
 import "game.proto";
+import "management.proto";
 
 message FromClient {
   optional game.FromClient game = 1;
+  optional management.FromClient management = 2;
 }
 
 message FromServer {
-  optional game.FromServer game = 1;  
+  optional game.FromServer game = 1;
+  optional management.FromServer management = 2;
 }

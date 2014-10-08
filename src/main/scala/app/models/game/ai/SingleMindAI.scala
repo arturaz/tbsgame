@@ -2,10 +2,10 @@ package app.models.game.ai
 
 import app.algorithms.Pathfinding.SearchRes
 import app.algorithms.{Combat, Pathfinding}
-import app.models.Owner
+import app.models.game.Owner
 import app.models.game.events.Evented
-import app.models.world._
-import app.models.world.units.WUnit
+import app.models.game.world._
+import app.models.game.world.units.WUnit
 import implicits._
 import infrastructure.Log
 

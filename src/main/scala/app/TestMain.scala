@@ -1,8 +1,8 @@
 //package app
 //
 //import app.models.game.ai.{GrowingSpawnerAI, SingleMindAI}
-//import app.models.world.World
-//import app.models.world.buildings.GrowingSpawner
+//import app.models.game.world.World
+//import app.models.game.world.buildings.GrowingSpawner
 //import app.models.{Player, Team}
 //import implicits._
 //import infrastructure.RenderPNG

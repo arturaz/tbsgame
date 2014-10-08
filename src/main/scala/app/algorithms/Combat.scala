@@ -2,7 +2,7 @@ package app.algorithms
 
 import app.algorithms.Pathfinding.SearchRes
 import app.models.game.events.Evented
-import app.models.world._
+import app.models.game.world._
 import implicits._
 
 object Combat {

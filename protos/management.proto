@@ -1,0 +1,33 @@
+package management;
+
+import "base.proto";
+import "game.proto";
+
+option java_package = "netmsg";
+
+message FromClient {
+  optional Login login = 1;
+  optional JoinGame join_game = 2;
+}
+
+message Login {
+  required base.UUID id = 1;
+  required string name = 2; // Temporary, should be fetched from DB.
+  //required string password = 2;
+}
+
+message JoinGame {}
+
+message FromServer {
+  optional LoginResponse login = 1;
+  optional GameJoined game_joined = 2;
+}
+
+message LoginResponse {
+  // not set if credentials are wrong.
+  optional string player_name = 1;
+}
+
+message GameJoined {
+  required game.Player player = 1;
+}

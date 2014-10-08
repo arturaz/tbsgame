@@ -1,6 +1,6 @@
 package app.algorithms
 
-import app.models.world._
+import app.models.game.world._
 
 import scala.collection.immutable.Queue
 import scala.collection.mutable

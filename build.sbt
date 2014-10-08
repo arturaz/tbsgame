@@ -4,6 +4,8 @@ scalaVersion := "2.11.2"
 
 scalacOptions := Seq("-feature", "-deprecation", "-unchecked")
 
+unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "gen" / "java"
+
 initialCommands in console := """import app.models._, world._, implicits._"""
 
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"

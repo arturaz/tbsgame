@@ -5,11 +5,11 @@ import java.awt.{Color, Font}
 import java.io.File
 import javax.imageio.ImageIO
 
-import app.models.world._
-import app.models.world.buildings.{Spawner, WarpGate}
-import app.models.world.props.Asteroid
-import app.models.world.units.Wasp
-import app.models.{Owner, Player, Team}
+import app.models.game.world._
+import app.models.game.world.buildings.{Spawner, WarpGate}
+import app.models.game.world.props.Asteroid
+import app.models.game.world.units.Wasp
+import app.models.game.{Owner, Player, Team}
 
 /**
  * Created by arturas on 2014-09-11.

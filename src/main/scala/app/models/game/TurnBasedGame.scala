@@ -1,8 +1,7 @@
 package app.models.game
 
 import app.models.game.events.Evented
-import app.models.world._
-import app.models.{Human, Team}
+import app.models.game.world._
 import implicits._
 
 object TurnBasedGame {

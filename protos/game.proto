@@ -12,13 +12,8 @@ message FromClient {
   optional MAttack attack = 3;
   optional MSpecial special = 4;
 
-  optional MJoin join = 1000;
   optional MLeave leave = 1001;
   optional MConsumeActions consume_actions = 1002;
-}
-
-message MJoin {
-  required string name = 1;
 }
 
 message MLeave {}

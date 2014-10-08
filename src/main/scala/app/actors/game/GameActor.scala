@@ -1,10 +1,12 @@
 package app.actors.game
 
-import akka.actor.{Actor, ActorRef}
-import app.models.game.TurnBasedGame
+import akka.actor.{Props, Actor, ActorRef}
+import akka.event.LoggingReceive
+import app.actors.game.GameActor.Out.Joined
+import app.models.game.{Bot, Human, Team, TurnBasedGame}
 import app.models.game.events.{Evented, TurnStartedEvt, Events => GEvents}
-import app.models.world._
-import app.models.{Bot, Human, Team}
+import app.models.game.world._
+import app.models.User
 import infrastructure.Log
 import language.existentials
 
@@ -17,7 +19,7 @@ object GameActor {
 
   sealed trait In
   object In {
-    case class Join(human: Human) extends In
+    case class Join(user: User) extends In
     case class Leave(human: Human) extends In
     case class Warp(
       human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
@@ -30,7 +32,7 @@ object GameActor {
 
   sealed trait Out
   object Out {
-    case class Joined(human: Human) extends Out
+    case class Joined(human: Human, game: ActorRef) extends Out
     case class Init(world: World) extends Out
     case class Events(events: GEvents) extends Out
     case class Error(error: String) extends Out
@@ -52,9 +54,13 @@ object GameActor {
     if (game.value.currentTeamFinished) nextReadyTeam(game.flatMap(_.nextTeamTurn))
     else game
   }
+
+  def props(startingUser: User, startingHumanRef: ActorRef) = Props(new GameActor(
+    Human(startingUser, HumanTeam), startingHumanRef
+  ))
 }
 
-class GameActor(
+class GameActor private (
   startingHuman: Human, startingHumanRef: ActorRef
 ) extends Actor {
   import app.actors.game.GameActor._
@@ -67,6 +73,7 @@ class GameActor(
     TurnBasedGame(world, GameActor.StartingResources).right.map(nextReadyTeam).fold(
       err => throw new IllegalStateException(s"Cannot initialize game: $err"),
       evented => {
+        startingHumanRef ! Joined(startingHuman, self)
         init(startingHuman, startingHumanRef, evented.value.game.world)
         events(startingHuman, startingHumanRef, evented.events)
         evented.value
@@ -74,10 +81,11 @@ class GameActor(
     )
   }
 
-  def receive = {
-    case In.Join(human) =>
-      sender() ! Out.Joined(human)
+  def receive = LoggingReceive {
+    case In.Join(user) =>
+      val human = Human(user.name, HumanTeam, user.id)
       val ref = sender()
+      ref ! Out.Joined(human, self)
       update(
         ref,
         _.join(human, GameActor.StartingResources).right.map { evtTbg =>

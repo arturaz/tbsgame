@@ -24,6 +24,19 @@ public final class Messages {
      * <code>optional .game.FromClient game = 1;</code>
      */
     netmsg.Game.FromClientOrBuilder getGameOrBuilder();
+
+    /**
+     * <code>optional .management.FromClient management = 2;</code>
+     */
+    boolean hasManagement();
+    /**
+     * <code>optional .management.FromClient management = 2;</code>
+     */
+    netmsg.Management.FromClient getManagement();
+    /**
+     * <code>optional .management.FromClient management = 2;</code>
+     */
+    netmsg.Management.FromClientOrBuilder getManagementOrBuilder();
   }
   /**
    * Protobuf type {@code messages.FromClient}
@@ -90,6 +103,19 @@ public final class Messages {
               bitField0_ |= 0x00000001;
               break;
             }
+            case 18: {
+              netmsg.Management.FromClient.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = management_.toBuilder();
+              }
+              management_ = input.readMessage(netmsg.Management.FromClient.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(management_);
+                management_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -151,8 +177,30 @@ public final class Messages {
       return game_;
     }
 
+    public static final int MANAGEMENT_FIELD_NUMBER = 2;
+    private netmsg.Management.FromClient management_;
+    /**
+     * <code>optional .management.FromClient management = 2;</code>
+     */
+    public boolean hasManagement() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional .management.FromClient management = 2;</code>
+     */
+    public netmsg.Management.FromClient getManagement() {
+      return management_;
+    }
+    /**
+     * <code>optional .management.FromClient management = 2;</code>
+     */
+    public netmsg.Management.FromClientOrBuilder getManagementOrBuilder() {
+      return management_;
+    }
+
     private void initFields() {
       game_ = netmsg.Game.FromClient.getDefaultInstance();
+      management_ = netmsg.Management.FromClient.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -162,6 +210,12 @@ public final class Messages {
 
       if (hasGame()) {
         if (!getGame().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasManagement()) {
+        if (!getManagement().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -176,6 +230,9 @@ public final class Messages {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeMessage(1, game_);
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, management_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -188,6 +245,10 @@ public final class Messages {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, game_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, management_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -299,6 +360,7 @@ public final class Messages {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getGameFieldBuilder();
+          getManagementFieldBuilder();
         }
       }
       private static Builder create() {
@@ -313,6 +375,12 @@ public final class Messages {
           gameBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
+        if (managementBuilder_ == null) {
+          management_ = netmsg.Management.FromClient.getDefaultInstance();
+        } else {
+          managementBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -349,6 +417,14 @@ public final class Messages {
         } else {
           result.game_ = gameBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (managementBuilder_ == null) {
+          result.management_ = management_;
+        } else {
+          result.management_ = managementBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -368,6 +444,9 @@ public final class Messages {
         if (other.hasGame()) {
           mergeGame(other.getGame());
         }
+        if (other.hasManagement()) {
+          mergeManagement(other.getManagement());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -375,6 +454,12 @@ public final class Messages {
       public final boolean isInitialized() {
         if (hasGame()) {
           if (!getGame().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasManagement()) {
+          if (!getManagement().isInitialized()) {
             
             return false;
           }
@@ -517,6 +602,122 @@ public final class Messages {
         return gameBuilder_;
       }
 
+      private netmsg.Management.FromClient management_ = netmsg.Management.FromClient.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Management.FromClient, netmsg.Management.FromClient.Builder, netmsg.Management.FromClientOrBuilder> managementBuilder_;
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
+      public boolean hasManagement() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
+      public netmsg.Management.FromClient getManagement() {
+        if (managementBuilder_ == null) {
+          return management_;
+        } else {
+          return managementBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
+      public Builder setManagement(netmsg.Management.FromClient value) {
+        if (managementBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          management_ = value;
+          onChanged();
+        } else {
+          managementBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
+      public Builder setManagement(
+          netmsg.Management.FromClient.Builder builderForValue) {
+        if (managementBuilder_ == null) {
+          management_ = builderForValue.build();
+          onChanged();
+        } else {
+          managementBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
+      public Builder mergeManagement(netmsg.Management.FromClient value) {
+        if (managementBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              management_ != netmsg.Management.FromClient.getDefaultInstance()) {
+            management_ =
+              netmsg.Management.FromClient.newBuilder(management_).mergeFrom(value).buildPartial();
+          } else {
+            management_ = value;
+          }
+          onChanged();
+        } else {
+          managementBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
+      public Builder clearManagement() {
+        if (managementBuilder_ == null) {
+          management_ = netmsg.Management.FromClient.getDefaultInstance();
+          onChanged();
+        } else {
+          managementBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
+      public netmsg.Management.FromClient.Builder getManagementBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getManagementFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
+      public netmsg.Management.FromClientOrBuilder getManagementOrBuilder() {
+        if (managementBuilder_ != null) {
+          return managementBuilder_.getMessageOrBuilder();
+        } else {
+          return management_;
+        }
+      }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Management.FromClient, netmsg.Management.FromClient.Builder, netmsg.Management.FromClientOrBuilder> 
+          getManagementFieldBuilder() {
+        if (managementBuilder_ == null) {
+          managementBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Management.FromClient, netmsg.Management.FromClient.Builder, netmsg.Management.FromClientOrBuilder>(
+                  getManagement(),
+                  getParentForChildren(),
+                  isClean());
+          management_ = null;
+        }
+        return managementBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:messages.FromClient)
     }
 
@@ -544,6 +745,19 @@ public final class Messages {
      * <code>optional .game.FromServer game = 1;</code>
      */
     netmsg.Game.FromServerOrBuilder getGameOrBuilder();
+
+    /**
+     * <code>optional .management.FromServer management = 2;</code>
+     */
+    boolean hasManagement();
+    /**
+     * <code>optional .management.FromServer management = 2;</code>
+     */
+    netmsg.Management.FromServer getManagement();
+    /**
+     * <code>optional .management.FromServer management = 2;</code>
+     */
+    netmsg.Management.FromServerOrBuilder getManagementOrBuilder();
   }
   /**
    * Protobuf type {@code messages.FromServer}
@@ -610,6 +824,19 @@ public final class Messages {
               bitField0_ |= 0x00000001;
               break;
             }
+            case 18: {
+              netmsg.Management.FromServer.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = management_.toBuilder();
+              }
+              management_ = input.readMessage(netmsg.Management.FromServer.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(management_);
+                management_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -671,8 +898,30 @@ public final class Messages {
       return game_;
     }
 
+    public static final int MANAGEMENT_FIELD_NUMBER = 2;
+    private netmsg.Management.FromServer management_;
+    /**
+     * <code>optional .management.FromServer management = 2;</code>
+     */
+    public boolean hasManagement() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional .management.FromServer management = 2;</code>
+     */
+    public netmsg.Management.FromServer getManagement() {
+      return management_;
+    }
+    /**
+     * <code>optional .management.FromServer management = 2;</code>
+     */
+    public netmsg.Management.FromServerOrBuilder getManagementOrBuilder() {
+      return management_;
+    }
+
     private void initFields() {
       game_ = netmsg.Game.FromServer.getDefaultInstance();
+      management_ = netmsg.Management.FromServer.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -682,6 +931,12 @@ public final class Messages {
 
       if (hasGame()) {
         if (!getGame().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasManagement()) {
+        if (!getManagement().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -696,6 +951,9 @@ public final class Messages {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeMessage(1, game_);
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, management_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -708,6 +966,10 @@ public final class Messages {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, game_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, management_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -819,6 +1081,7 @@ public final class Messages {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getGameFieldBuilder();
+          getManagementFieldBuilder();
         }
       }
       private static Builder create() {
@@ -833,6 +1096,12 @@ public final class Messages {
           gameBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
+        if (managementBuilder_ == null) {
+          management_ = netmsg.Management.FromServer.getDefaultInstance();
+        } else {
+          managementBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -869,6 +1138,14 @@ public final class Messages {
         } else {
           result.game_ = gameBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (managementBuilder_ == null) {
+          result.management_ = management_;
+        } else {
+          result.management_ = managementBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -888,6 +1165,9 @@ public final class Messages {
         if (other.hasGame()) {
           mergeGame(other.getGame());
         }
+        if (other.hasManagement()) {
+          mergeManagement(other.getManagement());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -895,6 +1175,12 @@ public final class Messages {
       public final boolean isInitialized() {
         if (hasGame()) {
           if (!getGame().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasManagement()) {
+          if (!getManagement().isInitialized()) {
             
             return false;
           }
@@ -1037,6 +1323,122 @@ public final class Messages {
         return gameBuilder_;
       }
 
+      private netmsg.Management.FromServer management_ = netmsg.Management.FromServer.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Management.FromServer, netmsg.Management.FromServer.Builder, netmsg.Management.FromServerOrBuilder> managementBuilder_;
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
+      public boolean hasManagement() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
+      public netmsg.Management.FromServer getManagement() {
+        if (managementBuilder_ == null) {
+          return management_;
+        } else {
+          return managementBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
+      public Builder setManagement(netmsg.Management.FromServer value) {
+        if (managementBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          management_ = value;
+          onChanged();
+        } else {
+          managementBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
+      public Builder setManagement(
+          netmsg.Management.FromServer.Builder builderForValue) {
+        if (managementBuilder_ == null) {
+          management_ = builderForValue.build();
+          onChanged();
+        } else {
+          managementBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
+      public Builder mergeManagement(netmsg.Management.FromServer value) {
+        if (managementBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              management_ != netmsg.Management.FromServer.getDefaultInstance()) {
+            management_ =
+              netmsg.Management.FromServer.newBuilder(management_).mergeFrom(value).buildPartial();
+          } else {
+            management_ = value;
+          }
+          onChanged();
+        } else {
+          managementBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
+      public Builder clearManagement() {
+        if (managementBuilder_ == null) {
+          management_ = netmsg.Management.FromServer.getDefaultInstance();
+          onChanged();
+        } else {
+          managementBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
+      public netmsg.Management.FromServer.Builder getManagementBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getManagementFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
+      public netmsg.Management.FromServerOrBuilder getManagementOrBuilder() {
+        if (managementBuilder_ != null) {
+          return managementBuilder_.getMessageOrBuilder();
+        } else {
+          return management_;
+        }
+      }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Management.FromServer, netmsg.Management.FromServer.Builder, netmsg.Management.FromServerOrBuilder> 
+          getManagementFieldBuilder() {
+        if (managementBuilder_ == null) {
+          managementBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Management.FromServer, netmsg.Management.FromServer.Builder, netmsg.Management.FromServerOrBuilder>(
+                  getManagement(),
+                  getParentForChildren(),
+                  isClean());
+          management_ = null;
+        }
+        return managementBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:messages.FromServer)
     }
 
@@ -1067,10 +1469,13 @@ public final class Messages {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\016messages.proto\022\010messages\032\ngame.proto\"," +
-      "\n\nFromClient\022\036\n\004game\030\001 \001(\0132\020.game.FromCl" +
-      "ient\",\n\nFromServer\022\036\n\004game\030\001 \001(\0132\020.game." +
-      "FromServerB\010\n\006netmsg"
+      "\n\016messages.proto\022\010messages\032\ngame.proto\032\020" +
+      "management.proto\"X\n\nFromClient\022\036\n\004game\030\001" +
+      " \001(\0132\020.game.FromClient\022*\n\nmanagement\030\002 \001" +
+      "(\0132\026.management.FromClient\"X\n\nFromServer" +
+      "\022\036\n\004game\030\001 \001(\0132\020.game.FromServer\022*\n\nmana" +
+      "gement\030\002 \001(\0132\026.management.FromServerB\010\n\006" +
+      "netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1084,20 +1489,22 @@ public final class Messages {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           netmsg.Game.getDescriptor(),
+          netmsg.Management.getDescriptor(),
         }, assigner);
     internal_static_messages_FromClient_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_messages_FromClient_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_messages_FromClient_descriptor,
-        new java.lang.String[] { "Game", });
+        new java.lang.String[] { "Game", "Management", });
     internal_static_messages_FromServer_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_messages_FromServer_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_messages_FromServer_descriptor,
-        new java.lang.String[] { "Game", });
+        new java.lang.String[] { "Game", "Management", });
     netmsg.Game.getDescriptor();
+    netmsg.Management.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -4,10 +4,10 @@ import implicits._
 
 import app.algorithms.Pathfinding.SearchRes
 import app.algorithms.{Combat, Pathfinding}
-import app.models.Owner
+import app.models.game.Owner
 import app.models.game.events.Evented
-import app.models.world.buildings.GrowingSpawner
-import app.models.world.{OwnedObj, WObject, World}
+import app.models.game.world.buildings.GrowingSpawner
+import app.models.game.world.{OwnedObj, WObject, World}
 import infrastructure.Log
 
 import scala.annotation.tailrec

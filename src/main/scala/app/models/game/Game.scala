@@ -3,7 +3,7 @@ package app.models.game
 import app.models._
 import app.models.game.Game.States
 import app.models.game.events._
-import app.models.world._
+import app.models.game.world._
 import implicits._
 import monocle.Lenser
 import monocle.syntax._

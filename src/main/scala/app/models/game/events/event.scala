@@ -1,8 +1,8 @@
 package app.models.game.events
 
 import app.models.game.HumanState
-import app.models.world._
-import app.models.{Team, Attack, Human, Owner}
+import app.models.game.world._
+import app.models.game.{Team, Attack, Human, Owner}
 
 sealed trait Event {
   def visibleBy(owner: Owner): Boolean
