@@ -17,7 +17,7 @@ object NetClient {
   object Management {
     sealed trait In
     object In {
-      case class Login(id: UUID, name: String) extends In
+      case class Login(name: String, password: String) extends In
       case object JoinGame extends In
     }
 
@@ -25,7 +25,7 @@ object NetClient {
     object Out {
       sealed trait LoginResponse extends Out
       case object InvalidCredentials extends LoginResponse
-      case class LoggedIn(name: String) extends LoginResponse
+      case class LoggedIn(id: UUID) extends LoginResponse
 
       case class GameJoined(human: Human) extends Out
     }
@@ -90,9 +90,9 @@ class NetClient(
   override def receive = notLoggedIn
 
   private[this] def notLoggedIn: Receive = LoggingReceive {
-    case FromClient.Management(Login(id, name)) =>
-      val user = User(id, name) // Fake login here
-      LoggedIn(user.name).out()
+    case FromClient.Management(Login(name, password)) =>
+      val user = User(UUID.randomUUID(), name) // Fake login here
+      LoggedIn(user.id).out()
       context.become(loggedIn(user))
   }
 

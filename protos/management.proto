@@ -11,9 +11,8 @@ message FromClient {
 }
 
 message Login {
-  required base.UUID id = 1;
-  required string name = 2; // Temporary, should be fetched from DB.
-  //required string password = 2;
+  required string name = 1;
+  required string password = 2;
 }
 
 message JoinGame {}
@@ -25,7 +24,7 @@ message FromServer {
 
 message LoginResponse {
   // not set if credentials are wrong.
-  optional string player_name = 1;
+  optional base.UUID id = 1;
 }
 
 message GameJoined {

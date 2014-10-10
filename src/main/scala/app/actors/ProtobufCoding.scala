@@ -56,7 +56,7 @@ object ProtobufCoding {
       import app.actors.NetClient.Management.In._
 
       if (m.hasLogin)
-        m.getLogin.mapVal(m => Login(m.getId, m.getName)).right
+        m.getLogin.mapVal(m => Login(m.getName, m.getPassword)).right
       else if (m.hasJoinGame)
         m.getJoinGame.mapVal(_ => JoinGame).right
       else
@@ -299,7 +299,7 @@ object ProtobufCoding {
     ): Management.LoginResponse =
       Management.LoginResponse.newBuilder().mapVal { b => out match {
         case NetClient.Management.Out.InvalidCredentials => b
-        case NetClient.Management.Out.LoggedIn(name) => b.setPlayerName(name)
+        case NetClient.Management.Out.LoggedIn(id) => b.setId(id)
       }}.build()
 
     implicit def convert(
