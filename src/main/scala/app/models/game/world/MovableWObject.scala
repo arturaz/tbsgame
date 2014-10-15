@@ -15,7 +15,11 @@ extends WObjectOps with MoveAttackActionedOps[Self]
 
   def resetMovementLeft(world: World, self: Self): Evented[Self] = {
     val newSelf = resetMovementLeft(self)
-    Evented(newSelf, MovementChangeEvt(world, newSelf))
+    Evented(
+      newSelf,
+      if (self == newSelf) Vector.empty
+      else Vector(MovementChangeEvt(world, newSelf))
+    )
   }
 
   private[this] def moveTo(target: Vect2)(self: Self): Self =

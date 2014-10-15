@@ -46,6 +46,13 @@ case class VisibilityMap private (
 ) {
   import app.models.game.world.VisibilityMap._
 
+  override lazy val toString = {
+    val counts = map.foldLeft(
+      Map.empty[Team, Int].withDefaultValue(0)
+    ) { case (fMap, ((point, team), _)) => fMap.updated(team, fMap(team) + 1) }
+    s"VisibilityMap($counts)"
+  }
+
   def isVisible(team: Team, point: Vect2): Boolean = map((point, team)) > 0
   def isVisible(owner: Owner, point: Vect2): Boolean = isVisible(owner.team, point)
 

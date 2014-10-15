@@ -3,7 +3,7 @@ package app.actors
 import java.net.InetSocketAddress
 import java.nio.ByteOrder
 
-import akka.actor.{Actor, ActorLogging, ActorRef}
+import akka.actor.{Props, Actor, ActorLogging, ActorRef}
 import akka.io.Tcp._
 import akka.io.{IO, Tcp}
 
@@ -26,8 +26,10 @@ class Server(
     case Connected(remote, local) =>
       log.info(s"Client connected from $remote.")
       val connection = sender()
-      NetClient.startConnectionHandler(
-        context, connection, gamesManager, s"${remote.getHostString}-${remote.getPort}"
-      )
+      val msgHandler = context.actorOf(Props(new MsgHandler(
+        connection,
+        handlerRef => Props(new NetClient(handlerRef, gamesManager))
+      )), s"${remote.getHostString}-${remote.getPort}")
+      connection ! Register(msgHandler)
   }
 }

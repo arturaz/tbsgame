@@ -1,7 +1,7 @@
 package app.actors.game
 
-import akka.actor.{Props, Actor, ActorRef}
-import akka.event.LoggingReceive
+import akka.actor.{ActorLogging, Props, Actor, ActorRef}
+import akka.event.{LoggingAdapter, LoggingReceive}
 import app.actors.game.GameActor.Out.Joined
 import app.models.game.{Bot, Human, Team, TurnBasedGame}
 import app.models.game.events.{Evented, TurnStartedEvt, Events => GEvents}
@@ -50,7 +50,7 @@ object GameActor {
 
   @tailrec private def nextReadyTeam(
     game: Evented[TurnBasedGame]
-  ): Evented[TurnBasedGame] = {
+  )(implicit log: LoggingAdapter): Evented[TurnBasedGame] = {
     if (game.value.currentTeamFinished) nextReadyTeam(game.flatMap(_.nextTeamTurn))
     else game
   }
@@ -62,17 +62,27 @@ object GameActor {
 
 class GameActor private (
   startingHuman: Human, startingHumanRef: ActorRef
-) extends Actor {
+) extends Actor with ActorLogging {
   import app.actors.game.GameActor._
+  implicit val logging = log
+
+  log.debug(
+    "initializing game actor with starting {}, {}", startingHuman, startingHumanRef
+  )
 
   private[this] var clients = Map(startingHuman -> startingHumanRef)
 
   private[this] var game = {
     val ai = Bot(AiTeam)
     val world = World.create(HumanTeam, ai, ai)
-    TurnBasedGame(world, GameActor.StartingResources).right.map(nextReadyTeam).fold(
+    log.debug("World initialized to {}", world)
+    val tbg = TurnBasedGame(
+      world, startingHuman, GameActor.StartingResources
+    )
+    tbg.right.map(nextReadyTeam).fold(
       err => throw new IllegalStateException(s"Cannot initialize game: $err"),
       evented => {
+        log.debug("Turn based game initialized to {}", evented)
         startingHumanRef ! Joined(startingHuman, self)
         init(startingHuman, startingHumanRef, evented.value.game.world)
         events(startingHuman, startingHumanRef, evented.events)

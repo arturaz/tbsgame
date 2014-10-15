@@ -1,6 +1,5 @@
 package app.models.game
 
-import app.models._
 import app.models.game.Game.States
 import app.models.game.events._
 import app.models.game.world._
@@ -19,13 +18,16 @@ object Game {
   type Result = ResultT[Game]
   private type States = Map[Human, HumanState]
 
-  def apply(world: World, startingResources: Int): Either[String, Game] = {
-    world.humans.foldLeft(Evented(world).right[String]) {
+  def apply(
+    world: World, startingHuman: Human, startingResources: Int
+  ): Either[String, Game] = {
+    val humans = world.humans + startingHuman
+    humans.foldLeft(Evented(world).right[String]) {
       case (left: Left[_, _], _) => left
       case (Right(eWorld), human) =>
         eWorld.map(_.addResources(human, startingResources)).extractFlatten
     }.right.map { evtWorld =>
-      apply(evtWorld.value, startingStates(world, world.humans))
+      apply(evtWorld.value, startingStates(world, humans))
     }
   }
 

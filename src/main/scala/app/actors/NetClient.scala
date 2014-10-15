@@ -1,15 +1,12 @@
 package app.actors
 
-import java.nio.ByteOrder
 import java.util.UUID
 
 import akka.actor._
 import akka.event.LoggingReceive
-import akka.io.Tcp.Register
 import app.actors.game.GameActor
 import app.models._
 import app.models.game.Human
-import utils.actors.{CodedFrameProxy, IntFramedProxy}
 
 object NetClient {
   type GameInMsg = Human => GameActor.In
@@ -44,31 +41,10 @@ object NetClient {
       case class Management(msg: NetClient.Management.Out) extends FromServer
     }
   }
-
-  /* Returns chain of connection <-> intFramedProxy <-> codedFrameProxy <-> netClient */
-  def startConnectionHandler(
-    context: ActorContext, connection: ActorRef, gamesManager: ActorRef, name: String
-  )(implicit byteOrder: ByteOrder): ActorRef = {
-    val intFramedProxy =
-      context.actorOf(Props(new IntFramedProxy), s"$name-int-framed-proxy")
-    val codedFrameProxy =
-      context.actorOf(Props(new CodedFrameProxy(
-        ProtobufCoding.Parsing.parse, ProtobufCoding.Serializing.serialize
-      )), s"$name-coded-frame-proxy")
-    val netClient =
-      context.actorOf(Props(new NetClient(
-        codedFrameProxy, gamesManager
-      )), s"$name-net-client")
-
-    intFramedProxy ! IntFramedProxy.Init(connection, codedFrameProxy)
-    codedFrameProxy ! CodedFrameProxy.Init(intFramedProxy, netClient)
-    connection ! Register(intFramedProxy)
-    netClient
-  }
 }
 
 class NetClient(
-  codedFrameProxy: ActorRef, gamesManager: ActorRef
+  msgHandler: ActorRef, gamesManager: ActorRef
 ) extends Actor with ActorLogging {
   import app.actors.NetClient.Management.In._
   import app.actors.NetClient.Management.Out._
@@ -76,7 +52,7 @@ class NetClient(
   import app.actors.NetClient._
 
   implicit class ServerMsgExts(msg: FromServer) {
-    def out(): Unit = codedFrameProxy ! msg
+    def out(): Unit = msgHandler ! msg
   }
   implicit class ManagementMsgExts(msg: Management.Out) {
     def out(): Unit = FromServer.Management(msg).out()
@@ -85,7 +61,7 @@ class NetClient(
     def out(): Unit = FromServer.Game(msg).out()
   }
 
-  context.watch(codedFrameProxy)
+  context.watch(msgHandler)
 
   override def receive = notLoggedIn
 

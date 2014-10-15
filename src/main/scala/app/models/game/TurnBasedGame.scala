@@ -1,5 +1,6 @@
 package app.models.game
 
+import akka.event.LoggingAdapter
 import app.models.game.events.Evented
 import app.models.game.world._
 import implicits._
@@ -8,8 +9,10 @@ object TurnBasedGame {
   type Result = Game.ResultT[TurnBasedGame]
   type StartedGame = Either[String, Evented[TurnBasedGame]]
 
-  def apply(world: World, startingResources: Int): StartedGame =
-    Game(world, startingResources).right.flatMap(apply)
+  def apply(world: World, startingHuman: Human, startingResources: Int): StartedGame = {
+    val game = Game(world, startingHuman, startingResources)
+    game.right.flatMap(apply)
+  }
 
   def apply(game: Game): StartedGame = {
     val teams = game.world.teams.toVector
@@ -19,9 +22,12 @@ object TurnBasedGame {
 
   private def newGameTurn(game: Game, teams: Vector[Team]): Evented[TurnBasedGame] = {
     val startingTeam = teams.head
-    game.gameTurnStarted.flatMap(_.teamTurnStarted(startingTeam)).map {
+    val gameTurnStartedGame = game.gameTurnStarted
+    val teamTurnStartedGame = gameTurnStartedGame.flatMap(_.teamTurnStarted(startingTeam))
+    val turnBasedGame = teamTurnStartedGame.map {
       apply(_, startingTeam, teams.tail, Vector.empty)
     }
+    turnBasedGame
   }
 }
 
@@ -59,19 +65,26 @@ case class TurnBasedGame private (
 
   override def consumeActions(human: Human) = humanDo(human)(game.consumeActions)
 
-  def nextTeamTurn: Evented[TurnBasedGame] =
+  def nextTeamTurn(implicit log: LoggingAdapter): Evented[TurnBasedGame] = {
+    log.debug("current team finishing: {}", currentTeam)
     game.teamTurnFinished(currentTeam).flatMap { g =>
       val newActedTeams = actedTeams :+ currentTeam
-      if (readyTeams.isEmpty) g.gameTurnFinished.flatMap(
-        TurnBasedGame.newGameTurn(_, newActedTeams)
-      )
+      log.debug("new acted teams: {}", newActedTeams)
+      if (readyTeams.isEmpty) {
+        log.debug("no more ready teams!")
+        g.gameTurnFinished.flatMap(
+          TurnBasedGame.newGameTurn(_, newActedTeams)
+        )
+      }
       else {
         val newCurrentTeam = readyTeams.head
+        log.debug("new current team: {}", newCurrentTeam)
         g.teamTurnStarted(newCurrentTeam).map(
           TurnBasedGame(_, newCurrentTeam, readyTeams.tail, newActedTeams)
         )
       }
     }
+  }
 
   def currentTeamActionsLeft = game.actionsLeftFor(currentTeam)
   def currentTeamFinished = currentTeamActionsLeft == 0

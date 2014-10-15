@@ -32,6 +32,6 @@ libraryDependencies ++= Seq(
 libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
 
 libraryDependencies ++= Seq(
-  "com.google.protobuf" % "protobuf-java" % "2.6.0"
+  "com.google.protobuf" % "protobuf-java" % "2.4.1"
 //  "net.sandrogrzicic" %% "scalabuff-runtime" % "1.3.9"
 )
