@@ -102,7 +102,7 @@ case class Game private (
   (team: Team)(g: Evented[Game]): Evented[Game] =
     g.flatMap { game =>
       val teamStates = game.states.filterKeys(_.team == team)
-      teamStates.foldLeft(Evented(teamStates)) { case (e, (human, state)) =>
+      teamStates.foldLeft(Evented(game.states)) { case (e, (human, state)) =>
         val newActions = game.world.actionsFor(human)
         if (state.actions == newActions) e
         else e.flatMap { curStates =>
