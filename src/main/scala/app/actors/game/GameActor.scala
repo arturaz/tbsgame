@@ -31,11 +31,12 @@ object GameActor {
   }
 
   sealed trait Out
+  sealed trait ClientOut extends Out
   object Out {
     case class Joined(human: Human, game: ActorRef) extends Out
-    case class Init(world: World) extends Out
-    case class Events(events: GEvents) extends Out
-    case class Error(error: String) extends Out
+    case class Init(world: World) extends ClientOut
+    case class Events(events: GEvents) extends ClientOut
+    case class Error(error: String) extends ClientOut
   }
 
   private def init(human: Human, ref: ActorRef, world: World): Unit = {
@@ -76,10 +77,9 @@ class GameActor private (
     val ai = Bot(AiTeam)
     val world = World.create(HumanTeam, ai, ai)
     log.debug("World initialized to {}", world)
-    val tbg = TurnBasedGame(
+    TurnBasedGame(
       world, startingHuman, GameActor.StartingResources
-    )
-    tbg.right.map(nextReadyTeam).fold(
+    ).right.map(nextReadyTeam).fold(
       err => throw new IllegalStateException(s"Cannot initialize game: $err"),
       evented => {
         log.debug("Turn based game initialized to {}", evented)

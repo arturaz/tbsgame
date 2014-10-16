@@ -164,8 +164,8 @@ case class World private (
 object World {
   def revealObjects(team: Team, evtWorld: Evented[World]): Evented[World] = {
     val newVisiblePoints = evtWorld.events.collect {
-      case evt: VisibilityChangeEvt if evt.visible && evt.team == team =>
-        evt.positions
+      case evt: VisibilityChangeEvt if evt.team == team =>
+        evt.visiblePositions
     }.flatten
     evtWorld.flatMap { newWorld =>
       val newVisibleObjs = newWorld.objectsIn(newVisiblePoints)

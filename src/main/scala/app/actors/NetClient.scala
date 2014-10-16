@@ -37,7 +37,7 @@ object NetClient {
 
     sealed trait FromServer
     object FromServer {
-      case class Game(msg: GameActor.Out) extends FromServer
+      case class Game(msg: GameActor.ClientOut) extends FromServer
       case class Management(msg: NetClient.Management.Out) extends FromServer
     }
   }
@@ -57,7 +57,7 @@ class NetClient(
   implicit class ManagementMsgExts(msg: Management.Out) {
     def out(): Unit = FromServer.Management(msg).out()
   }
-  implicit class GameMsgExts(msg: GameActor.Out) {
+  implicit class GameMsgExts(msg: GameActor.ClientOut) {
     def out(): Unit = FromServer.Game(msg).out()
   }
 
@@ -85,7 +85,7 @@ class NetClient(
     case FromClient.Game(msgFn) =>
       val msg = msgFn(human)
       game ! msg
-    case msg: GameActor.Out =>
+    case msg: GameActor.ClientOut =>
       msg.out()
   }
 }

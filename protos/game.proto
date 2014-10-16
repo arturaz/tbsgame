@@ -52,8 +52,7 @@ message FromServer {
   optional MEvents events = 1;
   optional MError error = 2;
 
-  optional MJoined joined = 1000;
-  optional MInit init = 1001;
+  optional MInit init = 1000;
 }
 
 message MJoined {
@@ -226,8 +225,8 @@ message TurnEndedEvt {
 }
 
 message VisibilityChangeEvt {
-  required bool visible = 1;
-  repeated base.Vect2 positions = 2;
+  repeated base.Vect2 visible_positions = 1;
+  repeated base.Vect2 invisible_positions = 2;
 }
 
 message WarpEvt {

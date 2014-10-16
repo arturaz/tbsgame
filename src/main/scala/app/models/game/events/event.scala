@@ -24,7 +24,9 @@ case class TurnStartedEvt(team: Team) extends AlwaysVisibleEvent
 case class TurnEndedEvt(team: Team) extends AlwaysVisibleEvent
 
 case class VisibilityChangeEvt(
-  team: Team, positions: Vector[Vect2], visible: Boolean
+  team: Team,
+  visiblePositions: Vector[Vect2]=Vector.empty,
+  invisiblePositions: Vector[Vect2]=Vector.empty
 ) extends Event {
   override def visibleBy(owner: Owner) = owner.team == team
 }

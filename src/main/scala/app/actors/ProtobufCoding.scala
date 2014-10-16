@@ -205,7 +205,8 @@ object ProtobufCoding {
 
     implicit def convert(evt: VisibilityChangeEvt): Game.VisibilityChangeEvt =
       Game.VisibilityChangeEvt.newBuilder().
-        addAllPositions(convert(evt.positions)).setVisible(evt.visible).build()
+        addAllVisiblePositions(convert(evt.visiblePositions)).
+        addAllInvisiblePositions(convert(evt.invisiblePositions)).build()
 
     implicit def convert(evt: WarpEvt): Game.WarpEvt =
       Game.WarpEvt.newBuilder().setObject(evt.obj).build()
@@ -286,11 +287,10 @@ object ProtobufCoding {
         }).
         build()
 
-    implicit def convert(out: GameActor.Out): Game.FromServer =
+    implicit def convert(out: GameActor.ClientOut): Game.FromServer =
       Game.FromServer.newBuilder().mapVal { b => out match {
         case msg: GameActor.Out.Events => b.setEvents(msg)
         case msg: GameActor.Out.Error => b.setError(msg)
-        case msg: GameActor.Out.Joined => b.setJoined(msg)
         case msg: GameActor.Out.Init => b.setInit(msg)
       } }.build()
 

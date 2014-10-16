@@ -2,6 +2,7 @@ package app.models.game.world
 
 import app.models.game.{Owner, Team}
 import app.models.game.events.{Evented, VisibilityChangeEvt}
+import implicits._
 
 object VisibilityMap {
   type Underlying = Map[(Vect2, Team), Int]
@@ -16,27 +17,37 @@ object VisibilityMap {
   private def pointsOf(obj: OwnedObj): Iterator[Vect2] =
     (if (obj.isWarpedIn) obj.visibility else obj.bounds).points
 
-  /* Given visibility changes +1,-1,+1, return just +1 */
+  /* Compact visibility changes into least amount of events possible. */
   private def compact(
     events: Vector[VisibilityChangeEvt]
   ): Vector[VisibilityChangeEvt] = {
-    val changes = events.foldLeft(
-      Map.empty[(Vect2, Team), Int].withDefaultValue(0)
-    ) { case (map, evt) =>
-      evt.positions.foldLeft(map) { case (foldMap, pos) =>
-        val key = (pos, evt.team)
-        foldMap updated (key, foldMap(key) + (if (evt.visible) 1 else -1))
+    def fold(team: Team, positions: Vector[Vect2], change: Int)(map: Underlying) = {
+      positions.foldLeft(map) { case (foldMap, pos) =>
+        val key = (pos, team)
+        foldMap updated (key, foldMap(key) + change)
       }
     }
 
-    changes.groupBy {
-      case ((pos, team), change) => (team, if (change == 0) None else Some(change > 0))
-    }.to[Vector].flatMap {
-      case ((team, Some(visible)), map) =>
-        Some(VisibilityChangeEvt(team, map.map(_._1._1).toVector, visible = true))
-      case _ =>
-        None
+    val changes = events.foldLeft(
+      Map.empty[(Vect2, Team), Int].withDefaultValue(0)
+    ) { case (map, evt) => map |>
+      fold(evt.team, evt.visiblePositions, 1) |>
+      fold(evt.team, evt.invisiblePositions, -1)
     }
+
+    changes.
+      filter { case (_, change) => change != 0 }.
+      groupBy { case ((_, team), _) => team }.
+      mapValues { map =>
+        map.view.map { case ((point, _), change) => (point, change) }
+      }.
+      map { case (team, pointChanges) =>
+        def extract(s: Iterable[(Vect2, Int)]) = s.map(_._1).toVector
+        val (visible, invisible) =
+          pointChanges.partition { case (_, change) => change > 0}
+        VisibilityChangeEvt(team, extract(visible), extract(invisible))
+      }.
+      toVector
   }
 }
 
@@ -118,9 +129,9 @@ case class VisibilityMap private (
       val next = f(current)
       val newEvents =
         if (current == 0 && next != 0)
-          Vector(VisibilityChangeEvt(team, Vector(p), visible = true))
+          Vector(VisibilityChangeEvt(team, visiblePositions = Vector(p)))
         else if (current != 0 && next == 0)
-          Vector(VisibilityChangeEvt(team, Vector(p), visible = false))
+          Vector(VisibilityChangeEvt(team, invisiblePositions = Vector(p)))
         else Vector.empty
       (m updated(key, next), events ++ newEvents)
     }
