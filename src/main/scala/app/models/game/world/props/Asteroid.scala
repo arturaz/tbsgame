@@ -1,6 +1,6 @@
 package app.models.game.world.props
 
-import app.models.game.world.{WObject, Vect2}
+import app.models.game.world.{Resources, WObject, Vect2}
 import monocle.Lenser
 
 object Asteroid extends PropCompanion {
@@ -10,7 +10,7 @@ object Asteroid extends PropCompanion {
 }
 
 case class Asteroid(
-  position: Vect2, resources: Int,
+  position: Vect2, resources: Resources,
   id: WObject.Id=WObject.newId
 ) extends Prop {
   override def companion = Asteroid

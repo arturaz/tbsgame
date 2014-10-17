@@ -103,10 +103,10 @@ case class Game private (
   private[this] def recalculateActions
   (team: Team)(g: Evented[Game]): Evented[Game] =
     g.flatMap { game =>
-      val teamStates = game.states.filterKeys(_.team == team)
+      val teamStates = game.states.filterKeys(_.team === team)
       teamStates.foldLeft(Evented(game.states)) { case (e, (human, state)) =>
         val newActions = game.world.actionsFor(human)
-        if (state.actions == newActions) e
+        if (state.actions === newActions) e
         else e.flatMap { curStates =>
           Evented(
             curStates + (human -> state.copy(actions = game.world.actionsFor(human))),
@@ -126,13 +126,13 @@ case class Game private (
     world.objects.collect {
       case obj: OwnedObj if obj.companion.isCritical => obj.owner.team
     } match {
-      case s if s.size == 1 => Some(s.head)
+      case s if s.size === 1 => Some(s.head)
       case _ => None
     }
   }
 
   def actionsLeftFor(team: Team) =
-    states.view.filter(_._1.team == team).map(_._2.actions).sum
+    states.view.filter(_._1.team === team).map(_._2.actions).sum
 
   def join(human: Human, startingResources: Resources) = {
     def evt(newState: HumanState) = Evented(
@@ -156,7 +156,7 @@ case class Game private (
     human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
   ): Game.Result =
     withState(human) { state =>
-    withActions(human, Actions(1), state) { state =>
+    withActions(human, Warpable.ActionsNeeded, state) { state =>
     withResources(human, warpable.cost, world) { evtWorld =>
     withWarpVisibility(human, position) {
       evtWorld.map { warpable.warpW(_, human, position).right.map { _.map {
@@ -242,7 +242,7 @@ case class Game private (
     id: WObject.Id
   )(f: ObjFn[A]): Game.Result = {
     world.find {
-      case obj: A if obj.id == id => obj
+      case obj: A if obj.id === id => obj
     }.fold2(s"Cannot find object with id $id".left, f)
   }
 
@@ -250,7 +250,7 @@ case class Game private (
     human: Human, id: WObject.Id
   )(f: ObjFn[A]): Game.Result = {
     withObj[A](id) { obj =>
-      if (obj.owner == human) f(obj)
+      if (obj.owner === human) f(obj)
       else s"Cannot find object belonging to $human with id $id".left
     }
   }

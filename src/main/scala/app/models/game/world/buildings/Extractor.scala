@@ -1,6 +1,6 @@
 package app.models.game.world.buildings
 
-import app.models.game.Player
+import app.models.game.{Actions, Player}
 import app.models.game.events.{Evented, ResourceChangeEvt}
 import app.models.game.world._
 import app.models.game.world.props.Asteroid
@@ -10,37 +10,37 @@ import monocle.syntax._
 
 object Extractor extends BuildingCompanion[Extractor] with WarpableCompanion[Extractor]
 with SpecialActionCompanion {
-  override val maxHp = 1
+  override val maxHp = HP(1)
   override val size: Vect2 = Vect2.one
-  override val warpTime: Int = 1
-  override val cost: Int = 4
+  override val warpTime = WarpTime(1)
+  override val cost = Resources(4)
   override val defense = 2 to 7
   /* How much resources does turn start extract? */
-  val turnStartExtracts = 1
+  val turnStartExtracts = Resources(1)
   /* How much resources does special action extract? */
-  val specialExtracts = 2
-  override val specialActionsNeeded: Int = 1
+  val specialExtracts = Resources(2)
+  override val specialActionsNeeded = Actions(1)
 
   override def warpWOReactionImpl(world: World, owner: Player, position: Vect2) = {
     val b = bounds(position)
-    val objects = world.objects.filter(_.bounds == b)
+    val objects = world.objects.filter(_.bounds === b)
     val isAsteroid = objects.exists(_.isInstanceOf[Asteroid])
-    if (! isAsteroid || objects.size != 1)
+    if (! isAsteroid || objects.size =/= 1)
       Left(s"Expected $b to only have asteroid, but there were $objects")
     else
       Right(Extractor(position, owner))
   }
 
-  override def setWarpState(newState: Int)(self: Extractor) =
+  override def setWarpState(newState: WarpTime)(self: Extractor) =
     self.copy(warpState = newState)
-  override def withNewHp(hp: Int)(self: Extractor) = self.copy(hp = hp)
+  override def withNewHp(hp: HP)(self: Extractor) = self.copy(hp = hp)
 
 }
 
 case class Extractor(
   position: Vect2, owner: Player,
-  id: WObject.Id=WObject.newId, hp: Int=Extractor.maxHp,
-  warpState: Int=Extractor.InitialWarpState
+  id: WObject.Id=WObject.newId, hp: HP=Extractor.maxHp,
+  warpState: WarpTime=Extractor.InitialWarpState
 ) extends PlayerBuilding with Warpable with SpecialAction {
   type Self = Extractor
   def self = this
@@ -55,7 +55,7 @@ case class Extractor(
           upd
         },
         asteroid => {
-          if (asteroid.resources == 0) upd
+          if (asteroid.resources.isZero) upd
           else turnStartExtractResources(world)(asteroid).fold(
             err => {
               Log.error(s"Error while extracting resources on turn start for $this: $err")
@@ -69,17 +69,17 @@ case class Extractor(
   }
 
   private[this] def findAsteroid(world: World): Either[String, Asteroid] = {
-    world.find { case a: Asteroid if a.position == position => a }.fold2(
+    world.find { case a: Asteroid if a.position === position => a }.fold2(
       s"Cannot find asteroid for $this!".left,
       _.right
     )
   }
 
   private[this] def extractResources(
-    world: World, howMuch: Int
+    world: World, howMuch: Resources
   )(asteroid: Asteroid): Either[String, Evented[World]] = {
-    if (howMuch < 0) s"howMuch ($howMuch) has to be positive!".left
-    else if (asteroid.resources == 0) s"No resources left in $asteroid!".left
+    if (howMuch < Resources(0)) s"howMuch ($howMuch) has to be positive!".left
+    else if (asteroid.resources.isZero) s"No resources left in $asteroid!".left
     else {
       val res = asteroid.resources min howMuch
 

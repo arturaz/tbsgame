@@ -3,7 +3,7 @@ package app.models.game.world
 import app.models.game.events.{WarpEvt, Evented}
 import implicits._
 
-import app.models.game.Player
+import app.models.game.{Actions, Player}
 
 trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
   /* Create Warpable at given position. */
@@ -33,29 +33,34 @@ trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
   ): Either[String, Evented[World]] =
     warp(world, player, position).right.map { _.map(_._1) }
 
-  def setWarpState(newState: Int)(self: Self): Self
+  def setWarpState(newState: WarpTime)(self: Self): Self
   def nextWarpState(world: World, self: Self): Evented[Self] =
     if (self.isWarpedIn) Evented(self)
     else {
-      val newSelf = self |> setWarpState(self.warpState + 1)
+      val newSelf = self |> setWarpState(self.warpState + WarpTime(1))
       Evented(newSelf, Vector(WarpEvt(world, newSelf)))
     }
 }
 
 trait WarpableStats extends OwnedObjStats {
-  val InitialWarpState = 0
-  val warpTime: Int
+  val InitialWarpState = WarpTime(0)
+  val warpTime: WarpTime
   val cost: Resources
 }
 
 trait WarpableCompanion[Self <: Warpable] extends WarpableOps[Self]
 with WarpableStats
 
+object Warpable {
+  /* Actions needed to warp in something */
+  val ActionsNeeded = Actions(1)
+}
+
 trait Warpable extends OwnedObj {
   type Self <: Warpable
   type Companion <: WarpableOps[Self] with WarpableStats
 
-  val warpState: Int
+  val warpState: WarpTime
   override def isWarpingIn = warpState < companion.warpTime
 
   override def teamTurnStartedSelf(world: World) =

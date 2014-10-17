@@ -2,6 +2,7 @@ package app.models.game.events
 
 import app.models.game._
 import app.models.game.world._
+import implicits._
 
 sealed trait Event {
   def visibleBy(owner: Owner): Boolean
@@ -29,7 +30,7 @@ case class VisibilityChangeEvt(
   visiblePositions: Vector[Vect2]=Vector.empty,
   invisiblePositions: Vector[Vect2]=Vector.empty
 ) extends Event {
-  override def visibleBy(owner: Owner) = owner.team == team
+  override def visibleBy(owner: Owner) = owner.team === team
 }
 
 case class WarpEvt(world: World, obj: Warpable) extends BoundedEvent {

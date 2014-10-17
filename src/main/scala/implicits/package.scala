@@ -26,6 +26,8 @@ package object implicits {
   }
 
   implicit class AnyExts[A](val a: A) extends AnyVal {
+    @inline def ===(a1: A) = a == a1
+    @inline def =/=(a1: A) = a != a1
     @inline def |>[B](f: A => B) = f(a)
     @inline def left[B]: Either[A, B] = Left(a)
     @inline def right[B]: Either[B, A] = Right(a)

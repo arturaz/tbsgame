@@ -7,7 +7,7 @@ final class CompositeOrdering[T](
 ) extends Ordering[T] {
   def compare( x: T, y: T ) = {
     val comp = ord1.compare( x, y )
-    if ( comp != 0 ) comp else ord2.compare( x, y )
+    if ( comp =/= 0 ) comp else ord2.compare( x, y )
   }
 }
 

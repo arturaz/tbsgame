@@ -13,6 +13,7 @@ import app.models.game.world.units.{Corvette, Wasp}
 import app.models.game._
 import implicits._
 import netmsg.{Management, Base, Game, Messages}
+import utils.IntValueClass
 
 object ProtobufCoding {
   import scala.language.implicitConversions
@@ -103,7 +104,8 @@ object ProtobufCoding {
         setLeastSignificant(id.getLeastSignificantBits).
         setMostSignificant(id.getMostSignificantBits).build()
 
-    implicit def convert(tileDistance: TileDistance): Int = tileDistance.value
+    implicit def convert(v: IntValueClass[_]): Int = v.value
+
     implicit def convert(range: Range.Inclusive): Base.Range =
       Base.Range.newBuilder().setStart(range.start).setEnd(range.end).build()
 
@@ -144,12 +146,12 @@ object ProtobufCoding {
         setActionsGiven(obj.companion.actionsGiven.value).build()
 
     implicit def convert(obj: Warpable): Game.WObject.Warpable =
-      Game.WObject.Warpable.newBuilder().setCost(obj.companion.cost.value).
+      Game.WObject.Warpable.newBuilder().setCost(obj.companion.cost).
         setWarpState(valWithMax(obj.warpState, obj.companion.warpTime)).build()
 
     implicit def convert(obj: SpecialAction): Game.WObject.SpecialAction =
       Game.WObject.SpecialAction.newBuilder().
-        setActionsNeeded(obj.companion.specialActionsNeeded.value).build()
+        setActionsNeeded(obj.companion.specialActionsNeeded).build()
 
     implicit def convert(obj: Fighter): Game.WObject.Fighter =
       Game.WObject.Fighter.newBuilder().
@@ -158,7 +160,7 @@ object ProtobufCoding {
 
     implicit def convert(obj: MoveAttackActioned): Game.WObject.MoveAttackActioned =
       Game.WObject.MoveAttackActioned.newBuilder().
-        setActionsNeeded(obj.companion.moveAttackActionsNeeded.value).
+        setActionsNeeded(obj.companion.moveAttackActionsNeeded).
         setMovedOrAttacked(obj.movedOrAttacked).build()
 
     implicit def convert(obj: MovableWObject): Game.WObject.Movable =
@@ -233,7 +235,8 @@ object ProtobufCoding {
       Game.AttackEvt.newBuilder().
         setAttackerId(evt.attacker.id).setAttackerPosition(evt.attacker.position).
         setDefenderId(evt.defender._1.id).
-        setHpLeft(evt.defender._2.map(_.hp).getOrElse(0)).setAttack(evt.attack).build()
+        setHpLeft(evt.defender._2.map(_.hp).getOrElse(HP(0)).value).
+        setAttack(evt.attack).build()
 
     implicit def convert(evt: MovementChangeEvt): Game.MovementChangeEvt =
       Game.MovementChangeEvt.newBuilder().setObjId(evt.changedObj.id).

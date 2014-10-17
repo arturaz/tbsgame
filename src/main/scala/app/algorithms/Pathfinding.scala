@@ -4,6 +4,7 @@ import app.models.game.world._
 
 import scala.collection.immutable.Queue
 import scala.collection.mutable
+import implicits._
 
 /**
  * Created by arturas on 2014-09-15.
@@ -168,7 +169,7 @@ object Pathfinding {
 
     while (openSet.nonEmpty) {
       val current = openSet.dequeue()
-      if (current == goal) return Some(Path(reconstructPath(cameFrom, goal)))
+      if (current === goal) return Some(Path(reconstructPath(cameFrom, goal)))
 
       closedSet += current
 
@@ -176,7 +177,7 @@ object Pathfinding {
         filterNot(closedSet.contains).foreach { neighbor =>
           val tentativeGScore = gScore(current) + TileDistance(1)
 
-          val inOpenSet = openSet.exists(_ == neighbor)
+          val inOpenSet = openSet.exists(_ === neighbor)
           if (! inOpenSet || tentativeGScore < gScore(neighbor)) {
             cameFrom += neighbor -> current
             gScore += neighbor -> tentativeGScore

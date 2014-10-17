@@ -4,6 +4,7 @@ import java.util.UUID
 
 import app.models.User
 import app.models.game.world.OwnedObj
+import implicits._
 
 object Owner {
   type Id = UUID
@@ -14,7 +15,7 @@ sealed trait Owner {
   def id: Owner.Id
   def team: Team
   
-  def isFriendOf(other: Owner) = team == other.team
+  def isFriendOf(other: Owner) = team === other.team
   def isEnemyOf(other: Owner) = ! isFriendOf(other)
 }
 

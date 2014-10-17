@@ -55,7 +55,7 @@ object SingleMindAI {
   /* Simulate AI actions for all units. */
   def act(world: World, owner: Owner): Combat.ActionResult = {
     val units = world.objects.
-      collect { case o: WUnit with Fighter if o.owner == owner => o }
+      collect { case o: WUnit with Fighter if owner === o.owner => o }
     units.foldLeft(Evented(world)) { case (curWorld, unit) =>
       act(curWorld, unit).fold(
         err => {

@@ -3,7 +3,7 @@ package app.models.game
 import utils.IntValueClass
 
 case class Actions(value: Int) extends AnyVal with IntValueClass[Actions] {
-  override def self(v: Int) = Actions(value)
+  override def self(v: Int) = Actions(v)
 }
 object Actions {
   implicit object Numeric extends IntValueClass.Numeric[Actions] {

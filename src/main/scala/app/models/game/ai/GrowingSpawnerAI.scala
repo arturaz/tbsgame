@@ -21,7 +21,7 @@ object GrowingSpawnerAI {
 
   def act(world: World, owner: Owner): Result = {
     val spawners = world.objects.collect {
-      case spawner: GrowingSpawner if spawner.owner == owner => spawner
+      case spawner: GrowingSpawner if owner === (spawner.owner: Owner) => spawner
     }
 
     if (spawners.isEmpty)
@@ -57,7 +57,7 @@ object GrowingSpawnerAI {
 
     val readyUnits = world.objects.collect {
       case unit: spawner.Controlled
-        if unit.owner == spawner.owner && ! unit.hasAttacked => unit
+        if unit.owner === spawner.owner && ! unit.hasAttacked => unit
     }.toList
 
     work(spawner.strength, Evented(world), readyUnits)

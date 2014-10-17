@@ -1,6 +1,6 @@
 package app.models.game.world.units
 
-import app.models.game.Player
+import app.models.game.{Actions, Player}
 import app.models.game.events.MovementChangeEvt
 import app.models.game.world._
 
@@ -11,21 +11,21 @@ with FighterCompanion[Corvette] with SpecialActionCompanion {
   override val attackRange = TileDistance(3)
   override val movement = TileDistance(3)
   override val visibility: Int = 4
-  override val maxHp: Int = 1
-  override val warpTime: Int = 0
-  override val cost: Int = 5
+  override val maxHp = HP(1)
+  override val warpTime = WarpTime(0)
+  override val cost = Resources(5)
 
   val specialMovementAdded = TileDistance(4)
-  override val specialActionsNeeded: Int = 0
+  override val specialActionsNeeded = Actions(0)
 
   override def warp(owner: Player, position: Vect2) = Corvette(position, owner)
-  override def setWarpState(newState: Int)(self: Corvette) =
+  override def setWarpState(newState: WarpTime)(self: Corvette) =
     self.copy(warpState = newState)
   override def setMoveValues(position: Vect2, movementLeft: TileDistance)(self: Corvette) =
     self.copy(position = position, movementLeft = movementLeft)
   override def withMovedOrAttacked(value: Boolean)(self: Corvette) =
     self.copy(movedOrAttacked = value)
-  override def withNewHp(hp: Int)(self: Corvette) =
+  override def withNewHp(hp: HP)(self: Corvette) =
     self.copy(hp = hp)
   override def attacked(value: Boolean)(self: Corvette) =
     self.copy(hasAttacked = value)
@@ -33,8 +33,9 @@ with FighterCompanion[Corvette] with SpecialActionCompanion {
 
 case class Corvette(
   position: Vect2, owner: Player,
-  id: WObject.Id=WObject.newId, hp: Int=Wasp.maxHp, hasAttacked: Boolean=false,
-  movementLeft: TileDistance=Corvette.movement, warpState: Int=Corvette.InitialWarpState,
+  id: WObject.Id=WObject.newId, hp: HP=Wasp.maxHp, hasAttacked: Boolean=false,
+  movementLeft: TileDistance=Corvette.movement,
+  warpState: WarpTime=Corvette.InitialWarpState,
   movedOrAttacked: Boolean=Corvette.InitialMovedOrAttacked
 ) extends WUnit with Fighter with SpecialAction {
   type Self = Corvette

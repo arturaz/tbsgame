@@ -5,23 +5,23 @@ import app.models.game.world._
 
 object WarpLinker extends BuildingCompanion[WarpLinker]
 with EmptySpaceWarpableCompanion[WarpLinker] {
-  override val maxHp: Int = 2
+  override val maxHp = HP(2)
   override val size: Vect2 = Vect2(1, 1)
-  override val warpTime: Int = 2
-  override val cost: Int = 3
+  override val warpTime = WarpTime(2)
+  override val cost = Resources(3)
   override val defense = 2 to 5
 
   override def warp(owner: Player, position: Vect2) =
     WarpLinker(position, owner)
-  override def setWarpState(newState: Int)(self: WarpLinker) =
+  override def setWarpState(newState: WarpTime)(self: WarpLinker) =
     self.copy(warpState = newState)
-  override def withNewHp(hp: Int)(self: WarpLinker) = self.copy(hp = hp)
+  override def withNewHp(hp: HP)(self: WarpLinker) = self.copy(hp = hp)
 }
 
 case class WarpLinker(
   position: Vect2, owner: Player,
-  id: WObject.Id=WObject.newId, hp: Int=WarpLinker.maxHp,
-  warpState: Int=WarpLinker.InitialWarpState
+  id: WObject.Id=WObject.newId, hp: HP=WarpLinker.maxHp,
+  warpState: WarpTime=WarpLinker.InitialWarpState
 ) extends PlayerBuilding with Warpable {
   type Self = WarpLinker
   def self = this

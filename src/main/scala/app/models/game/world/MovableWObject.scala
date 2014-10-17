@@ -17,7 +17,7 @@ extends WObjectOps with MoveAttackActionedOps[Self]
     val newSelf = resetMovementLeft(self)
     Evented(
       newSelf,
-      if (self == newSelf) Vector.empty
+      if (self === newSelf) Vector.empty
       else Vector(MovementChangeEvt(world, newSelf))
     )
   }
@@ -32,7 +32,7 @@ extends WObjectOps with MoveAttackActionedOps[Self]
     Evented(
       newSelf,
       Vector(MoveEvt(world, self, target, newSelf.movementLeft)) ++ (
-        if (self.movedOrAttacked != newSelf.movedOrAttacked)
+        if (self.movedOrAttacked =/= newSelf.movedOrAttacked)
           Vector(MovedOrAttackedChangeEvt(world, newSelf))
         else Vector.empty
       )
@@ -71,8 +71,8 @@ with Mobility[Mobility.Movable.type] {
   ): Either[String, WObject.WorldObjOptUpdate[Self]] = {
     if (path.movementNeeded > movementLeft)
       s"$this needed ${path.movementNeeded} movement for $path, had $movementLeft".left
-    else if (path.vects.head != position)
-      s"Starting $path vect != $this position".left
+    else if (path.vects.head =/= position)
+      s"Starting $path vect =/= $this position".left
     else
       travel(path.vects, Evented((world, Some(self)))).right
   }

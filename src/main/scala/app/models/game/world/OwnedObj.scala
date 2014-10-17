@@ -5,11 +5,11 @@ import app.models.game.events.Evented
 import implicits._
 
 trait OwnedObjOps[Self] extends WObjectOps {
-  def withNewHp(hp: Int)(self: Self): Self
+  def withNewHp(hp: HP)(self: Self): Self
 }
 
 trait OwnedObjStats extends WObjectStats {
-  val maxHp: Int
+  val maxHp: HP
   val visibility: Int
   val defense: Range.Inclusive
   /* If team has no critical objects it cannot do any more actions and
@@ -27,11 +27,11 @@ trait OwnedObj extends WObject {
   type Self <: OwnedObj
   type Companion <: OwnedObjOps[Self] with OwnedObjStats
 
-  val hp: Int
+  val hp: HP
   val owner: Owner
   def isWarpingIn = false
   def isWarpedIn = ! isWarpingIn
-  def isEnemy(o: OwnedObj) = owner.team != o.owner.team
+  def isEnemy(o: OwnedObj) = owner.team =/= o.owner.team
   def isFriend(o: OwnedObj) = ! isEnemy(o)
   def givesWarpVisibility: Boolean
   override def asOwnedObj = Some(this)
@@ -46,7 +46,7 @@ trait OwnedObj extends WObject {
   def sees(obj: WObject) = visibility.intersects(obj.bounds)
 
   def takeDamage: Option[Self] =
-    if (hp == 1) None else Some(self |> companion.withNewHp(hp - 1))
+    if (hp === HP(1)) None else Some(self |> companion.withNewHp(hp - HP(1)))
 
   def teamTurnStartedSelf(world: World): WorldSelfUpdate = Evented((world, self))
   final def teamTurnStarted(world: World): Evented[World] =

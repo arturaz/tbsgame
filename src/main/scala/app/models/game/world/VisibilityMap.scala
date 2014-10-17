@@ -36,7 +36,7 @@ object VisibilityMap {
     }
 
     changes.
-      filter { case (_, change) => change != 0 }.
+      filter { case (_, change) => change =/= 0 }.
       groupBy { case ((_, team), _) => team }.
       mapValues { map =>
         map.view.map { case ((point, _), change) => (point, change) }
@@ -78,7 +78,7 @@ case class VisibilityMap private (
     bounds.points.forall(isVisible(team, _))
 
   def filter(owner: Owner): VisibilityMap =
-    copy(map = map.filterKeys { case (_, team) => team == owner.team })
+    copy(map = map.filterKeys { case (_, team) => team === owner.team })
 
   def +(obj: OwnedObj): Evented[VisibilityMap] =
     this + (pointsOf(obj), obj.owner.team)
@@ -108,7 +108,7 @@ case class VisibilityMap private (
     afterTO: TraversableOnce[Vect2], afterTeam: Team
   ): Evented[VisibilityMap] = {
     val (before, after) = (beforeTO.toVector, afterTO.toVector)
-    if (before == after) Evented(this)
+    if (before === after) Evented(this)
     else {
       val (map1, evts1) = remove(before, beforeTeam)
       val (map2, evts2) = map1.add(after, afterTeam)
@@ -128,9 +128,9 @@ case class VisibilityMap private (
       val current = m(key)
       val next = f(current)
       val newEvents =
-        if (current == 0 && next != 0)
+        if (current === 0 && next =/= 0)
           Vector(VisibilityChangeEvt(team, visiblePositions = Vector(p)))
-        else if (current != 0 && next == 0)
+        else if (current =/= 0 && next === 0)
           Vector(VisibilityChangeEvt(team, invisiblePositions = Vector(p)))
         else Vector.empty
       (m updated(key, next), events ++ newEvents)

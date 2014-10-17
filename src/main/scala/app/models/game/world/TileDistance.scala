@@ -1,6 +1,7 @@
 package app.models.game.world
 
 import utils.IntValueClass
+import implicits._
 
 object TileDistance {
   def reachable(origin: Vect2, range: Int, includeSelf: Boolean=true) = {
@@ -8,7 +9,7 @@ object TileDistance {
       x <- Stream.range(-range, range + 1)
       curY = range - math.abs(x)
       y <- Stream.range(-curY, curY + 1)
-      if includeSelf || x != origin.x && y != origin.y
+      if includeSelf || x =/= origin.x && y =/= origin.y
     } yield Vect2(x, y)
   }
 

@@ -9,7 +9,9 @@ object TurnBasedGame {
   type Result = Game.ResultT[TurnBasedGame]
   type StartedGame = Either[String, Evented[TurnBasedGame]]
 
-  def apply(world: World, startingHuman: Human, startingResources: Int): StartedGame = {
+  def apply(
+    world: World, startingHuman: Human, startingResources: Resources
+  ): StartedGame = {
     val game = Game(world, startingHuman, startingResources)
     game.right.flatMap(apply)
   }
@@ -34,7 +36,7 @@ object TurnBasedGame {
 case class TurnBasedGame private (
   game: Game, currentTeam: Team, readyTeams: Vector[Team], actedTeams: Vector[Team]
 ) extends GameLike[TurnBasedGame] {
-  def canAct(human: Human) = human.team == currentTeam
+  def canAct(human: Human) = human.team === currentTeam
 
   def update(f: => Game.Result): TurnBasedGame.Result =
     f.right.map(_.map(updated))
@@ -44,7 +46,7 @@ case class TurnBasedGame private (
     if (canAct(human)) update(f(human))
     else s"$human cannot act, because current team is $currentTeam".left
 
-  override def join(human: Human, startingResources: Int) =
+  override def join(human: Human, startingResources: Resources) =
     update(game.join(human, startingResources))
 
   override def leave(human: Human) =
@@ -87,5 +89,5 @@ case class TurnBasedGame private (
   }
 
   def currentTeamActionsLeft = game.actionsLeftFor(currentTeam)
-  def currentTeamFinished = currentTeamActionsLeft == 0
+  def currentTeamFinished = currentTeamActionsLeft.isZero
 }

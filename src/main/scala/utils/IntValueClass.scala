@@ -1,5 +1,7 @@
 package utils
 
+import implicits._
+
 object IntValueClass {
   trait Numeric[A <: IntValueClass[A]] extends scala.Numeric[A] {
     override def plus(x: A, y: A) = x + y
@@ -24,8 +26,11 @@ trait IntValueClass[A <: IntValueClass[_]] extends Any with Ordered[A] {
   def /(v: A) = self(value / v.value)
   def unary_- = self(-value)
 
-  def isZero = value == 0
+  def isZero = value === 0
   def isNotZero = ! isZero
+
+  def min(v: A) = self(value min v.value)
+  def max(v: A) = self(value max v.value)
 
   override def compare(that: A) = value.compareTo(that.value)
 }

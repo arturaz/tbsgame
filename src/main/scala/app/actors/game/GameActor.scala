@@ -9,11 +9,12 @@ import app.models.game.world._
 import app.models.User
 import infrastructure.Log
 import language.existentials
+import implicits._
 
 import scala.annotation.tailrec
 
 object GameActor {
-  val StartingResources = 25
+  val StartingResources = Resources(25)
   val HumanTeam = Team()
   val AiTeam = Team()
 
@@ -100,7 +101,7 @@ class GameActor private (
         ref,
         _.join(human, GameActor.StartingResources).right.map { evtTbg =>
           init(human, ref, evtTbg.value.game)
-          if (evtTbg.value.currentTeam == human.team)
+          if (evtTbg.value.currentTeam === human.team)
             events(human, ref, Vector(TurnStartedEvt(human.team)))
           clients += human -> ref
           evtTbg

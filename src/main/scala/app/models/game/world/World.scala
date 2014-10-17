@@ -32,10 +32,14 @@ case class World private (
   def teamTurnFinished(team: Team) =
     Evented(this, Vector(TurnEndedEvt(team))) |> teamTurnX(team)(_.teamTurnFinished)
 
-  def actionsFor(player: Player): Actions = objects.collect {
-    case obj: GivingActions if obj.owner.team == player.team =>
-      obj.companion.actionsGiven
-  }.sum
+  def actionsFor(player: Player): Actions = {
+    val actions = objects.collect {
+      case obj: GivingActions if obj.owner.isFriendOf(player) =>
+        obj.companion.actionsGiven
+    }
+    val total = actions.sum
+    total
+  }
 
   private[this] def changeWithVisibility(obj: WObject)(
     fo: (Set[WObject], WObject) => Set[WObject]
@@ -46,13 +50,7 @@ case class World private (
     )
   }
 
-  def add(obj: WObject): Evented[World] = {
-    // DEBUG CHECK
-    objects.find(o => obj.bounds.intersects(o.bounds)).foreach { o =>
-      throw new Exception(s"Adding $obj to world - intersection with $o")
-    }
-    changeWithVisibility(obj)(_ + _)(_ + _)
-  }
+  def add(obj: WObject): Evented[World] = changeWithVisibility(obj)(_ + _)(_ + _)
 
   def remove(obj: WObject): Evented[World] = changeWithVisibility(obj)(_ - _)(_ - _)
   def updated[A <: WObject](before: A, after: A): Evented[World] = {
@@ -150,14 +148,14 @@ case class World private (
     react(reactors, Evented((this, Some(obj))))
   }
 
-  def findObj(position: Vect2) = objects.find(_.position == position)
+  def findObj(position: Vect2) = objects.find(_.position === position)
   def find[A <: WObject](predicate: PartialFunction[WObject, A]): Option[A] =
     objects.collectFirst(predicate)
-  def contains(id: Id): Boolean = objects.exists(_.id == id)
+  def contains(id: Id): Boolean = objects.exists(_.id === id)
 
   lazy val owners = objects.collect { case fo: OwnedObj => fo.owner }
   lazy val teams = owners.map(_.team)
-  lazy val players = owners.collect { case p: Player => p }.toSet
+  lazy val players = owners.collect { case p: Player => p }.toSet ++ resourcesMap.keySet
   lazy val humans = players.collect { case h: Human => h }.toSet
   lazy val bots = players.collect { case b: Bot => b }.toSet
 }
@@ -165,7 +163,7 @@ case class World private (
 object World {
   def revealObjects(team: Team, evtWorld: Evented[World]): Evented[World] = {
     val newVisiblePoints = evtWorld.events.collect {
-      case evt: VisibilityChangeEvt if evt.team == team =>
+      case evt: VisibilityChangeEvt if evt.team === team =>
         evt.visiblePositions
     }.flatten
     evtWorld.flatMap { newWorld =>
@@ -190,10 +188,10 @@ object World {
   private def teamTurnX(
     team: Team
   )(f: OwnedObj => World => Evented[World])(world: Evented[World]) =
-    xTurnX[OwnedObj](_.owner.team == team, f)(world)
+    xTurnX[OwnedObj](_.owner.team === team, f)(world)
 
   private def runAI(team: Team)(e: Evented[World]) = {
-    val bots = e.value.bots.filter(_.team == team)
+    val bots = e.value.bots.filter(_.team === team)
     bots.foldLeft(e) { case (fEvtWorld, bot) =>
       fEvtWorld.flatMap { fWorld => GrowingSpawnerAI.act(fWorld, bot) }
     }
@@ -202,7 +200,7 @@ object World {
   private[this] def randomDirection = {
     def rDir = Random.nextInt(3) - 1
     val hDir = rDir
-    val vDir = Stream.continually(rDir).filter(d => hDir != 0 || d != 0).head
+    val vDir = Stream.continually(rDir).filter(d => hDir =/= 0 || d =/= 0).head
     Vect2(hDir, vDir)
   }
 
@@ -266,7 +264,7 @@ object World {
           val resources = math.min(resourcesLeft, asteroidResources.random)
           resourcesLeft -= resources
           log(s"asteroid @ $objPos with $resources res, left: $resourcesLeft")
-          objects += Asteroid(objPos, resources)
+          objects += Asteroid(objPos, Resources(resources))
         }
         else if (
           waspsInBounds < waspsNeeded &&
