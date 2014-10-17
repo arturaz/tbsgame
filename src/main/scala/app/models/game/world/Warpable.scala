@@ -45,7 +45,7 @@ trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
 trait WarpableStats extends OwnedObjStats {
   val InitialWarpState = 0
   val warpTime: Int
-  val cost: Int
+  val cost: Resources
 }
 
 trait WarpableCompanion[Self <: Warpable] extends WarpableOps[Self]

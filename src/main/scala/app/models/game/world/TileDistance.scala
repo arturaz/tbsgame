@@ -16,10 +16,6 @@ object TileDistance {
     require(value >= 0, s"value >= 0: $value")
     new TileDistance(value)
   }
-
-//  implicit object Ordering extends Ordering[TileDistance] {
-//    override def compare(x: TileDistance, y: TileDistance) = x.compare(y)
-//  }
 }
 
 class TileDistance private (val value: Int) extends AnyVal

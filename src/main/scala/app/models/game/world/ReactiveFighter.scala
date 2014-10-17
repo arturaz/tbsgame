@@ -1,5 +1,6 @@
 package app.models.game.world
 
+import app.models.game.Actions
 import app.models.game.ai.SingleMindAI
 import app.models.game.events.Evented
 import implicits._
@@ -28,7 +29,7 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
 }
 
 trait ReactiveFighterStats extends FighterStats {
-  override val moveAttackActionsNeeded: Int = 2
+  override val moveAttackActionsNeeded = Actions(2)
 }
 
 trait ReactiveFighterCompanion[Self <: ReactiveFighter] extends ReactiveFighterOps[Self]

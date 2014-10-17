@@ -64,8 +64,7 @@ message MInit {
   repeated WObject objects = 2;
   repeated base.Vect2 visible_points = 3;
   repeated Team teams = 4;
-  repeated Player players = 5;
-  repeated Resources resources = 6;
+  repeated InitPlayer players = 5;
 }
 
 message MEvents {
@@ -88,9 +87,14 @@ message Player { // {{{
   required base.UUID team_id = 3;
 } // }}}
 
-message Resources { // {{{
-  required base.UUID player_id = 1;
-  required uint32 amount = 2;
+message PlayerState { // {{{
+  required uint32 resources = 1;
+  required uint32 actions = 2;
+} // }}}
+
+message InitPlayer { // {{{
+  required Player player = 1;
+  optional PlayerState state = 2;
 } // }}}
 
 message WObject { // {{{
@@ -208,8 +212,7 @@ message Event { // {{{
 } // }}}
 
 message JoinEvt {
-  required Player player = 1;
-  required uint32 actions = 2;
+  required InitPlayer player = 1;
 }
 
 message LeaveEvt {

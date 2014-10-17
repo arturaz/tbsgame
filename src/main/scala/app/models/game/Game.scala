@@ -19,7 +19,7 @@ object Game {
   private type States = Map[Human, HumanState]
 
   def apply(
-    world: World, startingHuman: Human, startingResources: Int
+    world: World, startingHuman: Human, startingResources: Resources
   ): Either[String, Game] = {
     val humans = world.humans + startingHuman
     humans.foldLeft(Evented(world).right[String]) {
@@ -41,7 +41,7 @@ object Game {
   }.toMap
 
   private object Withs {
-    def withActions(human: Human, actionsNeeded: Int, state: HumanState)(
+    def withActions(human: Human, actionsNeeded: Actions, state: HumanState)(
       f: HumanState => Game.Result
     ): Game.Result = {
       if (state.actions < actionsNeeded)
@@ -50,8 +50,10 @@ object Game {
         val newState =
           state |-> HumanState.actions modify (_ - actionsNeeded)
         val events =
-          if (actionsNeeded > 0) Vector(ActionsChangeEvt(human, newState.actions))
-          else Vector.empty
+          if (actionsNeeded > Actions(0))
+            Vector(ActionsChangeEvt(human, newState.actions))
+          else
+            Vector.empty
         f(newState).right.map(events ++: _)
       }
     }
@@ -61,7 +63,7 @@ object Game {
     )(f: (A, HumanState) => Game.Result)(obj: A): Game.Result =
       withActions(
         human,
-        if (obj.movedOrAttacked) 0 else obj.companion.moveAttackActionsNeeded,
+        if (obj.movedOrAttacked) Actions(0) else obj.companion.moveAttackActionsNeeded,
         state
       )(f(obj, _))
 
@@ -71,14 +73,14 @@ object Game {
       withActions(human, obj.companion.specialActionsNeeded, state)(f(obj))
 
     def withResources(
-      human: Human, resourcesNeeded: Int, world: World
+      human: Human, resourcesNeeded: Resources, world: World
     )(f: Evented[World] => Game.Result): Game.Result =
       world.subResources(human, resourcesNeeded).right.flatMap(f)
   }
 }
 
 trait GameLike[A] {
-  def join(human: Human, startingResources: Int): Game.ResultT[A]
+  def join(human: Human, startingResources: Resources): Game.ResultT[A]
   def leave(human: Human): Game.ResultT[A]
 
   def warp(
@@ -132,9 +134,9 @@ case class Game private (
   def actionsLeftFor(team: Team) =
     states.view.filter(_._1.team == team).map(_._2.actions).sum
 
-  def join(human: Human, startingResources: Int) = {
+  def join(human: Human, startingResources: Resources) = {
     def evt(newState: HumanState) = Evented(
-      updated(world, human -> newState), Vector(JoinEvt(human, newState))
+      updated(world, human -> newState), JoinEvt(human, startingResources, newState)
     )
 
     states.get(human).fold2(
@@ -154,7 +156,7 @@ case class Game private (
     human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
   ): Game.Result =
     withState(human) { state =>
-    withActions(human, 1, state) { state =>
+    withActions(human, Actions(1), state) { state =>
     withResources(human, warpable.cost, world) { evtWorld =>
     withWarpVisibility(human, position) {
       evtWorld.map { warpable.warpW(_, human, position).right.map { _.map {
@@ -198,12 +200,15 @@ case class Game private (
 
   def consumeActions(human: Human): Game.Result =
     withState(human) { state =>
-      val actions = 0
+      val actions = Actions(0)
       Evented(
-        updated(world, human -> state.copy(actions = 0)),
+        updated(world, human -> state.copy(actions = actions)),
         Vector(ActionsChangeEvt(human, actions))
       ).right
     }
+
+  def visibleBy(owner: Owner) =
+    copy(world = world.visibleBy(owner), states = states.filterKeys(_.isFriendOf(owner)))
 
   private def updated(world: World): Game = copy(world = world)
   private def updated(states: States): Game = copy(states = states)

@@ -8,4 +8,4 @@ object HumanState {
   val actions = lenser(_.actions)
 }
 
-case class HumanState(actions: Int)
+case class HumanState(actions: Actions)

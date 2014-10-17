@@ -1,8 +1,7 @@
 package app.models.game.events
 
-import app.models.game.HumanState
+import app.models.game._
 import app.models.game.world._
-import app.models.game.{Team, Attack, Human, Owner}
 
 sealed trait Event {
   def visibleBy(owner: Owner): Boolean
@@ -18,7 +17,9 @@ sealed trait BoundedEvent extends Event {
   def visibleBy(owner: Owner) = world.isVisiblePartial(owner, bounds)
 }
 
-case class JoinEvt(human: Human, state: HumanState) extends AlwaysVisibleEvent
+case class JoinEvt(
+  human: Human, resources: Resources, state: HumanState
+) extends AlwaysVisibleEvent
 case class LeaveEvt(human: Human) extends AlwaysVisibleEvent
 case class TurnStartedEvt(team: Team) extends AlwaysVisibleEvent
 case class TurnEndedEvt(team: Team) extends AlwaysVisibleEvent
@@ -65,7 +66,7 @@ case class MovedOrAttackedChangeEvt(
 }
 
 case class ResourceChangeEvt(
-  obj: Either[(World, WObject), Human], newValue: Int
+  obj: Either[(World, WObject), Human], newValue: Resources
 ) extends Event {
   override def visibleBy(owner: Owner) = obj.fold(
     { case (world, wObj) => world.isVisiblePartial(owner, wObj.bounds) },
@@ -74,7 +75,7 @@ case class ResourceChangeEvt(
 }
 
 case class ActionsChangeEvt(
-  human: Human, actions: Int
+  human: Human, actions: Actions
 ) extends Event {
   override def visibleBy(owner: Owner) = human.isFriendOf(owner)
 }

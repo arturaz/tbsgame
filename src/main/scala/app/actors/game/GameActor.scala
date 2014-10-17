@@ -3,7 +3,7 @@ package app.actors.game
 import akka.actor.{ActorLogging, Props, Actor, ActorRef}
 import akka.event.{LoggingAdapter, LoggingReceive}
 import app.actors.game.GameActor.Out.Joined
-import app.models.game.{Bot, Human, Team, TurnBasedGame}
+import app.models.game._
 import app.models.game.events.{Evented, TurnStartedEvt, Events => GEvents}
 import app.models.game.world._
 import app.models.User
@@ -34,13 +34,13 @@ object GameActor {
   sealed trait ClientOut extends Out
   object Out {
     case class Joined(human: Human, game: ActorRef) extends Out
-    case class Init(world: World) extends ClientOut
+    case class Init(game: Game) extends ClientOut
     case class Events(events: GEvents) extends ClientOut
     case class Error(error: String) extends ClientOut
   }
 
-  private def init(human: Human, ref: ActorRef, world: World): Unit = {
-    ref ! GameActor.Out.Init(world.visibleBy(human))
+  private def init(human: Human, ref: ActorRef, game: Game): Unit = {
+    ref ! GameActor.Out.Init(game.visibleBy(human))
   }
 
   private def events(
@@ -84,7 +84,7 @@ class GameActor private (
       evented => {
         log.debug("Turn based game initialized to {}", evented)
         startingHumanRef ! Joined(startingHuman, self)
-        init(startingHuman, startingHumanRef, evented.value.game.world)
+        init(startingHuman, startingHumanRef, evented.value.game)
         events(startingHuman, startingHumanRef, evented.events)
         evented.value
       }
@@ -99,7 +99,7 @@ class GameActor private (
       update(
         ref,
         _.join(human, GameActor.StartingResources).right.map { evtTbg =>
-          init(human, ref, evtTbg.value.game.world)
+          init(human, ref, evtTbg.value.game)
           if (evtTbg.value.currentTeam == human.team)
             events(human, ref, Vector(TurnStartedEvt(human.team)))
           clients += human -> ref

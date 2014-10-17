@@ -16,7 +16,7 @@ import scala.util.Random
 
 case class World private (
   bounds: Bounds, objects: Set[WObject],
-  resourcesMap: Map[Player, Int],
+  resourcesMap: Map[Player, Resources],
   visibilityMap: VisibilityMap
 ) extends TurnBased[World] {
   import app.models.game.world.World._
@@ -32,7 +32,7 @@ case class World private (
   def teamTurnFinished(team: Team) =
     Evented(this, Vector(TurnEndedEvt(team))) |> teamTurnX(team)(_.teamTurnFinished)
 
-  def actionsFor(player: Player) = objects.collect {
+  def actionsFor(player: Player): Actions = objects.collect {
     case obj: GivingActions if obj.owner.team == player.team =>
       obj.companion.actionsGiven
   }.sum
@@ -68,7 +68,8 @@ case class World private (
     updated(before, afterFn(before))
   private def updated(objects: Set[WObject]): World = copy(objects = objects)
   private def updated(map: VisibilityMap): World = copy(visibilityMap = map)
-  private def updated(resources: Map[Player, Int]): World = copy(resourcesMap = resources)
+  private def updated(resources: Map[Player, Resources]): World =
+    copy(resourcesMap = resources)
 
   def updateAll(pf: PartialFunction[WObject, WObject]) = {
     val liftedPf = pf.lift
@@ -80,11 +81,11 @@ case class World private (
     }
   }
 
-  def resources(player: Player) = resourcesMap.getOrElse(player, 0)
+  def resources(player: Player) = resourcesMap.getOrElse(player, Resources(0))
 
-  def addResources(player: Player, count: Int): Either[String, Evented[World]] = {
+  def addResources(player: Player, count: Resources): Either[String, Evented[World]] = {
     val curRes = resources(player)
-    if (count < 0 && curRes < -count)
+    if (count < Resources(0) && curRes < -count)
       s"Had $curRes, wanted to subtract ${-count}!".left
     else {
       val newRes = resources(player) + count
@@ -97,7 +98,7 @@ case class World private (
     }
   }
 
-  def subResources(player: Player, count: Int): Either[String, Evented[World]] =
+  def subResources(player: Player, count: Resources): Either[String, Evented[World]] =
     addResources(player, -count)
 
   def canWarp(b: Bounds) = bounds.contains(b) && ! objects.exists(_.bounds.intersects(b))

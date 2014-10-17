@@ -1,11 +1,12 @@
 package app.models.game.world
 
+import app.models.game.Actions
 import app.models.game.events.Evented
 
 trait SpecialActionOps extends WObjectOps
 
 trait SpecialActionStats extends WObjectStats {
-  val specialActionsNeeded: Int
+  val specialActionsNeeded: Actions
 }
 
 trait SpecialActionCompanion extends SpecialActionOps with SpecialActionStats
