@@ -46,6 +46,8 @@ case class TurnBasedGame private (
     if (canAct(human)) update(f(human))
     else s"$human cannot act, because current team is $currentTeam".left
 
+  override def isJoined(human: Human) = game.isJoined(human)
+
   override def join(human: Human, startingResources: Resources) =
     update(game.join(human, startingResources))
 

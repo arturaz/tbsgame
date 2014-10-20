@@ -65,29 +65,34 @@ class NetClient(
 
   override def receive = notLoggedIn
 
-  private[this] def notLoggedIn: Receive = LoggingReceive {
-    case FromClient.Management(Login(name, password)) =>
-      val user = User(UUID.randomUUID(), name) // Fake login here
-      LoggedIn(user.id).out()
-      context.become(loggedIn(user))
+  private[this] def common: Receive = new Receive {
+    override def isDefinedAt(x: Any) = false
+    override def apply(v1: Any) = ???
   }
 
-  private[this] def loggedIn(user: User): Receive = LoggingReceive {
+  private[this] def notLoggedIn: Receive = LoggingReceive(({
+    case FromClient.Management(Login(name, password)) =>
+      val user = User(UUID.nameUUIDFromBytes(name.getBytes), name) // Fake login here
+      LoggedIn(user.id).out()
+      context.become(loggedIn(user))
+  }: Receive) orElse common)
+
+  private[this] def loggedIn(user: User): Receive = LoggingReceive(({
     case FromClient.Management(JoinGame) =>
       gamesManager ! GameActor.In.Join(user)
 
     case GameActor.Out.Joined(human, game) =>
       GameJoined(human).out()
       context.become(inGame(human, game))
-  }
+  }: Receive) orElse common)
 
-  private[this] def inGame(human: Human, game: ActorRef): Receive = LoggingReceive {
+  private[this] def inGame(human: Human, game: ActorRef): Receive = LoggingReceive(({
     case FromClient.Game(msgFn) =>
       val msg = msgFn(human)
       game ! msg
     case msg: GameActor.ClientOut =>
       msg.out()
-  }
+  }: Receive) orElse common)
 }
 
 

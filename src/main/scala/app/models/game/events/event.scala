@@ -18,9 +18,9 @@ sealed trait BoundedEvent extends Event {
   def visibleBy(owner: Owner) = world.isVisiblePartial(owner, bounds)
 }
 
-case class JoinEvt(
-  human: Human, resources: Resources, state: HumanState
-) extends AlwaysVisibleEvent
+case class HumanState(resources: Resources, gameState: GameHumanState)
+
+case class JoinEvt(human: Human, state: HumanState) extends AlwaysVisibleEvent
 case class LeaveEvt(human: Human) extends AlwaysVisibleEvent
 case class TurnStartedEvt(team: Team) extends AlwaysVisibleEvent
 case class TurnEndedEvt(team: Team) extends AlwaysVisibleEvent

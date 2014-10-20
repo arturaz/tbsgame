@@ -16,7 +16,7 @@ object Game {
 
   type ResultT[A] = Either[String, Evented[A]]
   type Result = ResultT[Game]
-  private type States = Map[Human, HumanState]
+  private type States = Map[Human, GameHumanState]
 
   def apply(
     world: World, startingHuman: Human, startingResources: Resources
@@ -32,7 +32,7 @@ object Game {
   }
 
   def startingState(world: World, human: Human) =
-    HumanState(world.actionsFor(human))
+    GameHumanState(world.actionsFor(human))
 
   def startingStates(
     world: World, humans: Iterable[Human]
@@ -41,14 +41,14 @@ object Game {
   }.toMap
 
   private object Withs {
-    def withActions(human: Human, actionsNeeded: Actions, state: HumanState)(
-      f: HumanState => Game.Result
+    def withActions(human: Human, actionsNeeded: Actions, state: GameHumanState)(
+      f: GameHumanState => Game.Result
     ): Game.Result = {
       if (state.actions < actionsNeeded)
         s"Not enough actions: needed $actionsNeeded, had $state".left
       else {
         val newState =
-          state |-> HumanState.actions modify (_ - actionsNeeded)
+          state |-> GameHumanState.actions modify (_ - actionsNeeded)
         val events =
           if (actionsNeeded > Actions(0))
             Vector(ActionsChangeEvt(human, newState.actions))
@@ -59,8 +59,8 @@ object Game {
     }
 
     def withMoveAttackAction[A <: MoveAttackActioned](
-      human: Human, state: HumanState
-    )(f: (A, HumanState) => Game.Result)(obj: A): Game.Result =
+      human: Human, state: GameHumanState
+    )(f: (A, GameHumanState) => Game.Result)(obj: A): Game.Result =
       withActions(
         human,
         if (obj.movedOrAttacked) Actions(0) else obj.companion.moveAttackActionsNeeded,
@@ -68,8 +68,8 @@ object Game {
       )(f(obj, _))
 
     def withSpecialAction[A <: SpecialAction](
-      human: Human, state: HumanState
-    )(f: A => HumanState => Game.Result)(obj: A): Game.Result =
+      human: Human, state: GameHumanState
+    )(f: A => GameHumanState => Game.Result)(obj: A): Game.Result =
       withActions(human, obj.companion.specialActionsNeeded, state)(f(obj))
 
     def withResources(
@@ -80,6 +80,7 @@ object Game {
 }
 
 trait GameLike[A] {
+  def isJoined(human: Human): Boolean
   def join(human: Human, startingResources: Resources): Game.ResultT[A]
   def leave(human: Human): Game.ResultT[A]
 
@@ -134,9 +135,12 @@ case class Game private (
   def actionsLeftFor(team: Team) =
     states.view.filter(_._1.team === team).map(_._2.actions).sum
 
+  def isJoined(human: Human) = states.contains(human)
+
   def join(human: Human, startingResources: Resources) = {
-    def evt(newState: HumanState) = Evented(
-      updated(world, human -> newState), JoinEvt(human, startingResources, newState)
+    def evt(newState: GameHumanState) = Evented(
+      updated(world, human -> newState),
+      JoinEvt(human, HumanState(startingResources, newState))
     )
 
     states.get(human).fold2(
@@ -212,10 +216,10 @@ case class Game private (
 
   private def updated(world: World): Game = copy(world = world)
   private def updated(states: States): Game = copy(states = states)
-  private[this] def updated(world: World, human: (Human, HumanState)): Game =
+  private[this] def updated(world: World, human: (Human, GameHumanState)): Game =
     copy(world = world, states = states + human)
 
-  private[this] def withState(human: Human)(f: HumanState => Game.Result) =
+  private[this] def withState(human: Human)(f: GameHumanState => Game.Result) =
     states.get(human).fold2(Left(s"No state for $human: $states"), f)
 
   private[this] def withVisibility(

@@ -5188,24 +5188,34 @@ public final class Game {
     netmsg.Base.Vect2OrBuilder getVisiblePointsOrBuilder(
         int index);
     
-    // repeated .game.Team teams = 4;
+    // required .game.Team self_team = 4;
+    boolean hasSelfTeam();
+    netmsg.Game.Team getSelfTeam();
+    netmsg.Game.TeamOrBuilder getSelfTeamOrBuilder();
+    
+    // repeated .game.Team other_teams = 5;
     java.util.List<netmsg.Game.Team> 
-        getTeamsList();
-    netmsg.Game.Team getTeams(int index);
-    int getTeamsCount();
+        getOtherTeamsList();
+    netmsg.Game.Team getOtherTeams(int index);
+    int getOtherTeamsCount();
     java.util.List<? extends netmsg.Game.TeamOrBuilder> 
-        getTeamsOrBuilderList();
-    netmsg.Game.TeamOrBuilder getTeamsOrBuilder(
+        getOtherTeamsOrBuilderList();
+    netmsg.Game.TeamOrBuilder getOtherTeamsOrBuilder(
         int index);
     
-    // repeated .game.InitPlayer players = 5;
+    // required .game.PlayerState self = 6;
+    boolean hasSelf();
+    netmsg.Game.PlayerState getSelf();
+    netmsg.Game.PlayerStateOrBuilder getSelfOrBuilder();
+    
+    // repeated .game.InitPlayer other_players = 7;
     java.util.List<netmsg.Game.InitPlayer> 
-        getPlayersList();
-    netmsg.Game.InitPlayer getPlayers(int index);
-    int getPlayersCount();
+        getOtherPlayersList();
+    netmsg.Game.InitPlayer getOtherPlayers(int index);
+    int getOtherPlayersCount();
     java.util.List<? extends netmsg.Game.InitPlayerOrBuilder> 
-        getPlayersOrBuilderList();
-    netmsg.Game.InitPlayerOrBuilder getPlayersOrBuilder(
+        getOtherPlayersOrBuilderList();
+    netmsg.Game.InitPlayerOrBuilder getOtherPlayersOrBuilder(
         int index);
   }
   public static final class MInit extends
@@ -5292,54 +5302,82 @@ public final class Game {
       return visiblePoints_.get(index);
     }
     
-    // repeated .game.Team teams = 4;
-    public static final int TEAMS_FIELD_NUMBER = 4;
-    private java.util.List<netmsg.Game.Team> teams_;
-    public java.util.List<netmsg.Game.Team> getTeamsList() {
-      return teams_;
+    // required .game.Team self_team = 4;
+    public static final int SELF_TEAM_FIELD_NUMBER = 4;
+    private netmsg.Game.Team selfTeam_;
+    public boolean hasSelfTeam() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
     }
-    public java.util.List<? extends netmsg.Game.TeamOrBuilder> 
-        getTeamsOrBuilderList() {
-      return teams_;
+    public netmsg.Game.Team getSelfTeam() {
+      return selfTeam_;
     }
-    public int getTeamsCount() {
-      return teams_.size();
-    }
-    public netmsg.Game.Team getTeams(int index) {
-      return teams_.get(index);
-    }
-    public netmsg.Game.TeamOrBuilder getTeamsOrBuilder(
-        int index) {
-      return teams_.get(index);
+    public netmsg.Game.TeamOrBuilder getSelfTeamOrBuilder() {
+      return selfTeam_;
     }
     
-    // repeated .game.InitPlayer players = 5;
-    public static final int PLAYERS_FIELD_NUMBER = 5;
-    private java.util.List<netmsg.Game.InitPlayer> players_;
-    public java.util.List<netmsg.Game.InitPlayer> getPlayersList() {
-      return players_;
+    // repeated .game.Team other_teams = 5;
+    public static final int OTHER_TEAMS_FIELD_NUMBER = 5;
+    private java.util.List<netmsg.Game.Team> otherTeams_;
+    public java.util.List<netmsg.Game.Team> getOtherTeamsList() {
+      return otherTeams_;
+    }
+    public java.util.List<? extends netmsg.Game.TeamOrBuilder> 
+        getOtherTeamsOrBuilderList() {
+      return otherTeams_;
+    }
+    public int getOtherTeamsCount() {
+      return otherTeams_.size();
+    }
+    public netmsg.Game.Team getOtherTeams(int index) {
+      return otherTeams_.get(index);
+    }
+    public netmsg.Game.TeamOrBuilder getOtherTeamsOrBuilder(
+        int index) {
+      return otherTeams_.get(index);
+    }
+    
+    // required .game.PlayerState self = 6;
+    public static final int SELF_FIELD_NUMBER = 6;
+    private netmsg.Game.PlayerState self_;
+    public boolean hasSelf() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public netmsg.Game.PlayerState getSelf() {
+      return self_;
+    }
+    public netmsg.Game.PlayerStateOrBuilder getSelfOrBuilder() {
+      return self_;
+    }
+    
+    // repeated .game.InitPlayer other_players = 7;
+    public static final int OTHER_PLAYERS_FIELD_NUMBER = 7;
+    private java.util.List<netmsg.Game.InitPlayer> otherPlayers_;
+    public java.util.List<netmsg.Game.InitPlayer> getOtherPlayersList() {
+      return otherPlayers_;
     }
     public java.util.List<? extends netmsg.Game.InitPlayerOrBuilder> 
-        getPlayersOrBuilderList() {
-      return players_;
+        getOtherPlayersOrBuilderList() {
+      return otherPlayers_;
     }
-    public int getPlayersCount() {
-      return players_.size();
+    public int getOtherPlayersCount() {
+      return otherPlayers_.size();
     }
-    public netmsg.Game.InitPlayer getPlayers(int index) {
-      return players_.get(index);
+    public netmsg.Game.InitPlayer getOtherPlayers(int index) {
+      return otherPlayers_.get(index);
     }
-    public netmsg.Game.InitPlayerOrBuilder getPlayersOrBuilder(
+    public netmsg.Game.InitPlayerOrBuilder getOtherPlayersOrBuilder(
         int index) {
-      return players_.get(index);
+      return otherPlayers_.get(index);
     }
     
     private void initFields() {
       bounds_ = netmsg.Base.Bounds.getDefaultInstance();
       objects_ = java.util.Collections.emptyList();
       visiblePoints_ = java.util.Collections.emptyList();
-      teams_ = java.util.Collections.emptyList();
-      players_ = java.util.Collections.emptyList();
+      selfTeam_ = netmsg.Game.Team.getDefaultInstance();
+      otherTeams_ = java.util.Collections.emptyList();
+      self_ = netmsg.Game.PlayerState.getDefaultInstance();
+      otherPlayers_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -5347,6 +5385,14 @@ public final class Game {
       if (isInitialized != -1) return isInitialized == 1;
       
       if (!hasBounds()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasSelfTeam()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasSelf()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -5366,14 +5412,22 @@ public final class Game {
           return false;
         }
       }
-      for (int i = 0; i < getTeamsCount(); i++) {
-        if (!getTeams(i).isInitialized()) {
+      if (!getSelfTeam().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      for (int i = 0; i < getOtherTeamsCount(); i++) {
+        if (!getOtherTeams(i).isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
       }
-      for (int i = 0; i < getPlayersCount(); i++) {
-        if (!getPlayers(i).isInitialized()) {
+      if (!getSelf().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      for (int i = 0; i < getOtherPlayersCount(); i++) {
+        if (!getOtherPlayers(i).isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -5394,11 +5448,17 @@ public final class Game {
       for (int i = 0; i < visiblePoints_.size(); i++) {
         output.writeMessage(3, visiblePoints_.get(i));
       }
-      for (int i = 0; i < teams_.size(); i++) {
-        output.writeMessage(4, teams_.get(i));
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(4, selfTeam_);
       }
-      for (int i = 0; i < players_.size(); i++) {
-        output.writeMessage(5, players_.get(i));
+      for (int i = 0; i < otherTeams_.size(); i++) {
+        output.writeMessage(5, otherTeams_.get(i));
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeMessage(6, self_);
+      }
+      for (int i = 0; i < otherPlayers_.size(); i++) {
+        output.writeMessage(7, otherPlayers_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -5421,13 +5481,21 @@ public final class Game {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, visiblePoints_.get(i));
       }
-      for (int i = 0; i < teams_.size(); i++) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, teams_.get(i));
+          .computeMessageSize(4, selfTeam_);
       }
-      for (int i = 0; i < players_.size(); i++) {
+      for (int i = 0; i < otherTeams_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, players_.get(i));
+          .computeMessageSize(5, otherTeams_.get(i));
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, self_);
+      }
+      for (int i = 0; i < otherPlayers_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, otherPlayers_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -5548,8 +5616,10 @@ public final class Game {
           getBoundsFieldBuilder();
           getObjectsFieldBuilder();
           getVisiblePointsFieldBuilder();
-          getTeamsFieldBuilder();
-          getPlayersFieldBuilder();
+          getSelfTeamFieldBuilder();
+          getOtherTeamsFieldBuilder();
+          getSelfFieldBuilder();
+          getOtherPlayersFieldBuilder();
         }
       }
       private static Builder create() {
@@ -5576,17 +5646,29 @@ public final class Game {
         } else {
           visiblePointsBuilder_.clear();
         }
-        if (teamsBuilder_ == null) {
-          teams_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+        if (selfTeamBuilder_ == null) {
+          selfTeam_ = netmsg.Game.Team.getDefaultInstance();
         } else {
-          teamsBuilder_.clear();
+          selfTeamBuilder_.clear();
         }
-        if (playersBuilder_ == null) {
-          players_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        if (otherTeamsBuilder_ == null) {
+          otherTeams_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000010);
         } else {
-          playersBuilder_.clear();
+          otherTeamsBuilder_.clear();
+        }
+        if (selfBuilder_ == null) {
+          self_ = netmsg.Game.PlayerState.getDefaultInstance();
+        } else {
+          selfBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
+        if (otherPlayersBuilder_ == null) {
+          otherPlayers_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000040);
+        } else {
+          otherPlayersBuilder_.clear();
         }
         return this;
       }
@@ -5652,23 +5734,39 @@ public final class Game {
         } else {
           result.visiblePoints_ = visiblePointsBuilder_.build();
         }
-        if (teamsBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) == 0x00000008)) {
-            teams_ = java.util.Collections.unmodifiableList(teams_);
-            bitField0_ = (bitField0_ & ~0x00000008);
-          }
-          result.teams_ = teams_;
-        } else {
-          result.teams_ = teamsBuilder_.build();
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000002;
         }
-        if (playersBuilder_ == null) {
+        if (selfTeamBuilder_ == null) {
+          result.selfTeam_ = selfTeam_;
+        } else {
+          result.selfTeam_ = selfTeamBuilder_.build();
+        }
+        if (otherTeamsBuilder_ == null) {
           if (((bitField0_ & 0x00000010) == 0x00000010)) {
-            players_ = java.util.Collections.unmodifiableList(players_);
+            otherTeams_ = java.util.Collections.unmodifiableList(otherTeams_);
             bitField0_ = (bitField0_ & ~0x00000010);
           }
-          result.players_ = players_;
+          result.otherTeams_ = otherTeams_;
         } else {
-          result.players_ = playersBuilder_.build();
+          result.otherTeams_ = otherTeamsBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        if (selfBuilder_ == null) {
+          result.self_ = self_;
+        } else {
+          result.self_ = selfBuilder_.build();
+        }
+        if (otherPlayersBuilder_ == null) {
+          if (((bitField0_ & 0x00000040) == 0x00000040)) {
+            otherPlayers_ = java.util.Collections.unmodifiableList(otherPlayers_);
+            bitField0_ = (bitField0_ & ~0x00000040);
+          }
+          result.otherPlayers_ = otherPlayers_;
+        } else {
+          result.otherPlayers_ = otherPlayersBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -5741,55 +5839,61 @@ public final class Game {
             }
           }
         }
-        if (teamsBuilder_ == null) {
-          if (!other.teams_.isEmpty()) {
-            if (teams_.isEmpty()) {
-              teams_ = other.teams_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+        if (other.hasSelfTeam()) {
+          mergeSelfTeam(other.getSelfTeam());
+        }
+        if (otherTeamsBuilder_ == null) {
+          if (!other.otherTeams_.isEmpty()) {
+            if (otherTeams_.isEmpty()) {
+              otherTeams_ = other.otherTeams_;
+              bitField0_ = (bitField0_ & ~0x00000010);
             } else {
-              ensureTeamsIsMutable();
-              teams_.addAll(other.teams_);
+              ensureOtherTeamsIsMutable();
+              otherTeams_.addAll(other.otherTeams_);
             }
             onChanged();
           }
         } else {
-          if (!other.teams_.isEmpty()) {
-            if (teamsBuilder_.isEmpty()) {
-              teamsBuilder_.dispose();
-              teamsBuilder_ = null;
-              teams_ = other.teams_;
-              bitField0_ = (bitField0_ & ~0x00000008);
-              teamsBuilder_ = 
+          if (!other.otherTeams_.isEmpty()) {
+            if (otherTeamsBuilder_.isEmpty()) {
+              otherTeamsBuilder_.dispose();
+              otherTeamsBuilder_ = null;
+              otherTeams_ = other.otherTeams_;
+              bitField0_ = (bitField0_ & ~0x00000010);
+              otherTeamsBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getTeamsFieldBuilder() : null;
+                   getOtherTeamsFieldBuilder() : null;
             } else {
-              teamsBuilder_.addAllMessages(other.teams_);
+              otherTeamsBuilder_.addAllMessages(other.otherTeams_);
             }
           }
         }
-        if (playersBuilder_ == null) {
-          if (!other.players_.isEmpty()) {
-            if (players_.isEmpty()) {
-              players_ = other.players_;
-              bitField0_ = (bitField0_ & ~0x00000010);
+        if (other.hasSelf()) {
+          mergeSelf(other.getSelf());
+        }
+        if (otherPlayersBuilder_ == null) {
+          if (!other.otherPlayers_.isEmpty()) {
+            if (otherPlayers_.isEmpty()) {
+              otherPlayers_ = other.otherPlayers_;
+              bitField0_ = (bitField0_ & ~0x00000040);
             } else {
-              ensurePlayersIsMutable();
-              players_.addAll(other.players_);
+              ensureOtherPlayersIsMutable();
+              otherPlayers_.addAll(other.otherPlayers_);
             }
             onChanged();
           }
         } else {
-          if (!other.players_.isEmpty()) {
-            if (playersBuilder_.isEmpty()) {
-              playersBuilder_.dispose();
-              playersBuilder_ = null;
-              players_ = other.players_;
-              bitField0_ = (bitField0_ & ~0x00000010);
-              playersBuilder_ = 
+          if (!other.otherPlayers_.isEmpty()) {
+            if (otherPlayersBuilder_.isEmpty()) {
+              otherPlayersBuilder_.dispose();
+              otherPlayersBuilder_ = null;
+              otherPlayers_ = other.otherPlayers_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+              otherPlayersBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getPlayersFieldBuilder() : null;
+                   getOtherPlayersFieldBuilder() : null;
             } else {
-              playersBuilder_.addAllMessages(other.players_);
+              otherPlayersBuilder_.addAllMessages(other.otherPlayers_);
             }
           }
         }
@@ -5799,6 +5903,14 @@ public final class Game {
       
       public final boolean isInitialized() {
         if (!hasBounds()) {
+          
+          return false;
+        }
+        if (!hasSelfTeam()) {
+          
+          return false;
+        }
+        if (!hasSelf()) {
           
           return false;
         }
@@ -5818,14 +5930,22 @@ public final class Game {
             return false;
           }
         }
-        for (int i = 0; i < getTeamsCount(); i++) {
-          if (!getTeams(i).isInitialized()) {
+        if (!getSelfTeam().isInitialized()) {
+          
+          return false;
+        }
+        for (int i = 0; i < getOtherTeamsCount(); i++) {
+          if (!getOtherTeams(i).isInitialized()) {
             
             return false;
           }
         }
-        for (int i = 0; i < getPlayersCount(); i++) {
-          if (!getPlayers(i).isInitialized()) {
+        if (!getSelf().isInitialized()) {
+          
+          return false;
+        }
+        for (int i = 0; i < getOtherPlayersCount(); i++) {
+          if (!getOtherPlayers(i).isInitialized()) {
             
             return false;
           }
@@ -5879,14 +5999,32 @@ public final class Game {
             }
             case 34: {
               netmsg.Game.Team.Builder subBuilder = netmsg.Game.Team.newBuilder();
+              if (hasSelfTeam()) {
+                subBuilder.mergeFrom(getSelfTeam());
+              }
               input.readMessage(subBuilder, extensionRegistry);
-              addTeams(subBuilder.buildPartial());
+              setSelfTeam(subBuilder.buildPartial());
               break;
             }
             case 42: {
+              netmsg.Game.Team.Builder subBuilder = netmsg.Game.Team.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addOtherTeams(subBuilder.buildPartial());
+              break;
+            }
+            case 50: {
+              netmsg.Game.PlayerState.Builder subBuilder = netmsg.Game.PlayerState.newBuilder();
+              if (hasSelf()) {
+                subBuilder.mergeFrom(getSelf());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setSelf(subBuilder.buildPartial());
+              break;
+            }
+            case 58: {
               netmsg.Game.InitPlayer.Builder subBuilder = netmsg.Game.InitPlayer.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
-              addPlayers(subBuilder.buildPartial());
+              addOtherPlayers(subBuilder.buildPartial());
               break;
             }
           }
@@ -6357,376 +6495,556 @@ public final class Game {
         return visiblePointsBuilder_;
       }
       
-      // repeated .game.Team teams = 4;
-      private java.util.List<netmsg.Game.Team> teams_ =
-        java.util.Collections.emptyList();
-      private void ensureTeamsIsMutable() {
-        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
-          teams_ = new java.util.ArrayList<netmsg.Game.Team>(teams_);
-          bitField0_ |= 0x00000008;
-         }
+      // required .game.Team self_team = 4;
+      private netmsg.Game.Team selfTeam_ = netmsg.Game.Team.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.Team, netmsg.Game.Team.Builder, netmsg.Game.TeamOrBuilder> selfTeamBuilder_;
+      public boolean hasSelfTeam() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
-      
-      private com.google.protobuf.RepeatedFieldBuilder<
-          netmsg.Game.Team, netmsg.Game.Team.Builder, netmsg.Game.TeamOrBuilder> teamsBuilder_;
-      
-      public java.util.List<netmsg.Game.Team> getTeamsList() {
-        if (teamsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(teams_);
+      public netmsg.Game.Team getSelfTeam() {
+        if (selfTeamBuilder_ == null) {
+          return selfTeam_;
         } else {
-          return teamsBuilder_.getMessageList();
+          return selfTeamBuilder_.getMessage();
         }
       }
-      public int getTeamsCount() {
-        if (teamsBuilder_ == null) {
-          return teams_.size();
-        } else {
-          return teamsBuilder_.getCount();
-        }
-      }
-      public netmsg.Game.Team getTeams(int index) {
-        if (teamsBuilder_ == null) {
-          return teams_.get(index);
-        } else {
-          return teamsBuilder_.getMessage(index);
-        }
-      }
-      public Builder setTeams(
-          int index, netmsg.Game.Team value) {
-        if (teamsBuilder_ == null) {
+      public Builder setSelfTeam(netmsg.Game.Team value) {
+        if (selfTeamBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureTeamsIsMutable();
-          teams_.set(index, value);
+          selfTeam_ = value;
           onChanged();
         } else {
-          teamsBuilder_.setMessage(index, value);
+          selfTeamBuilder_.setMessage(value);
         }
+        bitField0_ |= 0x00000008;
         return this;
       }
-      public Builder setTeams(
-          int index, netmsg.Game.Team.Builder builderForValue) {
-        if (teamsBuilder_ == null) {
-          ensureTeamsIsMutable();
-          teams_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          teamsBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      public Builder addTeams(netmsg.Game.Team value) {
-        if (teamsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureTeamsIsMutable();
-          teams_.add(value);
-          onChanged();
-        } else {
-          teamsBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      public Builder addTeams(
-          int index, netmsg.Game.Team value) {
-        if (teamsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureTeamsIsMutable();
-          teams_.add(index, value);
-          onChanged();
-        } else {
-          teamsBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      public Builder addTeams(
+      public Builder setSelfTeam(
           netmsg.Game.Team.Builder builderForValue) {
-        if (teamsBuilder_ == null) {
-          ensureTeamsIsMutable();
-          teams_.add(builderForValue.build());
+        if (selfTeamBuilder_ == null) {
+          selfTeam_ = builderForValue.build();
           onChanged();
         } else {
-          teamsBuilder_.addMessage(builderForValue.build());
+          selfTeamBuilder_.setMessage(builderForValue.build());
         }
+        bitField0_ |= 0x00000008;
         return this;
       }
-      public Builder addTeams(
-          int index, netmsg.Game.Team.Builder builderForValue) {
-        if (teamsBuilder_ == null) {
-          ensureTeamsIsMutable();
-          teams_.add(index, builderForValue.build());
+      public Builder mergeSelfTeam(netmsg.Game.Team value) {
+        if (selfTeamBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              selfTeam_ != netmsg.Game.Team.getDefaultInstance()) {
+            selfTeam_ =
+              netmsg.Game.Team.newBuilder(selfTeam_).mergeFrom(value).buildPartial();
+          } else {
+            selfTeam_ = value;
+          }
           onChanged();
         } else {
-          teamsBuilder_.addMessage(index, builderForValue.build());
+          selfTeamBuilder_.mergeFrom(value);
         }
+        bitField0_ |= 0x00000008;
         return this;
       }
-      public Builder addAllTeams(
-          java.lang.Iterable<? extends netmsg.Game.Team> values) {
-        if (teamsBuilder_ == null) {
-          ensureTeamsIsMutable();
-          super.addAll(values, teams_);
+      public Builder clearSelfTeam() {
+        if (selfTeamBuilder_ == null) {
+          selfTeam_ = netmsg.Game.Team.getDefaultInstance();
           onChanged();
         } else {
-          teamsBuilder_.addAllMessages(values);
+          selfTeamBuilder_.clear();
         }
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
-      public Builder clearTeams() {
-        if (teamsBuilder_ == null) {
-          teams_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
-          onChanged();
+      public netmsg.Game.Team.Builder getSelfTeamBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getSelfTeamFieldBuilder().getBuilder();
+      }
+      public netmsg.Game.TeamOrBuilder getSelfTeamOrBuilder() {
+        if (selfTeamBuilder_ != null) {
+          return selfTeamBuilder_.getMessageOrBuilder();
         } else {
-          teamsBuilder_.clear();
-        }
-        return this;
-      }
-      public Builder removeTeams(int index) {
-        if (teamsBuilder_ == null) {
-          ensureTeamsIsMutable();
-          teams_.remove(index);
-          onChanged();
-        } else {
-          teamsBuilder_.remove(index);
-        }
-        return this;
-      }
-      public netmsg.Game.Team.Builder getTeamsBuilder(
-          int index) {
-        return getTeamsFieldBuilder().getBuilder(index);
-      }
-      public netmsg.Game.TeamOrBuilder getTeamsOrBuilder(
-          int index) {
-        if (teamsBuilder_ == null) {
-          return teams_.get(index);  } else {
-          return teamsBuilder_.getMessageOrBuilder(index);
+          return selfTeam_;
         }
       }
-      public java.util.List<? extends netmsg.Game.TeamOrBuilder> 
-           getTeamsOrBuilderList() {
-        if (teamsBuilder_ != null) {
-          return teamsBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(teams_);
-        }
-      }
-      public netmsg.Game.Team.Builder addTeamsBuilder() {
-        return getTeamsFieldBuilder().addBuilder(
-            netmsg.Game.Team.getDefaultInstance());
-      }
-      public netmsg.Game.Team.Builder addTeamsBuilder(
-          int index) {
-        return getTeamsFieldBuilder().addBuilder(
-            index, netmsg.Game.Team.getDefaultInstance());
-      }
-      public java.util.List<netmsg.Game.Team.Builder> 
-           getTeamsBuilderList() {
-        return getTeamsFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilder<
           netmsg.Game.Team, netmsg.Game.Team.Builder, netmsg.Game.TeamOrBuilder> 
-          getTeamsFieldBuilder() {
-        if (teamsBuilder_ == null) {
-          teamsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          getSelfTeamFieldBuilder() {
+        if (selfTeamBuilder_ == null) {
+          selfTeamBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               netmsg.Game.Team, netmsg.Game.Team.Builder, netmsg.Game.TeamOrBuilder>(
-                  teams_,
-                  ((bitField0_ & 0x00000008) == 0x00000008),
+                  selfTeam_,
                   getParentForChildren(),
                   isClean());
-          teams_ = null;
+          selfTeam_ = null;
         }
-        return teamsBuilder_;
+        return selfTeamBuilder_;
       }
       
-      // repeated .game.InitPlayer players = 5;
-      private java.util.List<netmsg.Game.InitPlayer> players_ =
+      // repeated .game.Team other_teams = 5;
+      private java.util.List<netmsg.Game.Team> otherTeams_ =
         java.util.Collections.emptyList();
-      private void ensurePlayersIsMutable() {
+      private void ensureOtherTeamsIsMutable() {
         if (!((bitField0_ & 0x00000010) == 0x00000010)) {
-          players_ = new java.util.ArrayList<netmsg.Game.InitPlayer>(players_);
+          otherTeams_ = new java.util.ArrayList<netmsg.Game.Team>(otherTeams_);
           bitField0_ |= 0x00000010;
          }
       }
       
       private com.google.protobuf.RepeatedFieldBuilder<
-          netmsg.Game.InitPlayer, netmsg.Game.InitPlayer.Builder, netmsg.Game.InitPlayerOrBuilder> playersBuilder_;
+          netmsg.Game.Team, netmsg.Game.Team.Builder, netmsg.Game.TeamOrBuilder> otherTeamsBuilder_;
       
-      public java.util.List<netmsg.Game.InitPlayer> getPlayersList() {
-        if (playersBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(players_);
+      public java.util.List<netmsg.Game.Team> getOtherTeamsList() {
+        if (otherTeamsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(otherTeams_);
         } else {
-          return playersBuilder_.getMessageList();
+          return otherTeamsBuilder_.getMessageList();
         }
       }
-      public int getPlayersCount() {
-        if (playersBuilder_ == null) {
-          return players_.size();
+      public int getOtherTeamsCount() {
+        if (otherTeamsBuilder_ == null) {
+          return otherTeams_.size();
         } else {
-          return playersBuilder_.getCount();
+          return otherTeamsBuilder_.getCount();
         }
       }
-      public netmsg.Game.InitPlayer getPlayers(int index) {
-        if (playersBuilder_ == null) {
-          return players_.get(index);
+      public netmsg.Game.Team getOtherTeams(int index) {
+        if (otherTeamsBuilder_ == null) {
+          return otherTeams_.get(index);
         } else {
-          return playersBuilder_.getMessage(index);
+          return otherTeamsBuilder_.getMessage(index);
         }
       }
-      public Builder setPlayers(
-          int index, netmsg.Game.InitPlayer value) {
-        if (playersBuilder_ == null) {
+      public Builder setOtherTeams(
+          int index, netmsg.Game.Team value) {
+        if (otherTeamsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensurePlayersIsMutable();
-          players_.set(index, value);
+          ensureOtherTeamsIsMutable();
+          otherTeams_.set(index, value);
           onChanged();
         } else {
-          playersBuilder_.setMessage(index, value);
+          otherTeamsBuilder_.setMessage(index, value);
         }
         return this;
       }
-      public Builder setPlayers(
-          int index, netmsg.Game.InitPlayer.Builder builderForValue) {
-        if (playersBuilder_ == null) {
-          ensurePlayersIsMutable();
-          players_.set(index, builderForValue.build());
+      public Builder setOtherTeams(
+          int index, netmsg.Game.Team.Builder builderForValue) {
+        if (otherTeamsBuilder_ == null) {
+          ensureOtherTeamsIsMutable();
+          otherTeams_.set(index, builderForValue.build());
           onChanged();
         } else {
-          playersBuilder_.setMessage(index, builderForValue.build());
+          otherTeamsBuilder_.setMessage(index, builderForValue.build());
         }
         return this;
       }
-      public Builder addPlayers(netmsg.Game.InitPlayer value) {
-        if (playersBuilder_ == null) {
+      public Builder addOtherTeams(netmsg.Game.Team value) {
+        if (otherTeamsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensurePlayersIsMutable();
-          players_.add(value);
+          ensureOtherTeamsIsMutable();
+          otherTeams_.add(value);
           onChanged();
         } else {
-          playersBuilder_.addMessage(value);
+          otherTeamsBuilder_.addMessage(value);
         }
         return this;
       }
-      public Builder addPlayers(
-          int index, netmsg.Game.InitPlayer value) {
-        if (playersBuilder_ == null) {
+      public Builder addOtherTeams(
+          int index, netmsg.Game.Team value) {
+        if (otherTeamsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensurePlayersIsMutable();
-          players_.add(index, value);
+          ensureOtherTeamsIsMutable();
+          otherTeams_.add(index, value);
           onChanged();
         } else {
-          playersBuilder_.addMessage(index, value);
+          otherTeamsBuilder_.addMessage(index, value);
         }
         return this;
       }
-      public Builder addPlayers(
-          netmsg.Game.InitPlayer.Builder builderForValue) {
-        if (playersBuilder_ == null) {
-          ensurePlayersIsMutable();
-          players_.add(builderForValue.build());
+      public Builder addOtherTeams(
+          netmsg.Game.Team.Builder builderForValue) {
+        if (otherTeamsBuilder_ == null) {
+          ensureOtherTeamsIsMutable();
+          otherTeams_.add(builderForValue.build());
           onChanged();
         } else {
-          playersBuilder_.addMessage(builderForValue.build());
+          otherTeamsBuilder_.addMessage(builderForValue.build());
         }
         return this;
       }
-      public Builder addPlayers(
-          int index, netmsg.Game.InitPlayer.Builder builderForValue) {
-        if (playersBuilder_ == null) {
-          ensurePlayersIsMutable();
-          players_.add(index, builderForValue.build());
+      public Builder addOtherTeams(
+          int index, netmsg.Game.Team.Builder builderForValue) {
+        if (otherTeamsBuilder_ == null) {
+          ensureOtherTeamsIsMutable();
+          otherTeams_.add(index, builderForValue.build());
           onChanged();
         } else {
-          playersBuilder_.addMessage(index, builderForValue.build());
+          otherTeamsBuilder_.addMessage(index, builderForValue.build());
         }
         return this;
       }
-      public Builder addAllPlayers(
-          java.lang.Iterable<? extends netmsg.Game.InitPlayer> values) {
-        if (playersBuilder_ == null) {
-          ensurePlayersIsMutable();
-          super.addAll(values, players_);
+      public Builder addAllOtherTeams(
+          java.lang.Iterable<? extends netmsg.Game.Team> values) {
+        if (otherTeamsBuilder_ == null) {
+          ensureOtherTeamsIsMutable();
+          super.addAll(values, otherTeams_);
           onChanged();
         } else {
-          playersBuilder_.addAllMessages(values);
+          otherTeamsBuilder_.addAllMessages(values);
         }
         return this;
       }
-      public Builder clearPlayers() {
-        if (playersBuilder_ == null) {
-          players_ = java.util.Collections.emptyList();
+      public Builder clearOtherTeams() {
+        if (otherTeamsBuilder_ == null) {
+          otherTeams_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000010);
           onChanged();
         } else {
-          playersBuilder_.clear();
+          otherTeamsBuilder_.clear();
         }
         return this;
       }
-      public Builder removePlayers(int index) {
-        if (playersBuilder_ == null) {
-          ensurePlayersIsMutable();
-          players_.remove(index);
+      public Builder removeOtherTeams(int index) {
+        if (otherTeamsBuilder_ == null) {
+          ensureOtherTeamsIsMutable();
+          otherTeams_.remove(index);
           onChanged();
         } else {
-          playersBuilder_.remove(index);
+          otherTeamsBuilder_.remove(index);
         }
         return this;
       }
-      public netmsg.Game.InitPlayer.Builder getPlayersBuilder(
+      public netmsg.Game.Team.Builder getOtherTeamsBuilder(
           int index) {
-        return getPlayersFieldBuilder().getBuilder(index);
+        return getOtherTeamsFieldBuilder().getBuilder(index);
       }
-      public netmsg.Game.InitPlayerOrBuilder getPlayersOrBuilder(
+      public netmsg.Game.TeamOrBuilder getOtherTeamsOrBuilder(
           int index) {
-        if (playersBuilder_ == null) {
-          return players_.get(index);  } else {
-          return playersBuilder_.getMessageOrBuilder(index);
+        if (otherTeamsBuilder_ == null) {
+          return otherTeams_.get(index);  } else {
+          return otherTeamsBuilder_.getMessageOrBuilder(index);
         }
       }
-      public java.util.List<? extends netmsg.Game.InitPlayerOrBuilder> 
-           getPlayersOrBuilderList() {
-        if (playersBuilder_ != null) {
-          return playersBuilder_.getMessageOrBuilderList();
+      public java.util.List<? extends netmsg.Game.TeamOrBuilder> 
+           getOtherTeamsOrBuilderList() {
+        if (otherTeamsBuilder_ != null) {
+          return otherTeamsBuilder_.getMessageOrBuilderList();
         } else {
-          return java.util.Collections.unmodifiableList(players_);
+          return java.util.Collections.unmodifiableList(otherTeams_);
         }
       }
-      public netmsg.Game.InitPlayer.Builder addPlayersBuilder() {
-        return getPlayersFieldBuilder().addBuilder(
-            netmsg.Game.InitPlayer.getDefaultInstance());
+      public netmsg.Game.Team.Builder addOtherTeamsBuilder() {
+        return getOtherTeamsFieldBuilder().addBuilder(
+            netmsg.Game.Team.getDefaultInstance());
       }
-      public netmsg.Game.InitPlayer.Builder addPlayersBuilder(
+      public netmsg.Game.Team.Builder addOtherTeamsBuilder(
           int index) {
-        return getPlayersFieldBuilder().addBuilder(
-            index, netmsg.Game.InitPlayer.getDefaultInstance());
+        return getOtherTeamsFieldBuilder().addBuilder(
+            index, netmsg.Game.Team.getDefaultInstance());
       }
-      public java.util.List<netmsg.Game.InitPlayer.Builder> 
-           getPlayersBuilderList() {
-        return getPlayersFieldBuilder().getBuilderList();
+      public java.util.List<netmsg.Game.Team.Builder> 
+           getOtherTeamsBuilderList() {
+        return getOtherTeamsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          netmsg.Game.InitPlayer, netmsg.Game.InitPlayer.Builder, netmsg.Game.InitPlayerOrBuilder> 
-          getPlayersFieldBuilder() {
-        if (playersBuilder_ == null) {
-          playersBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              netmsg.Game.InitPlayer, netmsg.Game.InitPlayer.Builder, netmsg.Game.InitPlayerOrBuilder>(
-                  players_,
+          netmsg.Game.Team, netmsg.Game.Team.Builder, netmsg.Game.TeamOrBuilder> 
+          getOtherTeamsFieldBuilder() {
+        if (otherTeamsBuilder_ == null) {
+          otherTeamsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              netmsg.Game.Team, netmsg.Game.Team.Builder, netmsg.Game.TeamOrBuilder>(
+                  otherTeams_,
                   ((bitField0_ & 0x00000010) == 0x00000010),
                   getParentForChildren(),
                   isClean());
-          players_ = null;
+          otherTeams_ = null;
         }
-        return playersBuilder_;
+        return otherTeamsBuilder_;
+      }
+      
+      // required .game.PlayerState self = 6;
+      private netmsg.Game.PlayerState self_ = netmsg.Game.PlayerState.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.PlayerState, netmsg.Game.PlayerState.Builder, netmsg.Game.PlayerStateOrBuilder> selfBuilder_;
+      public boolean hasSelf() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      public netmsg.Game.PlayerState getSelf() {
+        if (selfBuilder_ == null) {
+          return self_;
+        } else {
+          return selfBuilder_.getMessage();
+        }
+      }
+      public Builder setSelf(netmsg.Game.PlayerState value) {
+        if (selfBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          self_ = value;
+          onChanged();
+        } else {
+          selfBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      public Builder setSelf(
+          netmsg.Game.PlayerState.Builder builderForValue) {
+        if (selfBuilder_ == null) {
+          self_ = builderForValue.build();
+          onChanged();
+        } else {
+          selfBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      public Builder mergeSelf(netmsg.Game.PlayerState value) {
+        if (selfBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) == 0x00000020) &&
+              self_ != netmsg.Game.PlayerState.getDefaultInstance()) {
+            self_ =
+              netmsg.Game.PlayerState.newBuilder(self_).mergeFrom(value).buildPartial();
+          } else {
+            self_ = value;
+          }
+          onChanged();
+        } else {
+          selfBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      public Builder clearSelf() {
+        if (selfBuilder_ == null) {
+          self_ = netmsg.Game.PlayerState.getDefaultInstance();
+          onChanged();
+        } else {
+          selfBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
+        return this;
+      }
+      public netmsg.Game.PlayerState.Builder getSelfBuilder() {
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return getSelfFieldBuilder().getBuilder();
+      }
+      public netmsg.Game.PlayerStateOrBuilder getSelfOrBuilder() {
+        if (selfBuilder_ != null) {
+          return selfBuilder_.getMessageOrBuilder();
+        } else {
+          return self_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.PlayerState, netmsg.Game.PlayerState.Builder, netmsg.Game.PlayerStateOrBuilder> 
+          getSelfFieldBuilder() {
+        if (selfBuilder_ == null) {
+          selfBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Game.PlayerState, netmsg.Game.PlayerState.Builder, netmsg.Game.PlayerStateOrBuilder>(
+                  self_,
+                  getParentForChildren(),
+                  isClean());
+          self_ = null;
+        }
+        return selfBuilder_;
+      }
+      
+      // repeated .game.InitPlayer other_players = 7;
+      private java.util.List<netmsg.Game.InitPlayer> otherPlayers_ =
+        java.util.Collections.emptyList();
+      private void ensureOtherPlayersIsMutable() {
+        if (!((bitField0_ & 0x00000040) == 0x00000040)) {
+          otherPlayers_ = new java.util.ArrayList<netmsg.Game.InitPlayer>(otherPlayers_);
+          bitField0_ |= 0x00000040;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          netmsg.Game.InitPlayer, netmsg.Game.InitPlayer.Builder, netmsg.Game.InitPlayerOrBuilder> otherPlayersBuilder_;
+      
+      public java.util.List<netmsg.Game.InitPlayer> getOtherPlayersList() {
+        if (otherPlayersBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(otherPlayers_);
+        } else {
+          return otherPlayersBuilder_.getMessageList();
+        }
+      }
+      public int getOtherPlayersCount() {
+        if (otherPlayersBuilder_ == null) {
+          return otherPlayers_.size();
+        } else {
+          return otherPlayersBuilder_.getCount();
+        }
+      }
+      public netmsg.Game.InitPlayer getOtherPlayers(int index) {
+        if (otherPlayersBuilder_ == null) {
+          return otherPlayers_.get(index);
+        } else {
+          return otherPlayersBuilder_.getMessage(index);
+        }
+      }
+      public Builder setOtherPlayers(
+          int index, netmsg.Game.InitPlayer value) {
+        if (otherPlayersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOtherPlayersIsMutable();
+          otherPlayers_.set(index, value);
+          onChanged();
+        } else {
+          otherPlayersBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setOtherPlayers(
+          int index, netmsg.Game.InitPlayer.Builder builderForValue) {
+        if (otherPlayersBuilder_ == null) {
+          ensureOtherPlayersIsMutable();
+          otherPlayers_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          otherPlayersBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addOtherPlayers(netmsg.Game.InitPlayer value) {
+        if (otherPlayersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOtherPlayersIsMutable();
+          otherPlayers_.add(value);
+          onChanged();
+        } else {
+          otherPlayersBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addOtherPlayers(
+          int index, netmsg.Game.InitPlayer value) {
+        if (otherPlayersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOtherPlayersIsMutable();
+          otherPlayers_.add(index, value);
+          onChanged();
+        } else {
+          otherPlayersBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addOtherPlayers(
+          netmsg.Game.InitPlayer.Builder builderForValue) {
+        if (otherPlayersBuilder_ == null) {
+          ensureOtherPlayersIsMutable();
+          otherPlayers_.add(builderForValue.build());
+          onChanged();
+        } else {
+          otherPlayersBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addOtherPlayers(
+          int index, netmsg.Game.InitPlayer.Builder builderForValue) {
+        if (otherPlayersBuilder_ == null) {
+          ensureOtherPlayersIsMutable();
+          otherPlayers_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          otherPlayersBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllOtherPlayers(
+          java.lang.Iterable<? extends netmsg.Game.InitPlayer> values) {
+        if (otherPlayersBuilder_ == null) {
+          ensureOtherPlayersIsMutable();
+          super.addAll(values, otherPlayers_);
+          onChanged();
+        } else {
+          otherPlayersBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearOtherPlayers() {
+        if (otherPlayersBuilder_ == null) {
+          otherPlayers_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000040);
+          onChanged();
+        } else {
+          otherPlayersBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeOtherPlayers(int index) {
+        if (otherPlayersBuilder_ == null) {
+          ensureOtherPlayersIsMutable();
+          otherPlayers_.remove(index);
+          onChanged();
+        } else {
+          otherPlayersBuilder_.remove(index);
+        }
+        return this;
+      }
+      public netmsg.Game.InitPlayer.Builder getOtherPlayersBuilder(
+          int index) {
+        return getOtherPlayersFieldBuilder().getBuilder(index);
+      }
+      public netmsg.Game.InitPlayerOrBuilder getOtherPlayersOrBuilder(
+          int index) {
+        if (otherPlayersBuilder_ == null) {
+          return otherPlayers_.get(index);  } else {
+          return otherPlayersBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends netmsg.Game.InitPlayerOrBuilder> 
+           getOtherPlayersOrBuilderList() {
+        if (otherPlayersBuilder_ != null) {
+          return otherPlayersBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(otherPlayers_);
+        }
+      }
+      public netmsg.Game.InitPlayer.Builder addOtherPlayersBuilder() {
+        return getOtherPlayersFieldBuilder().addBuilder(
+            netmsg.Game.InitPlayer.getDefaultInstance());
+      }
+      public netmsg.Game.InitPlayer.Builder addOtherPlayersBuilder(
+          int index) {
+        return getOtherPlayersFieldBuilder().addBuilder(
+            index, netmsg.Game.InitPlayer.getDefaultInstance());
+      }
+      public java.util.List<netmsg.Game.InitPlayer.Builder> 
+           getOtherPlayersBuilderList() {
+        return getOtherPlayersFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          netmsg.Game.InitPlayer, netmsg.Game.InitPlayer.Builder, netmsg.Game.InitPlayerOrBuilder> 
+          getOtherPlayersFieldBuilder() {
+        if (otherPlayersBuilder_ == null) {
+          otherPlayersBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              netmsg.Game.InitPlayer, netmsg.Game.InitPlayer.Builder, netmsg.Game.InitPlayerOrBuilder>(
+                  otherPlayers_,
+                  ((bitField0_ & 0x00000040) == 0x00000040),
+                  getParentForChildren(),
+                  isClean());
+          otherPlayers_ = null;
+        }
+        return otherPlayersBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:game.MInit)
@@ -27731,95 +28049,97 @@ public final class Game {
       "meActions\"d\n\nFromServer\022\035\n\006events\030\001 \001(\0132" +
       "\r.game.MEvents\022\033\n\005error\030\002 \001(\0132\014.game.MEr" +
       "ror\022\032\n\004init\030\350\007 \001(\0132\013.game.MInit\"\'\n\007MJoin" +
-      "ed\022\034\n\006player\030\001 \002(\0132\014.game.Player\"\250\001\n\005MIn" +
+      "ed\022\034\n\006player\030\001 \002(\0132\014.game.Player\"\364\001\n\005MIn" +
       "it\022\034\n\006bounds\030\001 \002(\0132\014.base.Bounds\022\036\n\007obje",
       "cts\030\002 \003(\0132\r.game.WObject\022#\n\016visible_poin" +
-      "ts\030\003 \003(\0132\013.base.Vect2\022\031\n\005teams\030\004 \003(\0132\n.g" +
-      "ame.Team\022!\n\007players\030\005 \003(\0132\020.game.InitPla" +
-      "yer\"&\n\007MEvents\022\033\n\006events\030\001 \003(\0132\013.game.Ev" +
-      "ent\"\027\n\006MError\022\r\n\005error\030\001 \002(\t\"\036\n\004Team\022\026\n\002" +
-      "id\030\001 \002(\0132\n.base.UUID\"K\n\006Player\022\014\n\004name\030\001" +
-      " \002(\t\022\026\n\002id\030\002 \002(\0132\n.base.UUID\022\033\n\007team_id\030" +
-      "\003 \002(\0132\n.base.UUID\"1\n\013PlayerState\022\021\n\treso" +
-      "urces\030\001 \002(\r\022\017\n\007actions\030\002 \002(\r\"L\n\nInitPlay" +
-      "er\022\034\n\006player\030\001 \002(\0132\014.game.Player\022 \n\005stat",
-      "e\030\002 \001(\0132\021.game.PlayerState\"\200\013\n\007WObject\022\026" +
-      "\n\002id\030\001 \002(\0132\n.base.UUID\022\035\n\010position\030\002 \002(\013" +
-      "2\013.base.Vect2\022 \n\004kind\030\003 \002(\0162\022.game.WObje" +
-      "ct.Kind\022*\n\tsized_obj\030\350\007 \001(\0132\026.game.WObje" +
-      "ct.SizedObj\022*\n\towned_obj\030\351\007 \001(\0132\026.game.W" +
-      "Object.OwnedObj\0224\n\016giving_actions\030\352\007 \001(\013" +
-      "2\033.game.WObject.GivingActions\022)\n\010warpabl" +
-      "e\030\353\007 \001(\0132\026.game.WObject.Warpable\0224\n\016spec" +
-      "ial_action\030\354\007 \001(\0132\033.game.WObject.Special" +
-      "Action\022\'\n\007fighter\030\355\007 \001(\0132\025.game.WObject.",
-      "Fighter\022?\n\024move_attack_actioned\030\356\007 \001(\0132 " +
-      ".game.WObject.MoveAttackActioned\022\'\n\007mova" +
-      "ble\030\357\007 \001(\0132\025.game.WObject.Movable\022)\n\010ast" +
-      "eroid\030\320\017 \001(\0132\026.game.WObject.Asteroid\022+\n\t" +
-      "extractor\030\321\017 \001(\0132\027.game.WObject.Extracto" +
-      "r\022)\n\010corvette\030\322\017 \001(\0132\026.game.WObject.Corv" +
-      "ette\032%\n\010SizedObj\022\031\n\004size\030\001 \002(\0132\013.base.Ve" +
-      "ct2\032\215\001\n\010OwnedObj\022\034\n\010owner_id\030\001 \002(\0132\n.bas" +
-      "e.UUID\022\023\n\013is_critical\030\002 \002(\010\022\034\n\002hp\030\003 \002(\0132" +
-      "\020.base.ValWithMax\022\034\n\007defense\030\004 \002(\0132\013.bas",
-      "e.Range\022\022\n\nvisibility\030\005 \002(\r\032&\n\rGivingAct" +
-      "ions\022\025\n\ractions_given\030\001 \002(\r\032>\n\010Warpable\022" +
-      "$\n\nwarp_state\030\001 \002(\0132\020.base.ValWithMax\022\014\n" +
-      "\004cost\030\002 \002(\r\032\'\n\rSpecialAction\022\026\n\016actions_" +
-      "needed\030\001 \002(\r\032N\n\007Fighter\022\033\n\006attack\030\001 \002(\0132" +
-      "\013.base.Range\022\024\n\014attack_range\030\002 \002(\r\022\020\n\010at" +
-      "tacked\030\003 \002(\010\032G\n\022MoveAttackActioned\022\026\n\016ac" +
-      "tions_needed\030\001 \002(\r\022\031\n\021moved_or_attacked\030" +
-      "\002 \002(\010\032\033\n\007Movable\022\020\n\010movement\030\001 \002(\r\032\035\n\010As" +
-      "teroid\022\021\n\tresources\030\001 \002(\r\032B\n\tExtractor\022\033",
-      "\n\023turn_start_extracts\030\001 \002(\r\022\030\n\020special_e" +
-      "xtracts\030\002 \002(\r\032*\n\010Corvette\022\036\n\026special_mov" +
-      "ement_added\030\001 \002(\r\"\211\001\n\004Kind\022\016\n\nP_ASTEROID" +
-      "\020\001\022\017\n\013B_WARP_GATE\020\002\022\017\n\013B_EXTRACTOR\020\003\022\021\n\r" +
-      "B_WARP_LINKER\020\004\022\r\n\tB_SPAWNER\020\005\022\021\n\rB_LASE" +
-      "R_TOWER\020\006\022\016\n\nU_CORVETTE\020\007\022\n\n\006U_WASP\020\010\"\252\004" +
-      "\n\005Event\022*\n\014turn_started\030\001 \001(\0132\024.game.Tur" +
-      "nStartedEvt\022&\n\nturn_ended\030\002 \001(\0132\022.game.T" +
-      "urnEndedEvt\0224\n\021visibility_change\030\003 \001(\0132\031" +
-      ".game.VisibilityChangeEvt\022\033\n\004warp\030\004 \001(\0132",
-      "\r.game.WarpEvt\022(\n\013obj_visible\030\005 \001(\0132\023.ga" +
-      "me.ObjVisibleEvt\022\033\n\004move\030\006 \001(\0132\r.game.Mo" +
-      "veEvt\022\037\n\006attack\030\007 \001(\0132\017.game.AttackEvt\0220" +
-      "\n\017movement_change\030\010 \001(\0132\027.game.MovementC" +
-      "hangeEvt\022@\n\030moved_or_attacked_change\030\t \001" +
-      "(\0132\036.game.MovedOrAttackedChangeEvt\0220\n\017re" +
-      "source_change\030\n \001(\0132\027.game.ResourceChang" +
-      "eEvt\022.\n\016actions_change\030\013 \001(\0132\026.game.Acti" +
-      "onsChangeEvt\022\034\n\004join\030\350\007 \001(\0132\r.game.JoinE" +
-      "vt\022\036\n\005leave\030\351\007 \001(\0132\016.game.LeaveEvt\"+\n\007Jo",
-      "inEvt\022 \n\006player\030\001 \002(\0132\020.game.InitPlayer\"" +
-      ")\n\010LeaveEvt\022\035\n\tplayer_id\030\001 \002(\0132\n.base.UU" +
-      "ID\"-\n\016TurnStartedEvt\022\033\n\007team_id\030\001 \002(\0132\n." +
-      "base.UUID\"+\n\014TurnEndedEvt\022\033\n\007team_id\030\001 \002" +
-      "(\0132\n.base.UUID\"g\n\023VisibilityChangeEvt\022&\n" +
-      "\021visible_positions\030\001 \003(\0132\013.base.Vect2\022(\n" +
-      "\023invisible_positions\030\002 \003(\0132\013.base.Vect2\"" +
-      "(\n\007WarpEvt\022\035\n\006object\030\001 \002(\0132\r.game.WObjec" +
-      "t\".\n\rObjVisibleEvt\022\035\n\006object\030\001 \002(\0132\r.gam" +
-      "e.WObject\"m\n\007MoveEvt\022\032\n\006obj_id\030\001 \002(\0132\n.b",
-      "ase.UUID\022\031\n\004from\030\002 \002(\0132\013.base.Vect2\022\027\n\002t" +
-      "o\030\003 \002(\0132\013.base.Vect2\022\022\n\nmoves_left\030\004 \002(\r" +
-      "\"\244\001\n\tAttackEvt\022\037\n\013attacker_id\030\001 \002(\0132\n.ba" +
-      "se.UUID\022&\n\021attacker_position\030\002 \002(\0132\013.bas" +
-      "e.Vect2\022\037\n\013defender_id\030\003 \002(\0132\n.base.UUID" +
-      "\022\017\n\007hp_left\030\004 \002(\r\022\034\n\006attack\030\005 \002(\0132\014.game" +
-      ".Attack\"J\n\006Attack\022\025\n\rattacker_roll\030\001 \002(\r" +
-      "\022\025\n\rdefender_roll\030\002 \002(\r\022\022\n\nsuccessful\030\003 " +
-      "\002(\010\"E\n\021MovementChangeEvt\022\032\n\006obj_id\030\001 \002(\013" +
-      "2\n.base.UUID\022\024\n\014new_movement\030\002 \002(\r\"Q\n\030Mo",
-      "vedOrAttackedChangeEvt\022\032\n\006obj_id\030\001 \002(\0132\n" +
-      ".base.UUID\022\031\n\021moved_or_attacked\030\002 \002(\010\"e\n" +
-      "\021ResourceChangeEvt\022\032\n\006obj_id\030\001 \001(\0132\n.bas" +
-      "e.UUID\022\035\n\tplayer_id\030\002 \001(\0132\n.base.UUID\022\025\n" +
-      "\rnew_resources\030\003 \002(\r\"F\n\020ActionsChangeEvt" +
-      "\022\035\n\tplayer_id\030\001 \002(\0132\n.base.UUID\022\023\n\013new_a" +
-      "ctions\030\002 \002(\rB\010\n\006netmsg"
+      "ts\030\003 \003(\0132\013.base.Vect2\022\035\n\tself_team\030\004 \002(\013" +
+      "2\n.game.Team\022\037\n\013other_teams\030\005 \003(\0132\n.game" +
+      ".Team\022\037\n\004self\030\006 \002(\0132\021.game.PlayerState\022\'" +
+      "\n\rother_players\030\007 \003(\0132\020.game.InitPlayer\"" +
+      "&\n\007MEvents\022\033\n\006events\030\001 \003(\0132\013.game.Event\"" +
+      "\027\n\006MError\022\r\n\005error\030\001 \002(\t\"\036\n\004Team\022\026\n\002id\030\001" +
+      " \002(\0132\n.base.UUID\"K\n\006Player\022\014\n\004name\030\001 \002(\t" +
+      "\022\026\n\002id\030\002 \002(\0132\n.base.UUID\022\033\n\007team_id\030\003 \002(" +
+      "\0132\n.base.UUID\"1\n\013PlayerState\022\021\n\tresource",
+      "s\030\001 \002(\r\022\017\n\007actions\030\002 \002(\r\"L\n\nInitPlayer\022\034" +
+      "\n\006player\030\001 \002(\0132\014.game.Player\022 \n\005state\030\002 " +
+      "\001(\0132\021.game.PlayerState\"\200\013\n\007WObject\022\026\n\002id" +
+      "\030\001 \002(\0132\n.base.UUID\022\035\n\010position\030\002 \002(\0132\013.b" +
+      "ase.Vect2\022 \n\004kind\030\003 \002(\0162\022.game.WObject.K" +
+      "ind\022*\n\tsized_obj\030\350\007 \001(\0132\026.game.WObject.S" +
+      "izedObj\022*\n\towned_obj\030\351\007 \001(\0132\026.game.WObje" +
+      "ct.OwnedObj\0224\n\016giving_actions\030\352\007 \001(\0132\033.g" +
+      "ame.WObject.GivingActions\022)\n\010warpable\030\353\007" +
+      " \001(\0132\026.game.WObject.Warpable\0224\n\016special_",
+      "action\030\354\007 \001(\0132\033.game.WObject.SpecialActi" +
+      "on\022\'\n\007fighter\030\355\007 \001(\0132\025.game.WObject.Figh" +
+      "ter\022?\n\024move_attack_actioned\030\356\007 \001(\0132 .gam" +
+      "e.WObject.MoveAttackActioned\022\'\n\007movable\030" +
+      "\357\007 \001(\0132\025.game.WObject.Movable\022)\n\010asteroi" +
+      "d\030\320\017 \001(\0132\026.game.WObject.Asteroid\022+\n\textr" +
+      "actor\030\321\017 \001(\0132\027.game.WObject.Extractor\022)\n" +
+      "\010corvette\030\322\017 \001(\0132\026.game.WObject.Corvette" +
+      "\032%\n\010SizedObj\022\031\n\004size\030\001 \002(\0132\013.base.Vect2\032" +
+      "\215\001\n\010OwnedObj\022\034\n\010owner_id\030\001 \002(\0132\n.base.UU",
+      "ID\022\023\n\013is_critical\030\002 \002(\010\022\034\n\002hp\030\003 \002(\0132\020.ba" +
+      "se.ValWithMax\022\034\n\007defense\030\004 \002(\0132\013.base.Ra" +
+      "nge\022\022\n\nvisibility\030\005 \002(\r\032&\n\rGivingActions" +
+      "\022\025\n\ractions_given\030\001 \002(\r\032>\n\010Warpable\022$\n\nw" +
+      "arp_state\030\001 \002(\0132\020.base.ValWithMax\022\014\n\004cos" +
+      "t\030\002 \002(\r\032\'\n\rSpecialAction\022\026\n\016actions_need" +
+      "ed\030\001 \002(\r\032N\n\007Fighter\022\033\n\006attack\030\001 \002(\0132\013.ba" +
+      "se.Range\022\024\n\014attack_range\030\002 \002(\r\022\020\n\010attack" +
+      "ed\030\003 \002(\010\032G\n\022MoveAttackActioned\022\026\n\016action" +
+      "s_needed\030\001 \002(\r\022\031\n\021moved_or_attacked\030\002 \002(",
+      "\010\032\033\n\007Movable\022\020\n\010movement\030\001 \002(\r\032\035\n\010Astero" +
+      "id\022\021\n\tresources\030\001 \002(\r\032B\n\tExtractor\022\033\n\023tu" +
+      "rn_start_extracts\030\001 \002(\r\022\030\n\020special_extra" +
+      "cts\030\002 \002(\r\032*\n\010Corvette\022\036\n\026special_movemen" +
+      "t_added\030\001 \002(\r\"\211\001\n\004Kind\022\016\n\nP_ASTEROID\020\001\022\017" +
+      "\n\013B_WARP_GATE\020\002\022\017\n\013B_EXTRACTOR\020\003\022\021\n\rB_WA" +
+      "RP_LINKER\020\004\022\r\n\tB_SPAWNER\020\005\022\021\n\rB_LASER_TO" +
+      "WER\020\006\022\016\n\nU_CORVETTE\020\007\022\n\n\006U_WASP\020\010\"\252\004\n\005Ev" +
+      "ent\022*\n\014turn_started\030\001 \001(\0132\024.game.TurnSta" +
+      "rtedEvt\022&\n\nturn_ended\030\002 \001(\0132\022.game.TurnE",
+      "ndedEvt\0224\n\021visibility_change\030\003 \001(\0132\031.gam" +
+      "e.VisibilityChangeEvt\022\033\n\004warp\030\004 \001(\0132\r.ga" +
+      "me.WarpEvt\022(\n\013obj_visible\030\005 \001(\0132\023.game.O" +
+      "bjVisibleEvt\022\033\n\004move\030\006 \001(\0132\r.game.MoveEv" +
+      "t\022\037\n\006attack\030\007 \001(\0132\017.game.AttackEvt\0220\n\017mo" +
+      "vement_change\030\010 \001(\0132\027.game.MovementChang" +
+      "eEvt\022@\n\030moved_or_attacked_change\030\t \001(\0132\036" +
+      ".game.MovedOrAttackedChangeEvt\0220\n\017resour" +
+      "ce_change\030\n \001(\0132\027.game.ResourceChangeEvt" +
+      "\022.\n\016actions_change\030\013 \001(\0132\026.game.ActionsC",
+      "hangeEvt\022\034\n\004join\030\350\007 \001(\0132\r.game.JoinEvt\022\036" +
+      "\n\005leave\030\351\007 \001(\0132\016.game.LeaveEvt\"+\n\007JoinEv" +
+      "t\022 \n\006player\030\001 \002(\0132\020.game.InitPlayer\")\n\010L" +
+      "eaveEvt\022\035\n\tplayer_id\030\001 \002(\0132\n.base.UUID\"-" +
+      "\n\016TurnStartedEvt\022\033\n\007team_id\030\001 \002(\0132\n.base" +
+      ".UUID\"+\n\014TurnEndedEvt\022\033\n\007team_id\030\001 \002(\0132\n" +
+      ".base.UUID\"g\n\023VisibilityChangeEvt\022&\n\021vis" +
+      "ible_positions\030\001 \003(\0132\013.base.Vect2\022(\n\023inv" +
+      "isible_positions\030\002 \003(\0132\013.base.Vect2\"(\n\007W" +
+      "arpEvt\022\035\n\006object\030\001 \002(\0132\r.game.WObject\".\n",
+      "\rObjVisibleEvt\022\035\n\006object\030\001 \002(\0132\r.game.WO" +
+      "bject\"m\n\007MoveEvt\022\032\n\006obj_id\030\001 \002(\0132\n.base." +
+      "UUID\022\031\n\004from\030\002 \002(\0132\013.base.Vect2\022\027\n\002to\030\003 " +
+      "\002(\0132\013.base.Vect2\022\022\n\nmoves_left\030\004 \002(\r\"\244\001\n" +
+      "\tAttackEvt\022\037\n\013attacker_id\030\001 \002(\0132\n.base.U" +
+      "UID\022&\n\021attacker_position\030\002 \002(\0132\013.base.Ve" +
+      "ct2\022\037\n\013defender_id\030\003 \002(\0132\n.base.UUID\022\017\n\007" +
+      "hp_left\030\004 \002(\r\022\034\n\006attack\030\005 \002(\0132\014.game.Att" +
+      "ack\"J\n\006Attack\022\025\n\rattacker_roll\030\001 \002(\r\022\025\n\r" +
+      "defender_roll\030\002 \002(\r\022\022\n\nsuccessful\030\003 \002(\010\"",
+      "E\n\021MovementChangeEvt\022\032\n\006obj_id\030\001 \002(\0132\n.b" +
+      "ase.UUID\022\024\n\014new_movement\030\002 \002(\r\"Q\n\030MovedO" +
+      "rAttackedChangeEvt\022\032\n\006obj_id\030\001 \002(\0132\n.bas" +
+      "e.UUID\022\031\n\021moved_or_attacked\030\002 \002(\010\"e\n\021Res" +
+      "ourceChangeEvt\022\032\n\006obj_id\030\001 \001(\0132\n.base.UU" +
+      "ID\022\035\n\tplayer_id\030\002 \001(\0132\n.base.UUID\022\025\n\rnew" +
+      "_resources\030\003 \002(\r\"F\n\020ActionsChangeEvt\022\035\n\t" +
+      "player_id\030\001 \002(\0132\n.base.UUID\022\023\n\013new_actio" +
+      "ns\030\002 \002(\rB\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -27903,7 +28223,7 @@ public final class Game {
           internal_static_game_MInit_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MInit_descriptor,
-              new java.lang.String[] { "Bounds", "Objects", "VisiblePoints", "Teams", "Players", },
+              new java.lang.String[] { "Bounds", "Objects", "VisiblePoints", "SelfTeam", "OtherTeams", "Self", "OtherPlayers", },
               netmsg.Game.MInit.class,
               netmsg.Game.MInit.Builder.class);
           internal_static_game_MEvents_descriptor =

@@ -6,7 +6,7 @@ import app.models.User
 import implicits._
 
 class GamesManagerActor extends Actor {
-  var game = Option.empty[ActorRef]
+  private[this] var game = Option.empty[ActorRef]
 
   override def receive = LoggingReceive {
     case msg @ GameActor.In.Join(user) =>

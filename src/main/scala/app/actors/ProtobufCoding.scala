@@ -95,8 +95,6 @@ object ProtobufCoding {
     def valWithMax(current: Int, maximum: Int): Base.ValWithMax =
       Base.ValWithMax.newBuilder().setCurrent(current).setMaximum(maximum).build()
 
-    case class PlayerState(actions: Actions, resources: Resources)
-
     /* Data */
 
     implicit def convert(id: WObject.Id): Base.UUID =
@@ -120,14 +118,16 @@ object ProtobufCoding {
         setId(player.id).setName(player.asHuman.map(_.name).getOrElse("Bot")).
         setTeamId(player.team.id).build()
 
-    implicit def convert(state: PlayerState): Game.PlayerState =
+    implicit def convert(state: HumanState): Game.PlayerState =
       Game.PlayerState.newBuilder().
-        setActions(state.actions.value).setResources(state.resources.value).build()
+        setActions(state.gameState.actions).
+        setResources(state.resources).build()
 
-    def convert(player: Player, state: Option[PlayerState]): Game.InitPlayer =
-      Game.InitPlayer.newBuilder().
-        setPlayer(convert(player)).
+    def convert(player: Player, state: Option[HumanState]): Game.InitPlayer =
+      Game.InitPlayer.newBuilder().setPlayer(convert(player)).
         mapVal { b => state.fold2(b, b.setState(_)) }.build()
+
+    def convert(t: (Player, Option[HumanState])): Game.InitPlayer = convert(t._1, t._2)
 
     implicit def convert(team: Team): Game.Team =
       Game.Team.newBuilder().setId(team.id).build()
@@ -256,9 +256,7 @@ object ProtobufCoding {
         setPlayerId(evt.human.id).setNewActions(evt.actions.value).build()
 
     implicit def convert(evt: JoinEvt): Game.JoinEvt =
-      Game.JoinEvt.newBuilder().setPlayer(
-        convert(evt.human, Some(PlayerState(evt.state.actions, evt.resources)))
-      ).build()
+      Game.JoinEvt.newBuilder().setPlayer(convert(evt.human, Some(evt.state))).build()
 
     implicit def convert(evt: LeaveEvt): Game.LeaveEvt =
       Game.LeaveEvt.newBuilder().setPlayerId(evt.human.id).build()
@@ -292,18 +290,13 @@ object ProtobufCoding {
       Game.MJoined.newBuilder().setPlayer(msg.human).build()
 
     implicit def convert(msg: GameActor.Out.Init): Game.MInit =
-      Game.MInit.newBuilder().setBounds(msg.game.world.bounds).
-        addAllObjects(convert(msg.game.world.objects)).
-        addAllVisiblePoints(convert(msg.game.world.visibilityMap.map.keys.map(_._1))).
-        addAllTeams(convert(msg.game.world.teams)).
-        addAllPlayers(msg.game.world.players.map { player =>
-          val stateOpt = for {
-            human <- player.cast[Human]
-            resources <- msg.game.world.resourcesMap.get(human)
-            state <- msg.game.states.get(human)
-          } yield PlayerState(state.actions, resources)
-          convert(player, stateOpt)
-        }.asJava).
+      Game.MInit.newBuilder().setBounds(msg.bounds).
+        addAllObjects(convert(msg.objects)).
+        addAllVisiblePoints(convert(msg.visiblePoints)).
+        setSelfTeam(msg.selfTeam).
+        addAllOtherTeams(convert(msg.otherTeams)).
+        setSelf(msg.self).
+        addAllOtherPlayers(convert(msg.others)(convert)).
         build()
 
     implicit def convert(out: GameActor.ClientOut): Game.FromServer =

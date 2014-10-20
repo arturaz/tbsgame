@@ -63,8 +63,12 @@ message MInit {
   required base.Bounds bounds = 1;
   repeated WObject objects = 2;
   repeated base.Vect2 visible_points = 3;
-  repeated Team teams = 4;
-  repeated InitPlayer players = 5;
+  // Team in which the client is.
+  required Team self_team = 4;
+  repeated Team other_teams = 5;
+  // Client player.
+  required PlayerState self = 6;
+  repeated InitPlayer other_players = 7;
 }
 
 message MEvents {

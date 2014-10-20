@@ -23,8 +23,8 @@ class MsgHandler(
   override def receive = LoggingReceive {
     case Received(data) => pipeline.fromClient(data).foreach(msg => netClient ! msg)
     case msg: FromServer => connection ! Write(pipeline.toClient(msg))
-    case _: ConnectionClosed =>
-      log.info(s"Connection closed, stopping.")
+    case msg: ConnectionClosed =>
+      log.info(s"Connection closed.")
       context.stop(self)
   }
 }

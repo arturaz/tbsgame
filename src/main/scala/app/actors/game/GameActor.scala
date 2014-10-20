@@ -4,7 +4,7 @@ import akka.actor.{ActorLogging, Props, Actor, ActorRef}
 import akka.event.{LoggingAdapter, LoggingReceive}
 import app.actors.game.GameActor.Out.Joined
 import app.models.game._
-import app.models.game.events.{Evented, TurnStartedEvt, Events => GEvents}
+import app.models.game.events.{Events => GEvents, HumanState, Evented, TurnStartedEvt}
 import app.models.game.world._
 import app.models.User
 import infrastructure.Log
@@ -35,20 +35,46 @@ object GameActor {
   sealed trait ClientOut extends Out
   object Out {
     case class Joined(human: Human, game: ActorRef) extends Out
-    case class Init(game: Game) extends ClientOut
+    case class Init(
+      bounds: Bounds, objects: Iterable[WObject], visiblePoints: Iterable[Vect2],
+      selfTeam: Team, otherTeams: Iterable[Team],
+      self: HumanState, others: Iterable[(Player, Option[HumanState])]
+    ) extends ClientOut
     case class Events(events: GEvents) extends ClientOut
     case class Error(error: String) extends ClientOut
   }
 
-  private def init(human: Human, ref: ActorRef, game: Game): Unit = {
-    ref ! GameActor.Out.Init(game.visibleBy(human))
+  private[this] def initMsg(human: Human, game: Game): Either[String, Out.Init] = {
+    val visibleGame = game.visibleBy(human)
+    val states = visibleGame.states
+    val resourceMap = visibleGame.world.resourcesMap
+    def stateFor(p: Player): Either[String, HumanState] = for {
+      gameState <- states.get(human).
+        toRight(s"can't get game state for $human in $states").right
+      resources <- resourceMap.get(human).
+        toRight(s"can't get game state for $human in $resourceMap").right
+    } yield HumanState(resources, gameState)
+
+    stateFor(human).right.map { selfState =>
+      Out.Init(
+        visibleGame.world.bounds, visibleGame.world.objects,
+        visibleGame.world.visibilityMap.map.keys.map(_._1),
+        human.team, visibleGame.world.teams - human.team, selfState,
+        (visibleGame.world.players - human).map { player =>
+          player -> stateFor(player).right.toOption
+        }
+      )
+    }
   }
 
-  private def events(
-    human: Human, ref: ActorRef, events: GEvents
-  ): Unit = {
+  private def init(human: Human, ref: ActorRef, game: Game): Unit =
+    initMsg(human, game).fold(
+      err => throw new IllegalStateException(s"cannot init game state: $err"),
+      ref ! _
+    )
+
+  private def events(human: Human, ref: ActorRef, events: GEvents): Unit =
     ref ! Out.Events(events.filter(_.visibleBy(human)))
-  }
 
   @tailrec private def nextReadyTeam(
     game: Evented[TurnBasedGame]
@@ -97,13 +123,21 @@ class GameActor private (
       val human = Human(user.name, HumanTeam, user.id)
       val ref = sender()
       ref ! Out.Joined(human, self)
-      update(
+      def doInit(tbg: TurnBasedGame): Unit = {
+        init(human, ref, tbg.game)
+        if (tbg.currentTeam === human.team)
+          events(human, ref, Vector(TurnStartedEvt(human.team)))
+        clients += human -> ref
+      }
+
+      if (game.isJoined(human)) {
+        log.info("Rejoining {} to {}", human, self)
+        doInit(game)
+      }
+      else update(
         ref,
         _.join(human, GameActor.StartingResources).right.map { evtTbg =>
-          init(human, ref, evtTbg.value.game)
-          if (evtTbg.value.currentTeam === human.team)
-            events(human, ref, Vector(TurnStartedEvt(human.team)))
-          clients += human -> ref
+          doInit(evtTbg.value)
           evtTbg
         }
       )
