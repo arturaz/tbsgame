@@ -37,6 +37,10 @@ case class WarpEvt(world: World, obj: Warpable) extends BoundedEvent {
   def bounds = obj.bounds
 }
 
+case class WarpStateChangeEvt(world: World, newObj: Warpable) extends BoundedEvent {
+  def bounds = newObj.bounds
+}
+
 case class ObjVisibleEvt(world: World, obj: WObject) extends BoundedEvent {
   def bounds = obj.bounds
 }

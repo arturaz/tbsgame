@@ -1,6 +1,6 @@
 package app.models.game.world
 
-import app.models.game.events.{WarpEvt, Evented}
+import app.models.game.events.{WarpStateChangeEvt, WarpEvt, Evented}
 import implicits._
 
 import app.models.game.{Actions, Player}
@@ -38,7 +38,7 @@ trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
     if (self.isWarpedIn) Evented(self)
     else {
       val newSelf = self |> setWarpState(self.warpState + WarpTime(1))
-      Evented(newSelf, Vector(WarpEvt(world, newSelf)))
+      Evented(newSelf, Vector(WarpStateChangeEvt(world, newSelf)))
     }
 }
 

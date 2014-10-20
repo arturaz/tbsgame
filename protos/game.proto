@@ -210,6 +210,7 @@ message Event { // {{{
   optional MovedOrAttackedChangeEvt moved_or_attacked_change = 9;
   optional ResourceChangeEvt resource_change = 10;
   optional ActionsChangeEvt actions_change = 11;
+  optional WarpStateChangeEvt warp_change = 12;
 
   optional JoinEvt join = 1000;
   optional LeaveEvt leave = 1001;
@@ -286,3 +287,9 @@ message ActionsChangeEvt {
   required base.UUID player_id = 1;
   required uint32 new_actions = 2;
 }
+
+message WarpStateChangeEvt {
+  required base.UUID obj_id = 1;
+  required uint32 new_warp_state = 2;
+}
+
