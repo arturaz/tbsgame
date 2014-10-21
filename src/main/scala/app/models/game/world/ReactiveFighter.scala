@@ -12,7 +12,7 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
   ): WObject.WorldObjUpdate[Self] =
     data.flatMap { case orig @ (world, self) =>
       val targets = world.objects.collect {
-        case obj: OwnedObj if self.canAttack(obj, world) => obj
+        case obj: OwnedObj if self.isEnemy(obj) && self.canAttack(obj, world) => obj
       }
       if (targets.isEmpty) data
       else {
@@ -47,10 +47,12 @@ trait ReactiveFighter extends Fighter {
   def reactToOpt[A <: OwnedObj](
     obj: A, world: World
   ): Option[Reaction[WObject.WorldObjOptUpdate[A]]] =
-    attack(obj, world).right.toOption.map { 
-      case evt @ Evented((newWorld, _, attack, newObj), _) =>
-        Reaction(evt.copy(value = (newWorld, newObj)), abortReacting = newObj.isEmpty)
-    }
+    if (isEnemy(obj))
+      attack(obj, world).right.toOption.map {
+        case evt @ Evented((newWorld, _, attack, newObj), _) =>
+          Reaction(evt.copy(value = (newWorld, newObj)), abortReacting = newObj.isEmpty)
+      }
+    else None
 
   /* Attacks the target if he can. */
   def reactTo[A <: OwnedObj](
