@@ -4,7 +4,7 @@ import akka.actor.{ActorLogging, Props, Actor, ActorRef}
 import akka.event.{LoggingAdapter, LoggingReceive}
 import app.actors.game.GameActor.Out.Joined
 import app.models.game._
-import app.models.game.events.{Events => GEvents, HumanState, Evented, TurnStartedEvt}
+import app.models.game.events.{Events => GEvents, Event, HumanState, Evented, TurnStartedEvt}
 import app.models.game.world._
 import app.models.User
 import infrastructure.Log
@@ -40,7 +40,7 @@ object GameActor {
       selfTeam: Team, otherTeams: Iterable[Team],
       self: HumanState, others: Iterable[(Player, Option[HumanState])]
     ) extends ClientOut
-    case class Events(events: GEvents) extends ClientOut
+    case class Events(events: Vector[Event]) extends ClientOut
     case class Error(error: String) extends ClientOut
   }
 
@@ -74,7 +74,7 @@ object GameActor {
     )
 
   private def events(human: Human, ref: ActorRef, events: GEvents): Unit =
-    ref ! Out.Events(events.filter(_.visibleBy(human)))
+    ref ! Out.Events(events.flatMap(_.asViewedBy(human)))
 
   @tailrec private def nextReadyTeam(
     game: Evented[TurnBasedGame]
@@ -175,9 +175,6 @@ class GameActor private (
     })
   }
 
-  private[this] def dispatchEvents(events: GEvents): Unit = {
-    clients.foreach { case (human, ref) =>
-      ref ! Out.Events(events.filter(_.visibleBy(human)))
-    }
-  }
+  private[this] def dispatchEvents(events: GEvents): Unit =
+    clients.foreach { case (human, ref) => GameActor.events(human, ref, events) }
 }

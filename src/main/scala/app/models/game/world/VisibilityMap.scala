@@ -78,7 +78,9 @@ case class VisibilityMap private (
     bounds.points.forall(isVisible(team, _))
 
   def filter(owner: Owner): VisibilityMap =
-    copy(map = map.filterKeys { case (_, team) => team === owner.team })
+    copy(map = map.filter { case ((_, team), visibility) =>
+      team === owner.team && visibility =/= 0
+    })
 
   def +(obj: OwnedObj): Evented[VisibilityMap] =
     this + (pointsOf(obj), obj.owner.team)

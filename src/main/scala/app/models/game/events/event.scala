@@ -4,18 +4,26 @@ import app.models.game._
 import app.models.game.world._
 import implicits._
 
-sealed trait Event {
+sealed trait Event
+
+sealed trait ViewableEvent extends Event {
+  def asViewedBy(owner: Owner): Iterable[Event]
+}
+
+sealed trait VisibleEvent extends ViewableEvent {
+  def asViewedBy(owner: Owner) =
+    if (visibleBy(owner)) Iterable(this) else Iterable.empty
   def visibleBy(owner: Owner): Boolean
 }
 
-sealed trait AlwaysVisibleEvent extends Event {
+sealed trait AlwaysVisibleEvent extends VisibleEvent {
   override def visibleBy(owner: Owner) = true
 }
 
-sealed trait BoundedEvent extends Event {
+sealed trait BoundedEvent extends VisibleEvent {
   def world: World
   def bounds: Bounds
-  def visibleBy(owner: Owner) = world.isVisiblePartial(owner, bounds)
+  override def visibleBy(owner: Owner) = world.isVisiblePartial(owner, bounds)
 }
 
 case class HumanState(resources: Resources, gameState: GameHumanState)
@@ -29,7 +37,7 @@ case class VisibilityChangeEvt(
   team: Team,
   visiblePositions: Vector[Vect2]=Vector.empty,
   invisiblePositions: Vector[Vect2]=Vector.empty
-) extends Event {
+) extends VisibleEvent {
   override def visibleBy(owner: Owner) = owner.team === team
 }
 
@@ -47,9 +55,12 @@ case class ObjVisibleEvt(world: World, obj: WObject) extends BoundedEvent {
 
 case class MoveEvt(
   world: World, oldObj: MovableWObject, to: Vect2, movesLeft: TileDistance
-) extends Event {
-  override def visibleBy(owner: Owner) =
-    world.isVisibleFor(owner, oldObj.position) || world.isVisibleFor(owner, to)
+) extends ViewableEvent {
+  override def asViewedBy(owner: Owner) =
+    if (world.isVisibleFor(owner, oldObj.position)) Iterable(this)
+    else if (world.isVisibleFor(owner, to))
+      Iterable(ObjVisibleEvt(world, oldObj), this)
+    else Iterable.empty
 }
 
 case class AttackEvt[D <: OwnedObj](
@@ -72,7 +83,7 @@ case class MovedOrAttackedChangeEvt(
 
 case class ResourceChangeEvt(
   obj: Either[(World, WObject), Human], newValue: Resources
-) extends Event {
+) extends VisibleEvent {
   override def visibleBy(owner: Owner) = obj.fold(
     { case (world, wObj) => world.isVisiblePartial(owner, wObj.bounds) },
     owner.isFriendOf
@@ -81,6 +92,6 @@ case class ResourceChangeEvt(
 
 case class ActionsChangeEvt(
   human: Human, actions: Actions
-) extends Event {
+) extends VisibleEvent {
   override def visibleBy(owner: Owner) = human.isFriendOf(owner)
 }
