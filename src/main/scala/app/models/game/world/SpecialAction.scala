@@ -2,18 +2,23 @@ package app.models.game.world
 
 import app.models.game.Actions
 import app.models.game.events.Evented
+import implicits._
 
-trait SpecialActionOps extends WObjectOps
+trait SpecialActionOps[Self] extends OwnedObjOps[Self]
 
-trait SpecialActionStats extends WObjectStats {
+trait SpecialActionStats extends OwnedObjStats {
   val specialActionsNeeded: Actions
 }
 
-trait SpecialActionCompanion extends SpecialActionOps with SpecialActionStats
+trait SpecialActionCompanion[Self] extends SpecialActionOps[Self] with SpecialActionStats
 
-trait SpecialAction extends WObject {
+trait SpecialAction extends OwnedObj {
   type Self <: SpecialAction
-  type Companion <: SpecialActionOps with SpecialActionStats
+  type Companion <: SpecialActionOps[Self] with SpecialActionStats
 
-  def special(world: World): Either[String, Evented[World]]
+  def special(world: World): Either[String, Evented[World]] =
+    if (isWarpedIn) specialImpl(world)
+    else s"Can't do special for $self while warping in!".left
+
+  protected def specialImpl(world: World): Either[String, Evented[World]]
 }

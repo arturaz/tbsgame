@@ -5,7 +5,7 @@ import app.models.game.events.MovementChangeEvt
 import app.models.game.world._
 
 object Corvette extends WUnitCompanion[Corvette] 
-with FighterCompanion[Corvette] with SpecialActionCompanion {
+with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
   override val attack = 2 to 7
   override val defense = 2 to 7
   override val attackRange = TileDistance(3)
@@ -43,7 +43,7 @@ case class Corvette(
   override def self = this
   override def companion = Corvette
 
-  override def special(world: World) = Either.cond(
+  override def specialImpl(world: World) = Either.cond(
     ! hasAttacked,
     {
       val updated = copy(
