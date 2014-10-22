@@ -265,7 +265,7 @@ object ProtobufCoding {
     implicit def convert(evt: LeaveEvt): Game.LeaveEvt =
       Game.LeaveEvt.newBuilder().setPlayerId(evt.human.id).build()
 
-    implicit def convert(event: Event): Game.Event =
+    implicit def convert(event: FinalEvent): Game.Event =
       Game.Event.newBuilder().mapVal { b => event match {
         case evt: TurnStartedEvt => b.setTurnStarted(evt)
         case evt: TurnEndedEvt => b.setTurnEnded(evt)

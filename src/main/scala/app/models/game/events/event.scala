@@ -4,13 +4,16 @@ import app.models.game._
 import app.models.game.world._
 import implicits._
 
-sealed trait Event
+/* Event that cannot be viewed anymore. */
+sealed trait FinalEvent
 
-sealed trait ViewableEvent extends Event {
+/* Base event class. */
+sealed trait Event extends FinalEvent {
+  /* Some events expand into several events when viewed in prism of some owner. */
   def asViewedBy(owner: Owner): Iterable[Event]
 }
 
-sealed trait VisibleEvent extends ViewableEvent {
+sealed trait VisibleEvent extends Event {
   def asViewedBy(owner: Owner) =
     if (visibleBy(owner)) Iterable(this) else Iterable.empty
   def visibleBy(owner: Owner): Boolean
@@ -55,7 +58,7 @@ case class ObjVisibleEvt(world: World, obj: WObject) extends BoundedEvent {
 
 case class MoveEvt(
   world: World, oldObj: MovableWObject, to: Vect2, movesLeft: TileDistance
-) extends ViewableEvent {
+) extends Event {
   override def asViewedBy(owner: Owner) =
     if (world.isVisibleFor(owner, oldObj.position)) Iterable(this)
     else if (world.isVisibleFor(owner, to))
