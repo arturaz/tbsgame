@@ -31,17 +31,17 @@ message MWarp {
 }
 
 message MMove {
-  required base.UUID id = 1;
+  required WObjID id = 1;
   required base.Vect2 target = 2;
 }
 
 message MAttack {
-  required base.UUID id = 1;
-  required base.UUID target_id = 2;
+  required WObjID id = 1;
+  required WObjID target_id = 2;
 }
 
 message MSpecial {
-  required base.UUID id = 1;
+  required WObjID id = 1;
 }
 
 message MConsumeActions {}
@@ -81,14 +81,31 @@ message MError {
 
 /* Data */
 
-message Team {
+message TeamID {
   required base.UUID id = 1;
+}
+
+message PlayerID {
+  required base.UUID id = 1;
+}
+
+message OwnerID {
+  optional TeamID team_id = 1;
+  optional PlayerID player_id = 2;
+}
+
+message WObjID {
+  required base.UUID id = 1;
+}
+
+message Team {
+  required TeamID id = 1;
 }
 
 message Player { // {{{
   required string name = 1;
-  required base.UUID id = 2;
-  required base.UUID team_id = 3;
+  required PlayerID id = 2;
+  required TeamID team_id = 3;
 } // }}}
 
 message PlayerState { // {{{
@@ -120,7 +137,7 @@ message WObject { // {{{
   }
 
   message OwnedObj {
-    required base.UUID owner_id = 1;
+    required OwnerID owner_id = 1;
     required bool is_critical = 2;
     required base.ValWithMax hp = 3;
     required base.Range defense = 4;
@@ -176,7 +193,7 @@ message WObject { // {{{
 
   /* Properties */
 
-  required base.UUID id = 1;
+  required WObjID id = 1;
   required base.Vect2 position = 2;
   required Kind kind = 3;
 
@@ -221,15 +238,15 @@ message JoinEvt {
 }
 
 message LeaveEvt {
-  required base.UUID player_id = 1;
+  required PlayerID player_id = 1;
 }
 
 message TurnStartedEvt {
-  required base.UUID team_id = 1;
+  required TeamID team_id = 1;
 }
 
 message TurnEndedEvt {
-  required base.UUID team_id = 1;
+  required TeamID team_id = 1;
 }
 
 message VisibilityChangeEvt {
@@ -246,16 +263,16 @@ message ObjVisibleEvt {
 }
 
 message MoveEvt {
-  required base.UUID obj_id = 1;
+  required WObjID obj_id = 1;
   required base.Vect2 from = 2;
   required base.Vect2 to = 3;
   required uint32 moves_left = 4;
 }
 
 message AttackEvt {
-  required base.UUID attacker_id = 1;
+  required WObjID attacker_id = 1;
   required base.Vect2 attacker_position = 2;
-  required base.UUID defender_id = 3;
+  required WObjID defender_id = 3;
   required uint32 hp_left = 4;
   required Attack attack = 5;
 }
@@ -267,29 +284,29 @@ message Attack {
 }
 
 message MovementChangeEvt {
-  required base.UUID obj_id = 1;
+  required WObjID obj_id = 1;
   required uint32 new_movement = 2;
 }
 
 message MovedOrAttackedChangeEvt {
-  required base.UUID obj_id = 1;
+  required WObjID obj_id = 1;
   required bool moved_or_attacked = 2;
 }
 
 message ResourceChangeEvt {
   // One or other.
-  optional base.UUID obj_id = 1;
-  optional base.UUID player_id = 2;
+  optional WObjID obj_id = 1;
+  optional PlayerID player_id = 2;
   required uint32 new_resources = 3;
 }
 
 message ActionsChangeEvt {
-  required base.UUID player_id = 1;
+  required PlayerID player_id = 1;
   required uint32 new_actions = 2;
 }
 
 message WarpStateChangeEvt {
-  required base.UUID obj_id = 1;
+  required WObjID obj_id = 1;
   required uint32 new_warp_state = 2;
 }
 

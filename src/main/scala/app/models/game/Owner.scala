@@ -7,8 +7,7 @@ import app.models.game.world.OwnedObj
 import implicits._
 
 object Owner {
-  type Id = UUID
-  @inline def newId = UUID.randomUUID()
+  sealed trait Id extends Any
 }
 
 sealed trait Owner {
@@ -19,36 +18,43 @@ sealed trait Owner {
   def isEnemyOf(other: Owner) = ! isFriendOf(other)
 }
 
-case class Team(id: Owner.Id=Owner.newId) extends Owner {
+object Team {
+  case class Id(id: UUID) extends AnyVal with Owner.Id
+  @inline def newId = Id(UUID.randomUUID())
+}
+case class Team(id: Team.Id=Team.newId) extends Owner {
   override def team = this
 }
 
+object Player {
+  case class Id(id: UUID) extends AnyVal with Owner.Id
+  @inline def newId = Id(UUID.randomUUID())
+
+  def unapply(fo: OwnedObj) = fo.owner match {
+    case p: Player => Some(p)
+    case _ => None
+  }
+}
 trait Player extends Owner {
+  def id: Player.Id
   def isHuman: Boolean
   def asHuman: Option[Human]
   def isBot = ! isHuman
   def asBot: Option[Bot]
 }
 
-object Player {
-  def unapply(fo: OwnedObj) = fo.owner match {
-    case p: Player => Some(p)
-    case _ => None
-  }
-}
-
 object Human {
-  def apply(user: User, team: Team): Human = apply(user.name, team, user.id)
+  def apply(user: User, team: Team): Human = apply(user.name, team, Player.Id(user.id))
 }
 case class Human(
-  name: String, team: Team, id: Owner.Id=Owner.newId
+  name: String, team: Team, id: Player.Id=Player.newId
 ) extends Player {
   override def isHuman = true
   override def asHuman = Some(this)
   override def asBot = None
 }
 
-case class Bot(team: Team, id: Owner.Id=Owner.newId) extends Player {
+case class Bot(team: Team, id: Player.Id=Player.newId) extends Player {
   override def isHuman = false
   override def asHuman = None
   override def asBot = Some(this)

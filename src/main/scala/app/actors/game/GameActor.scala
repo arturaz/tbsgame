@@ -120,7 +120,7 @@ class GameActor private (
 
   def receive = LoggingReceive {
     case In.Join(user) =>
-      val human = Human(user.name, HumanTeam, user.id)
+      val human = Human(user.name, HumanTeam, Player.Id(user.id))
       val ref = sender()
       ref ! Out.Joined(human, self)
       def doInit(tbg: TurnBasedGame): Unit = {

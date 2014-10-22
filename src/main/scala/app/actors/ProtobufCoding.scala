@@ -24,6 +24,10 @@ object ProtobufCoding {
     implicit def parseUUID(v: Base.UUID) =
       new UUID(v.getMostSignificant, v.getLeastSignificant)
 
+    implicit def parsePid(v: Game.PlayerID) = Player.Id(v.getId)
+    implicit def parseTid(v: Game.TeamID) = Team.Id(v.getId)
+    implicit def parseWid(v: Game.WObjID) = WObject.Id(v.getId)
+
     implicit def parseWarpable(
       w: Game.MWarp.HumanWarpable
       ): WarpableCompanion[_ <: Warpable] = w match {
@@ -42,7 +46,8 @@ object ProtobufCoding {
       else if (m.hasMove)
         m.getMove.mapVal { m => Move(_: Human, m.getId, m.getTarget) }.right
       else if (m.hasAttack)
-        m.getAttack.mapVal { m => In.Attack(_: Human, m.getId, m.getTargetId) }.right
+        m.getAttack.
+          mapVal { m => In.Attack(_: Human, m.getId, m.getTargetId) }.right
       else if (m.hasSpecial)
         m.getSpecial.mapVal { m => Special(_: Human, m.getId) }.right
       else if (m.hasConsumeActions)
@@ -97,7 +102,7 @@ object ProtobufCoding {
 
     /* Data */
 
-    implicit def convert(id: WObject.Id): Base.UUID =
+    implicit def convert(id: UUID): Base.UUID =
       Base.UUID.newBuilder().
         setLeastSignificant(id.getLeastSignificantBits).
         setMostSignificant(id.getMostSignificantBits).build()
@@ -112,6 +117,21 @@ object ProtobufCoding {
 
     implicit def convert(b: Bounds): Base.Bounds =
       Base.Bounds.newBuilder().setStart(b.start).setEnd(b.end).build()
+
+    implicit def convert(id: WObject.Id): Game.WObjID =
+      Game.WObjID.newBuilder().setId(id.id).build()
+
+    implicit def convert(id: Player.Id): Game.PlayerID =
+      Game.PlayerID.newBuilder().setId(id.id).build()
+
+    implicit def convert(id: Team.Id): Game.TeamID =
+      Game.TeamID.newBuilder().setId(id.id).build()
+
+    implicit def convert(id: Owner.Id): Game.OwnerID =
+      Game.OwnerID.newBuilder().mapVal { b => id match {
+        case pid: Player.Id => b.setPlayerId(pid)
+        case tid: Team.Id => b.setTeamId(tid)
+      } }.build()
 
     implicit def convert(player: Player): Game.Player =
       Game.Player.newBuilder().

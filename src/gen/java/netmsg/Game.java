@@ -2063,10 +2063,10 @@ public final class Game {
   public interface MMoveOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID id = 1;
+    // required .game.WObjID id = 1;
     boolean hasId();
-    netmsg.Base.UUID getId();
-    netmsg.Base.UUIDOrBuilder getIdOrBuilder();
+    netmsg.Game.WObjID getId();
+    netmsg.Game.WObjIDOrBuilder getIdOrBuilder();
     
     // required .base.Vect2 target = 2;
     boolean hasTarget();
@@ -2102,16 +2102,16 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID id = 1;
+    // required .game.WObjID id = 1;
     public static final int ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID id_;
+    private netmsg.Game.WObjID id_;
     public boolean hasId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getId() {
+    public netmsg.Game.WObjID getId() {
       return id_;
     }
-    public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+    public netmsg.Game.WObjIDOrBuilder getIdOrBuilder() {
       return id_;
     }
     
@@ -2129,7 +2129,7 @@ public final class Game {
     }
     
     private void initFields() {
-      id_ = netmsg.Base.UUID.getDefaultInstance();
+      id_ = netmsg.Game.WObjID.getDefaultInstance();
       target_ = netmsg.Base.Vect2.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
@@ -2310,7 +2310,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+          id_ = netmsg.Game.WObjID.getDefaultInstance();
         } else {
           idBuilder_.clear();
         }
@@ -2445,7 +2445,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
               if (hasId()) {
                 subBuilder.mergeFrom(getId());
               }
@@ -2468,21 +2468,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID id = 1;
-      private netmsg.Base.UUID id_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.WObjID id = 1;
+      private netmsg.Game.WObjID id_ = netmsg.Game.WObjID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> idBuilder_;
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> idBuilder_;
       public boolean hasId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getId() {
+      public netmsg.Game.WObjID getId() {
         if (idBuilder_ == null) {
           return id_;
         } else {
           return idBuilder_.getMessage();
         }
       }
-      public Builder setId(netmsg.Base.UUID value) {
+      public Builder setId(netmsg.Game.WObjID value) {
         if (idBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2496,7 +2496,7 @@ public final class Game {
         return this;
       }
       public Builder setId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.WObjID.Builder builderForValue) {
         if (idBuilder_ == null) {
           id_ = builderForValue.build();
           onChanged();
@@ -2506,12 +2506,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeId(netmsg.Base.UUID value) {
+      public Builder mergeId(netmsg.Game.WObjID value) {
         if (idBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              id_ != netmsg.Base.UUID.getDefaultInstance()) {
+              id_ != netmsg.Game.WObjID.getDefaultInstance()) {
             id_ =
-              netmsg.Base.UUID.newBuilder(id_).mergeFrom(value).buildPartial();
+              netmsg.Game.WObjID.newBuilder(id_).mergeFrom(value).buildPartial();
           } else {
             id_ = value;
           }
@@ -2524,7 +2524,7 @@ public final class Game {
       }
       public Builder clearId() {
         if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+          id_ = netmsg.Game.WObjID.getDefaultInstance();
           onChanged();
         } else {
           idBuilder_.clear();
@@ -2532,12 +2532,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getIdBuilder() {
+      public netmsg.Game.WObjID.Builder getIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+      public netmsg.Game.WObjIDOrBuilder getIdOrBuilder() {
         if (idBuilder_ != null) {
           return idBuilder_.getMessageOrBuilder();
         } else {
@@ -2545,11 +2545,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
           getIdFieldBuilder() {
         if (idBuilder_ == null) {
           idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
                   id_,
                   getParentForChildren(),
                   isClean());
@@ -2662,15 +2662,15 @@ public final class Game {
   public interface MAttackOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID id = 1;
+    // required .game.WObjID id = 1;
     boolean hasId();
-    netmsg.Base.UUID getId();
-    netmsg.Base.UUIDOrBuilder getIdOrBuilder();
+    netmsg.Game.WObjID getId();
+    netmsg.Game.WObjIDOrBuilder getIdOrBuilder();
     
-    // required .base.UUID target_id = 2;
+    // required .game.WObjID target_id = 2;
     boolean hasTargetId();
-    netmsg.Base.UUID getTargetId();
-    netmsg.Base.UUIDOrBuilder getTargetIdOrBuilder();
+    netmsg.Game.WObjID getTargetId();
+    netmsg.Game.WObjIDOrBuilder getTargetIdOrBuilder();
   }
   public static final class MAttack extends
       com.google.protobuf.GeneratedMessage
@@ -2701,35 +2701,35 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID id = 1;
+    // required .game.WObjID id = 1;
     public static final int ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID id_;
+    private netmsg.Game.WObjID id_;
     public boolean hasId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getId() {
+    public netmsg.Game.WObjID getId() {
       return id_;
     }
-    public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+    public netmsg.Game.WObjIDOrBuilder getIdOrBuilder() {
       return id_;
     }
     
-    // required .base.UUID target_id = 2;
+    // required .game.WObjID target_id = 2;
     public static final int TARGET_ID_FIELD_NUMBER = 2;
-    private netmsg.Base.UUID targetId_;
+    private netmsg.Game.WObjID targetId_;
     public boolean hasTargetId() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
-    public netmsg.Base.UUID getTargetId() {
+    public netmsg.Game.WObjID getTargetId() {
       return targetId_;
     }
-    public netmsg.Base.UUIDOrBuilder getTargetIdOrBuilder() {
+    public netmsg.Game.WObjIDOrBuilder getTargetIdOrBuilder() {
       return targetId_;
     }
     
     private void initFields() {
-      id_ = netmsg.Base.UUID.getDefaultInstance();
-      targetId_ = netmsg.Base.UUID.getDefaultInstance();
+      id_ = netmsg.Game.WObjID.getDefaultInstance();
+      targetId_ = netmsg.Game.WObjID.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2909,13 +2909,13 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+          id_ = netmsg.Game.WObjID.getDefaultInstance();
         } else {
           idBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         if (targetIdBuilder_ == null) {
-          targetId_ = netmsg.Base.UUID.getDefaultInstance();
+          targetId_ = netmsg.Game.WObjID.getDefaultInstance();
         } else {
           targetIdBuilder_.clear();
         }
@@ -3044,7 +3044,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
               if (hasId()) {
                 subBuilder.mergeFrom(getId());
               }
@@ -3053,7 +3053,7 @@ public final class Game {
               break;
             }
             case 18: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
               if (hasTargetId()) {
                 subBuilder.mergeFrom(getTargetId());
               }
@@ -3067,21 +3067,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID id = 1;
-      private netmsg.Base.UUID id_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.WObjID id = 1;
+      private netmsg.Game.WObjID id_ = netmsg.Game.WObjID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> idBuilder_;
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> idBuilder_;
       public boolean hasId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getId() {
+      public netmsg.Game.WObjID getId() {
         if (idBuilder_ == null) {
           return id_;
         } else {
           return idBuilder_.getMessage();
         }
       }
-      public Builder setId(netmsg.Base.UUID value) {
+      public Builder setId(netmsg.Game.WObjID value) {
         if (idBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3095,7 +3095,7 @@ public final class Game {
         return this;
       }
       public Builder setId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.WObjID.Builder builderForValue) {
         if (idBuilder_ == null) {
           id_ = builderForValue.build();
           onChanged();
@@ -3105,12 +3105,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeId(netmsg.Base.UUID value) {
+      public Builder mergeId(netmsg.Game.WObjID value) {
         if (idBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              id_ != netmsg.Base.UUID.getDefaultInstance()) {
+              id_ != netmsg.Game.WObjID.getDefaultInstance()) {
             id_ =
-              netmsg.Base.UUID.newBuilder(id_).mergeFrom(value).buildPartial();
+              netmsg.Game.WObjID.newBuilder(id_).mergeFrom(value).buildPartial();
           } else {
             id_ = value;
           }
@@ -3123,7 +3123,7 @@ public final class Game {
       }
       public Builder clearId() {
         if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+          id_ = netmsg.Game.WObjID.getDefaultInstance();
           onChanged();
         } else {
           idBuilder_.clear();
@@ -3131,12 +3131,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getIdBuilder() {
+      public netmsg.Game.WObjID.Builder getIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+      public netmsg.Game.WObjIDOrBuilder getIdOrBuilder() {
         if (idBuilder_ != null) {
           return idBuilder_.getMessageOrBuilder();
         } else {
@@ -3144,11 +3144,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
           getIdFieldBuilder() {
         if (idBuilder_ == null) {
           idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
                   id_,
                   getParentForChildren(),
                   isClean());
@@ -3157,21 +3157,21 @@ public final class Game {
         return idBuilder_;
       }
       
-      // required .base.UUID target_id = 2;
-      private netmsg.Base.UUID targetId_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.WObjID target_id = 2;
+      private netmsg.Game.WObjID targetId_ = netmsg.Game.WObjID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> targetIdBuilder_;
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> targetIdBuilder_;
       public boolean hasTargetId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      public netmsg.Base.UUID getTargetId() {
+      public netmsg.Game.WObjID getTargetId() {
         if (targetIdBuilder_ == null) {
           return targetId_;
         } else {
           return targetIdBuilder_.getMessage();
         }
       }
-      public Builder setTargetId(netmsg.Base.UUID value) {
+      public Builder setTargetId(netmsg.Game.WObjID value) {
         if (targetIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3185,7 +3185,7 @@ public final class Game {
         return this;
       }
       public Builder setTargetId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.WObjID.Builder builderForValue) {
         if (targetIdBuilder_ == null) {
           targetId_ = builderForValue.build();
           onChanged();
@@ -3195,12 +3195,12 @@ public final class Game {
         bitField0_ |= 0x00000002;
         return this;
       }
-      public Builder mergeTargetId(netmsg.Base.UUID value) {
+      public Builder mergeTargetId(netmsg.Game.WObjID value) {
         if (targetIdBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
-              targetId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              targetId_ != netmsg.Game.WObjID.getDefaultInstance()) {
             targetId_ =
-              netmsg.Base.UUID.newBuilder(targetId_).mergeFrom(value).buildPartial();
+              netmsg.Game.WObjID.newBuilder(targetId_).mergeFrom(value).buildPartial();
           } else {
             targetId_ = value;
           }
@@ -3213,7 +3213,7 @@ public final class Game {
       }
       public Builder clearTargetId() {
         if (targetIdBuilder_ == null) {
-          targetId_ = netmsg.Base.UUID.getDefaultInstance();
+          targetId_ = netmsg.Game.WObjID.getDefaultInstance();
           onChanged();
         } else {
           targetIdBuilder_.clear();
@@ -3221,12 +3221,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      public netmsg.Base.UUID.Builder getTargetIdBuilder() {
+      public netmsg.Game.WObjID.Builder getTargetIdBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getTargetIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getTargetIdOrBuilder() {
+      public netmsg.Game.WObjIDOrBuilder getTargetIdOrBuilder() {
         if (targetIdBuilder_ != null) {
           return targetIdBuilder_.getMessageOrBuilder();
         } else {
@@ -3234,11 +3234,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
           getTargetIdFieldBuilder() {
         if (targetIdBuilder_ == null) {
           targetIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
                   targetId_,
                   getParentForChildren(),
                   isClean());
@@ -3261,10 +3261,10 @@ public final class Game {
   public interface MSpecialOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID id = 1;
+    // required .game.WObjID id = 1;
     boolean hasId();
-    netmsg.Base.UUID getId();
-    netmsg.Base.UUIDOrBuilder getIdOrBuilder();
+    netmsg.Game.WObjID getId();
+    netmsg.Game.WObjIDOrBuilder getIdOrBuilder();
   }
   public static final class MSpecial extends
       com.google.protobuf.GeneratedMessage
@@ -3295,21 +3295,21 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID id = 1;
+    // required .game.WObjID id = 1;
     public static final int ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID id_;
+    private netmsg.Game.WObjID id_;
     public boolean hasId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getId() {
+    public netmsg.Game.WObjID getId() {
       return id_;
     }
-    public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+    public netmsg.Game.WObjIDOrBuilder getIdOrBuilder() {
       return id_;
     }
     
     private void initFields() {
-      id_ = netmsg.Base.UUID.getDefaultInstance();
+      id_ = netmsg.Game.WObjID.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3473,7 +3473,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+          id_ = netmsg.Game.WObjID.getDefaultInstance();
         } else {
           idBuilder_.clear();
         }
@@ -3583,7 +3583,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
               if (hasId()) {
                 subBuilder.mergeFrom(getId());
               }
@@ -3597,21 +3597,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID id = 1;
-      private netmsg.Base.UUID id_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.WObjID id = 1;
+      private netmsg.Game.WObjID id_ = netmsg.Game.WObjID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> idBuilder_;
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> idBuilder_;
       public boolean hasId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getId() {
+      public netmsg.Game.WObjID getId() {
         if (idBuilder_ == null) {
           return id_;
         } else {
           return idBuilder_.getMessage();
         }
       }
-      public Builder setId(netmsg.Base.UUID value) {
+      public Builder setId(netmsg.Game.WObjID value) {
         if (idBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3625,7 +3625,7 @@ public final class Game {
         return this;
       }
       public Builder setId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.WObjID.Builder builderForValue) {
         if (idBuilder_ == null) {
           id_ = builderForValue.build();
           onChanged();
@@ -3635,12 +3635,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeId(netmsg.Base.UUID value) {
+      public Builder mergeId(netmsg.Game.WObjID value) {
         if (idBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              id_ != netmsg.Base.UUID.getDefaultInstance()) {
+              id_ != netmsg.Game.WObjID.getDefaultInstance()) {
             id_ =
-              netmsg.Base.UUID.newBuilder(id_).mergeFrom(value).buildPartial();
+              netmsg.Game.WObjID.newBuilder(id_).mergeFrom(value).buildPartial();
           } else {
             id_ = value;
           }
@@ -3653,7 +3653,7 @@ public final class Game {
       }
       public Builder clearId() {
         if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+          id_ = netmsg.Game.WObjID.getDefaultInstance();
           onChanged();
         } else {
           idBuilder_.clear();
@@ -3661,12 +3661,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getIdBuilder() {
+      public netmsg.Game.WObjID.Builder getIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+      public netmsg.Game.WObjIDOrBuilder getIdOrBuilder() {
         if (idBuilder_ != null) {
           return idBuilder_.getMessageOrBuilder();
         } else {
@@ -3674,11 +3674,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
           getIdFieldBuilder() {
         if (idBuilder_ == null) {
           idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
                   id_,
                   getParentForChildren(),
                   isClean());
@@ -8004,13 +8004,1924 @@ public final class Game {
     // @@protoc_insertion_point(class_scope:game.MError)
   }
   
-  public interface TeamOrBuilder
+  public interface TeamIDOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
     // required .base.UUID id = 1;
     boolean hasId();
     netmsg.Base.UUID getId();
     netmsg.Base.UUIDOrBuilder getIdOrBuilder();
+  }
+  public static final class TeamID extends
+      com.google.protobuf.GeneratedMessage
+      implements TeamIDOrBuilder {
+    // Use TeamID.newBuilder() to construct.
+    private TeamID(Builder builder) {
+      super(builder);
+    }
+    private TeamID(boolean noInit) {}
+    
+    private static final TeamID defaultInstance;
+    public static TeamID getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public TeamID getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return netmsg.Game.internal_static_game_TeamID_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return netmsg.Game.internal_static_game_TeamID_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // required .base.UUID id = 1;
+    public static final int ID_FIELD_NUMBER = 1;
+    private netmsg.Base.UUID id_;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public netmsg.Base.UUID getId() {
+      return id_;
+    }
+    public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+      return id_;
+    }
+    
+    private void initFields() {
+      id_ = netmsg.Base.UUID.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getId().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, id_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, id_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static netmsg.Game.TeamID parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Game.TeamID parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.TeamID parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Game.TeamID parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.TeamID parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Game.TeamID parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.TeamID parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Game.TeamID parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Game.TeamID parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Game.TeamID parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(netmsg.Game.TeamID prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements netmsg.Game.TeamIDOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return netmsg.Game.internal_static_game_TeamID_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return netmsg.Game.internal_static_game_TeamID_fieldAccessorTable;
+      }
+      
+      // Construct using netmsg.Game.TeamID.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getIdFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        if (idBuilder_ == null) {
+          id_ = netmsg.Base.UUID.getDefaultInstance();
+        } else {
+          idBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return netmsg.Game.TeamID.getDescriptor();
+      }
+      
+      public netmsg.Game.TeamID getDefaultInstanceForType() {
+        return netmsg.Game.TeamID.getDefaultInstance();
+      }
+      
+      public netmsg.Game.TeamID build() {
+        netmsg.Game.TeamID result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private netmsg.Game.TeamID buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        netmsg.Game.TeamID result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public netmsg.Game.TeamID buildPartial() {
+        netmsg.Game.TeamID result = new netmsg.Game.TeamID(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (idBuilder_ == null) {
+          result.id_ = id_;
+        } else {
+          result.id_ = idBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof netmsg.Game.TeamID) {
+          return mergeFrom((netmsg.Game.TeamID)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(netmsg.Game.TeamID other) {
+        if (other == netmsg.Game.TeamID.getDefaultInstance()) return this;
+        if (other.hasId()) {
+          mergeId(other.getId());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (!hasId()) {
+          
+          return false;
+        }
+        if (!getId().isInitialized()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              if (hasId()) {
+                subBuilder.mergeFrom(getId());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setId(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // required .base.UUID id = 1;
+      private netmsg.Base.UUID id_ = netmsg.Base.UUID.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> idBuilder_;
+      public boolean hasId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public netmsg.Base.UUID getId() {
+        if (idBuilder_ == null) {
+          return id_;
+        } else {
+          return idBuilder_.getMessage();
+        }
+      }
+      public Builder setId(netmsg.Base.UUID value) {
+        if (idBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          id_ = value;
+          onChanged();
+        } else {
+          idBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder setId(
+          netmsg.Base.UUID.Builder builderForValue) {
+        if (idBuilder_ == null) {
+          id_ = builderForValue.build();
+          onChanged();
+        } else {
+          idBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder mergeId(netmsg.Base.UUID value) {
+        if (idBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              id_ != netmsg.Base.UUID.getDefaultInstance()) {
+            id_ =
+              netmsg.Base.UUID.newBuilder(id_).mergeFrom(value).buildPartial();
+          } else {
+            id_ = value;
+          }
+          onChanged();
+        } else {
+          idBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder clearId() {
+        if (idBuilder_ == null) {
+          id_ = netmsg.Base.UUID.getDefaultInstance();
+          onChanged();
+        } else {
+          idBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      public netmsg.Base.UUID.Builder getIdBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getIdFieldBuilder().getBuilder();
+      }
+      public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+        if (idBuilder_ != null) {
+          return idBuilder_.getMessageOrBuilder();
+        } else {
+          return id_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          getIdFieldBuilder() {
+        if (idBuilder_ == null) {
+          idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+                  id_,
+                  getParentForChildren(),
+                  isClean());
+          id_ = null;
+        }
+        return idBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:game.TeamID)
+    }
+    
+    static {
+      defaultInstance = new TeamID(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:game.TeamID)
+  }
+  
+  public interface PlayerIDOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required .base.UUID id = 1;
+    boolean hasId();
+    netmsg.Base.UUID getId();
+    netmsg.Base.UUIDOrBuilder getIdOrBuilder();
+  }
+  public static final class PlayerID extends
+      com.google.protobuf.GeneratedMessage
+      implements PlayerIDOrBuilder {
+    // Use PlayerID.newBuilder() to construct.
+    private PlayerID(Builder builder) {
+      super(builder);
+    }
+    private PlayerID(boolean noInit) {}
+    
+    private static final PlayerID defaultInstance;
+    public static PlayerID getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public PlayerID getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return netmsg.Game.internal_static_game_PlayerID_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return netmsg.Game.internal_static_game_PlayerID_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // required .base.UUID id = 1;
+    public static final int ID_FIELD_NUMBER = 1;
+    private netmsg.Base.UUID id_;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public netmsg.Base.UUID getId() {
+      return id_;
+    }
+    public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+      return id_;
+    }
+    
+    private void initFields() {
+      id_ = netmsg.Base.UUID.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getId().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, id_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, id_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static netmsg.Game.PlayerID parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Game.PlayerID parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.PlayerID parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Game.PlayerID parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.PlayerID parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Game.PlayerID parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.PlayerID parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Game.PlayerID parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Game.PlayerID parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Game.PlayerID parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(netmsg.Game.PlayerID prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements netmsg.Game.PlayerIDOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return netmsg.Game.internal_static_game_PlayerID_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return netmsg.Game.internal_static_game_PlayerID_fieldAccessorTable;
+      }
+      
+      // Construct using netmsg.Game.PlayerID.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getIdFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        if (idBuilder_ == null) {
+          id_ = netmsg.Base.UUID.getDefaultInstance();
+        } else {
+          idBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return netmsg.Game.PlayerID.getDescriptor();
+      }
+      
+      public netmsg.Game.PlayerID getDefaultInstanceForType() {
+        return netmsg.Game.PlayerID.getDefaultInstance();
+      }
+      
+      public netmsg.Game.PlayerID build() {
+        netmsg.Game.PlayerID result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private netmsg.Game.PlayerID buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        netmsg.Game.PlayerID result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public netmsg.Game.PlayerID buildPartial() {
+        netmsg.Game.PlayerID result = new netmsg.Game.PlayerID(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (idBuilder_ == null) {
+          result.id_ = id_;
+        } else {
+          result.id_ = idBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof netmsg.Game.PlayerID) {
+          return mergeFrom((netmsg.Game.PlayerID)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(netmsg.Game.PlayerID other) {
+        if (other == netmsg.Game.PlayerID.getDefaultInstance()) return this;
+        if (other.hasId()) {
+          mergeId(other.getId());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (!hasId()) {
+          
+          return false;
+        }
+        if (!getId().isInitialized()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              if (hasId()) {
+                subBuilder.mergeFrom(getId());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setId(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // required .base.UUID id = 1;
+      private netmsg.Base.UUID id_ = netmsg.Base.UUID.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> idBuilder_;
+      public boolean hasId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public netmsg.Base.UUID getId() {
+        if (idBuilder_ == null) {
+          return id_;
+        } else {
+          return idBuilder_.getMessage();
+        }
+      }
+      public Builder setId(netmsg.Base.UUID value) {
+        if (idBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          id_ = value;
+          onChanged();
+        } else {
+          idBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder setId(
+          netmsg.Base.UUID.Builder builderForValue) {
+        if (idBuilder_ == null) {
+          id_ = builderForValue.build();
+          onChanged();
+        } else {
+          idBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder mergeId(netmsg.Base.UUID value) {
+        if (idBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              id_ != netmsg.Base.UUID.getDefaultInstance()) {
+            id_ =
+              netmsg.Base.UUID.newBuilder(id_).mergeFrom(value).buildPartial();
+          } else {
+            id_ = value;
+          }
+          onChanged();
+        } else {
+          idBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder clearId() {
+        if (idBuilder_ == null) {
+          id_ = netmsg.Base.UUID.getDefaultInstance();
+          onChanged();
+        } else {
+          idBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      public netmsg.Base.UUID.Builder getIdBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getIdFieldBuilder().getBuilder();
+      }
+      public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+        if (idBuilder_ != null) {
+          return idBuilder_.getMessageOrBuilder();
+        } else {
+          return id_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          getIdFieldBuilder() {
+        if (idBuilder_ == null) {
+          idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+                  id_,
+                  getParentForChildren(),
+                  isClean());
+          id_ = null;
+        }
+        return idBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:game.PlayerID)
+    }
+    
+    static {
+      defaultInstance = new PlayerID(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:game.PlayerID)
+  }
+  
+  public interface OwnerIDOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional .game.TeamID team_id = 1;
+    boolean hasTeamId();
+    netmsg.Game.TeamID getTeamId();
+    netmsg.Game.TeamIDOrBuilder getTeamIdOrBuilder();
+    
+    // optional .game.PlayerID player_id = 2;
+    boolean hasPlayerId();
+    netmsg.Game.PlayerID getPlayerId();
+    netmsg.Game.PlayerIDOrBuilder getPlayerIdOrBuilder();
+  }
+  public static final class OwnerID extends
+      com.google.protobuf.GeneratedMessage
+      implements OwnerIDOrBuilder {
+    // Use OwnerID.newBuilder() to construct.
+    private OwnerID(Builder builder) {
+      super(builder);
+    }
+    private OwnerID(boolean noInit) {}
+    
+    private static final OwnerID defaultInstance;
+    public static OwnerID getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public OwnerID getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return netmsg.Game.internal_static_game_OwnerID_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return netmsg.Game.internal_static_game_OwnerID_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional .game.TeamID team_id = 1;
+    public static final int TEAM_ID_FIELD_NUMBER = 1;
+    private netmsg.Game.TeamID teamId_;
+    public boolean hasTeamId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public netmsg.Game.TeamID getTeamId() {
+      return teamId_;
+    }
+    public netmsg.Game.TeamIDOrBuilder getTeamIdOrBuilder() {
+      return teamId_;
+    }
+    
+    // optional .game.PlayerID player_id = 2;
+    public static final int PLAYER_ID_FIELD_NUMBER = 2;
+    private netmsg.Game.PlayerID playerId_;
+    public boolean hasPlayerId() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public netmsg.Game.PlayerID getPlayerId() {
+      return playerId_;
+    }
+    public netmsg.Game.PlayerIDOrBuilder getPlayerIdOrBuilder() {
+      return playerId_;
+    }
+    
+    private void initFields() {
+      teamId_ = netmsg.Game.TeamID.getDefaultInstance();
+      playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (hasTeamId()) {
+        if (!getTeamId().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasPlayerId()) {
+        if (!getPlayerId().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, teamId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, playerId_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, teamId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, playerId_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static netmsg.Game.OwnerID parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Game.OwnerID parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.OwnerID parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Game.OwnerID parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.OwnerID parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Game.OwnerID parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.OwnerID parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Game.OwnerID parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Game.OwnerID parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Game.OwnerID parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(netmsg.Game.OwnerID prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements netmsg.Game.OwnerIDOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return netmsg.Game.internal_static_game_OwnerID_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return netmsg.Game.internal_static_game_OwnerID_fieldAccessorTable;
+      }
+      
+      // Construct using netmsg.Game.OwnerID.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getTeamIdFieldBuilder();
+          getPlayerIdFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        if (teamIdBuilder_ == null) {
+          teamId_ = netmsg.Game.TeamID.getDefaultInstance();
+        } else {
+          teamIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (playerIdBuilder_ == null) {
+          playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
+        } else {
+          playerIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return netmsg.Game.OwnerID.getDescriptor();
+      }
+      
+      public netmsg.Game.OwnerID getDefaultInstanceForType() {
+        return netmsg.Game.OwnerID.getDefaultInstance();
+      }
+      
+      public netmsg.Game.OwnerID build() {
+        netmsg.Game.OwnerID result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private netmsg.Game.OwnerID buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        netmsg.Game.OwnerID result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public netmsg.Game.OwnerID buildPartial() {
+        netmsg.Game.OwnerID result = new netmsg.Game.OwnerID(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (teamIdBuilder_ == null) {
+          result.teamId_ = teamId_;
+        } else {
+          result.teamId_ = teamIdBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (playerIdBuilder_ == null) {
+          result.playerId_ = playerId_;
+        } else {
+          result.playerId_ = playerIdBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof netmsg.Game.OwnerID) {
+          return mergeFrom((netmsg.Game.OwnerID)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(netmsg.Game.OwnerID other) {
+        if (other == netmsg.Game.OwnerID.getDefaultInstance()) return this;
+        if (other.hasTeamId()) {
+          mergeTeamId(other.getTeamId());
+        }
+        if (other.hasPlayerId()) {
+          mergePlayerId(other.getPlayerId());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (hasTeamId()) {
+          if (!getTeamId().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasPlayerId()) {
+          if (!getPlayerId().isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              netmsg.Game.TeamID.Builder subBuilder = netmsg.Game.TeamID.newBuilder();
+              if (hasTeamId()) {
+                subBuilder.mergeFrom(getTeamId());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setTeamId(subBuilder.buildPartial());
+              break;
+            }
+            case 18: {
+              netmsg.Game.PlayerID.Builder subBuilder = netmsg.Game.PlayerID.newBuilder();
+              if (hasPlayerId()) {
+                subBuilder.mergeFrom(getPlayerId());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setPlayerId(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional .game.TeamID team_id = 1;
+      private netmsg.Game.TeamID teamId_ = netmsg.Game.TeamID.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder> teamIdBuilder_;
+      public boolean hasTeamId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public netmsg.Game.TeamID getTeamId() {
+        if (teamIdBuilder_ == null) {
+          return teamId_;
+        } else {
+          return teamIdBuilder_.getMessage();
+        }
+      }
+      public Builder setTeamId(netmsg.Game.TeamID value) {
+        if (teamIdBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          teamId_ = value;
+          onChanged();
+        } else {
+          teamIdBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder setTeamId(
+          netmsg.Game.TeamID.Builder builderForValue) {
+        if (teamIdBuilder_ == null) {
+          teamId_ = builderForValue.build();
+          onChanged();
+        } else {
+          teamIdBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder mergeTeamId(netmsg.Game.TeamID value) {
+        if (teamIdBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              teamId_ != netmsg.Game.TeamID.getDefaultInstance()) {
+            teamId_ =
+              netmsg.Game.TeamID.newBuilder(teamId_).mergeFrom(value).buildPartial();
+          } else {
+            teamId_ = value;
+          }
+          onChanged();
+        } else {
+          teamIdBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder clearTeamId() {
+        if (teamIdBuilder_ == null) {
+          teamId_ = netmsg.Game.TeamID.getDefaultInstance();
+          onChanged();
+        } else {
+          teamIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      public netmsg.Game.TeamID.Builder getTeamIdBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getTeamIdFieldBuilder().getBuilder();
+      }
+      public netmsg.Game.TeamIDOrBuilder getTeamIdOrBuilder() {
+        if (teamIdBuilder_ != null) {
+          return teamIdBuilder_.getMessageOrBuilder();
+        } else {
+          return teamId_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder> 
+          getTeamIdFieldBuilder() {
+        if (teamIdBuilder_ == null) {
+          teamIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder>(
+                  teamId_,
+                  getParentForChildren(),
+                  isClean());
+          teamId_ = null;
+        }
+        return teamIdBuilder_;
+      }
+      
+      // optional .game.PlayerID player_id = 2;
+      private netmsg.Game.PlayerID playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder> playerIdBuilder_;
+      public boolean hasPlayerId() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public netmsg.Game.PlayerID getPlayerId() {
+        if (playerIdBuilder_ == null) {
+          return playerId_;
+        } else {
+          return playerIdBuilder_.getMessage();
+        }
+      }
+      public Builder setPlayerId(netmsg.Game.PlayerID value) {
+        if (playerIdBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          playerId_ = value;
+          onChanged();
+        } else {
+          playerIdBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder setPlayerId(
+          netmsg.Game.PlayerID.Builder builderForValue) {
+        if (playerIdBuilder_ == null) {
+          playerId_ = builderForValue.build();
+          onChanged();
+        } else {
+          playerIdBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder mergePlayerId(netmsg.Game.PlayerID value) {
+        if (playerIdBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              playerId_ != netmsg.Game.PlayerID.getDefaultInstance()) {
+            playerId_ =
+              netmsg.Game.PlayerID.newBuilder(playerId_).mergeFrom(value).buildPartial();
+          } else {
+            playerId_ = value;
+          }
+          onChanged();
+        } else {
+          playerIdBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder clearPlayerId() {
+        if (playerIdBuilder_ == null) {
+          playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
+          onChanged();
+        } else {
+          playerIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      public netmsg.Game.PlayerID.Builder getPlayerIdBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getPlayerIdFieldBuilder().getBuilder();
+      }
+      public netmsg.Game.PlayerIDOrBuilder getPlayerIdOrBuilder() {
+        if (playerIdBuilder_ != null) {
+          return playerIdBuilder_.getMessageOrBuilder();
+        } else {
+          return playerId_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder> 
+          getPlayerIdFieldBuilder() {
+        if (playerIdBuilder_ == null) {
+          playerIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder>(
+                  playerId_,
+                  getParentForChildren(),
+                  isClean());
+          playerId_ = null;
+        }
+        return playerIdBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:game.OwnerID)
+    }
+    
+    static {
+      defaultInstance = new OwnerID(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:game.OwnerID)
+  }
+  
+  public interface WObjIDOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required .base.UUID id = 1;
+    boolean hasId();
+    netmsg.Base.UUID getId();
+    netmsg.Base.UUIDOrBuilder getIdOrBuilder();
+  }
+  public static final class WObjID extends
+      com.google.protobuf.GeneratedMessage
+      implements WObjIDOrBuilder {
+    // Use WObjID.newBuilder() to construct.
+    private WObjID(Builder builder) {
+      super(builder);
+    }
+    private WObjID(boolean noInit) {}
+    
+    private static final WObjID defaultInstance;
+    public static WObjID getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public WObjID getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return netmsg.Game.internal_static_game_WObjID_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return netmsg.Game.internal_static_game_WObjID_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // required .base.UUID id = 1;
+    public static final int ID_FIELD_NUMBER = 1;
+    private netmsg.Base.UUID id_;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public netmsg.Base.UUID getId() {
+      return id_;
+    }
+    public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+      return id_;
+    }
+    
+    private void initFields() {
+      id_ = netmsg.Base.UUID.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getId().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, id_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, id_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static netmsg.Game.WObjID parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Game.WObjID parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.WObjID parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Game.WObjID parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.WObjID parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Game.WObjID parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.WObjID parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Game.WObjID parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Game.WObjID parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Game.WObjID parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(netmsg.Game.WObjID prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements netmsg.Game.WObjIDOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return netmsg.Game.internal_static_game_WObjID_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return netmsg.Game.internal_static_game_WObjID_fieldAccessorTable;
+      }
+      
+      // Construct using netmsg.Game.WObjID.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getIdFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        if (idBuilder_ == null) {
+          id_ = netmsg.Base.UUID.getDefaultInstance();
+        } else {
+          idBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return netmsg.Game.WObjID.getDescriptor();
+      }
+      
+      public netmsg.Game.WObjID getDefaultInstanceForType() {
+        return netmsg.Game.WObjID.getDefaultInstance();
+      }
+      
+      public netmsg.Game.WObjID build() {
+        netmsg.Game.WObjID result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private netmsg.Game.WObjID buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        netmsg.Game.WObjID result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public netmsg.Game.WObjID buildPartial() {
+        netmsg.Game.WObjID result = new netmsg.Game.WObjID(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (idBuilder_ == null) {
+          result.id_ = id_;
+        } else {
+          result.id_ = idBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof netmsg.Game.WObjID) {
+          return mergeFrom((netmsg.Game.WObjID)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(netmsg.Game.WObjID other) {
+        if (other == netmsg.Game.WObjID.getDefaultInstance()) return this;
+        if (other.hasId()) {
+          mergeId(other.getId());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (!hasId()) {
+          
+          return false;
+        }
+        if (!getId().isInitialized()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              if (hasId()) {
+                subBuilder.mergeFrom(getId());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setId(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // required .base.UUID id = 1;
+      private netmsg.Base.UUID id_ = netmsg.Base.UUID.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> idBuilder_;
+      public boolean hasId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public netmsg.Base.UUID getId() {
+        if (idBuilder_ == null) {
+          return id_;
+        } else {
+          return idBuilder_.getMessage();
+        }
+      }
+      public Builder setId(netmsg.Base.UUID value) {
+        if (idBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          id_ = value;
+          onChanged();
+        } else {
+          idBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder setId(
+          netmsg.Base.UUID.Builder builderForValue) {
+        if (idBuilder_ == null) {
+          id_ = builderForValue.build();
+          onChanged();
+        } else {
+          idBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder mergeId(netmsg.Base.UUID value) {
+        if (idBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              id_ != netmsg.Base.UUID.getDefaultInstance()) {
+            id_ =
+              netmsg.Base.UUID.newBuilder(id_).mergeFrom(value).buildPartial();
+          } else {
+            id_ = value;
+          }
+          onChanged();
+        } else {
+          idBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder clearId() {
+        if (idBuilder_ == null) {
+          id_ = netmsg.Base.UUID.getDefaultInstance();
+          onChanged();
+        } else {
+          idBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      public netmsg.Base.UUID.Builder getIdBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getIdFieldBuilder().getBuilder();
+      }
+      public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+        if (idBuilder_ != null) {
+          return idBuilder_.getMessageOrBuilder();
+        } else {
+          return id_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          getIdFieldBuilder() {
+        if (idBuilder_ == null) {
+          idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+                  id_,
+                  getParentForChildren(),
+                  isClean());
+          id_ = null;
+        }
+        return idBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:game.WObjID)
+    }
+    
+    static {
+      defaultInstance = new WObjID(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:game.WObjID)
+  }
+  
+  public interface TeamOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required .game.TeamID id = 1;
+    boolean hasId();
+    netmsg.Game.TeamID getId();
+    netmsg.Game.TeamIDOrBuilder getIdOrBuilder();
   }
   public static final class Team extends
       com.google.protobuf.GeneratedMessage
@@ -8041,21 +9952,21 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID id = 1;
+    // required .game.TeamID id = 1;
     public static final int ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID id_;
+    private netmsg.Game.TeamID id_;
     public boolean hasId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getId() {
+    public netmsg.Game.TeamID getId() {
       return id_;
     }
-    public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+    public netmsg.Game.TeamIDOrBuilder getIdOrBuilder() {
       return id_;
     }
     
     private void initFields() {
-      id_ = netmsg.Base.UUID.getDefaultInstance();
+      id_ = netmsg.Game.TeamID.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -8219,7 +10130,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+          id_ = netmsg.Game.TeamID.getDefaultInstance();
         } else {
           idBuilder_.clear();
         }
@@ -8329,7 +10240,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.TeamID.Builder subBuilder = netmsg.Game.TeamID.newBuilder();
               if (hasId()) {
                 subBuilder.mergeFrom(getId());
               }
@@ -8343,21 +10254,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID id = 1;
-      private netmsg.Base.UUID id_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.TeamID id = 1;
+      private netmsg.Game.TeamID id_ = netmsg.Game.TeamID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> idBuilder_;
+          netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder> idBuilder_;
       public boolean hasId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getId() {
+      public netmsg.Game.TeamID getId() {
         if (idBuilder_ == null) {
           return id_;
         } else {
           return idBuilder_.getMessage();
         }
       }
-      public Builder setId(netmsg.Base.UUID value) {
+      public Builder setId(netmsg.Game.TeamID value) {
         if (idBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8371,7 +10282,7 @@ public final class Game {
         return this;
       }
       public Builder setId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.TeamID.Builder builderForValue) {
         if (idBuilder_ == null) {
           id_ = builderForValue.build();
           onChanged();
@@ -8381,12 +10292,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeId(netmsg.Base.UUID value) {
+      public Builder mergeId(netmsg.Game.TeamID value) {
         if (idBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              id_ != netmsg.Base.UUID.getDefaultInstance()) {
+              id_ != netmsg.Game.TeamID.getDefaultInstance()) {
             id_ =
-              netmsg.Base.UUID.newBuilder(id_).mergeFrom(value).buildPartial();
+              netmsg.Game.TeamID.newBuilder(id_).mergeFrom(value).buildPartial();
           } else {
             id_ = value;
           }
@@ -8399,7 +10310,7 @@ public final class Game {
       }
       public Builder clearId() {
         if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+          id_ = netmsg.Game.TeamID.getDefaultInstance();
           onChanged();
         } else {
           idBuilder_.clear();
@@ -8407,12 +10318,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getIdBuilder() {
+      public netmsg.Game.TeamID.Builder getIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+      public netmsg.Game.TeamIDOrBuilder getIdOrBuilder() {
         if (idBuilder_ != null) {
           return idBuilder_.getMessageOrBuilder();
         } else {
@@ -8420,11 +10331,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder> 
           getIdFieldBuilder() {
         if (idBuilder_ == null) {
           idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder>(
                   id_,
                   getParentForChildren(),
                   isClean());
@@ -8451,15 +10362,15 @@ public final class Game {
     boolean hasName();
     String getName();
     
-    // required .base.UUID id = 2;
+    // required .game.PlayerID id = 2;
     boolean hasId();
-    netmsg.Base.UUID getId();
-    netmsg.Base.UUIDOrBuilder getIdOrBuilder();
+    netmsg.Game.PlayerID getId();
+    netmsg.Game.PlayerIDOrBuilder getIdOrBuilder();
     
-    // required .base.UUID team_id = 3;
+    // required .game.TeamID team_id = 3;
     boolean hasTeamId();
-    netmsg.Base.UUID getTeamId();
-    netmsg.Base.UUIDOrBuilder getTeamIdOrBuilder();
+    netmsg.Game.TeamID getTeamId();
+    netmsg.Game.TeamIDOrBuilder getTeamIdOrBuilder();
   }
   public static final class Player extends
       com.google.protobuf.GeneratedMessage
@@ -8522,36 +10433,36 @@ public final class Game {
       }
     }
     
-    // required .base.UUID id = 2;
+    // required .game.PlayerID id = 2;
     public static final int ID_FIELD_NUMBER = 2;
-    private netmsg.Base.UUID id_;
+    private netmsg.Game.PlayerID id_;
     public boolean hasId() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
-    public netmsg.Base.UUID getId() {
+    public netmsg.Game.PlayerID getId() {
       return id_;
     }
-    public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+    public netmsg.Game.PlayerIDOrBuilder getIdOrBuilder() {
       return id_;
     }
     
-    // required .base.UUID team_id = 3;
+    // required .game.TeamID team_id = 3;
     public static final int TEAM_ID_FIELD_NUMBER = 3;
-    private netmsg.Base.UUID teamId_;
+    private netmsg.Game.TeamID teamId_;
     public boolean hasTeamId() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
-    public netmsg.Base.UUID getTeamId() {
+    public netmsg.Game.TeamID getTeamId() {
       return teamId_;
     }
-    public netmsg.Base.UUIDOrBuilder getTeamIdOrBuilder() {
+    public netmsg.Game.TeamIDOrBuilder getTeamIdOrBuilder() {
       return teamId_;
     }
     
     private void initFields() {
       name_ = "";
-      id_ = netmsg.Base.UUID.getDefaultInstance();
-      teamId_ = netmsg.Base.UUID.getDefaultInstance();
+      id_ = netmsg.Game.PlayerID.getDefaultInstance();
+      teamId_ = netmsg.Game.TeamID.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -8744,13 +10655,13 @@ public final class Game {
         name_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
         if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+          id_ = netmsg.Game.PlayerID.getDefaultInstance();
         } else {
           idBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (teamIdBuilder_ == null) {
-          teamId_ = netmsg.Base.UUID.getDefaultInstance();
+          teamId_ = netmsg.Game.TeamID.getDefaultInstance();
         } else {
           teamIdBuilder_.clear();
         }
@@ -8895,7 +10806,7 @@ public final class Game {
               break;
             }
             case 18: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.PlayerID.Builder subBuilder = netmsg.Game.PlayerID.newBuilder();
               if (hasId()) {
                 subBuilder.mergeFrom(getId());
               }
@@ -8904,7 +10815,7 @@ public final class Game {
               break;
             }
             case 26: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.TeamID.Builder subBuilder = netmsg.Game.TeamID.newBuilder();
               if (hasTeamId()) {
                 subBuilder.mergeFrom(getTeamId());
               }
@@ -8954,21 +10865,21 @@ public final class Game {
         onChanged();
       }
       
-      // required .base.UUID id = 2;
-      private netmsg.Base.UUID id_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.PlayerID id = 2;
+      private netmsg.Game.PlayerID id_ = netmsg.Game.PlayerID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> idBuilder_;
+          netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder> idBuilder_;
       public boolean hasId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      public netmsg.Base.UUID getId() {
+      public netmsg.Game.PlayerID getId() {
         if (idBuilder_ == null) {
           return id_;
         } else {
           return idBuilder_.getMessage();
         }
       }
-      public Builder setId(netmsg.Base.UUID value) {
+      public Builder setId(netmsg.Game.PlayerID value) {
         if (idBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8982,7 +10893,7 @@ public final class Game {
         return this;
       }
       public Builder setId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.PlayerID.Builder builderForValue) {
         if (idBuilder_ == null) {
           id_ = builderForValue.build();
           onChanged();
@@ -8992,12 +10903,12 @@ public final class Game {
         bitField0_ |= 0x00000002;
         return this;
       }
-      public Builder mergeId(netmsg.Base.UUID value) {
+      public Builder mergeId(netmsg.Game.PlayerID value) {
         if (idBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
-              id_ != netmsg.Base.UUID.getDefaultInstance()) {
+              id_ != netmsg.Game.PlayerID.getDefaultInstance()) {
             id_ =
-              netmsg.Base.UUID.newBuilder(id_).mergeFrom(value).buildPartial();
+              netmsg.Game.PlayerID.newBuilder(id_).mergeFrom(value).buildPartial();
           } else {
             id_ = value;
           }
@@ -9010,7 +10921,7 @@ public final class Game {
       }
       public Builder clearId() {
         if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+          id_ = netmsg.Game.PlayerID.getDefaultInstance();
           onChanged();
         } else {
           idBuilder_.clear();
@@ -9018,12 +10929,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      public netmsg.Base.UUID.Builder getIdBuilder() {
+      public netmsg.Game.PlayerID.Builder getIdBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+      public netmsg.Game.PlayerIDOrBuilder getIdOrBuilder() {
         if (idBuilder_ != null) {
           return idBuilder_.getMessageOrBuilder();
         } else {
@@ -9031,11 +10942,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder> 
           getIdFieldBuilder() {
         if (idBuilder_ == null) {
           idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder>(
                   id_,
                   getParentForChildren(),
                   isClean());
@@ -9044,21 +10955,21 @@ public final class Game {
         return idBuilder_;
       }
       
-      // required .base.UUID team_id = 3;
-      private netmsg.Base.UUID teamId_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.TeamID team_id = 3;
+      private netmsg.Game.TeamID teamId_ = netmsg.Game.TeamID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> teamIdBuilder_;
+          netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder> teamIdBuilder_;
       public boolean hasTeamId() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
-      public netmsg.Base.UUID getTeamId() {
+      public netmsg.Game.TeamID getTeamId() {
         if (teamIdBuilder_ == null) {
           return teamId_;
         } else {
           return teamIdBuilder_.getMessage();
         }
       }
-      public Builder setTeamId(netmsg.Base.UUID value) {
+      public Builder setTeamId(netmsg.Game.TeamID value) {
         if (teamIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -9072,7 +10983,7 @@ public final class Game {
         return this;
       }
       public Builder setTeamId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.TeamID.Builder builderForValue) {
         if (teamIdBuilder_ == null) {
           teamId_ = builderForValue.build();
           onChanged();
@@ -9082,12 +10993,12 @@ public final class Game {
         bitField0_ |= 0x00000004;
         return this;
       }
-      public Builder mergeTeamId(netmsg.Base.UUID value) {
+      public Builder mergeTeamId(netmsg.Game.TeamID value) {
         if (teamIdBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              teamId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              teamId_ != netmsg.Game.TeamID.getDefaultInstance()) {
             teamId_ =
-              netmsg.Base.UUID.newBuilder(teamId_).mergeFrom(value).buildPartial();
+              netmsg.Game.TeamID.newBuilder(teamId_).mergeFrom(value).buildPartial();
           } else {
             teamId_ = value;
           }
@@ -9100,7 +11011,7 @@ public final class Game {
       }
       public Builder clearTeamId() {
         if (teamIdBuilder_ == null) {
-          teamId_ = netmsg.Base.UUID.getDefaultInstance();
+          teamId_ = netmsg.Game.TeamID.getDefaultInstance();
           onChanged();
         } else {
           teamIdBuilder_.clear();
@@ -9108,12 +11019,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
-      public netmsg.Base.UUID.Builder getTeamIdBuilder() {
+      public netmsg.Game.TeamID.Builder getTeamIdBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getTeamIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getTeamIdOrBuilder() {
+      public netmsg.Game.TeamIDOrBuilder getTeamIdOrBuilder() {
         if (teamIdBuilder_ != null) {
           return teamIdBuilder_.getMessageOrBuilder();
         } else {
@@ -9121,11 +11032,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder> 
           getTeamIdFieldBuilder() {
         if (teamIdBuilder_ == null) {
           teamIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder>(
                   teamId_,
                   getParentForChildren(),
                   isClean());
@@ -10154,10 +12065,10 @@ public final class Game {
   public interface WObjectOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID id = 1;
+    // required .game.WObjID id = 1;
     boolean hasId();
-    netmsg.Base.UUID getId();
-    netmsg.Base.UUIDOrBuilder getIdOrBuilder();
+    netmsg.Game.WObjID getId();
+    netmsg.Game.WObjIDOrBuilder getIdOrBuilder();
     
     // required .base.Vect2 position = 2;
     boolean hasPosition();
@@ -10781,10 +12692,10 @@ public final class Game {
     public interface OwnedObjOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // required .base.UUID owner_id = 1;
+      // required .game.OwnerID owner_id = 1;
       boolean hasOwnerId();
-      netmsg.Base.UUID getOwnerId();
-      netmsg.Base.UUIDOrBuilder getOwnerIdOrBuilder();
+      netmsg.Game.OwnerID getOwnerId();
+      netmsg.Game.OwnerIDOrBuilder getOwnerIdOrBuilder();
       
       // required bool is_critical = 2;
       boolean hasIsCritical();
@@ -10833,16 +12744,16 @@ public final class Game {
       }
       
       private int bitField0_;
-      // required .base.UUID owner_id = 1;
+      // required .game.OwnerID owner_id = 1;
       public static final int OWNER_ID_FIELD_NUMBER = 1;
-      private netmsg.Base.UUID ownerId_;
+      private netmsg.Game.OwnerID ownerId_;
       public boolean hasOwnerId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getOwnerId() {
+      public netmsg.Game.OwnerID getOwnerId() {
         return ownerId_;
       }
-      public netmsg.Base.UUIDOrBuilder getOwnerIdOrBuilder() {
+      public netmsg.Game.OwnerIDOrBuilder getOwnerIdOrBuilder() {
         return ownerId_;
       }
       
@@ -10893,7 +12804,7 @@ public final class Game {
       }
       
       private void initFields() {
-        ownerId_ = netmsg.Base.UUID.getDefaultInstance();
+        ownerId_ = netmsg.Game.OwnerID.getDefaultInstance();
         isCritical_ = false;
         hp_ = netmsg.Base.ValWithMax.getDefaultInstance();
         defense_ = netmsg.Base.Range.getDefaultInstance();
@@ -11115,7 +13026,7 @@ public final class Game {
         public Builder clear() {
           super.clear();
           if (ownerIdBuilder_ == null) {
-            ownerId_ = netmsg.Base.UUID.getDefaultInstance();
+            ownerId_ = netmsg.Game.OwnerID.getDefaultInstance();
           } else {
             ownerIdBuilder_.clear();
           }
@@ -11301,7 +13212,7 @@ public final class Game {
                 break;
               }
               case 10: {
-                netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+                netmsg.Game.OwnerID.Builder subBuilder = netmsg.Game.OwnerID.newBuilder();
                 if (hasOwnerId()) {
                   subBuilder.mergeFrom(getOwnerId());
                 }
@@ -11343,21 +13254,21 @@ public final class Game {
         
         private int bitField0_;
         
-        // required .base.UUID owner_id = 1;
-        private netmsg.Base.UUID ownerId_ = netmsg.Base.UUID.getDefaultInstance();
+        // required .game.OwnerID owner_id = 1;
+        private netmsg.Game.OwnerID ownerId_ = netmsg.Game.OwnerID.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
-            netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> ownerIdBuilder_;
+            netmsg.Game.OwnerID, netmsg.Game.OwnerID.Builder, netmsg.Game.OwnerIDOrBuilder> ownerIdBuilder_;
         public boolean hasOwnerId() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
-        public netmsg.Base.UUID getOwnerId() {
+        public netmsg.Game.OwnerID getOwnerId() {
           if (ownerIdBuilder_ == null) {
             return ownerId_;
           } else {
             return ownerIdBuilder_.getMessage();
           }
         }
-        public Builder setOwnerId(netmsg.Base.UUID value) {
+        public Builder setOwnerId(netmsg.Game.OwnerID value) {
           if (ownerIdBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -11371,7 +13282,7 @@ public final class Game {
           return this;
         }
         public Builder setOwnerId(
-            netmsg.Base.UUID.Builder builderForValue) {
+            netmsg.Game.OwnerID.Builder builderForValue) {
           if (ownerIdBuilder_ == null) {
             ownerId_ = builderForValue.build();
             onChanged();
@@ -11381,12 +13292,12 @@ public final class Game {
           bitField0_ |= 0x00000001;
           return this;
         }
-        public Builder mergeOwnerId(netmsg.Base.UUID value) {
+        public Builder mergeOwnerId(netmsg.Game.OwnerID value) {
           if (ownerIdBuilder_ == null) {
             if (((bitField0_ & 0x00000001) == 0x00000001) &&
-                ownerId_ != netmsg.Base.UUID.getDefaultInstance()) {
+                ownerId_ != netmsg.Game.OwnerID.getDefaultInstance()) {
               ownerId_ =
-                netmsg.Base.UUID.newBuilder(ownerId_).mergeFrom(value).buildPartial();
+                netmsg.Game.OwnerID.newBuilder(ownerId_).mergeFrom(value).buildPartial();
             } else {
               ownerId_ = value;
             }
@@ -11399,7 +13310,7 @@ public final class Game {
         }
         public Builder clearOwnerId() {
           if (ownerIdBuilder_ == null) {
-            ownerId_ = netmsg.Base.UUID.getDefaultInstance();
+            ownerId_ = netmsg.Game.OwnerID.getDefaultInstance();
             onChanged();
           } else {
             ownerIdBuilder_.clear();
@@ -11407,12 +13318,12 @@ public final class Game {
           bitField0_ = (bitField0_ & ~0x00000001);
           return this;
         }
-        public netmsg.Base.UUID.Builder getOwnerIdBuilder() {
+        public netmsg.Game.OwnerID.Builder getOwnerIdBuilder() {
           bitField0_ |= 0x00000001;
           onChanged();
           return getOwnerIdFieldBuilder().getBuilder();
         }
-        public netmsg.Base.UUIDOrBuilder getOwnerIdOrBuilder() {
+        public netmsg.Game.OwnerIDOrBuilder getOwnerIdOrBuilder() {
           if (ownerIdBuilder_ != null) {
             return ownerIdBuilder_.getMessageOrBuilder();
           } else {
@@ -11420,11 +13331,11 @@ public final class Game {
           }
         }
         private com.google.protobuf.SingleFieldBuilder<
-            netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+            netmsg.Game.OwnerID, netmsg.Game.OwnerID.Builder, netmsg.Game.OwnerIDOrBuilder> 
             getOwnerIdFieldBuilder() {
           if (ownerIdBuilder_ == null) {
             ownerIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-                netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+                netmsg.Game.OwnerID, netmsg.Game.OwnerID.Builder, netmsg.Game.OwnerIDOrBuilder>(
                     ownerId_,
                     getParentForChildren(),
                     isClean());
@@ -15294,16 +17205,16 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID id = 1;
+    // required .game.WObjID id = 1;
     public static final int ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID id_;
+    private netmsg.Game.WObjID id_;
     public boolean hasId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getId() {
+    public netmsg.Game.WObjID getId() {
       return id_;
     }
-    public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+    public netmsg.Game.WObjIDOrBuilder getIdOrBuilder() {
       return id_;
     }
     
@@ -15474,7 +17385,7 @@ public final class Game {
     }
     
     private void initFields() {
-      id_ = netmsg.Base.UUID.getDefaultInstance();
+      id_ = netmsg.Game.WObjID.getDefaultInstance();
       position_ = netmsg.Base.Vect2.getDefaultInstance();
       kind_ = netmsg.Game.WObject.Kind.P_ASTEROID;
       sizedObj_ = netmsg.Game.WObject.SizedObj.getDefaultInstance();
@@ -15832,7 +17743,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+          id_ = netmsg.Game.WObjID.getDefaultInstance();
         } else {
           idBuilder_.clear();
         }
@@ -16233,7 +18144,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
               if (hasId()) {
                 subBuilder.mergeFrom(getId());
               }
@@ -16366,21 +18277,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID id = 1;
-      private netmsg.Base.UUID id_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.WObjID id = 1;
+      private netmsg.Game.WObjID id_ = netmsg.Game.WObjID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> idBuilder_;
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> idBuilder_;
       public boolean hasId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getId() {
+      public netmsg.Game.WObjID getId() {
         if (idBuilder_ == null) {
           return id_;
         } else {
           return idBuilder_.getMessage();
         }
       }
-      public Builder setId(netmsg.Base.UUID value) {
+      public Builder setId(netmsg.Game.WObjID value) {
         if (idBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -16394,7 +18305,7 @@ public final class Game {
         return this;
       }
       public Builder setId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.WObjID.Builder builderForValue) {
         if (idBuilder_ == null) {
           id_ = builderForValue.build();
           onChanged();
@@ -16404,12 +18315,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeId(netmsg.Base.UUID value) {
+      public Builder mergeId(netmsg.Game.WObjID value) {
         if (idBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              id_ != netmsg.Base.UUID.getDefaultInstance()) {
+              id_ != netmsg.Game.WObjID.getDefaultInstance()) {
             id_ =
-              netmsg.Base.UUID.newBuilder(id_).mergeFrom(value).buildPartial();
+              netmsg.Game.WObjID.newBuilder(id_).mergeFrom(value).buildPartial();
           } else {
             id_ = value;
           }
@@ -16422,7 +18333,7 @@ public final class Game {
       }
       public Builder clearId() {
         if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+          id_ = netmsg.Game.WObjID.getDefaultInstance();
           onChanged();
         } else {
           idBuilder_.clear();
@@ -16430,12 +18341,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getIdBuilder() {
+      public netmsg.Game.WObjID.Builder getIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+      public netmsg.Game.WObjIDOrBuilder getIdOrBuilder() {
         if (idBuilder_ != null) {
           return idBuilder_.getMessageOrBuilder();
         } else {
@@ -16443,11 +18354,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
           getIdFieldBuilder() {
         if (idBuilder_ == null) {
           idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
                   id_,
                   getParentForChildren(),
                   isClean());
@@ -20465,10 +22376,10 @@ public final class Game {
   public interface LeaveEvtOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID player_id = 1;
+    // required .game.PlayerID player_id = 1;
     boolean hasPlayerId();
-    netmsg.Base.UUID getPlayerId();
-    netmsg.Base.UUIDOrBuilder getPlayerIdOrBuilder();
+    netmsg.Game.PlayerID getPlayerId();
+    netmsg.Game.PlayerIDOrBuilder getPlayerIdOrBuilder();
   }
   public static final class LeaveEvt extends
       com.google.protobuf.GeneratedMessage
@@ -20499,21 +22410,21 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID player_id = 1;
+    // required .game.PlayerID player_id = 1;
     public static final int PLAYER_ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID playerId_;
+    private netmsg.Game.PlayerID playerId_;
     public boolean hasPlayerId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getPlayerId() {
+    public netmsg.Game.PlayerID getPlayerId() {
       return playerId_;
     }
-    public netmsg.Base.UUIDOrBuilder getPlayerIdOrBuilder() {
+    public netmsg.Game.PlayerIDOrBuilder getPlayerIdOrBuilder() {
       return playerId_;
     }
     
     private void initFields() {
-      playerId_ = netmsg.Base.UUID.getDefaultInstance();
+      playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -20677,7 +22588,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (playerIdBuilder_ == null) {
-          playerId_ = netmsg.Base.UUID.getDefaultInstance();
+          playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
         } else {
           playerIdBuilder_.clear();
         }
@@ -20787,7 +22698,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.PlayerID.Builder subBuilder = netmsg.Game.PlayerID.newBuilder();
               if (hasPlayerId()) {
                 subBuilder.mergeFrom(getPlayerId());
               }
@@ -20801,21 +22712,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID player_id = 1;
-      private netmsg.Base.UUID playerId_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.PlayerID player_id = 1;
+      private netmsg.Game.PlayerID playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> playerIdBuilder_;
+          netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder> playerIdBuilder_;
       public boolean hasPlayerId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getPlayerId() {
+      public netmsg.Game.PlayerID getPlayerId() {
         if (playerIdBuilder_ == null) {
           return playerId_;
         } else {
           return playerIdBuilder_.getMessage();
         }
       }
-      public Builder setPlayerId(netmsg.Base.UUID value) {
+      public Builder setPlayerId(netmsg.Game.PlayerID value) {
         if (playerIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -20829,7 +22740,7 @@ public final class Game {
         return this;
       }
       public Builder setPlayerId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.PlayerID.Builder builderForValue) {
         if (playerIdBuilder_ == null) {
           playerId_ = builderForValue.build();
           onChanged();
@@ -20839,12 +22750,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergePlayerId(netmsg.Base.UUID value) {
+      public Builder mergePlayerId(netmsg.Game.PlayerID value) {
         if (playerIdBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              playerId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              playerId_ != netmsg.Game.PlayerID.getDefaultInstance()) {
             playerId_ =
-              netmsg.Base.UUID.newBuilder(playerId_).mergeFrom(value).buildPartial();
+              netmsg.Game.PlayerID.newBuilder(playerId_).mergeFrom(value).buildPartial();
           } else {
             playerId_ = value;
           }
@@ -20857,7 +22768,7 @@ public final class Game {
       }
       public Builder clearPlayerId() {
         if (playerIdBuilder_ == null) {
-          playerId_ = netmsg.Base.UUID.getDefaultInstance();
+          playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
           onChanged();
         } else {
           playerIdBuilder_.clear();
@@ -20865,12 +22776,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getPlayerIdBuilder() {
+      public netmsg.Game.PlayerID.Builder getPlayerIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getPlayerIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getPlayerIdOrBuilder() {
+      public netmsg.Game.PlayerIDOrBuilder getPlayerIdOrBuilder() {
         if (playerIdBuilder_ != null) {
           return playerIdBuilder_.getMessageOrBuilder();
         } else {
@@ -20878,11 +22789,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder> 
           getPlayerIdFieldBuilder() {
         if (playerIdBuilder_ == null) {
           playerIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder>(
                   playerId_,
                   getParentForChildren(),
                   isClean());
@@ -20905,10 +22816,10 @@ public final class Game {
   public interface TurnStartedEvtOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID team_id = 1;
+    // required .game.TeamID team_id = 1;
     boolean hasTeamId();
-    netmsg.Base.UUID getTeamId();
-    netmsg.Base.UUIDOrBuilder getTeamIdOrBuilder();
+    netmsg.Game.TeamID getTeamId();
+    netmsg.Game.TeamIDOrBuilder getTeamIdOrBuilder();
   }
   public static final class TurnStartedEvt extends
       com.google.protobuf.GeneratedMessage
@@ -20939,21 +22850,21 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID team_id = 1;
+    // required .game.TeamID team_id = 1;
     public static final int TEAM_ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID teamId_;
+    private netmsg.Game.TeamID teamId_;
     public boolean hasTeamId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getTeamId() {
+    public netmsg.Game.TeamID getTeamId() {
       return teamId_;
     }
-    public netmsg.Base.UUIDOrBuilder getTeamIdOrBuilder() {
+    public netmsg.Game.TeamIDOrBuilder getTeamIdOrBuilder() {
       return teamId_;
     }
     
     private void initFields() {
-      teamId_ = netmsg.Base.UUID.getDefaultInstance();
+      teamId_ = netmsg.Game.TeamID.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -21117,7 +23028,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (teamIdBuilder_ == null) {
-          teamId_ = netmsg.Base.UUID.getDefaultInstance();
+          teamId_ = netmsg.Game.TeamID.getDefaultInstance();
         } else {
           teamIdBuilder_.clear();
         }
@@ -21227,7 +23138,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.TeamID.Builder subBuilder = netmsg.Game.TeamID.newBuilder();
               if (hasTeamId()) {
                 subBuilder.mergeFrom(getTeamId());
               }
@@ -21241,21 +23152,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID team_id = 1;
-      private netmsg.Base.UUID teamId_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.TeamID team_id = 1;
+      private netmsg.Game.TeamID teamId_ = netmsg.Game.TeamID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> teamIdBuilder_;
+          netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder> teamIdBuilder_;
       public boolean hasTeamId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getTeamId() {
+      public netmsg.Game.TeamID getTeamId() {
         if (teamIdBuilder_ == null) {
           return teamId_;
         } else {
           return teamIdBuilder_.getMessage();
         }
       }
-      public Builder setTeamId(netmsg.Base.UUID value) {
+      public Builder setTeamId(netmsg.Game.TeamID value) {
         if (teamIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -21269,7 +23180,7 @@ public final class Game {
         return this;
       }
       public Builder setTeamId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.TeamID.Builder builderForValue) {
         if (teamIdBuilder_ == null) {
           teamId_ = builderForValue.build();
           onChanged();
@@ -21279,12 +23190,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeTeamId(netmsg.Base.UUID value) {
+      public Builder mergeTeamId(netmsg.Game.TeamID value) {
         if (teamIdBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              teamId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              teamId_ != netmsg.Game.TeamID.getDefaultInstance()) {
             teamId_ =
-              netmsg.Base.UUID.newBuilder(teamId_).mergeFrom(value).buildPartial();
+              netmsg.Game.TeamID.newBuilder(teamId_).mergeFrom(value).buildPartial();
           } else {
             teamId_ = value;
           }
@@ -21297,7 +23208,7 @@ public final class Game {
       }
       public Builder clearTeamId() {
         if (teamIdBuilder_ == null) {
-          teamId_ = netmsg.Base.UUID.getDefaultInstance();
+          teamId_ = netmsg.Game.TeamID.getDefaultInstance();
           onChanged();
         } else {
           teamIdBuilder_.clear();
@@ -21305,12 +23216,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getTeamIdBuilder() {
+      public netmsg.Game.TeamID.Builder getTeamIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getTeamIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getTeamIdOrBuilder() {
+      public netmsg.Game.TeamIDOrBuilder getTeamIdOrBuilder() {
         if (teamIdBuilder_ != null) {
           return teamIdBuilder_.getMessageOrBuilder();
         } else {
@@ -21318,11 +23229,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder> 
           getTeamIdFieldBuilder() {
         if (teamIdBuilder_ == null) {
           teamIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder>(
                   teamId_,
                   getParentForChildren(),
                   isClean());
@@ -21345,10 +23256,10 @@ public final class Game {
   public interface TurnEndedEvtOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID team_id = 1;
+    // required .game.TeamID team_id = 1;
     boolean hasTeamId();
-    netmsg.Base.UUID getTeamId();
-    netmsg.Base.UUIDOrBuilder getTeamIdOrBuilder();
+    netmsg.Game.TeamID getTeamId();
+    netmsg.Game.TeamIDOrBuilder getTeamIdOrBuilder();
   }
   public static final class TurnEndedEvt extends
       com.google.protobuf.GeneratedMessage
@@ -21379,21 +23290,21 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID team_id = 1;
+    // required .game.TeamID team_id = 1;
     public static final int TEAM_ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID teamId_;
+    private netmsg.Game.TeamID teamId_;
     public boolean hasTeamId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getTeamId() {
+    public netmsg.Game.TeamID getTeamId() {
       return teamId_;
     }
-    public netmsg.Base.UUIDOrBuilder getTeamIdOrBuilder() {
+    public netmsg.Game.TeamIDOrBuilder getTeamIdOrBuilder() {
       return teamId_;
     }
     
     private void initFields() {
-      teamId_ = netmsg.Base.UUID.getDefaultInstance();
+      teamId_ = netmsg.Game.TeamID.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -21557,7 +23468,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (teamIdBuilder_ == null) {
-          teamId_ = netmsg.Base.UUID.getDefaultInstance();
+          teamId_ = netmsg.Game.TeamID.getDefaultInstance();
         } else {
           teamIdBuilder_.clear();
         }
@@ -21667,7 +23578,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.TeamID.Builder subBuilder = netmsg.Game.TeamID.newBuilder();
               if (hasTeamId()) {
                 subBuilder.mergeFrom(getTeamId());
               }
@@ -21681,21 +23592,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID team_id = 1;
-      private netmsg.Base.UUID teamId_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.TeamID team_id = 1;
+      private netmsg.Game.TeamID teamId_ = netmsg.Game.TeamID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> teamIdBuilder_;
+          netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder> teamIdBuilder_;
       public boolean hasTeamId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getTeamId() {
+      public netmsg.Game.TeamID getTeamId() {
         if (teamIdBuilder_ == null) {
           return teamId_;
         } else {
           return teamIdBuilder_.getMessage();
         }
       }
-      public Builder setTeamId(netmsg.Base.UUID value) {
+      public Builder setTeamId(netmsg.Game.TeamID value) {
         if (teamIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -21709,7 +23620,7 @@ public final class Game {
         return this;
       }
       public Builder setTeamId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.TeamID.Builder builderForValue) {
         if (teamIdBuilder_ == null) {
           teamId_ = builderForValue.build();
           onChanged();
@@ -21719,12 +23630,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeTeamId(netmsg.Base.UUID value) {
+      public Builder mergeTeamId(netmsg.Game.TeamID value) {
         if (teamIdBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              teamId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              teamId_ != netmsg.Game.TeamID.getDefaultInstance()) {
             teamId_ =
-              netmsg.Base.UUID.newBuilder(teamId_).mergeFrom(value).buildPartial();
+              netmsg.Game.TeamID.newBuilder(teamId_).mergeFrom(value).buildPartial();
           } else {
             teamId_ = value;
           }
@@ -21737,7 +23648,7 @@ public final class Game {
       }
       public Builder clearTeamId() {
         if (teamIdBuilder_ == null) {
-          teamId_ = netmsg.Base.UUID.getDefaultInstance();
+          teamId_ = netmsg.Game.TeamID.getDefaultInstance();
           onChanged();
         } else {
           teamIdBuilder_.clear();
@@ -21745,12 +23656,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getTeamIdBuilder() {
+      public netmsg.Game.TeamID.Builder getTeamIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getTeamIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getTeamIdOrBuilder() {
+      public netmsg.Game.TeamIDOrBuilder getTeamIdOrBuilder() {
         if (teamIdBuilder_ != null) {
           return teamIdBuilder_.getMessageOrBuilder();
         } else {
@@ -21758,11 +23669,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder> 
           getTeamIdFieldBuilder() {
         if (teamIdBuilder_ == null) {
           teamIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.TeamID, netmsg.Game.TeamID.Builder, netmsg.Game.TeamIDOrBuilder>(
                   teamId_,
                   getParentForChildren(),
                   isClean());
@@ -23513,10 +25424,10 @@ public final class Game {
   public interface MoveEvtOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID obj_id = 1;
+    // required .game.WObjID obj_id = 1;
     boolean hasObjId();
-    netmsg.Base.UUID getObjId();
-    netmsg.Base.UUIDOrBuilder getObjIdOrBuilder();
+    netmsg.Game.WObjID getObjId();
+    netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder();
     
     // required .base.Vect2 from = 2;
     boolean hasFrom();
@@ -23561,16 +25472,16 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID obj_id = 1;
+    // required .game.WObjID obj_id = 1;
     public static final int OBJ_ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID objId_;
+    private netmsg.Game.WObjID objId_;
     public boolean hasObjId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getObjId() {
+    public netmsg.Game.WObjID getObjId() {
       return objId_;
     }
-    public netmsg.Base.UUIDOrBuilder getObjIdOrBuilder() {
+    public netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder() {
       return objId_;
     }
     
@@ -23611,7 +25522,7 @@ public final class Game {
     }
     
     private void initFields() {
-      objId_ = netmsg.Base.UUID.getDefaultInstance();
+      objId_ = netmsg.Game.WObjID.getDefaultInstance();
       from_ = netmsg.Base.Vect2.getDefaultInstance();
       to_ = netmsg.Base.Vect2.getDefaultInstance();
       movesLeft_ = 0;
@@ -23821,7 +25732,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (objIdBuilder_ == null) {
-          objId_ = netmsg.Base.UUID.getDefaultInstance();
+          objId_ = netmsg.Game.WObjID.getDefaultInstance();
         } else {
           objIdBuilder_.clear();
         }
@@ -23994,7 +25905,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
               if (hasObjId()) {
                 subBuilder.mergeFrom(getObjId());
               }
@@ -24031,21 +25942,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID obj_id = 1;
-      private netmsg.Base.UUID objId_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.WObjID obj_id = 1;
+      private netmsg.Game.WObjID objId_ = netmsg.Game.WObjID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> objIdBuilder_;
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> objIdBuilder_;
       public boolean hasObjId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getObjId() {
+      public netmsg.Game.WObjID getObjId() {
         if (objIdBuilder_ == null) {
           return objId_;
         } else {
           return objIdBuilder_.getMessage();
         }
       }
-      public Builder setObjId(netmsg.Base.UUID value) {
+      public Builder setObjId(netmsg.Game.WObjID value) {
         if (objIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -24059,7 +25970,7 @@ public final class Game {
         return this;
       }
       public Builder setObjId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.WObjID.Builder builderForValue) {
         if (objIdBuilder_ == null) {
           objId_ = builderForValue.build();
           onChanged();
@@ -24069,12 +25980,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeObjId(netmsg.Base.UUID value) {
+      public Builder mergeObjId(netmsg.Game.WObjID value) {
         if (objIdBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              objId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              objId_ != netmsg.Game.WObjID.getDefaultInstance()) {
             objId_ =
-              netmsg.Base.UUID.newBuilder(objId_).mergeFrom(value).buildPartial();
+              netmsg.Game.WObjID.newBuilder(objId_).mergeFrom(value).buildPartial();
           } else {
             objId_ = value;
           }
@@ -24087,7 +25998,7 @@ public final class Game {
       }
       public Builder clearObjId() {
         if (objIdBuilder_ == null) {
-          objId_ = netmsg.Base.UUID.getDefaultInstance();
+          objId_ = netmsg.Game.WObjID.getDefaultInstance();
           onChanged();
         } else {
           objIdBuilder_.clear();
@@ -24095,12 +26006,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getObjIdBuilder() {
+      public netmsg.Game.WObjID.Builder getObjIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getObjIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getObjIdOrBuilder() {
+      public netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder() {
         if (objIdBuilder_ != null) {
           return objIdBuilder_.getMessageOrBuilder();
         } else {
@@ -24108,11 +26019,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
           getObjIdFieldBuilder() {
         if (objIdBuilder_ == null) {
           objIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
                   objId_,
                   getParentForChildren(),
                   isClean());
@@ -24336,20 +26247,20 @@ public final class Game {
   public interface AttackEvtOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID attacker_id = 1;
+    // required .game.WObjID attacker_id = 1;
     boolean hasAttackerId();
-    netmsg.Base.UUID getAttackerId();
-    netmsg.Base.UUIDOrBuilder getAttackerIdOrBuilder();
+    netmsg.Game.WObjID getAttackerId();
+    netmsg.Game.WObjIDOrBuilder getAttackerIdOrBuilder();
     
     // required .base.Vect2 attacker_position = 2;
     boolean hasAttackerPosition();
     netmsg.Base.Vect2 getAttackerPosition();
     netmsg.Base.Vect2OrBuilder getAttackerPositionOrBuilder();
     
-    // required .base.UUID defender_id = 3;
+    // required .game.WObjID defender_id = 3;
     boolean hasDefenderId();
-    netmsg.Base.UUID getDefenderId();
-    netmsg.Base.UUIDOrBuilder getDefenderIdOrBuilder();
+    netmsg.Game.WObjID getDefenderId();
+    netmsg.Game.WObjIDOrBuilder getDefenderIdOrBuilder();
     
     // required uint32 hp_left = 4;
     boolean hasHpLeft();
@@ -24389,16 +26300,16 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID attacker_id = 1;
+    // required .game.WObjID attacker_id = 1;
     public static final int ATTACKER_ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID attackerId_;
+    private netmsg.Game.WObjID attackerId_;
     public boolean hasAttackerId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getAttackerId() {
+    public netmsg.Game.WObjID getAttackerId() {
       return attackerId_;
     }
-    public netmsg.Base.UUIDOrBuilder getAttackerIdOrBuilder() {
+    public netmsg.Game.WObjIDOrBuilder getAttackerIdOrBuilder() {
       return attackerId_;
     }
     
@@ -24415,16 +26326,16 @@ public final class Game {
       return attackerPosition_;
     }
     
-    // required .base.UUID defender_id = 3;
+    // required .game.WObjID defender_id = 3;
     public static final int DEFENDER_ID_FIELD_NUMBER = 3;
-    private netmsg.Base.UUID defenderId_;
+    private netmsg.Game.WObjID defenderId_;
     public boolean hasDefenderId() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
-    public netmsg.Base.UUID getDefenderId() {
+    public netmsg.Game.WObjID getDefenderId() {
       return defenderId_;
     }
-    public netmsg.Base.UUIDOrBuilder getDefenderIdOrBuilder() {
+    public netmsg.Game.WObjIDOrBuilder getDefenderIdOrBuilder() {
       return defenderId_;
     }
     
@@ -24452,9 +26363,9 @@ public final class Game {
     }
     
     private void initFields() {
-      attackerId_ = netmsg.Base.UUID.getDefaultInstance();
+      attackerId_ = netmsg.Game.WObjID.getDefaultInstance();
       attackerPosition_ = netmsg.Base.Vect2.getDefaultInstance();
-      defenderId_ = netmsg.Base.UUID.getDefaultInstance();
+      defenderId_ = netmsg.Game.WObjID.getDefaultInstance();
       hpLeft_ = 0;
       attack_ = netmsg.Game.Attack.getDefaultInstance();
     }
@@ -24679,7 +26590,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (attackerIdBuilder_ == null) {
-          attackerId_ = netmsg.Base.UUID.getDefaultInstance();
+          attackerId_ = netmsg.Game.WObjID.getDefaultInstance();
         } else {
           attackerIdBuilder_.clear();
         }
@@ -24691,7 +26602,7 @@ public final class Game {
         }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (defenderIdBuilder_ == null) {
-          defenderId_ = netmsg.Base.UUID.getDefaultInstance();
+          defenderId_ = netmsg.Game.WObjID.getDefaultInstance();
         } else {
           defenderIdBuilder_.clear();
         }
@@ -24877,7 +26788,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
               if (hasAttackerId()) {
                 subBuilder.mergeFrom(getAttackerId());
               }
@@ -24895,7 +26806,7 @@ public final class Game {
               break;
             }
             case 26: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
               if (hasDefenderId()) {
                 subBuilder.mergeFrom(getDefenderId());
               }
@@ -24923,21 +26834,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID attacker_id = 1;
-      private netmsg.Base.UUID attackerId_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.WObjID attacker_id = 1;
+      private netmsg.Game.WObjID attackerId_ = netmsg.Game.WObjID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> attackerIdBuilder_;
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> attackerIdBuilder_;
       public boolean hasAttackerId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getAttackerId() {
+      public netmsg.Game.WObjID getAttackerId() {
         if (attackerIdBuilder_ == null) {
           return attackerId_;
         } else {
           return attackerIdBuilder_.getMessage();
         }
       }
-      public Builder setAttackerId(netmsg.Base.UUID value) {
+      public Builder setAttackerId(netmsg.Game.WObjID value) {
         if (attackerIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -24951,7 +26862,7 @@ public final class Game {
         return this;
       }
       public Builder setAttackerId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.WObjID.Builder builderForValue) {
         if (attackerIdBuilder_ == null) {
           attackerId_ = builderForValue.build();
           onChanged();
@@ -24961,12 +26872,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeAttackerId(netmsg.Base.UUID value) {
+      public Builder mergeAttackerId(netmsg.Game.WObjID value) {
         if (attackerIdBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              attackerId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              attackerId_ != netmsg.Game.WObjID.getDefaultInstance()) {
             attackerId_ =
-              netmsg.Base.UUID.newBuilder(attackerId_).mergeFrom(value).buildPartial();
+              netmsg.Game.WObjID.newBuilder(attackerId_).mergeFrom(value).buildPartial();
           } else {
             attackerId_ = value;
           }
@@ -24979,7 +26890,7 @@ public final class Game {
       }
       public Builder clearAttackerId() {
         if (attackerIdBuilder_ == null) {
-          attackerId_ = netmsg.Base.UUID.getDefaultInstance();
+          attackerId_ = netmsg.Game.WObjID.getDefaultInstance();
           onChanged();
         } else {
           attackerIdBuilder_.clear();
@@ -24987,12 +26898,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getAttackerIdBuilder() {
+      public netmsg.Game.WObjID.Builder getAttackerIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getAttackerIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getAttackerIdOrBuilder() {
+      public netmsg.Game.WObjIDOrBuilder getAttackerIdOrBuilder() {
         if (attackerIdBuilder_ != null) {
           return attackerIdBuilder_.getMessageOrBuilder();
         } else {
@@ -25000,11 +26911,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
           getAttackerIdFieldBuilder() {
         if (attackerIdBuilder_ == null) {
           attackerIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
                   attackerId_,
                   getParentForChildren(),
                   isClean());
@@ -25103,21 +27014,21 @@ public final class Game {
         return attackerPositionBuilder_;
       }
       
-      // required .base.UUID defender_id = 3;
-      private netmsg.Base.UUID defenderId_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.WObjID defender_id = 3;
+      private netmsg.Game.WObjID defenderId_ = netmsg.Game.WObjID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> defenderIdBuilder_;
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> defenderIdBuilder_;
       public boolean hasDefenderId() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
-      public netmsg.Base.UUID getDefenderId() {
+      public netmsg.Game.WObjID getDefenderId() {
         if (defenderIdBuilder_ == null) {
           return defenderId_;
         } else {
           return defenderIdBuilder_.getMessage();
         }
       }
-      public Builder setDefenderId(netmsg.Base.UUID value) {
+      public Builder setDefenderId(netmsg.Game.WObjID value) {
         if (defenderIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -25131,7 +27042,7 @@ public final class Game {
         return this;
       }
       public Builder setDefenderId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.WObjID.Builder builderForValue) {
         if (defenderIdBuilder_ == null) {
           defenderId_ = builderForValue.build();
           onChanged();
@@ -25141,12 +27052,12 @@ public final class Game {
         bitField0_ |= 0x00000004;
         return this;
       }
-      public Builder mergeDefenderId(netmsg.Base.UUID value) {
+      public Builder mergeDefenderId(netmsg.Game.WObjID value) {
         if (defenderIdBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              defenderId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              defenderId_ != netmsg.Game.WObjID.getDefaultInstance()) {
             defenderId_ =
-              netmsg.Base.UUID.newBuilder(defenderId_).mergeFrom(value).buildPartial();
+              netmsg.Game.WObjID.newBuilder(defenderId_).mergeFrom(value).buildPartial();
           } else {
             defenderId_ = value;
           }
@@ -25159,7 +27070,7 @@ public final class Game {
       }
       public Builder clearDefenderId() {
         if (defenderIdBuilder_ == null) {
-          defenderId_ = netmsg.Base.UUID.getDefaultInstance();
+          defenderId_ = netmsg.Game.WObjID.getDefaultInstance();
           onChanged();
         } else {
           defenderIdBuilder_.clear();
@@ -25167,12 +27078,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
-      public netmsg.Base.UUID.Builder getDefenderIdBuilder() {
+      public netmsg.Game.WObjID.Builder getDefenderIdBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getDefenderIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getDefenderIdOrBuilder() {
+      public netmsg.Game.WObjIDOrBuilder getDefenderIdOrBuilder() {
         if (defenderIdBuilder_ != null) {
           return defenderIdBuilder_.getMessageOrBuilder();
         } else {
@@ -25180,11 +27091,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
           getDefenderIdFieldBuilder() {
         if (defenderIdBuilder_ == null) {
           defenderIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
                   defenderId_,
                   getParentForChildren(),
                   isClean());
@@ -25794,10 +27705,10 @@ public final class Game {
   public interface MovementChangeEvtOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID obj_id = 1;
+    // required .game.WObjID obj_id = 1;
     boolean hasObjId();
-    netmsg.Base.UUID getObjId();
-    netmsg.Base.UUIDOrBuilder getObjIdOrBuilder();
+    netmsg.Game.WObjID getObjId();
+    netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder();
     
     // required uint32 new_movement = 2;
     boolean hasNewMovement();
@@ -25832,16 +27743,16 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID obj_id = 1;
+    // required .game.WObjID obj_id = 1;
     public static final int OBJ_ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID objId_;
+    private netmsg.Game.WObjID objId_;
     public boolean hasObjId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getObjId() {
+    public netmsg.Game.WObjID getObjId() {
       return objId_;
     }
-    public netmsg.Base.UUIDOrBuilder getObjIdOrBuilder() {
+    public netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder() {
       return objId_;
     }
     
@@ -25856,7 +27767,7 @@ public final class Game {
     }
     
     private void initFields() {
-      objId_ = netmsg.Base.UUID.getDefaultInstance();
+      objId_ = netmsg.Game.WObjID.getDefaultInstance();
       newMovement_ = 0;
     }
     private byte memoizedIsInitialized = -1;
@@ -26032,7 +27943,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (objIdBuilder_ == null) {
-          objId_ = netmsg.Base.UUID.getDefaultInstance();
+          objId_ = netmsg.Game.WObjID.getDefaultInstance();
         } else {
           objIdBuilder_.clear();
         }
@@ -26155,7 +28066,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
               if (hasObjId()) {
                 subBuilder.mergeFrom(getObjId());
               }
@@ -26174,21 +28085,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID obj_id = 1;
-      private netmsg.Base.UUID objId_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.WObjID obj_id = 1;
+      private netmsg.Game.WObjID objId_ = netmsg.Game.WObjID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> objIdBuilder_;
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> objIdBuilder_;
       public boolean hasObjId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getObjId() {
+      public netmsg.Game.WObjID getObjId() {
         if (objIdBuilder_ == null) {
           return objId_;
         } else {
           return objIdBuilder_.getMessage();
         }
       }
-      public Builder setObjId(netmsg.Base.UUID value) {
+      public Builder setObjId(netmsg.Game.WObjID value) {
         if (objIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -26202,7 +28113,7 @@ public final class Game {
         return this;
       }
       public Builder setObjId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.WObjID.Builder builderForValue) {
         if (objIdBuilder_ == null) {
           objId_ = builderForValue.build();
           onChanged();
@@ -26212,12 +28123,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeObjId(netmsg.Base.UUID value) {
+      public Builder mergeObjId(netmsg.Game.WObjID value) {
         if (objIdBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              objId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              objId_ != netmsg.Game.WObjID.getDefaultInstance()) {
             objId_ =
-              netmsg.Base.UUID.newBuilder(objId_).mergeFrom(value).buildPartial();
+              netmsg.Game.WObjID.newBuilder(objId_).mergeFrom(value).buildPartial();
           } else {
             objId_ = value;
           }
@@ -26230,7 +28141,7 @@ public final class Game {
       }
       public Builder clearObjId() {
         if (objIdBuilder_ == null) {
-          objId_ = netmsg.Base.UUID.getDefaultInstance();
+          objId_ = netmsg.Game.WObjID.getDefaultInstance();
           onChanged();
         } else {
           objIdBuilder_.clear();
@@ -26238,12 +28149,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getObjIdBuilder() {
+      public netmsg.Game.WObjID.Builder getObjIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getObjIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getObjIdOrBuilder() {
+      public netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder() {
         if (objIdBuilder_ != null) {
           return objIdBuilder_.getMessageOrBuilder();
         } else {
@@ -26251,11 +28162,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
           getObjIdFieldBuilder() {
         if (objIdBuilder_ == null) {
           objIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
                   objId_,
                   getParentForChildren(),
                   isClean());
@@ -26299,10 +28210,10 @@ public final class Game {
   public interface MovedOrAttackedChangeEvtOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID obj_id = 1;
+    // required .game.WObjID obj_id = 1;
     boolean hasObjId();
-    netmsg.Base.UUID getObjId();
-    netmsg.Base.UUIDOrBuilder getObjIdOrBuilder();
+    netmsg.Game.WObjID getObjId();
+    netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder();
     
     // required bool moved_or_attacked = 2;
     boolean hasMovedOrAttacked();
@@ -26337,16 +28248,16 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID obj_id = 1;
+    // required .game.WObjID obj_id = 1;
     public static final int OBJ_ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID objId_;
+    private netmsg.Game.WObjID objId_;
     public boolean hasObjId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getObjId() {
+    public netmsg.Game.WObjID getObjId() {
       return objId_;
     }
-    public netmsg.Base.UUIDOrBuilder getObjIdOrBuilder() {
+    public netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder() {
       return objId_;
     }
     
@@ -26361,7 +28272,7 @@ public final class Game {
     }
     
     private void initFields() {
-      objId_ = netmsg.Base.UUID.getDefaultInstance();
+      objId_ = netmsg.Game.WObjID.getDefaultInstance();
       movedOrAttacked_ = false;
     }
     private byte memoizedIsInitialized = -1;
@@ -26537,7 +28448,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (objIdBuilder_ == null) {
-          objId_ = netmsg.Base.UUID.getDefaultInstance();
+          objId_ = netmsg.Game.WObjID.getDefaultInstance();
         } else {
           objIdBuilder_.clear();
         }
@@ -26660,7 +28571,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
               if (hasObjId()) {
                 subBuilder.mergeFrom(getObjId());
               }
@@ -26679,21 +28590,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID obj_id = 1;
-      private netmsg.Base.UUID objId_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.WObjID obj_id = 1;
+      private netmsg.Game.WObjID objId_ = netmsg.Game.WObjID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> objIdBuilder_;
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> objIdBuilder_;
       public boolean hasObjId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getObjId() {
+      public netmsg.Game.WObjID getObjId() {
         if (objIdBuilder_ == null) {
           return objId_;
         } else {
           return objIdBuilder_.getMessage();
         }
       }
-      public Builder setObjId(netmsg.Base.UUID value) {
+      public Builder setObjId(netmsg.Game.WObjID value) {
         if (objIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -26707,7 +28618,7 @@ public final class Game {
         return this;
       }
       public Builder setObjId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.WObjID.Builder builderForValue) {
         if (objIdBuilder_ == null) {
           objId_ = builderForValue.build();
           onChanged();
@@ -26717,12 +28628,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeObjId(netmsg.Base.UUID value) {
+      public Builder mergeObjId(netmsg.Game.WObjID value) {
         if (objIdBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              objId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              objId_ != netmsg.Game.WObjID.getDefaultInstance()) {
             objId_ =
-              netmsg.Base.UUID.newBuilder(objId_).mergeFrom(value).buildPartial();
+              netmsg.Game.WObjID.newBuilder(objId_).mergeFrom(value).buildPartial();
           } else {
             objId_ = value;
           }
@@ -26735,7 +28646,7 @@ public final class Game {
       }
       public Builder clearObjId() {
         if (objIdBuilder_ == null) {
-          objId_ = netmsg.Base.UUID.getDefaultInstance();
+          objId_ = netmsg.Game.WObjID.getDefaultInstance();
           onChanged();
         } else {
           objIdBuilder_.clear();
@@ -26743,12 +28654,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getObjIdBuilder() {
+      public netmsg.Game.WObjID.Builder getObjIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getObjIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getObjIdOrBuilder() {
+      public netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder() {
         if (objIdBuilder_ != null) {
           return objIdBuilder_.getMessageOrBuilder();
         } else {
@@ -26756,11 +28667,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
           getObjIdFieldBuilder() {
         if (objIdBuilder_ == null) {
           objIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
                   objId_,
                   getParentForChildren(),
                   isClean());
@@ -26804,15 +28715,15 @@ public final class Game {
   public interface ResourceChangeEvtOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // optional .base.UUID obj_id = 1;
+    // optional .game.WObjID obj_id = 1;
     boolean hasObjId();
-    netmsg.Base.UUID getObjId();
-    netmsg.Base.UUIDOrBuilder getObjIdOrBuilder();
+    netmsg.Game.WObjID getObjId();
+    netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder();
     
-    // optional .base.UUID player_id = 2;
+    // optional .game.PlayerID player_id = 2;
     boolean hasPlayerId();
-    netmsg.Base.UUID getPlayerId();
-    netmsg.Base.UUIDOrBuilder getPlayerIdOrBuilder();
+    netmsg.Game.PlayerID getPlayerId();
+    netmsg.Game.PlayerIDOrBuilder getPlayerIdOrBuilder();
     
     // required uint32 new_resources = 3;
     boolean hasNewResources();
@@ -26847,29 +28758,29 @@ public final class Game {
     }
     
     private int bitField0_;
-    // optional .base.UUID obj_id = 1;
+    // optional .game.WObjID obj_id = 1;
     public static final int OBJ_ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID objId_;
+    private netmsg.Game.WObjID objId_;
     public boolean hasObjId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getObjId() {
+    public netmsg.Game.WObjID getObjId() {
       return objId_;
     }
-    public netmsg.Base.UUIDOrBuilder getObjIdOrBuilder() {
+    public netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder() {
       return objId_;
     }
     
-    // optional .base.UUID player_id = 2;
+    // optional .game.PlayerID player_id = 2;
     public static final int PLAYER_ID_FIELD_NUMBER = 2;
-    private netmsg.Base.UUID playerId_;
+    private netmsg.Game.PlayerID playerId_;
     public boolean hasPlayerId() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
-    public netmsg.Base.UUID getPlayerId() {
+    public netmsg.Game.PlayerID getPlayerId() {
       return playerId_;
     }
-    public netmsg.Base.UUIDOrBuilder getPlayerIdOrBuilder() {
+    public netmsg.Game.PlayerIDOrBuilder getPlayerIdOrBuilder() {
       return playerId_;
     }
     
@@ -26884,8 +28795,8 @@ public final class Game {
     }
     
     private void initFields() {
-      objId_ = netmsg.Base.UUID.getDefaultInstance();
-      playerId_ = netmsg.Base.UUID.getDefaultInstance();
+      objId_ = netmsg.Game.WObjID.getDefaultInstance();
+      playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
       newResources_ = 0;
     }
     private byte memoizedIsInitialized = -1;
@@ -27073,13 +28984,13 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (objIdBuilder_ == null) {
-          objId_ = netmsg.Base.UUID.getDefaultInstance();
+          objId_ = netmsg.Game.WObjID.getDefaultInstance();
         } else {
           objIdBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         if (playerIdBuilder_ == null) {
-          playerId_ = netmsg.Base.UUID.getDefaultInstance();
+          playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
         } else {
           playerIdBuilder_.clear();
         }
@@ -27217,7 +29128,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
               if (hasObjId()) {
                 subBuilder.mergeFrom(getObjId());
               }
@@ -27226,7 +29137,7 @@ public final class Game {
               break;
             }
             case 18: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.PlayerID.Builder subBuilder = netmsg.Game.PlayerID.newBuilder();
               if (hasPlayerId()) {
                 subBuilder.mergeFrom(getPlayerId());
               }
@@ -27245,21 +29156,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // optional .base.UUID obj_id = 1;
-      private netmsg.Base.UUID objId_ = netmsg.Base.UUID.getDefaultInstance();
+      // optional .game.WObjID obj_id = 1;
+      private netmsg.Game.WObjID objId_ = netmsg.Game.WObjID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> objIdBuilder_;
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> objIdBuilder_;
       public boolean hasObjId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getObjId() {
+      public netmsg.Game.WObjID getObjId() {
         if (objIdBuilder_ == null) {
           return objId_;
         } else {
           return objIdBuilder_.getMessage();
         }
       }
-      public Builder setObjId(netmsg.Base.UUID value) {
+      public Builder setObjId(netmsg.Game.WObjID value) {
         if (objIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -27273,7 +29184,7 @@ public final class Game {
         return this;
       }
       public Builder setObjId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.WObjID.Builder builderForValue) {
         if (objIdBuilder_ == null) {
           objId_ = builderForValue.build();
           onChanged();
@@ -27283,12 +29194,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeObjId(netmsg.Base.UUID value) {
+      public Builder mergeObjId(netmsg.Game.WObjID value) {
         if (objIdBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              objId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              objId_ != netmsg.Game.WObjID.getDefaultInstance()) {
             objId_ =
-              netmsg.Base.UUID.newBuilder(objId_).mergeFrom(value).buildPartial();
+              netmsg.Game.WObjID.newBuilder(objId_).mergeFrom(value).buildPartial();
           } else {
             objId_ = value;
           }
@@ -27301,7 +29212,7 @@ public final class Game {
       }
       public Builder clearObjId() {
         if (objIdBuilder_ == null) {
-          objId_ = netmsg.Base.UUID.getDefaultInstance();
+          objId_ = netmsg.Game.WObjID.getDefaultInstance();
           onChanged();
         } else {
           objIdBuilder_.clear();
@@ -27309,12 +29220,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getObjIdBuilder() {
+      public netmsg.Game.WObjID.Builder getObjIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getObjIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getObjIdOrBuilder() {
+      public netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder() {
         if (objIdBuilder_ != null) {
           return objIdBuilder_.getMessageOrBuilder();
         } else {
@@ -27322,11 +29233,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
           getObjIdFieldBuilder() {
         if (objIdBuilder_ == null) {
           objIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
                   objId_,
                   getParentForChildren(),
                   isClean());
@@ -27335,21 +29246,21 @@ public final class Game {
         return objIdBuilder_;
       }
       
-      // optional .base.UUID player_id = 2;
-      private netmsg.Base.UUID playerId_ = netmsg.Base.UUID.getDefaultInstance();
+      // optional .game.PlayerID player_id = 2;
+      private netmsg.Game.PlayerID playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> playerIdBuilder_;
+          netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder> playerIdBuilder_;
       public boolean hasPlayerId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      public netmsg.Base.UUID getPlayerId() {
+      public netmsg.Game.PlayerID getPlayerId() {
         if (playerIdBuilder_ == null) {
           return playerId_;
         } else {
           return playerIdBuilder_.getMessage();
         }
       }
-      public Builder setPlayerId(netmsg.Base.UUID value) {
+      public Builder setPlayerId(netmsg.Game.PlayerID value) {
         if (playerIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -27363,7 +29274,7 @@ public final class Game {
         return this;
       }
       public Builder setPlayerId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.PlayerID.Builder builderForValue) {
         if (playerIdBuilder_ == null) {
           playerId_ = builderForValue.build();
           onChanged();
@@ -27373,12 +29284,12 @@ public final class Game {
         bitField0_ |= 0x00000002;
         return this;
       }
-      public Builder mergePlayerId(netmsg.Base.UUID value) {
+      public Builder mergePlayerId(netmsg.Game.PlayerID value) {
         if (playerIdBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
-              playerId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              playerId_ != netmsg.Game.PlayerID.getDefaultInstance()) {
             playerId_ =
-              netmsg.Base.UUID.newBuilder(playerId_).mergeFrom(value).buildPartial();
+              netmsg.Game.PlayerID.newBuilder(playerId_).mergeFrom(value).buildPartial();
           } else {
             playerId_ = value;
           }
@@ -27391,7 +29302,7 @@ public final class Game {
       }
       public Builder clearPlayerId() {
         if (playerIdBuilder_ == null) {
-          playerId_ = netmsg.Base.UUID.getDefaultInstance();
+          playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
           onChanged();
         } else {
           playerIdBuilder_.clear();
@@ -27399,12 +29310,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      public netmsg.Base.UUID.Builder getPlayerIdBuilder() {
+      public netmsg.Game.PlayerID.Builder getPlayerIdBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getPlayerIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getPlayerIdOrBuilder() {
+      public netmsg.Game.PlayerIDOrBuilder getPlayerIdOrBuilder() {
         if (playerIdBuilder_ != null) {
           return playerIdBuilder_.getMessageOrBuilder();
         } else {
@@ -27412,11 +29323,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder> 
           getPlayerIdFieldBuilder() {
         if (playerIdBuilder_ == null) {
           playerIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder>(
                   playerId_,
                   getParentForChildren(),
                   isClean());
@@ -27460,10 +29371,10 @@ public final class Game {
   public interface ActionsChangeEvtOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID player_id = 1;
+    // required .game.PlayerID player_id = 1;
     boolean hasPlayerId();
-    netmsg.Base.UUID getPlayerId();
-    netmsg.Base.UUIDOrBuilder getPlayerIdOrBuilder();
+    netmsg.Game.PlayerID getPlayerId();
+    netmsg.Game.PlayerIDOrBuilder getPlayerIdOrBuilder();
     
     // required uint32 new_actions = 2;
     boolean hasNewActions();
@@ -27498,16 +29409,16 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID player_id = 1;
+    // required .game.PlayerID player_id = 1;
     public static final int PLAYER_ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID playerId_;
+    private netmsg.Game.PlayerID playerId_;
     public boolean hasPlayerId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getPlayerId() {
+    public netmsg.Game.PlayerID getPlayerId() {
       return playerId_;
     }
-    public netmsg.Base.UUIDOrBuilder getPlayerIdOrBuilder() {
+    public netmsg.Game.PlayerIDOrBuilder getPlayerIdOrBuilder() {
       return playerId_;
     }
     
@@ -27522,7 +29433,7 @@ public final class Game {
     }
     
     private void initFields() {
-      playerId_ = netmsg.Base.UUID.getDefaultInstance();
+      playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
       newActions_ = 0;
     }
     private byte memoizedIsInitialized = -1;
@@ -27698,7 +29609,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (playerIdBuilder_ == null) {
-          playerId_ = netmsg.Base.UUID.getDefaultInstance();
+          playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
         } else {
           playerIdBuilder_.clear();
         }
@@ -27821,7 +29732,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.PlayerID.Builder subBuilder = netmsg.Game.PlayerID.newBuilder();
               if (hasPlayerId()) {
                 subBuilder.mergeFrom(getPlayerId());
               }
@@ -27840,21 +29751,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID player_id = 1;
-      private netmsg.Base.UUID playerId_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.PlayerID player_id = 1;
+      private netmsg.Game.PlayerID playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> playerIdBuilder_;
+          netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder> playerIdBuilder_;
       public boolean hasPlayerId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getPlayerId() {
+      public netmsg.Game.PlayerID getPlayerId() {
         if (playerIdBuilder_ == null) {
           return playerId_;
         } else {
           return playerIdBuilder_.getMessage();
         }
       }
-      public Builder setPlayerId(netmsg.Base.UUID value) {
+      public Builder setPlayerId(netmsg.Game.PlayerID value) {
         if (playerIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -27868,7 +29779,7 @@ public final class Game {
         return this;
       }
       public Builder setPlayerId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.PlayerID.Builder builderForValue) {
         if (playerIdBuilder_ == null) {
           playerId_ = builderForValue.build();
           onChanged();
@@ -27878,12 +29789,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergePlayerId(netmsg.Base.UUID value) {
+      public Builder mergePlayerId(netmsg.Game.PlayerID value) {
         if (playerIdBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              playerId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              playerId_ != netmsg.Game.PlayerID.getDefaultInstance()) {
             playerId_ =
-              netmsg.Base.UUID.newBuilder(playerId_).mergeFrom(value).buildPartial();
+              netmsg.Game.PlayerID.newBuilder(playerId_).mergeFrom(value).buildPartial();
           } else {
             playerId_ = value;
           }
@@ -27896,7 +29807,7 @@ public final class Game {
       }
       public Builder clearPlayerId() {
         if (playerIdBuilder_ == null) {
-          playerId_ = netmsg.Base.UUID.getDefaultInstance();
+          playerId_ = netmsg.Game.PlayerID.getDefaultInstance();
           onChanged();
         } else {
           playerIdBuilder_.clear();
@@ -27904,12 +29815,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getPlayerIdBuilder() {
+      public netmsg.Game.PlayerID.Builder getPlayerIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getPlayerIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getPlayerIdOrBuilder() {
+      public netmsg.Game.PlayerIDOrBuilder getPlayerIdOrBuilder() {
         if (playerIdBuilder_ != null) {
           return playerIdBuilder_.getMessageOrBuilder();
         } else {
@@ -27917,11 +29828,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder> 
           getPlayerIdFieldBuilder() {
         if (playerIdBuilder_ == null) {
           playerIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.PlayerID, netmsg.Game.PlayerID.Builder, netmsg.Game.PlayerIDOrBuilder>(
                   playerId_,
                   getParentForChildren(),
                   isClean());
@@ -27965,10 +29876,10 @@ public final class Game {
   public interface WarpStateChangeEvtOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .base.UUID obj_id = 1;
+    // required .game.WObjID obj_id = 1;
     boolean hasObjId();
-    netmsg.Base.UUID getObjId();
-    netmsg.Base.UUIDOrBuilder getObjIdOrBuilder();
+    netmsg.Game.WObjID getObjId();
+    netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder();
     
     // required uint32 new_warp_state = 2;
     boolean hasNewWarpState();
@@ -28003,16 +29914,16 @@ public final class Game {
     }
     
     private int bitField0_;
-    // required .base.UUID obj_id = 1;
+    // required .game.WObjID obj_id = 1;
     public static final int OBJ_ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID objId_;
+    private netmsg.Game.WObjID objId_;
     public boolean hasObjId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getObjId() {
+    public netmsg.Game.WObjID getObjId() {
       return objId_;
     }
-    public netmsg.Base.UUIDOrBuilder getObjIdOrBuilder() {
+    public netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder() {
       return objId_;
     }
     
@@ -28027,7 +29938,7 @@ public final class Game {
     }
     
     private void initFields() {
-      objId_ = netmsg.Base.UUID.getDefaultInstance();
+      objId_ = netmsg.Game.WObjID.getDefaultInstance();
       newWarpState_ = 0;
     }
     private byte memoizedIsInitialized = -1;
@@ -28203,7 +30114,7 @@ public final class Game {
       public Builder clear() {
         super.clear();
         if (objIdBuilder_ == null) {
-          objId_ = netmsg.Base.UUID.getDefaultInstance();
+          objId_ = netmsg.Game.WObjID.getDefaultInstance();
         } else {
           objIdBuilder_.clear();
         }
@@ -28326,7 +30237,7 @@ public final class Game {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
               if (hasObjId()) {
                 subBuilder.mergeFrom(getObjId());
               }
@@ -28345,21 +30256,21 @@ public final class Game {
       
       private int bitField0_;
       
-      // required .base.UUID obj_id = 1;
-      private netmsg.Base.UUID objId_ = netmsg.Base.UUID.getDefaultInstance();
+      // required .game.WObjID obj_id = 1;
+      private netmsg.Game.WObjID objId_ = netmsg.Game.WObjID.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> objIdBuilder_;
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> objIdBuilder_;
       public boolean hasObjId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getObjId() {
+      public netmsg.Game.WObjID getObjId() {
         if (objIdBuilder_ == null) {
           return objId_;
         } else {
           return objIdBuilder_.getMessage();
         }
       }
-      public Builder setObjId(netmsg.Base.UUID value) {
+      public Builder setObjId(netmsg.Game.WObjID value) {
         if (objIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -28373,7 +30284,7 @@ public final class Game {
         return this;
       }
       public Builder setObjId(
-          netmsg.Base.UUID.Builder builderForValue) {
+          netmsg.Game.WObjID.Builder builderForValue) {
         if (objIdBuilder_ == null) {
           objId_ = builderForValue.build();
           onChanged();
@@ -28383,12 +30294,12 @@ public final class Game {
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeObjId(netmsg.Base.UUID value) {
+      public Builder mergeObjId(netmsg.Game.WObjID value) {
         if (objIdBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              objId_ != netmsg.Base.UUID.getDefaultInstance()) {
+              objId_ != netmsg.Game.WObjID.getDefaultInstance()) {
             objId_ =
-              netmsg.Base.UUID.newBuilder(objId_).mergeFrom(value).buildPartial();
+              netmsg.Game.WObjID.newBuilder(objId_).mergeFrom(value).buildPartial();
           } else {
             objId_ = value;
           }
@@ -28401,7 +30312,7 @@ public final class Game {
       }
       public Builder clearObjId() {
         if (objIdBuilder_ == null) {
-          objId_ = netmsg.Base.UUID.getDefaultInstance();
+          objId_ = netmsg.Game.WObjID.getDefaultInstance();
           onChanged();
         } else {
           objIdBuilder_.clear();
@@ -28409,12 +30320,12 @@ public final class Game {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getObjIdBuilder() {
+      public netmsg.Game.WObjID.Builder getObjIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getObjIdFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getObjIdOrBuilder() {
+      public netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder() {
         if (objIdBuilder_ != null) {
           return objIdBuilder_.getMessageOrBuilder();
         } else {
@@ -28422,11 +30333,11 @@ public final class Game {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
           getObjIdFieldBuilder() {
         if (objIdBuilder_ == null) {
           objIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
                   objId_,
                   getParentForChildren(),
                   isClean());
@@ -28527,6 +30438,26 @@ public final class Game {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_game_MError_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_game_TeamID_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_game_TeamID_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_game_PlayerID_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_game_PlayerID_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_game_OwnerID_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_game_OwnerID_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_game_WObjID_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_game_WObjID_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_game_Team_descriptor;
   private static
@@ -28706,108 +30637,114 @@ public final class Game {
       "2\013.base.Vect2\022+\n\010warpable\030\002 \002(\0162\031.game.M" +
       "Warp.HumanWarpable\"V\n\rHumanWarpable\022\017\n\013B" +
       "_EXTRACTOR\020\001\022\021\n\rB_WARP_LINKER\020\002\022\021\n\rB_LAS",
-      "ER_TOWER\020\003\022\016\n\nU_CORVETTE\020\004\"<\n\005MMove\022\026\n\002i" +
-      "d\030\001 \002(\0132\n.base.UUID\022\033\n\006target\030\002 \002(\0132\013.ba" +
-      "se.Vect2\"@\n\007MAttack\022\026\n\002id\030\001 \002(\0132\n.base.U" +
-      "UID\022\035\n\ttarget_id\030\002 \002(\0132\n.base.UUID\"\"\n\010MS" +
-      "pecial\022\026\n\002id\030\001 \002(\0132\n.base.UUID\"\021\n\017MConsu" +
-      "meActions\"d\n\nFromServer\022\035\n\006events\030\001 \001(\0132" +
-      "\r.game.MEvents\022\033\n\005error\030\002 \001(\0132\014.game.MEr" +
-      "ror\022\032\n\004init\030\350\007 \001(\0132\013.game.MInit\"\'\n\007MJoin" +
-      "ed\022\034\n\006player\030\001 \002(\0132\014.game.Player\"\364\001\n\005MIn" +
-      "it\022\034\n\006bounds\030\001 \002(\0132\014.base.Bounds\022\036\n\007obje",
-      "cts\030\002 \003(\0132\r.game.WObject\022#\n\016visible_poin" +
-      "ts\030\003 \003(\0132\013.base.Vect2\022\035\n\tself_team\030\004 \002(\013" +
-      "2\n.game.Team\022\037\n\013other_teams\030\005 \003(\0132\n.game" +
-      ".Team\022\037\n\004self\030\006 \002(\0132\021.game.PlayerState\022\'" +
-      "\n\rother_players\030\007 \003(\0132\020.game.InitPlayer\"" +
-      "&\n\007MEvents\022\033\n\006events\030\001 \003(\0132\013.game.Event\"" +
-      "\027\n\006MError\022\r\n\005error\030\001 \002(\t\"\036\n\004Team\022\026\n\002id\030\001" +
-      " \002(\0132\n.base.UUID\"K\n\006Player\022\014\n\004name\030\001 \002(\t" +
-      "\022\026\n\002id\030\002 \002(\0132\n.base.UUID\022\033\n\007team_id\030\003 \002(" +
-      "\0132\n.base.UUID\"1\n\013PlayerState\022\021\n\tresource",
-      "s\030\001 \002(\r\022\017\n\007actions\030\002 \002(\r\"L\n\nInitPlayer\022\034" +
-      "\n\006player\030\001 \002(\0132\014.game.Player\022 \n\005state\030\002 " +
-      "\001(\0132\021.game.PlayerState\"\200\013\n\007WObject\022\026\n\002id" +
-      "\030\001 \002(\0132\n.base.UUID\022\035\n\010position\030\002 \002(\0132\013.b" +
-      "ase.Vect2\022 \n\004kind\030\003 \002(\0162\022.game.WObject.K" +
-      "ind\022*\n\tsized_obj\030\350\007 \001(\0132\026.game.WObject.S" +
-      "izedObj\022*\n\towned_obj\030\351\007 \001(\0132\026.game.WObje" +
-      "ct.OwnedObj\0224\n\016giving_actions\030\352\007 \001(\0132\033.g" +
-      "ame.WObject.GivingActions\022)\n\010warpable\030\353\007" +
-      " \001(\0132\026.game.WObject.Warpable\0224\n\016special_",
-      "action\030\354\007 \001(\0132\033.game.WObject.SpecialActi" +
-      "on\022\'\n\007fighter\030\355\007 \001(\0132\025.game.WObject.Figh" +
-      "ter\022?\n\024move_attack_actioned\030\356\007 \001(\0132 .gam" +
-      "e.WObject.MoveAttackActioned\022\'\n\007movable\030" +
-      "\357\007 \001(\0132\025.game.WObject.Movable\022)\n\010asteroi" +
-      "d\030\320\017 \001(\0132\026.game.WObject.Asteroid\022+\n\textr" +
-      "actor\030\321\017 \001(\0132\027.game.WObject.Extractor\022)\n" +
-      "\010corvette\030\322\017 \001(\0132\026.game.WObject.Corvette" +
-      "\032%\n\010SizedObj\022\031\n\004size\030\001 \002(\0132\013.base.Vect2\032" +
-      "\215\001\n\010OwnedObj\022\034\n\010owner_id\030\001 \002(\0132\n.base.UU",
-      "ID\022\023\n\013is_critical\030\002 \002(\010\022\034\n\002hp\030\003 \002(\0132\020.ba" +
-      "se.ValWithMax\022\034\n\007defense\030\004 \002(\0132\013.base.Ra" +
-      "nge\022\022\n\nvisibility\030\005 \002(\r\032&\n\rGivingActions" +
-      "\022\025\n\ractions_given\030\001 \002(\r\032>\n\010Warpable\022$\n\nw" +
-      "arp_state\030\001 \002(\0132\020.base.ValWithMax\022\014\n\004cos" +
-      "t\030\002 \002(\r\032\'\n\rSpecialAction\022\026\n\016actions_need" +
-      "ed\030\001 \002(\r\032N\n\007Fighter\022\033\n\006attack\030\001 \002(\0132\013.ba" +
-      "se.Range\022\024\n\014attack_range\030\002 \002(\r\022\020\n\010attack" +
-      "ed\030\003 \002(\010\032G\n\022MoveAttackActioned\022\026\n\016action" +
-      "s_needed\030\001 \002(\r\022\031\n\021moved_or_attacked\030\002 \002(",
-      "\010\032\033\n\007Movable\022\020\n\010movement\030\001 \002(\r\032\035\n\010Astero" +
-      "id\022\021\n\tresources\030\001 \002(\r\032B\n\tExtractor\022\033\n\023tu" +
-      "rn_start_extracts\030\001 \002(\r\022\030\n\020special_extra" +
-      "cts\030\002 \002(\r\032*\n\010Corvette\022\036\n\026special_movemen" +
-      "t_added\030\001 \002(\r\"\211\001\n\004Kind\022\016\n\nP_ASTEROID\020\001\022\017" +
-      "\n\013B_WARP_GATE\020\002\022\017\n\013B_EXTRACTOR\020\003\022\021\n\rB_WA" +
-      "RP_LINKER\020\004\022\r\n\tB_SPAWNER\020\005\022\021\n\rB_LASER_TO" +
-      "WER\020\006\022\016\n\nU_CORVETTE\020\007\022\n\n\006U_WASP\020\010\"\331\004\n\005Ev" +
-      "ent\022*\n\014turn_started\030\001 \001(\0132\024.game.TurnSta" +
-      "rtedEvt\022&\n\nturn_ended\030\002 \001(\0132\022.game.TurnE",
-      "ndedEvt\0224\n\021visibility_change\030\003 \001(\0132\031.gam" +
-      "e.VisibilityChangeEvt\022\033\n\004warp\030\004 \001(\0132\r.ga" +
-      "me.WarpEvt\022(\n\013obj_visible\030\005 \001(\0132\023.game.O" +
-      "bjVisibleEvt\022\033\n\004move\030\006 \001(\0132\r.game.MoveEv" +
-      "t\022\037\n\006attack\030\007 \001(\0132\017.game.AttackEvt\0220\n\017mo" +
-      "vement_change\030\010 \001(\0132\027.game.MovementChang" +
-      "eEvt\022@\n\030moved_or_attacked_change\030\t \001(\0132\036" +
-      ".game.MovedOrAttackedChangeEvt\0220\n\017resour" +
-      "ce_change\030\n \001(\0132\027.game.ResourceChangeEvt" +
-      "\022.\n\016actions_change\030\013 \001(\0132\026.game.ActionsC",
-      "hangeEvt\022-\n\013warp_change\030\014 \001(\0132\030.game.War" +
-      "pStateChangeEvt\022\034\n\004join\030\350\007 \001(\0132\r.game.Jo" +
-      "inEvt\022\036\n\005leave\030\351\007 \001(\0132\016.game.LeaveEvt\"+\n" +
-      "\007JoinEvt\022 \n\006player\030\001 \002(\0132\020.game.InitPlay" +
-      "er\")\n\010LeaveEvt\022\035\n\tplayer_id\030\001 \002(\0132\n.base" +
-      ".UUID\"-\n\016TurnStartedEvt\022\033\n\007team_id\030\001 \002(\013" +
-      "2\n.base.UUID\"+\n\014TurnEndedEvt\022\033\n\007team_id\030" +
-      "\001 \002(\0132\n.base.UUID\"g\n\023VisibilityChangeEvt" +
-      "\022&\n\021visible_positions\030\001 \003(\0132\013.base.Vect2" +
-      "\022(\n\023invisible_positions\030\002 \003(\0132\013.base.Vec",
-      "t2\"(\n\007WarpEvt\022\035\n\006object\030\001 \002(\0132\r.game.WOb" +
-      "ject\".\n\rObjVisibleEvt\022\035\n\006object\030\001 \002(\0132\r." +
-      "game.WObject\"m\n\007MoveEvt\022\032\n\006obj_id\030\001 \002(\0132" +
-      "\n.base.UUID\022\031\n\004from\030\002 \002(\0132\013.base.Vect2\022\027" +
-      "\n\002to\030\003 \002(\0132\013.base.Vect2\022\022\n\nmoves_left\030\004 " +
-      "\002(\r\"\244\001\n\tAttackEvt\022\037\n\013attacker_id\030\001 \002(\0132\n" +
-      ".base.UUID\022&\n\021attacker_position\030\002 \002(\0132\013." +
-      "base.Vect2\022\037\n\013defender_id\030\003 \002(\0132\n.base.U" +
-      "UID\022\017\n\007hp_left\030\004 \002(\r\022\034\n\006attack\030\005 \002(\0132\014.g" +
-      "ame.Attack\"J\n\006Attack\022\025\n\rattacker_roll\030\001 ",
-      "\002(\r\022\025\n\rdefender_roll\030\002 \002(\r\022\022\n\nsuccessful" +
-      "\030\003 \002(\010\"E\n\021MovementChangeEvt\022\032\n\006obj_id\030\001 " +
-      "\002(\0132\n.base.UUID\022\024\n\014new_movement\030\002 \002(\r\"Q\n" +
-      "\030MovedOrAttackedChangeEvt\022\032\n\006obj_id\030\001 \002(" +
-      "\0132\n.base.UUID\022\031\n\021moved_or_attacked\030\002 \002(\010" +
-      "\"e\n\021ResourceChangeEvt\022\032\n\006obj_id\030\001 \001(\0132\n." +
-      "base.UUID\022\035\n\tplayer_id\030\002 \001(\0132\n.base.UUID" +
-      "\022\025\n\rnew_resources\030\003 \002(\r\"F\n\020ActionsChange" +
-      "Evt\022\035\n\tplayer_id\030\001 \002(\0132\n.base.UUID\022\023\n\013ne" +
-      "w_actions\030\002 \002(\r\"H\n\022WarpStateChangeEvt\022\032\n",
-      "\006obj_id\030\001 \002(\0132\n.base.UUID\022\026\n\016new_warp_st" +
-      "ate\030\002 \002(\rB\010\n\006netmsg"
+      "ER_TOWER\020\003\022\016\n\nU_CORVETTE\020\004\">\n\005MMove\022\030\n\002i" +
+      "d\030\001 \002(\0132\014.game.WObjID\022\033\n\006target\030\002 \002(\0132\013." +
+      "base.Vect2\"D\n\007MAttack\022\030\n\002id\030\001 \002(\0132\014.game" +
+      ".WObjID\022\037\n\ttarget_id\030\002 \002(\0132\014.game.WObjID" +
+      "\"$\n\010MSpecial\022\030\n\002id\030\001 \002(\0132\014.game.WObjID\"\021" +
+      "\n\017MConsumeActions\"d\n\nFromServer\022\035\n\006event" +
+      "s\030\001 \001(\0132\r.game.MEvents\022\033\n\005error\030\002 \001(\0132\014." +
+      "game.MError\022\032\n\004init\030\350\007 \001(\0132\013.game.MInit\"" +
+      "\'\n\007MJoined\022\034\n\006player\030\001 \002(\0132\014.game.Player" +
+      "\"\364\001\n\005MInit\022\034\n\006bounds\030\001 \002(\0132\014.base.Bounds",
+      "\022\036\n\007objects\030\002 \003(\0132\r.game.WObject\022#\n\016visi" +
+      "ble_points\030\003 \003(\0132\013.base.Vect2\022\035\n\tself_te" +
+      "am\030\004 \002(\0132\n.game.Team\022\037\n\013other_teams\030\005 \003(" +
+      "\0132\n.game.Team\022\037\n\004self\030\006 \002(\0132\021.game.Playe" +
+      "rState\022\'\n\rother_players\030\007 \003(\0132\020.game.Ini" +
+      "tPlayer\"&\n\007MEvents\022\033\n\006events\030\001 \003(\0132\013.gam" +
+      "e.Event\"\027\n\006MError\022\r\n\005error\030\001 \002(\t\" \n\006Team" +
+      "ID\022\026\n\002id\030\001 \002(\0132\n.base.UUID\"\"\n\010PlayerID\022\026" +
+      "\n\002id\030\001 \002(\0132\n.base.UUID\"K\n\007OwnerID\022\035\n\007tea" +
+      "m_id\030\001 \001(\0132\014.game.TeamID\022!\n\tplayer_id\030\002 ",
+      "\001(\0132\016.game.PlayerID\" \n\006WObjID\022\026\n\002id\030\001 \002(" +
+      "\0132\n.base.UUID\" \n\004Team\022\030\n\002id\030\001 \002(\0132\014.game" +
+      ".TeamID\"Q\n\006Player\022\014\n\004name\030\001 \002(\t\022\032\n\002id\030\002 " +
+      "\002(\0132\016.game.PlayerID\022\035\n\007team_id\030\003 \002(\0132\014.g" +
+      "ame.TeamID\"1\n\013PlayerState\022\021\n\tresources\030\001" +
+      " \002(\r\022\017\n\007actions\030\002 \002(\r\"L\n\nInitPlayer\022\034\n\006p" +
+      "layer\030\001 \002(\0132\014.game.Player\022 \n\005state\030\002 \001(\013" +
+      "2\021.game.PlayerState\"\205\013\n\007WObject\022\030\n\002id\030\001 " +
+      "\002(\0132\014.game.WObjID\022\035\n\010position\030\002 \002(\0132\013.ba" +
+      "se.Vect2\022 \n\004kind\030\003 \002(\0162\022.game.WObject.Ki",
+      "nd\022*\n\tsized_obj\030\350\007 \001(\0132\026.game.WObject.Si" +
+      "zedObj\022*\n\towned_obj\030\351\007 \001(\0132\026.game.WObjec" +
+      "t.OwnedObj\0224\n\016giving_actions\030\352\007 \001(\0132\033.ga" +
+      "me.WObject.GivingActions\022)\n\010warpable\030\353\007 " +
+      "\001(\0132\026.game.WObject.Warpable\0224\n\016special_a" +
+      "ction\030\354\007 \001(\0132\033.game.WObject.SpecialActio" +
+      "n\022\'\n\007fighter\030\355\007 \001(\0132\025.game.WObject.Fight" +
+      "er\022?\n\024move_attack_actioned\030\356\007 \001(\0132 .game" +
+      ".WObject.MoveAttackActioned\022\'\n\007movable\030\357" +
+      "\007 \001(\0132\025.game.WObject.Movable\022)\n\010asteroid",
+      "\030\320\017 \001(\0132\026.game.WObject.Asteroid\022+\n\textra" +
+      "ctor\030\321\017 \001(\0132\027.game.WObject.Extractor\022)\n\010" +
+      "corvette\030\322\017 \001(\0132\026.game.WObject.Corvette\032" +
+      "%\n\010SizedObj\022\031\n\004size\030\001 \002(\0132\013.base.Vect2\032\220" +
+      "\001\n\010OwnedObj\022\037\n\010owner_id\030\001 \002(\0132\r.game.Own" +
+      "erID\022\023\n\013is_critical\030\002 \002(\010\022\034\n\002hp\030\003 \002(\0132\020." +
+      "base.ValWithMax\022\034\n\007defense\030\004 \002(\0132\013.base." +
+      "Range\022\022\n\nvisibility\030\005 \002(\r\032&\n\rGivingActio" +
+      "ns\022\025\n\ractions_given\030\001 \002(\r\032>\n\010Warpable\022$\n" +
+      "\nwarp_state\030\001 \002(\0132\020.base.ValWithMax\022\014\n\004c",
+      "ost\030\002 \002(\r\032\'\n\rSpecialAction\022\026\n\016actions_ne" +
+      "eded\030\001 \002(\r\032N\n\007Fighter\022\033\n\006attack\030\001 \002(\0132\013." +
+      "base.Range\022\024\n\014attack_range\030\002 \002(\r\022\020\n\010atta" +
+      "cked\030\003 \002(\010\032G\n\022MoveAttackActioned\022\026\n\016acti" +
+      "ons_needed\030\001 \002(\r\022\031\n\021moved_or_attacked\030\002 " +
+      "\002(\010\032\033\n\007Movable\022\020\n\010movement\030\001 \002(\r\032\035\n\010Aste" +
+      "roid\022\021\n\tresources\030\001 \002(\r\032B\n\tExtractor\022\033\n\023" +
+      "turn_start_extracts\030\001 \002(\r\022\030\n\020special_ext" +
+      "racts\030\002 \002(\r\032*\n\010Corvette\022\036\n\026special_movem" +
+      "ent_added\030\001 \002(\r\"\211\001\n\004Kind\022\016\n\nP_ASTEROID\020\001",
+      "\022\017\n\013B_WARP_GATE\020\002\022\017\n\013B_EXTRACTOR\020\003\022\021\n\rB_" +
+      "WARP_LINKER\020\004\022\r\n\tB_SPAWNER\020\005\022\021\n\rB_LASER_" +
+      "TOWER\020\006\022\016\n\nU_CORVETTE\020\007\022\n\n\006U_WASP\020\010\"\331\004\n\005" +
+      "Event\022*\n\014turn_started\030\001 \001(\0132\024.game.TurnS" +
+      "tartedEvt\022&\n\nturn_ended\030\002 \001(\0132\022.game.Tur" +
+      "nEndedEvt\0224\n\021visibility_change\030\003 \001(\0132\031.g" +
+      "ame.VisibilityChangeEvt\022\033\n\004warp\030\004 \001(\0132\r." +
+      "game.WarpEvt\022(\n\013obj_visible\030\005 \001(\0132\023.game" +
+      ".ObjVisibleEvt\022\033\n\004move\030\006 \001(\0132\r.game.Move" +
+      "Evt\022\037\n\006attack\030\007 \001(\0132\017.game.AttackEvt\0220\n\017",
+      "movement_change\030\010 \001(\0132\027.game.MovementCha" +
+      "ngeEvt\022@\n\030moved_or_attacked_change\030\t \001(\013" +
+      "2\036.game.MovedOrAttackedChangeEvt\0220\n\017reso" +
+      "urce_change\030\n \001(\0132\027.game.ResourceChangeE" +
+      "vt\022.\n\016actions_change\030\013 \001(\0132\026.game.Action" +
+      "sChangeEvt\022-\n\013warp_change\030\014 \001(\0132\030.game.W" +
+      "arpStateChangeEvt\022\034\n\004join\030\350\007 \001(\0132\r.game." +
+      "JoinEvt\022\036\n\005leave\030\351\007 \001(\0132\016.game.LeaveEvt\"" +
+      "+\n\007JoinEvt\022 \n\006player\030\001 \002(\0132\020.game.InitPl" +
+      "ayer\"-\n\010LeaveEvt\022!\n\tplayer_id\030\001 \002(\0132\016.ga",
+      "me.PlayerID\"/\n\016TurnStartedEvt\022\035\n\007team_id" +
+      "\030\001 \002(\0132\014.game.TeamID\"-\n\014TurnEndedEvt\022\035\n\007" +
+      "team_id\030\001 \002(\0132\014.game.TeamID\"g\n\023Visibilit" +
+      "yChangeEvt\022&\n\021visible_positions\030\001 \003(\0132\013." +
+      "base.Vect2\022(\n\023invisible_positions\030\002 \003(\0132" +
+      "\013.base.Vect2\"(\n\007WarpEvt\022\035\n\006object\030\001 \002(\0132" +
+      "\r.game.WObject\".\n\rObjVisibleEvt\022\035\n\006objec" +
+      "t\030\001 \002(\0132\r.game.WObject\"o\n\007MoveEvt\022\034\n\006obj" +
+      "_id\030\001 \002(\0132\014.game.WObjID\022\031\n\004from\030\002 \002(\0132\013." +
+      "base.Vect2\022\027\n\002to\030\003 \002(\0132\013.base.Vect2\022\022\n\nm",
+      "oves_left\030\004 \002(\r\"\250\001\n\tAttackEvt\022!\n\013attacke" +
+      "r_id\030\001 \002(\0132\014.game.WObjID\022&\n\021attacker_pos" +
+      "ition\030\002 \002(\0132\013.base.Vect2\022!\n\013defender_id\030" +
+      "\003 \002(\0132\014.game.WObjID\022\017\n\007hp_left\030\004 \002(\r\022\034\n\006" +
+      "attack\030\005 \002(\0132\014.game.Attack\"J\n\006Attack\022\025\n\r" +
+      "attacker_roll\030\001 \002(\r\022\025\n\rdefender_roll\030\002 \002" +
+      "(\r\022\022\n\nsuccessful\030\003 \002(\010\"G\n\021MovementChange" +
+      "Evt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\024\n\014new" +
+      "_movement\030\002 \002(\r\"S\n\030MovedOrAttackedChange" +
+      "Evt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\031\n\021mov",
+      "ed_or_attacked\030\002 \002(\010\"k\n\021ResourceChangeEv" +
+      "t\022\034\n\006obj_id\030\001 \001(\0132\014.game.WObjID\022!\n\tplaye" +
+      "r_id\030\002 \001(\0132\016.game.PlayerID\022\025\n\rnew_resour" +
+      "ces\030\003 \002(\r\"J\n\020ActionsChangeEvt\022!\n\tplayer_" +
+      "id\030\001 \002(\0132\016.game.PlayerID\022\023\n\013new_actions\030" +
+      "\002 \002(\r\"J\n\022WarpStateChangeEvt\022\034\n\006obj_id\030\001 " +
+      "\002(\0132\014.game.WObjID\022\026\n\016new_warp_state\030\002 \002(" +
+      "\rB\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -28910,8 +30847,40 @@ public final class Game {
               new java.lang.String[] { "Error", },
               netmsg.Game.MError.class,
               netmsg.Game.MError.Builder.class);
-          internal_static_game_Team_descriptor =
+          internal_static_game_TeamID_descriptor =
             getDescriptor().getMessageTypes().get(12);
+          internal_static_game_TeamID_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_game_TeamID_descriptor,
+              new java.lang.String[] { "Id", },
+              netmsg.Game.TeamID.class,
+              netmsg.Game.TeamID.Builder.class);
+          internal_static_game_PlayerID_descriptor =
+            getDescriptor().getMessageTypes().get(13);
+          internal_static_game_PlayerID_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_game_PlayerID_descriptor,
+              new java.lang.String[] { "Id", },
+              netmsg.Game.PlayerID.class,
+              netmsg.Game.PlayerID.Builder.class);
+          internal_static_game_OwnerID_descriptor =
+            getDescriptor().getMessageTypes().get(14);
+          internal_static_game_OwnerID_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_game_OwnerID_descriptor,
+              new java.lang.String[] { "TeamId", "PlayerId", },
+              netmsg.Game.OwnerID.class,
+              netmsg.Game.OwnerID.Builder.class);
+          internal_static_game_WObjID_descriptor =
+            getDescriptor().getMessageTypes().get(15);
+          internal_static_game_WObjID_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_game_WObjID_descriptor,
+              new java.lang.String[] { "Id", },
+              netmsg.Game.WObjID.class,
+              netmsg.Game.WObjID.Builder.class);
+          internal_static_game_Team_descriptor =
+            getDescriptor().getMessageTypes().get(16);
           internal_static_game_Team_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_Team_descriptor,
@@ -28919,7 +30888,7 @@ public final class Game {
               netmsg.Game.Team.class,
               netmsg.Game.Team.Builder.class);
           internal_static_game_Player_descriptor =
-            getDescriptor().getMessageTypes().get(13);
+            getDescriptor().getMessageTypes().get(17);
           internal_static_game_Player_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_Player_descriptor,
@@ -28927,7 +30896,7 @@ public final class Game {
               netmsg.Game.Player.class,
               netmsg.Game.Player.Builder.class);
           internal_static_game_PlayerState_descriptor =
-            getDescriptor().getMessageTypes().get(14);
+            getDescriptor().getMessageTypes().get(18);
           internal_static_game_PlayerState_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_PlayerState_descriptor,
@@ -28935,7 +30904,7 @@ public final class Game {
               netmsg.Game.PlayerState.class,
               netmsg.Game.PlayerState.Builder.class);
           internal_static_game_InitPlayer_descriptor =
-            getDescriptor().getMessageTypes().get(15);
+            getDescriptor().getMessageTypes().get(19);
           internal_static_game_InitPlayer_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_InitPlayer_descriptor,
@@ -28943,7 +30912,7 @@ public final class Game {
               netmsg.Game.InitPlayer.class,
               netmsg.Game.InitPlayer.Builder.class);
           internal_static_game_WObject_descriptor =
-            getDescriptor().getMessageTypes().get(16);
+            getDescriptor().getMessageTypes().get(20);
           internal_static_game_WObject_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_WObject_descriptor,
@@ -29039,7 +31008,7 @@ public final class Game {
               netmsg.Game.WObject.Corvette.class,
               netmsg.Game.WObject.Corvette.Builder.class);
           internal_static_game_Event_descriptor =
-            getDescriptor().getMessageTypes().get(17);
+            getDescriptor().getMessageTypes().get(21);
           internal_static_game_Event_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_Event_descriptor,
@@ -29047,7 +31016,7 @@ public final class Game {
               netmsg.Game.Event.class,
               netmsg.Game.Event.Builder.class);
           internal_static_game_JoinEvt_descriptor =
-            getDescriptor().getMessageTypes().get(18);
+            getDescriptor().getMessageTypes().get(22);
           internal_static_game_JoinEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_JoinEvt_descriptor,
@@ -29055,7 +31024,7 @@ public final class Game {
               netmsg.Game.JoinEvt.class,
               netmsg.Game.JoinEvt.Builder.class);
           internal_static_game_LeaveEvt_descriptor =
-            getDescriptor().getMessageTypes().get(19);
+            getDescriptor().getMessageTypes().get(23);
           internal_static_game_LeaveEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_LeaveEvt_descriptor,
@@ -29063,7 +31032,7 @@ public final class Game {
               netmsg.Game.LeaveEvt.class,
               netmsg.Game.LeaveEvt.Builder.class);
           internal_static_game_TurnStartedEvt_descriptor =
-            getDescriptor().getMessageTypes().get(20);
+            getDescriptor().getMessageTypes().get(24);
           internal_static_game_TurnStartedEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_TurnStartedEvt_descriptor,
@@ -29071,7 +31040,7 @@ public final class Game {
               netmsg.Game.TurnStartedEvt.class,
               netmsg.Game.TurnStartedEvt.Builder.class);
           internal_static_game_TurnEndedEvt_descriptor =
-            getDescriptor().getMessageTypes().get(21);
+            getDescriptor().getMessageTypes().get(25);
           internal_static_game_TurnEndedEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_TurnEndedEvt_descriptor,
@@ -29079,7 +31048,7 @@ public final class Game {
               netmsg.Game.TurnEndedEvt.class,
               netmsg.Game.TurnEndedEvt.Builder.class);
           internal_static_game_VisibilityChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(22);
+            getDescriptor().getMessageTypes().get(26);
           internal_static_game_VisibilityChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_VisibilityChangeEvt_descriptor,
@@ -29087,7 +31056,7 @@ public final class Game {
               netmsg.Game.VisibilityChangeEvt.class,
               netmsg.Game.VisibilityChangeEvt.Builder.class);
           internal_static_game_WarpEvt_descriptor =
-            getDescriptor().getMessageTypes().get(23);
+            getDescriptor().getMessageTypes().get(27);
           internal_static_game_WarpEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_WarpEvt_descriptor,
@@ -29095,7 +31064,7 @@ public final class Game {
               netmsg.Game.WarpEvt.class,
               netmsg.Game.WarpEvt.Builder.class);
           internal_static_game_ObjVisibleEvt_descriptor =
-            getDescriptor().getMessageTypes().get(24);
+            getDescriptor().getMessageTypes().get(28);
           internal_static_game_ObjVisibleEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_ObjVisibleEvt_descriptor,
@@ -29103,7 +31072,7 @@ public final class Game {
               netmsg.Game.ObjVisibleEvt.class,
               netmsg.Game.ObjVisibleEvt.Builder.class);
           internal_static_game_MoveEvt_descriptor =
-            getDescriptor().getMessageTypes().get(25);
+            getDescriptor().getMessageTypes().get(29);
           internal_static_game_MoveEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MoveEvt_descriptor,
@@ -29111,7 +31080,7 @@ public final class Game {
               netmsg.Game.MoveEvt.class,
               netmsg.Game.MoveEvt.Builder.class);
           internal_static_game_AttackEvt_descriptor =
-            getDescriptor().getMessageTypes().get(26);
+            getDescriptor().getMessageTypes().get(30);
           internal_static_game_AttackEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_AttackEvt_descriptor,
@@ -29119,7 +31088,7 @@ public final class Game {
               netmsg.Game.AttackEvt.class,
               netmsg.Game.AttackEvt.Builder.class);
           internal_static_game_Attack_descriptor =
-            getDescriptor().getMessageTypes().get(27);
+            getDescriptor().getMessageTypes().get(31);
           internal_static_game_Attack_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_Attack_descriptor,
@@ -29127,7 +31096,7 @@ public final class Game {
               netmsg.Game.Attack.class,
               netmsg.Game.Attack.Builder.class);
           internal_static_game_MovementChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(28);
+            getDescriptor().getMessageTypes().get(32);
           internal_static_game_MovementChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MovementChangeEvt_descriptor,
@@ -29135,7 +31104,7 @@ public final class Game {
               netmsg.Game.MovementChangeEvt.class,
               netmsg.Game.MovementChangeEvt.Builder.class);
           internal_static_game_MovedOrAttackedChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(29);
+            getDescriptor().getMessageTypes().get(33);
           internal_static_game_MovedOrAttackedChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MovedOrAttackedChangeEvt_descriptor,
@@ -29143,7 +31112,7 @@ public final class Game {
               netmsg.Game.MovedOrAttackedChangeEvt.class,
               netmsg.Game.MovedOrAttackedChangeEvt.Builder.class);
           internal_static_game_ResourceChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(30);
+            getDescriptor().getMessageTypes().get(34);
           internal_static_game_ResourceChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_ResourceChangeEvt_descriptor,
@@ -29151,7 +31120,7 @@ public final class Game {
               netmsg.Game.ResourceChangeEvt.class,
               netmsg.Game.ResourceChangeEvt.Builder.class);
           internal_static_game_ActionsChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(31);
+            getDescriptor().getMessageTypes().get(35);
           internal_static_game_ActionsChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_ActionsChangeEvt_descriptor,
@@ -29159,7 +31128,7 @@ public final class Game {
               netmsg.Game.ActionsChangeEvt.class,
               netmsg.Game.ActionsChangeEvt.Builder.class);
           internal_static_game_WarpStateChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(32);
+            getDescriptor().getMessageTypes().get(36);
           internal_static_game_WarpStateChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_WarpStateChangeEvt_descriptor,
