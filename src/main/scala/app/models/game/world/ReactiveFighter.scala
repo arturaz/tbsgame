@@ -28,7 +28,9 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
     }
 }
 
-trait ReactiveFighterStats extends FighterStats
+trait ReactiveFighterStats extends FighterStats {
+  override val moveAttackActionsNeeded = Actions(2)
+}
 
 trait ReactiveFighterCompanion[Self <: ReactiveFighter] extends ReactiveFighterOps[Self]
 with ReactiveFighterStats

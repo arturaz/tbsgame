@@ -7,8 +7,10 @@ import implicits._
 object VisibilityMap {
   type Underlying = Map[(Vect2, Team), Int]
 
-  def apply(objects: TraversableOnce[WObject]): VisibilityMap = {
-    objects.foldLeft(VisibilityMap(Map.empty[(Vect2, Team), Int].withDefaultValue(0))) {
+  def apply(bounds: Bounds, objects: TraversableOnce[WObject]): VisibilityMap = {
+    objects.foldLeft(VisibilityMap(
+      bounds, Map.empty[(Vect2, Team), Int].withDefaultValue(0)
+    )) {
       case (map, obj: OwnedObj) => (map + obj).value
       case (map, _) => map
     }
@@ -52,6 +54,7 @@ object VisibilityMap {
 }
 
 case class VisibilityMap private (
+  bounds: Bounds,
   /* Default value = 0 */
   map: VisibilityMap.Underlying
 ) {
@@ -125,17 +128,20 @@ case class VisibilityMap private (
   )(f: Int => Int): (VisibilityMap, Vector[VisibilityChangeEvt]) = {
     val (underlying, updateEvents) = points.foldLeft(
       (map, Vector.empty[VisibilityChangeEvt])
-    ) { case ((m, events), p) =>
-      val key = p -> team
-      val current = m(key)
-      val next = f(current)
-      val newEvents =
-        if (current === 0 && next =/= 0)
-          Vector(VisibilityChangeEvt(team, visiblePositions = Vector(p)))
-        else if (current =/= 0 && next === 0)
-          Vector(VisibilityChangeEvt(team, invisiblePositions = Vector(p)))
-        else Vector.empty
-      (m updated(key, next), events ++ newEvents)
+    ) { case (orig @ (m, events), p) =>
+      if (bounds.contains(p)) {
+        val key = p -> team
+        val current = m(key)
+        val next = f(current)
+        val newEvents =
+          if (current === 0 && next =/= 0)
+            Vector(VisibilityChangeEvt(team, visiblePositions = Vector(p)))
+          else if (current =/= 0 && next === 0)
+            Vector(VisibilityChangeEvt(team, invisiblePositions = Vector(p)))
+          else Vector.empty
+        (m updated(key, next), events ++ newEvents)
+      }
+      else orig
     }
 
     (updated(underlying), compact(updateEvents))

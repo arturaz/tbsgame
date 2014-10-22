@@ -321,9 +321,10 @@ object World {
     (1 to 3).foreach { _ => spawnBlob(warpGate.visibility, Log.debug) }
     while (branchesLeft > 0) branch(warpGate.bounds.center)
 
+    val bounds = this.bounds(objects) expandBy 5
     new World(
-      bounds(objects) expandBy 5, objects, Map.empty,
-      VisibilityMap(objects)
+      bounds, objects, Map.empty,
+      VisibilityMap(bounds, objects)
     )
   }
 }
