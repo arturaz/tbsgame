@@ -1,18 +1,19 @@
 package app.models.game.world
 
-import app.models.game.Actions
 import app.models.game.ai.SingleMindAI
 import app.models.game.events.Evented
 import implicits._
 import infrastructure.Log
 
 trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
+  def shouldReact(self: OwnedObj, target: OwnedObj) = self.isEnemy(target)
+
   def attackReachable(
     data: WObject.WorldObjUpdate[Self]
   ): WObject.WorldObjUpdate[Self] =
     data.flatMap { case orig @ (world, self) =>
       val targets = world.objects.collect {
-        case obj: OwnedObj if self.isEnemy(obj) && self.canAttack(obj, world) => obj
+        case obj: OwnedObj if shouldReact(self, obj) && self.canAttack(obj, world) => obj
       }
       if (targets.isEmpty) data
       else {
@@ -28,9 +29,7 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
     }
 }
 
-trait ReactiveFighterStats extends FighterStats {
-  override val moveAttackActionsNeeded = Actions(2)
-}
+trait ReactiveFighterStats extends FighterStats
 
 trait ReactiveFighterCompanion[Self <: ReactiveFighter] extends ReactiveFighterOps[Self]
 with ReactiveFighterStats
@@ -47,7 +46,7 @@ trait ReactiveFighter extends Fighter {
   def reactToOpt[A <: OwnedObj](
     obj: A, world: World
   ): Option[Reaction[WObject.WorldObjOptUpdate[A]]] =
-    if (isEnemy(obj))
+    if (companion.shouldReact(self, obj))
       attack(obj, world).right.toOption.map {
         case evt @ Evented((newWorld, _, attack, newObj), _) =>
           Reaction(evt.copy(value = (newWorld, newObj)), abortReacting = newObj.isEmpty)
