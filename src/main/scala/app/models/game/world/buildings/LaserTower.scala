@@ -1,6 +1,6 @@
 package app.models.game.world.buildings
 
-import app.models.game.Player
+import app.models.game.{Actions, Player}
 import app.models.game.world._
 
 object LaserTower extends BuildingCompanion[LaserTower]
@@ -13,6 +13,7 @@ with EmptySpaceWarpableCompanion[LaserTower] {
   override val attack = 2 to 14
   override val attackRange = TileDistance(5)
   override val defense = 3 to 8
+  override val moveAttackActionsNeeded = Actions(2)
 
   override def warp(owner: Player, position: Vect2) =
     LaserTower(position, owner)
