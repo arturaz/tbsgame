@@ -3,7 +3,7 @@ package app.models.game.world.buildings
 import app.models.game.{Actions, Owner}
 import app.models.game.world._
 
-object WarpGate extends BuildingCompanion[WarpGate]
+object WarpGate extends BuildingCompanion[WarpGate] with SizedWObjectCompanion
 with GivingActionsCompanion[WarpGate] {
   override val maxHp = HP(35)
   override val size: Vect2 = Vect2(6, 4)
@@ -17,7 +17,7 @@ with GivingActionsCompanion[WarpGate] {
 case class WarpGate(
   position: Vect2, owner: Owner,
   id: WObject.Id=WObject.newId, hp: HP=WarpGate.maxHp
-) extends Building with GivingActions {
+) extends Building with GivingActions with SizedWObject {
   override def companion = WarpGate
   override type Self = WarpGate
   override type Companion = WarpGate.type

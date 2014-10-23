@@ -11,7 +11,6 @@ import monocle.syntax._
 object Extractor extends BuildingCompanion[Extractor] with WarpableCompanion[Extractor]
 with SpecialActionCompanion[Extractor] {
   override val maxHp = HP(1)
-  override val size: Vect2 = Vect2.one
   override val warpTime = WarpTime(1)
   override val cost = Resources(4)
   override val defense = 2 to 7

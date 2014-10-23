@@ -2,9 +2,10 @@ package app.models.game.world.buildings
 
 import app.models.game.Bot
 import app.models.game.world.units.Wasp
-import app.models.game.world.{HP, Vect2, WObject, World}
+import app.models.game.world._
 
-object Spawner extends BuildingCompanion[Spawner] with GrowingSpawnerCompanion[Spawner] {
+object Spawner extends BuildingCompanion[Spawner] with SizedWObjectCompanion
+with GrowingSpawnerCompanion[Spawner] {
   override val maxHp = HP(10)
   override val size: Vect2 = Vect2(2, 2)
   override val isCritical: Boolean = true
@@ -24,7 +25,7 @@ case class Spawner(
   id: WObject.Id=WObject.newId,
   turnsPerStrength: Int=Spawner.DefaultTurnsPerStrength,
   turns: Int=0, hp: HP=Spawner.maxHp
-) extends BotBuilding with GrowingSpawner {
+) extends BotBuilding with GrowingSpawner with SizedWObject {
   type Self = Spawner
   def self = this
   override def companion = Spawner

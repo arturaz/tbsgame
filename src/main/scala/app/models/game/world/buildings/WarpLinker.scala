@@ -6,7 +6,6 @@ import app.models.game.world._
 object WarpLinker extends BuildingCompanion[WarpLinker]
 with EmptySpaceWarpableCompanion[WarpLinker] {
   override val maxHp = HP(2)
-  override val size: Vect2 = Vect2(1, 1)
   override val warpTime = WarpTime(2)
   override val cost = Resources(3)
   override val defense = 2 to 5

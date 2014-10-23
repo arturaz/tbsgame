@@ -2,18 +2,17 @@ package app.models.game.world.buildings
 
 import app.models.game.world._
 
-trait BuildingOps[Self] extends SizedWObjectOps with OwnedObjOps[Self] {
-_: SizedWObjectStats =>
+trait BuildingOps[Self] extends OwnedObjOps[Self] {
 }
 
-trait BuildingStats extends SizedWObjectStats with OwnedObjStats {
+trait BuildingStats extends OwnedObjStats {
   override val visibility = 3
 }
 
 trait BuildingCompanion[Self] extends BuildingOps[Self] with BuildingStats
 
 /* Building existing in game world. */
-trait Building extends SizedWObject with OwnedObj {
+trait Building extends OwnedObj {
   type Companion <: BuildingOps[Self] with BuildingStats
   override def givesWarpVisibility = true
 }
