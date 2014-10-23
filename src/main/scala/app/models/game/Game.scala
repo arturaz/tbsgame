@@ -1,11 +1,14 @@
 package app.models.game
 
+import app.algorithms.Pathfinding
+import app.algorithms.Pathfinding.Path
 import app.models.game.Game.States
 import app.models.game.events._
 import app.models.game.world._
 import implicits._
 import monocle.Lenser
 import monocle.syntax._
+import utils.data.NonEmptyVector
 
 import scala.reflect.ClassTag
 
@@ -39,6 +42,10 @@ object Game {
   ): States = humans.map { human =>
     human -> startingState(world, human)
   }.toMap
+
+  def canMove(human: Human, obj: MovableWObject) = obj.owner === human
+  def canAttack(human: Human, obj: Fighter) = human.isFriendOf(obj.owner)
+  def canSpecial(human: Human, obj: SpecialAction) = obj.owner === human
 
   private object Withs {
     def withActions(human: Human, actionsNeeded: Actions, state: GameHumanState)(
@@ -88,7 +95,7 @@ trait GameLike[A] {
     human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
   ): Game.ResultT[A]
 
-  def move(human: Human, id: WObject.Id, to: Vect2): Game.ResultT[A]
+  def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]): Game.ResultT[A]
   def attack(human: Human, id: WObject.Id, targetId: WObject.Id): Game.ResultT[A]
   def special(human: Human, id: WObject.Id): Game.ResultT[A]
   def consumeActions(human: Human): Game.ResultT[A]
@@ -169,12 +176,12 @@ case class Game private (
     } } } }
 
   def move(
-    human: Human, id: WObject.Id, to: Vect2
+    human: Human, id: WObject.Id, to: NonEmptyVector[Vect2]
   ): Game.Result =
     withState(human) { state =>
     withMoveObj(human, id) {
     withMoveAttackAction(human, state) { (obj, state) =>
-    withVisibility(human, to) {
+    withVisibility(human, to.v.last) {
       obj.moveTo(world, to).right.map { _.map { case (w, _) =>
         updated(w, human -> state)
       } }
@@ -186,7 +193,7 @@ case class Game private (
     withState(human) { state =>
     withAttackObj(human, id) {
     withMoveAttackAction(human, state) { (obj, state) =>
-    withTargetObj(targetId) { targetObj =>
+    withTargetObj(human, targetId) { targetObj =>
     withVisibility(human, targetObj) {
       obj.attackW(targetObj, world).right.map { _.map { world =>
         updated(world, human -> state)
@@ -210,6 +217,13 @@ case class Game private (
         Vector(ActionsChangeEvt(human, actions))
       ).right
     }
+
+  def movementFor(id: WObject.Id): Either[String, (MovableWObject, Vector[Path])] =
+    for {
+      wObj <- world.findObjE(id).right
+      mObj <-
+        wObj.cast[MovableWObject].toRight(s"obj $id is not a movable obj: $wObj").right
+    } yield (mObj, Pathfinding.movement(mObj, world.bounds, world.objects.map(_.bounds)))
 
   def visibleBy(owner: Owner) =
     copy(world = world.visibleBy(owner), states = states.filterKeys(_.isFriendOf(owner)))
@@ -250,28 +264,39 @@ case class Game private (
     }.fold2(s"Cannot find object with id $id".left, f)
   }
 
-  private[this] def withHumanObj[A <: OwnedObj : ClassTag](
-    human: Human, id: WObject.Id
-  )(f: ObjFn[A]): Game.Result = {
+  private[this] def withCheckedObj[A <: OwnedObj : ClassTag](
+    id: WObject.Id, f: ObjFn[A]
+  )(checker: A => Option[String]): Game.Result = {
     withObj[A](id) { obj =>
-      if (obj.owner === human) f(obj)
-      else s"Cannot find object belonging to $human with id $id".left
+      checker(obj).fold2(
+        f(obj),
+        err => s"Obj $id does not pass the checker: $err".left
+      )
     }
   }
 
   private[this] def withMoveObj(human: Human, id: WObject.Id)(
     f: ObjFn[OwnedObj with MovableWObject]
-  ): Game.Result = withHumanObj(human, id)(f)
+  ): Game.Result = withCheckedObj(id, f) { obj =>
+    (!Game.canMove(human, obj)).opt(s"$human can't move $obj")
+  }
 
   private[this] def withAttackObj(human: Human, id: WObject.Id)(
     f: ObjFn[OwnedObj with Fighter]
-  ): Game.Result = withHumanObj(human, id)(f)
+  ): Game.Result = withCheckedObj(id, f) { obj =>
+    (!Game.canAttack(human, obj)).opt(s"$human can't attack with $obj")
+  }
 
   private[this] def withSpecialObj(human: Human, id: WObject.Id)(
     f: ObjFn[OwnedObj with SpecialAction]
-  ): Game.Result = withHumanObj(human, id)(f)
+  ): Game.Result = withCheckedObj(id, f) { obj =>
+    (!Game.canSpecial(human, obj)).opt(s"$human can't do special with $obj")
+  }
 
-  private[this] def withTargetObj(id: WObject.Id)(
-    f: ObjFn[OwnedObj with SpecialAction]
-  ): Game.Result = withObj(id)(f)
+  private[this] def withTargetObj(human: Owner, id: WObject.Id)(
+    f: ObjFn[OwnedObj]
+  ): Game.Result = withObj[OwnedObj](id) { obj =>
+    if (human.isEnemyOf(obj.owner)) f(obj)
+    else s"Cannot target friendly $obj for attack!".left
+  }
 }

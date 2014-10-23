@@ -4,6 +4,7 @@ import akka.event.LoggingAdapter
 import app.models.game.events.Evented
 import app.models.game.world._
 import implicits._
+import utils.data.NonEmptyVector
 
 object TurnBasedGame {
   type Result = Game.ResultT[TurnBasedGame]
@@ -58,8 +59,8 @@ case class TurnBasedGame private (
     human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
   ) = humanDo(human)(game.warp(_, position, warpable))
 
-  override def move(human: Human, id: WObject.Id, to: Vect2) =
-    humanDo(human)(game.move(_, id, to))
+  override def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]) =
+    humanDo(human)(game.move(_, id, path))
 
   override def special(human: Human, id: WObject.Id) =
     humanDo(human)(game.special(_, id))

@@ -80,7 +80,7 @@ object SingleMindAI {
       toSeq
     val obstacles = unit.obstacles(world.objects).map(_.bounds)
     val attackableTargets =
-      Pathfinding.attackSearch(unit, visibleTargets, obstacles)(_.bounds).
+      Pathfinding.attackSearch(unit, visibleTargets, world.bounds, obstacles)(_.bounds).
       /* Filter out those targets which we can't inflict damage to. */
       filter(_.value.companion.defense.start <= unit.companion.attack.end)
 

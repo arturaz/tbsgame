@@ -11,6 +11,7 @@ message FromClient {
   optional MMove move = 2;
   optional MAttack attack = 3;
   optional MSpecial special = 4;
+  optional MGetMovement get_movement = 5;
 
   optional MLeave leave = 1001;
   optional MConsumeActions consume_actions = 1002;
@@ -32,7 +33,8 @@ message MWarp {
 
 message MMove {
   required WObjID id = 1;
-  required base.Vect2 target = 2;
+  // Does not include objects position. Ends with target position
+  repeated base.Vect2 path = 2;
 }
 
 message MAttack {
@@ -44,6 +46,10 @@ message MSpecial {
   required WObjID id = 1;
 }
 
+message MGetMovement {
+  required WObjID id = 1;
+}
+
 message MConsumeActions {}
 
 /* Server Out messages */
@@ -51,6 +57,7 @@ message MConsumeActions {}
 message FromServer {
   optional MEvents events = 1;
   optional MError error = 2;
+  optional MMovement movement = 3;
 
   optional MInit init = 1000;
 }
@@ -77,6 +84,27 @@ message MEvents {
 
 message MError {
   required string error = 1;
+}
+
+message MMovement {
+  message Path {
+    /* Object position not included. */
+    repeated base.Vect2 position = 1;
+  }
+
+  message Paths {
+    repeated Path paths = 1;
+  }
+
+  message Positions {
+    repeated base.Vect2 positions = 1;
+  }
+
+  required WObjID id = 1;
+  // Sent if we can move this object.
+  optional Paths paths = 2;
+  // Sent if we can't move this object.
+  optional Positions positions = 3;
 }
 
 /* Data */

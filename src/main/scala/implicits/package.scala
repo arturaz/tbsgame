@@ -8,7 +8,11 @@ import scala.util.Random
  */
 package object implicits {
   implicit class OptionExts[A](val o: Option[A]) extends AnyVal {
-    def fold2[B](ifEmpty: => B, ifSome: A => B) = o.fold(ifEmpty)(ifSome)
+    @inline def fold2[B](ifEmpty: => B, ifSome: A => B) = o.fold(ifEmpty)(ifSome)
+  }
+
+  implicit class BoolExts(val b: Boolean) extends AnyVal {
+    @inline def opt[A](onTrue: => A): Option[A] = if (b) Some(onTrue) else None
   }
 
   implicit class RangeExts(val r: Range) extends AnyVal {

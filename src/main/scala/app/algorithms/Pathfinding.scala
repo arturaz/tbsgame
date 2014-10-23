@@ -1,6 +1,7 @@
 package app.algorithms
 
 import app.models.game.world._
+import utils.data.NonEmptyVector
 
 import scala.collection.immutable.Queue
 import scala.collection.mutable
@@ -19,6 +20,25 @@ object Pathfinding {
     lazy val movementNeeded = TileDistance(vects.size - 1)
   }
 
+  object Path {
+    /* Validates whether all vects in the path forms a valid path in the world. */
+    def validate(
+      world: World, startingPosition: Vect2, path: NonEmptyVector[Vect2]
+    ): Either[String, Path] = {
+      path.v.foldLeft(startingPosition) { case (p, nextP) =>
+        if (! world.bounds.contains(nextP))
+          return s"$nextP is not within world bounds ${world.bounds}!".left
+        else if (p.tileDistance(nextP) != TileDistance(1))
+          return s"$p -> $nextP has tile distance > 1!".left
+        else if (world.findObj(nextP).isDefined)
+          return s"$nextP is taken in the world".left
+        nextP
+      }
+
+      Path(startingPosition +: path.v).right
+    }
+  }
+
   private[this] case class Node(
     position: Vect2, distance: TileDistance, cameFrom: Option[Node]
   ) {
@@ -27,28 +47,40 @@ object Pathfinding {
       cameFrom.fold(Vector.empty[Vect2])(_.pathPoints) ++: Vector(position)
   }
 
+  def movement(
+    origin: MovableWObject, worldBounds: Bounds, obstacles: Set[Bounds]
+  ): Vector[Path] = {
+    val oNode = originNode(origin.position)
+    var paths = Vector.empty[Path]
+    bfs(oNode, origin.movementLeft, worldBounds, obstacles)(
+      _ => false, node => paths :+= node.path
+    )
+    paths
+  }
+
   /* Finds objects which can be attacked with fewest moves. */
   def attackSearch[A](
     origin: MovableWObject with Fighter, targets: Iterable[A],
-    obstacles: Set[Bounds]
+    worldBounds: Bounds, obstacles: Set[Bounds]
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = attackSearch(
     origin.position, origin.movementLeft, origin.companion.attackRange,
-    targets, obstacles
+    targets, worldBounds, obstacles
   )(aToBounds)
 
   /* Finds objects which can be attacked with fewest moves. */
   def attackSearch[A](
-    origin: Fighter, targets: Iterable[A], obstacles: Set[Bounds]
+    origin: Fighter, targets: Iterable[A], worldBounds: Bounds, obstacles: Set[Bounds]
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = attackSearch(
     origin.position, TileDistance(0), origin.companion.attackRange,
-    targets, obstacles
+    targets, worldBounds, obstacles
   )(aToBounds)
 
   /* Finds objects which can be attacked with moving. */
   private def attackSearch[A](
     /* Only objects that don't move or are 1x1 sized can use this method. */
     origin: Vect2, movementRange: TileDistance, attackRange: TileDistance,
-    targets: Iterable[A], obstacles: Set[Bounds], resultsNeeded: Int=Int.MaxValue
+    targets: Iterable[A], worldBounds: Bounds, obstacles: Set[Bounds],
+    resultsNeeded: Int=Int.MaxValue
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = {
     def attackableTargets(from: Vect2): Iterable[A] = targets.filter { target =>
       aToBounds(target).withinTileDistance(from, attackRange)
@@ -59,7 +91,6 @@ object Pathfinding {
       }.toMap
 
     val originNode = this.originNode(origin)
-    var validPositions = Vector.empty[SearchRes[A]]
     var allAttackables = attackableResults(origin, originNode)
     /* Add to attackables overwriting only if it needs less movement. */
     def addAttackables(updates: Map[A, SearchRes[A]]): Unit = {
@@ -72,18 +103,32 @@ object Pathfinding {
       }
     }
 
-    if (movementRange > TileDistance(0)) {
-      val worldBounds = Bounds(origin, Vect2(movementRange.value, movementRange.value))
-      bfs(originNode, worldBounds, obstacles)(
-        allAttackables.size >= resultsNeeded || _.distance > movementRange,
-        current => addAttackables(attackableResults(current.position, current))
-      )
-    }
+    bfs(originNode, movementRange, worldBounds, obstacles)(
+      _ => allAttackables.size >= resultsNeeded,
+      current => addAttackables(attackableResults(current.position, current))
+    )
 
     allAttackables.view.map(_._2).toVector
   }
 
   private[this] def originNode(pos: Vect2) = Node(pos, TileDistance(0), None)
+
+  private[this] def bfs(
+    originNode: Node, movementRange: TileDistance, worldBounds: Bounds,
+    obstacles: Set[Bounds]
+  )(abortSearch: Node => Boolean, onNodeVisited: Node => Unit): Unit = {
+    if (movementRange.isNotZero) {
+      val (pos, mr) = (originNode.position, movementRange.value)
+      val movementBounds =
+        Bounds(pos.x - mr to pos.x + 1 + mr, pos.y - mr to pos.y + 1 + mr)
+      worldBounds.intersection(movementBounds).foreach { bounds =>
+        bfs(originNode, bounds, obstacles)(
+          n => n.distance > movementRange || abortSearch(n),
+          onNodeVisited
+        )
+      }
+    }
+  }
 
   private[this] def bfs(
     origin: Vect2, worldBounds: Bounds, obstacles: Set[Bounds]

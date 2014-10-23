@@ -1,17 +1,19 @@
 package app.actors.game
 
-import akka.actor.{ActorLogging, Props, Actor, ActorRef}
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.event.{LoggingAdapter, LoggingReceive}
 import app.actors.game.GameActor.Out.Joined
+import app.algorithms.Pathfinding.Path
+import app.models.User
 import app.models.game._
 import app.models.game.events._
 import app.models.game.world._
-import app.models.User
-import infrastructure.Log
-import language.existentials
 import implicits._
+import infrastructure.Log
+import utils.data.NonEmptyVector
 
 import scala.annotation.tailrec
+import scala.language.existentials
 
 object GameActor {
   val StartingResources = Resources(25)
@@ -25,7 +27,9 @@ object GameActor {
     case class Warp(
       human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
     ) extends In
-    case class Move(human: Human, id: WObject.Id, to: Vect2) extends In
+    case class GetMovement(human: Human, id: WObject.Id) extends In
+    /* path does not include objects position and ends in target position */
+    case class Move(human: Human, id: WObject.Id, path: Vector[Vect2]) extends In
     case class Attack(human: Human, id: WObject.Id, targetId: WObject.Id) extends In
     case class Special(human: Human, id: WObject.Id) extends In
     case class ConsumeActions(human: Human) extends In
@@ -42,6 +46,16 @@ object GameActor {
     ) extends ClientOut
     case class Events(events: Vector[FinalEvent]) extends ClientOut
     case class Error(error: String) extends ClientOut
+    
+    object Movement {
+      sealed trait Response
+      /* Paths for objects that player can move */
+      case class Movable(paths: Vector[Path]) extends Response
+      /* Points where object can move to. Send for objects that cannot be moved by
+         player. */
+      case class Immovable(points: Vector[Vect2]) extends Response
+    }
+    case class Movement(id: WObject.Id, response: Movement.Response) extends ClientOut
   }
 
   private[this] def initMsg(human: Human, game: Game): Either[String, Out.Init] = {
@@ -154,14 +168,28 @@ class GameActor private (
       }
     case In.Warp(human, position, warpable) =>
       update(sender(), _.warp(human, position, warpable))
-    case In.Move(human, id, to) =>
-      update(sender(), _.move(human, id, to))
+    case In.Move(human, id, path) =>
+      update(sender(), tbg => {
+        NonEmptyVector.create(path).toRight(s"movement vector is empty!").right.flatMap(
+          tbg.move(human, id, _)
+        )
+      })
     case In.Attack(human, id, target) =>
       update(sender(), _.attack(human, id, target))
     case In.Special(human, id) =>
       update(sender(), _.special(human, id))
     case In.ConsumeActions(human) =>
       update(sender(), _.consumeActions(human))
+    case In.GetMovement(human, id) =>
+      game.game.movementFor(id).fold(
+        err => sender() ! Out.Error(err),
+        { case (obj, paths) =>
+          val response =
+            if (Game.canMove(human, obj)) Out.Movement.Movable(paths)
+            else Out.Movement.Immovable(paths.map(_.vects.last))
+          sender() ! Out.Movement(id, response)
+        }
+      )
   }
 
   private[this] def update(

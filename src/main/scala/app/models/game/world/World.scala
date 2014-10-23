@@ -148,7 +148,11 @@ case class World private (
     react(reactors, Evented((this, Some(obj))))
   }
 
+  def findObj(id: WObject.Id) = objects.find(_.id === id)
+  def findObjE(id: WObject.Id) = findObj(id).toRight(s"Can't find obj $id in world")
   def findObj(position: Vect2) = objects.find(_.position === position)
+  def findObjE(position: Vect2) =
+    findObj(position).toRight(s"Can't find obj @ $position in world")
   def find[A <: WObject](predicate: PartialFunction[WObject, A]): Option[A] =
     objects.collectFirst(predicate)
   def contains(id: Id): Boolean = objects.exists(_.id === id)

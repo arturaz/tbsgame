@@ -5,6 +5,7 @@ import java.util.UUID
 import akka.util.ByteString
 import app.actors.NetClient.GameInMsg
 import app.actors.game.GameActor
+import app.algorithms.Pathfinding.Path
 import app.models.game.events._
 import app.models.game.world._
 import app.models.game.world.buildings._
@@ -14,6 +15,7 @@ import app.models.game._
 import implicits._
 import netmsg.{Management, Base, Game, Messages}
 import utils.IntValueClass
+import collection.JavaConverters._
 
 object ProtobufCoding {
   import scala.language.implicitConversions
@@ -30,7 +32,7 @@ object ProtobufCoding {
 
     implicit def parseWarpable(
       w: Game.MWarp.HumanWarpable
-      ): WarpableCompanion[_ <: Warpable] = w match {
+    ): WarpableCompanion[_ <: Warpable] = w match {
       case Game.MWarp.HumanWarpable.B_EXTRACTOR => Extractor
       case Game.MWarp.HumanWarpable.B_WARP_LINKER => WarpLinker
       case Game.MWarp.HumanWarpable.B_LASER_TOWER => LaserTower
@@ -44,7 +46,9 @@ object ProtobufCoding {
       if (m.hasWarp)
         m.getWarp.mapVal { m => Warp(_: Human, m.getPosition, m.getWarpable) }.right
       else if (m.hasMove)
-        m.getMove.mapVal { m => Move(_: Human, m.getId, m.getTarget) }.right
+        m.getMove.mapVal { m => Move(
+          _: Human, m.getId, m.getPathList.asScala.map(parseVect2).toVector
+        ) }.right
       else if (m.hasAttack)
         m.getAttack.
           mapVal { m => In.Attack(_: Human, m.getId, m.getTargetId) }.right
@@ -52,6 +56,8 @@ object ProtobufCoding {
         m.getSpecial.mapVal { m => Special(_: Human, m.getId) }.right
       else if (m.hasConsumeActions)
         (ConsumeActions.apply(_: Human)).right
+      else if (m.hasGetMovement)
+        m.getGetMovement.mapVal { m => GetMovement(_: Human, m.getId) }.right
       else if (m.hasLeave)
         (Leave.apply(_: Human)).right
       else
@@ -211,22 +217,32 @@ object ProtobufCoding {
       }.
         mapVal { b => obj.cast[MovableWObject].fold2(b, o => b.setMovable(o)) }.
         mapVal { b =>
-        import netmsg.Game.WObject.Kind._
-        obj match {
-          case o: Asteroid => b.setKind(P_ASTEROID).setAsteroid(o)
-          case o: WarpGate => b.setKind(B_WARP_GATE)
-          case o: Extractor => b.setKind(B_EXTRACTOR).setExtractor(o)
-          case o: WarpLinker => b.setKind(B_WARP_LINKER)
-          case o: Spawner => b.setKind(B_SPAWNER)
-          case o: LaserTower => b.setKind(B_LASER_TOWER)
-          case o: Corvette => b.setKind(U_CORVETTE).setCorvette(o)
-          case o: Wasp => b.setKind(U_WASP)
-        }
-      }.build()
+          import netmsg.Game.WObject.Kind._
+          obj match {
+            case o: Asteroid => b.setKind(P_ASTEROID).setAsteroid(o)
+            case o: WarpGate => b.setKind(B_WARP_GATE)
+            case o: Extractor => b.setKind(B_EXTRACTOR).setExtractor(o)
+            case o: WarpLinker => b.setKind(B_WARP_LINKER)
+            case o: Spawner => b.setKind(B_SPAWNER)
+            case o: LaserTower => b.setKind(B_LASER_TOWER)
+            case o: Corvette => b.setKind(U_CORVETTE).setCorvette(o)
+            case o: Wasp => b.setKind(U_WASP)
+          }
+        }.build()
 
     implicit def convert(attack: Attack): Game.Attack =
       Game.Attack.newBuilder().setAttackerRoll(attack.attackerRoll).
         setDefenderRoll(attack.defenderRoll).setSuccessful(attack.successful).build()
+
+    implicit def convert(data: GameActor.Out.Movement.Immovable)
+    : Game.MMovement.Positions =
+      Game.MMovement.Positions.newBuilder().addAllPositions(convert(data.points)).build()
+
+    implicit def convert(path: Path): Game.MMovement.Path =
+      Game.MMovement.Path.newBuilder().addAllPosition(convert(path.vects)).build()
+
+    implicit def convert(data: GameActor.Out.Movement.Movable): Game.MMovement.Paths =
+      Game.MMovement.Paths.newBuilder().addAllPaths(convert(data.paths)).build()
 
     /* Events */
 
@@ -314,6 +330,12 @@ object ProtobufCoding {
     implicit def convert(msg: GameActor.Out.Joined): Game.MJoined =
       Game.MJoined.newBuilder().setPlayer(msg.human).build()
 
+    implicit def convert(msg: GameActor.Out.Movement): Game.MMovement =
+      Game.MMovement.newBuilder().setId(msg.id).mapVal { b => msg.response match {
+        case m: GameActor.Out.Movement.Movable => b.setPaths(m)
+        case m: GameActor.Out.Movement.Immovable => b.setPositions(m)
+      } }.build()
+
     implicit def convert(msg: GameActor.Out.Init): Game.MInit =
       Game.MInit.newBuilder().setBounds(msg.bounds).
         addAllObjects(convert(msg.objects)).
@@ -329,6 +351,7 @@ object ProtobufCoding {
         case msg: GameActor.Out.Events => b.setEvents(msg)
         case msg: GameActor.Out.Error => b.setError(msg)
         case msg: GameActor.Out.Init => b.setInit(msg)
+        case msg: GameActor.Out.Movement => b.setMovement(msg)
       } }.build()
 
     implicit def convert(

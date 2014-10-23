@@ -1,9 +1,9 @@
 package app.models.game.world
 
-import app.algorithms.Pathfinding
 import app.algorithms.Pathfinding.Path
-import app.models.game.events.{MoveEvt, MovedOrAttackedChangeEvt, MovementChangeEvt, Evented}
+import app.models.game.events.{Evented, MoveEvt, MovedOrAttackedChangeEvt, MovementChangeEvt}
 import implicits._
+import utils.data.NonEmptyVector
 
 trait MovableWObjectOps[Self <: MovableWObject]
 extends WObjectOps with MoveAttackActionedOps[Self]
@@ -78,15 +78,11 @@ with Mobility[Mobility.Movable.type] {
   }
 
   def moveTo(
-    world: World, target: Vect2
-  ): Either[String, WObject.WorldObjOptUpdate[Self]] = {
-    Pathfinding.aStar(
-      self, target.toBounds, world.bounds, obstacles(world.objects).map(_.bounds)
-    ).fold2(
-      s"Can't find path from $position to $target for $self".left,
-      moveTo(world, _)
-    )
-  }
+    world: World, path: NonEmptyVector[Vect2]
+  ): Either[String, WObject.WorldObjOptUpdate[Self]] =
+    Path.validate(world, position, path).left.map(err =>
+      s"Can't validate path: $position, $path: $err"
+    ).right.flatMap(moveTo(world, _))
 
   private[this] def travel(
     vects: Seq[Vect2], current: WObject.WorldObjOptUpdate[Self]

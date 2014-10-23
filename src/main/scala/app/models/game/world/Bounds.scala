@@ -51,6 +51,16 @@ case class Bounds(x: Range.Inclusive, y: Range.Inclusive) {
     x.start > bounds.x.end || y.start > bounds.y.end
   )
 
+  def intersection(bounds: Bounds): Option[Bounds] = {
+    val xStart = x.start max bounds.x.start
+    val xEnd = x.end min bounds.x.end
+    val yStart = y.start max bounds.y.start
+    val yEnd = y.end min bounds.y.end
+
+    if (xStart != xEnd && yStart != yEnd) Some(Bounds(xStart to xEnd, yStart to yEnd))
+    else None
+  }
+
   def join(bounds: Bounds) = Bounds(
     x.start.min(bounds.x.start) to x.end.max(bounds.x.max),
     y.start.min(bounds.y.start) to y.end.max(bounds.y.max)
