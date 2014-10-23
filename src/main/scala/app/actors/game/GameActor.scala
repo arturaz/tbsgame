@@ -101,8 +101,9 @@ class GameActor private (
   private[this] var clients = Map(startingHuman -> startingHumanRef)
 
   private[this] var game = {
-    val ai = Bot(AiTeam)
-    val world = World.create(HumanTeam, ai, ai)
+    val singleAi = Bot(AiTeam)
+    val spawnerAi = Bot(AiTeam)
+    val world = World.create(HumanTeam, singleAi, spawnerAi)
     log.debug("World initialized to {}", world)
     TurnBasedGame(
       world, startingHuman, GameActor.StartingResources
