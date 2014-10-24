@@ -9492,14 +9492,14 @@ public final class Game {
     public interface PathsOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // repeated .game.MMovement.Path paths = 1;
+      // repeated .game.MMovement.Path path = 1;
       java.util.List<netmsg.Game.MMovement.Path> 
-          getPathsList();
-      netmsg.Game.MMovement.Path getPaths(int index);
-      int getPathsCount();
+          getPathList();
+      netmsg.Game.MMovement.Path getPath(int index);
+      int getPathCount();
       java.util.List<? extends netmsg.Game.MMovement.PathOrBuilder> 
-          getPathsOrBuilderList();
-      netmsg.Game.MMovement.PathOrBuilder getPathsOrBuilder(
+          getPathOrBuilderList();
+      netmsg.Game.MMovement.PathOrBuilder getPathOrBuilder(
           int index);
     }
     public static final class Paths extends
@@ -9530,37 +9530,37 @@ public final class Game {
         return netmsg.Game.internal_static_game_MMovement_Paths_fieldAccessorTable;
       }
       
-      // repeated .game.MMovement.Path paths = 1;
-      public static final int PATHS_FIELD_NUMBER = 1;
-      private java.util.List<netmsg.Game.MMovement.Path> paths_;
-      public java.util.List<netmsg.Game.MMovement.Path> getPathsList() {
-        return paths_;
+      // repeated .game.MMovement.Path path = 1;
+      public static final int PATH_FIELD_NUMBER = 1;
+      private java.util.List<netmsg.Game.MMovement.Path> path_;
+      public java.util.List<netmsg.Game.MMovement.Path> getPathList() {
+        return path_;
       }
       public java.util.List<? extends netmsg.Game.MMovement.PathOrBuilder> 
-          getPathsOrBuilderList() {
-        return paths_;
+          getPathOrBuilderList() {
+        return path_;
       }
-      public int getPathsCount() {
-        return paths_.size();
+      public int getPathCount() {
+        return path_.size();
       }
-      public netmsg.Game.MMovement.Path getPaths(int index) {
-        return paths_.get(index);
+      public netmsg.Game.MMovement.Path getPath(int index) {
+        return path_.get(index);
       }
-      public netmsg.Game.MMovement.PathOrBuilder getPathsOrBuilder(
+      public netmsg.Game.MMovement.PathOrBuilder getPathOrBuilder(
           int index) {
-        return paths_.get(index);
+        return path_.get(index);
       }
       
       private void initFields() {
-        paths_ = java.util.Collections.emptyList();
+        path_ = java.util.Collections.emptyList();
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized != -1) return isInitialized == 1;
         
-        for (int i = 0; i < getPathsCount(); i++) {
-          if (!getPaths(i).isInitialized()) {
+        for (int i = 0; i < getPathCount(); i++) {
+          if (!getPath(i).isInitialized()) {
             memoizedIsInitialized = 0;
             return false;
           }
@@ -9572,8 +9572,8 @@ public final class Game {
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         getSerializedSize();
-        for (int i = 0; i < paths_.size(); i++) {
-          output.writeMessage(1, paths_.get(i));
+        for (int i = 0; i < path_.size(); i++) {
+          output.writeMessage(1, path_.get(i));
         }
         getUnknownFields().writeTo(output);
       }
@@ -9584,9 +9584,9 @@ public final class Game {
         if (size != -1) return size;
       
         size = 0;
-        for (int i = 0; i < paths_.size(); i++) {
+        for (int i = 0; i < path_.size(); i++) {
           size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(1, paths_.get(i));
+            .computeMessageSize(1, path_.get(i));
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -9704,7 +9704,7 @@ public final class Game {
         }
         private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-            getPathsFieldBuilder();
+            getPathFieldBuilder();
           }
         }
         private static Builder create() {
@@ -9713,11 +9713,11 @@ public final class Game {
         
         public Builder clear() {
           super.clear();
-          if (pathsBuilder_ == null) {
-            paths_ = java.util.Collections.emptyList();
+          if (pathBuilder_ == null) {
+            path_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000001);
           } else {
-            pathsBuilder_.clear();
+            pathBuilder_.clear();
           }
           return this;
         }
@@ -9756,14 +9756,14 @@ public final class Game {
         public netmsg.Game.MMovement.Paths buildPartial() {
           netmsg.Game.MMovement.Paths result = new netmsg.Game.MMovement.Paths(this);
           int from_bitField0_ = bitField0_;
-          if (pathsBuilder_ == null) {
+          if (pathBuilder_ == null) {
             if (((bitField0_ & 0x00000001) == 0x00000001)) {
-              paths_ = java.util.Collections.unmodifiableList(paths_);
+              path_ = java.util.Collections.unmodifiableList(path_);
               bitField0_ = (bitField0_ & ~0x00000001);
             }
-            result.paths_ = paths_;
+            result.path_ = path_;
           } else {
-            result.paths_ = pathsBuilder_.build();
+            result.path_ = pathBuilder_.build();
           }
           onBuilt();
           return result;
@@ -9780,29 +9780,29 @@ public final class Game {
         
         public Builder mergeFrom(netmsg.Game.MMovement.Paths other) {
           if (other == netmsg.Game.MMovement.Paths.getDefaultInstance()) return this;
-          if (pathsBuilder_ == null) {
-            if (!other.paths_.isEmpty()) {
-              if (paths_.isEmpty()) {
-                paths_ = other.paths_;
+          if (pathBuilder_ == null) {
+            if (!other.path_.isEmpty()) {
+              if (path_.isEmpty()) {
+                path_ = other.path_;
                 bitField0_ = (bitField0_ & ~0x00000001);
               } else {
-                ensurePathsIsMutable();
-                paths_.addAll(other.paths_);
+                ensurePathIsMutable();
+                path_.addAll(other.path_);
               }
               onChanged();
             }
           } else {
-            if (!other.paths_.isEmpty()) {
-              if (pathsBuilder_.isEmpty()) {
-                pathsBuilder_.dispose();
-                pathsBuilder_ = null;
-                paths_ = other.paths_;
+            if (!other.path_.isEmpty()) {
+              if (pathBuilder_.isEmpty()) {
+                pathBuilder_.dispose();
+                pathBuilder_ = null;
+                path_ = other.path_;
                 bitField0_ = (bitField0_ & ~0x00000001);
-                pathsBuilder_ = 
+                pathBuilder_ = 
                   com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                     getPathsFieldBuilder() : null;
+                     getPathFieldBuilder() : null;
               } else {
-                pathsBuilder_.addAllMessages(other.paths_);
+                pathBuilder_.addAllMessages(other.path_);
               }
             }
           }
@@ -9811,8 +9811,8 @@ public final class Game {
         }
         
         public final boolean isInitialized() {
-          for (int i = 0; i < getPathsCount(); i++) {
-            if (!getPaths(i).isInitialized()) {
+          for (int i = 0; i < getPathCount(); i++) {
+            if (!getPath(i).isInitialized()) {
               
               return false;
             }
@@ -9846,7 +9846,7 @@ public final class Game {
               case 10: {
                 netmsg.Game.MMovement.Path.Builder subBuilder = netmsg.Game.MMovement.Path.newBuilder();
                 input.readMessage(subBuilder, extensionRegistry);
-                addPaths(subBuilder.buildPartial());
+                addPath(subBuilder.buildPartial());
                 break;
               }
             }
@@ -9855,190 +9855,190 @@ public final class Game {
         
         private int bitField0_;
         
-        // repeated .game.MMovement.Path paths = 1;
-        private java.util.List<netmsg.Game.MMovement.Path> paths_ =
+        // repeated .game.MMovement.Path path = 1;
+        private java.util.List<netmsg.Game.MMovement.Path> path_ =
           java.util.Collections.emptyList();
-        private void ensurePathsIsMutable() {
+        private void ensurePathIsMutable() {
           if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-            paths_ = new java.util.ArrayList<netmsg.Game.MMovement.Path>(paths_);
+            path_ = new java.util.ArrayList<netmsg.Game.MMovement.Path>(path_);
             bitField0_ |= 0x00000001;
            }
         }
         
         private com.google.protobuf.RepeatedFieldBuilder<
-            netmsg.Game.MMovement.Path, netmsg.Game.MMovement.Path.Builder, netmsg.Game.MMovement.PathOrBuilder> pathsBuilder_;
+            netmsg.Game.MMovement.Path, netmsg.Game.MMovement.Path.Builder, netmsg.Game.MMovement.PathOrBuilder> pathBuilder_;
         
-        public java.util.List<netmsg.Game.MMovement.Path> getPathsList() {
-          if (pathsBuilder_ == null) {
-            return java.util.Collections.unmodifiableList(paths_);
+        public java.util.List<netmsg.Game.MMovement.Path> getPathList() {
+          if (pathBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(path_);
           } else {
-            return pathsBuilder_.getMessageList();
+            return pathBuilder_.getMessageList();
           }
         }
-        public int getPathsCount() {
-          if (pathsBuilder_ == null) {
-            return paths_.size();
+        public int getPathCount() {
+          if (pathBuilder_ == null) {
+            return path_.size();
           } else {
-            return pathsBuilder_.getCount();
+            return pathBuilder_.getCount();
           }
         }
-        public netmsg.Game.MMovement.Path getPaths(int index) {
-          if (pathsBuilder_ == null) {
-            return paths_.get(index);
+        public netmsg.Game.MMovement.Path getPath(int index) {
+          if (pathBuilder_ == null) {
+            return path_.get(index);
           } else {
-            return pathsBuilder_.getMessage(index);
+            return pathBuilder_.getMessage(index);
           }
         }
-        public Builder setPaths(
+        public Builder setPath(
             int index, netmsg.Game.MMovement.Path value) {
-          if (pathsBuilder_ == null) {
+          if (pathBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
-            ensurePathsIsMutable();
-            paths_.set(index, value);
+            ensurePathIsMutable();
+            path_.set(index, value);
             onChanged();
           } else {
-            pathsBuilder_.setMessage(index, value);
+            pathBuilder_.setMessage(index, value);
           }
           return this;
         }
-        public Builder setPaths(
+        public Builder setPath(
             int index, netmsg.Game.MMovement.Path.Builder builderForValue) {
-          if (pathsBuilder_ == null) {
-            ensurePathsIsMutable();
-            paths_.set(index, builderForValue.build());
+          if (pathBuilder_ == null) {
+            ensurePathIsMutable();
+            path_.set(index, builderForValue.build());
             onChanged();
           } else {
-            pathsBuilder_.setMessage(index, builderForValue.build());
+            pathBuilder_.setMessage(index, builderForValue.build());
           }
           return this;
         }
-        public Builder addPaths(netmsg.Game.MMovement.Path value) {
-          if (pathsBuilder_ == null) {
+        public Builder addPath(netmsg.Game.MMovement.Path value) {
+          if (pathBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
-            ensurePathsIsMutable();
-            paths_.add(value);
+            ensurePathIsMutable();
+            path_.add(value);
             onChanged();
           } else {
-            pathsBuilder_.addMessage(value);
+            pathBuilder_.addMessage(value);
           }
           return this;
         }
-        public Builder addPaths(
+        public Builder addPath(
             int index, netmsg.Game.MMovement.Path value) {
-          if (pathsBuilder_ == null) {
+          if (pathBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
-            ensurePathsIsMutable();
-            paths_.add(index, value);
+            ensurePathIsMutable();
+            path_.add(index, value);
             onChanged();
           } else {
-            pathsBuilder_.addMessage(index, value);
+            pathBuilder_.addMessage(index, value);
           }
           return this;
         }
-        public Builder addPaths(
+        public Builder addPath(
             netmsg.Game.MMovement.Path.Builder builderForValue) {
-          if (pathsBuilder_ == null) {
-            ensurePathsIsMutable();
-            paths_.add(builderForValue.build());
+          if (pathBuilder_ == null) {
+            ensurePathIsMutable();
+            path_.add(builderForValue.build());
             onChanged();
           } else {
-            pathsBuilder_.addMessage(builderForValue.build());
+            pathBuilder_.addMessage(builderForValue.build());
           }
           return this;
         }
-        public Builder addPaths(
+        public Builder addPath(
             int index, netmsg.Game.MMovement.Path.Builder builderForValue) {
-          if (pathsBuilder_ == null) {
-            ensurePathsIsMutable();
-            paths_.add(index, builderForValue.build());
+          if (pathBuilder_ == null) {
+            ensurePathIsMutable();
+            path_.add(index, builderForValue.build());
             onChanged();
           } else {
-            pathsBuilder_.addMessage(index, builderForValue.build());
+            pathBuilder_.addMessage(index, builderForValue.build());
           }
           return this;
         }
-        public Builder addAllPaths(
+        public Builder addAllPath(
             java.lang.Iterable<? extends netmsg.Game.MMovement.Path> values) {
-          if (pathsBuilder_ == null) {
-            ensurePathsIsMutable();
-            super.addAll(values, paths_);
+          if (pathBuilder_ == null) {
+            ensurePathIsMutable();
+            super.addAll(values, path_);
             onChanged();
           } else {
-            pathsBuilder_.addAllMessages(values);
+            pathBuilder_.addAllMessages(values);
           }
           return this;
         }
-        public Builder clearPaths() {
-          if (pathsBuilder_ == null) {
-            paths_ = java.util.Collections.emptyList();
+        public Builder clearPath() {
+          if (pathBuilder_ == null) {
+            path_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000001);
             onChanged();
           } else {
-            pathsBuilder_.clear();
+            pathBuilder_.clear();
           }
           return this;
         }
-        public Builder removePaths(int index) {
-          if (pathsBuilder_ == null) {
-            ensurePathsIsMutable();
-            paths_.remove(index);
+        public Builder removePath(int index) {
+          if (pathBuilder_ == null) {
+            ensurePathIsMutable();
+            path_.remove(index);
             onChanged();
           } else {
-            pathsBuilder_.remove(index);
+            pathBuilder_.remove(index);
           }
           return this;
         }
-        public netmsg.Game.MMovement.Path.Builder getPathsBuilder(
+        public netmsg.Game.MMovement.Path.Builder getPathBuilder(
             int index) {
-          return getPathsFieldBuilder().getBuilder(index);
+          return getPathFieldBuilder().getBuilder(index);
         }
-        public netmsg.Game.MMovement.PathOrBuilder getPathsOrBuilder(
+        public netmsg.Game.MMovement.PathOrBuilder getPathOrBuilder(
             int index) {
-          if (pathsBuilder_ == null) {
-            return paths_.get(index);  } else {
-            return pathsBuilder_.getMessageOrBuilder(index);
+          if (pathBuilder_ == null) {
+            return path_.get(index);  } else {
+            return pathBuilder_.getMessageOrBuilder(index);
           }
         }
         public java.util.List<? extends netmsg.Game.MMovement.PathOrBuilder> 
-             getPathsOrBuilderList() {
-          if (pathsBuilder_ != null) {
-            return pathsBuilder_.getMessageOrBuilderList();
+             getPathOrBuilderList() {
+          if (pathBuilder_ != null) {
+            return pathBuilder_.getMessageOrBuilderList();
           } else {
-            return java.util.Collections.unmodifiableList(paths_);
+            return java.util.Collections.unmodifiableList(path_);
           }
         }
-        public netmsg.Game.MMovement.Path.Builder addPathsBuilder() {
-          return getPathsFieldBuilder().addBuilder(
+        public netmsg.Game.MMovement.Path.Builder addPathBuilder() {
+          return getPathFieldBuilder().addBuilder(
               netmsg.Game.MMovement.Path.getDefaultInstance());
         }
-        public netmsg.Game.MMovement.Path.Builder addPathsBuilder(
+        public netmsg.Game.MMovement.Path.Builder addPathBuilder(
             int index) {
-          return getPathsFieldBuilder().addBuilder(
+          return getPathFieldBuilder().addBuilder(
               index, netmsg.Game.MMovement.Path.getDefaultInstance());
         }
         public java.util.List<netmsg.Game.MMovement.Path.Builder> 
-             getPathsBuilderList() {
-          return getPathsFieldBuilder().getBuilderList();
+             getPathBuilderList() {
+          return getPathFieldBuilder().getBuilderList();
         }
         private com.google.protobuf.RepeatedFieldBuilder<
             netmsg.Game.MMovement.Path, netmsg.Game.MMovement.Path.Builder, netmsg.Game.MMovement.PathOrBuilder> 
-            getPathsFieldBuilder() {
-          if (pathsBuilder_ == null) {
-            pathsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+            getPathFieldBuilder() {
+          if (pathBuilder_ == null) {
+            pathBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
                 netmsg.Game.MMovement.Path, netmsg.Game.MMovement.Path.Builder, netmsg.Game.MMovement.PathOrBuilder>(
-                    paths_,
+                    path_,
                     ((bitField0_ & 0x00000001) == 0x00000001),
                     getParentForChildren(),
                     isClean());
-            paths_ = null;
+            path_ = null;
           }
-          return pathsBuilder_;
+          return pathBuilder_;
         }
         
         // @@protoc_insertion_point(builder_scope:game.MMovement.Paths)
@@ -10055,14 +10055,14 @@ public final class Game {
     public interface PositionsOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // repeated .base.Vect2 positions = 1;
+      // repeated .base.Vect2 position = 1;
       java.util.List<netmsg.Base.Vect2> 
-          getPositionsList();
-      netmsg.Base.Vect2 getPositions(int index);
-      int getPositionsCount();
+          getPositionList();
+      netmsg.Base.Vect2 getPosition(int index);
+      int getPositionCount();
       java.util.List<? extends netmsg.Base.Vect2OrBuilder> 
-          getPositionsOrBuilderList();
-      netmsg.Base.Vect2OrBuilder getPositionsOrBuilder(
+          getPositionOrBuilderList();
+      netmsg.Base.Vect2OrBuilder getPositionOrBuilder(
           int index);
     }
     public static final class Positions extends
@@ -10093,37 +10093,37 @@ public final class Game {
         return netmsg.Game.internal_static_game_MMovement_Positions_fieldAccessorTable;
       }
       
-      // repeated .base.Vect2 positions = 1;
-      public static final int POSITIONS_FIELD_NUMBER = 1;
-      private java.util.List<netmsg.Base.Vect2> positions_;
-      public java.util.List<netmsg.Base.Vect2> getPositionsList() {
-        return positions_;
+      // repeated .base.Vect2 position = 1;
+      public static final int POSITION_FIELD_NUMBER = 1;
+      private java.util.List<netmsg.Base.Vect2> position_;
+      public java.util.List<netmsg.Base.Vect2> getPositionList() {
+        return position_;
       }
       public java.util.List<? extends netmsg.Base.Vect2OrBuilder> 
-          getPositionsOrBuilderList() {
-        return positions_;
+          getPositionOrBuilderList() {
+        return position_;
       }
-      public int getPositionsCount() {
-        return positions_.size();
+      public int getPositionCount() {
+        return position_.size();
       }
-      public netmsg.Base.Vect2 getPositions(int index) {
-        return positions_.get(index);
+      public netmsg.Base.Vect2 getPosition(int index) {
+        return position_.get(index);
       }
-      public netmsg.Base.Vect2OrBuilder getPositionsOrBuilder(
+      public netmsg.Base.Vect2OrBuilder getPositionOrBuilder(
           int index) {
-        return positions_.get(index);
+        return position_.get(index);
       }
       
       private void initFields() {
-        positions_ = java.util.Collections.emptyList();
+        position_ = java.util.Collections.emptyList();
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized != -1) return isInitialized == 1;
         
-        for (int i = 0; i < getPositionsCount(); i++) {
-          if (!getPositions(i).isInitialized()) {
+        for (int i = 0; i < getPositionCount(); i++) {
+          if (!getPosition(i).isInitialized()) {
             memoizedIsInitialized = 0;
             return false;
           }
@@ -10135,8 +10135,8 @@ public final class Game {
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         getSerializedSize();
-        for (int i = 0; i < positions_.size(); i++) {
-          output.writeMessage(1, positions_.get(i));
+        for (int i = 0; i < position_.size(); i++) {
+          output.writeMessage(1, position_.get(i));
         }
         getUnknownFields().writeTo(output);
       }
@@ -10147,9 +10147,9 @@ public final class Game {
         if (size != -1) return size;
       
         size = 0;
-        for (int i = 0; i < positions_.size(); i++) {
+        for (int i = 0; i < position_.size(); i++) {
           size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(1, positions_.get(i));
+            .computeMessageSize(1, position_.get(i));
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -10267,7 +10267,7 @@ public final class Game {
         }
         private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-            getPositionsFieldBuilder();
+            getPositionFieldBuilder();
           }
         }
         private static Builder create() {
@@ -10276,11 +10276,11 @@ public final class Game {
         
         public Builder clear() {
           super.clear();
-          if (positionsBuilder_ == null) {
-            positions_ = java.util.Collections.emptyList();
+          if (positionBuilder_ == null) {
+            position_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000001);
           } else {
-            positionsBuilder_.clear();
+            positionBuilder_.clear();
           }
           return this;
         }
@@ -10319,14 +10319,14 @@ public final class Game {
         public netmsg.Game.MMovement.Positions buildPartial() {
           netmsg.Game.MMovement.Positions result = new netmsg.Game.MMovement.Positions(this);
           int from_bitField0_ = bitField0_;
-          if (positionsBuilder_ == null) {
+          if (positionBuilder_ == null) {
             if (((bitField0_ & 0x00000001) == 0x00000001)) {
-              positions_ = java.util.Collections.unmodifiableList(positions_);
+              position_ = java.util.Collections.unmodifiableList(position_);
               bitField0_ = (bitField0_ & ~0x00000001);
             }
-            result.positions_ = positions_;
+            result.position_ = position_;
           } else {
-            result.positions_ = positionsBuilder_.build();
+            result.position_ = positionBuilder_.build();
           }
           onBuilt();
           return result;
@@ -10343,29 +10343,29 @@ public final class Game {
         
         public Builder mergeFrom(netmsg.Game.MMovement.Positions other) {
           if (other == netmsg.Game.MMovement.Positions.getDefaultInstance()) return this;
-          if (positionsBuilder_ == null) {
-            if (!other.positions_.isEmpty()) {
-              if (positions_.isEmpty()) {
-                positions_ = other.positions_;
+          if (positionBuilder_ == null) {
+            if (!other.position_.isEmpty()) {
+              if (position_.isEmpty()) {
+                position_ = other.position_;
                 bitField0_ = (bitField0_ & ~0x00000001);
               } else {
-                ensurePositionsIsMutable();
-                positions_.addAll(other.positions_);
+                ensurePositionIsMutable();
+                position_.addAll(other.position_);
               }
               onChanged();
             }
           } else {
-            if (!other.positions_.isEmpty()) {
-              if (positionsBuilder_.isEmpty()) {
-                positionsBuilder_.dispose();
-                positionsBuilder_ = null;
-                positions_ = other.positions_;
+            if (!other.position_.isEmpty()) {
+              if (positionBuilder_.isEmpty()) {
+                positionBuilder_.dispose();
+                positionBuilder_ = null;
+                position_ = other.position_;
                 bitField0_ = (bitField0_ & ~0x00000001);
-                positionsBuilder_ = 
+                positionBuilder_ = 
                   com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                     getPositionsFieldBuilder() : null;
+                     getPositionFieldBuilder() : null;
               } else {
-                positionsBuilder_.addAllMessages(other.positions_);
+                positionBuilder_.addAllMessages(other.position_);
               }
             }
           }
@@ -10374,8 +10374,8 @@ public final class Game {
         }
         
         public final boolean isInitialized() {
-          for (int i = 0; i < getPositionsCount(); i++) {
-            if (!getPositions(i).isInitialized()) {
+          for (int i = 0; i < getPositionCount(); i++) {
+            if (!getPosition(i).isInitialized()) {
               
               return false;
             }
@@ -10409,7 +10409,7 @@ public final class Game {
               case 10: {
                 netmsg.Base.Vect2.Builder subBuilder = netmsg.Base.Vect2.newBuilder();
                 input.readMessage(subBuilder, extensionRegistry);
-                addPositions(subBuilder.buildPartial());
+                addPosition(subBuilder.buildPartial());
                 break;
               }
             }
@@ -10418,190 +10418,190 @@ public final class Game {
         
         private int bitField0_;
         
-        // repeated .base.Vect2 positions = 1;
-        private java.util.List<netmsg.Base.Vect2> positions_ =
+        // repeated .base.Vect2 position = 1;
+        private java.util.List<netmsg.Base.Vect2> position_ =
           java.util.Collections.emptyList();
-        private void ensurePositionsIsMutable() {
+        private void ensurePositionIsMutable() {
           if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-            positions_ = new java.util.ArrayList<netmsg.Base.Vect2>(positions_);
+            position_ = new java.util.ArrayList<netmsg.Base.Vect2>(position_);
             bitField0_ |= 0x00000001;
            }
         }
         
         private com.google.protobuf.RepeatedFieldBuilder<
-            netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder> positionsBuilder_;
+            netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder> positionBuilder_;
         
-        public java.util.List<netmsg.Base.Vect2> getPositionsList() {
-          if (positionsBuilder_ == null) {
-            return java.util.Collections.unmodifiableList(positions_);
+        public java.util.List<netmsg.Base.Vect2> getPositionList() {
+          if (positionBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(position_);
           } else {
-            return positionsBuilder_.getMessageList();
+            return positionBuilder_.getMessageList();
           }
         }
-        public int getPositionsCount() {
-          if (positionsBuilder_ == null) {
-            return positions_.size();
+        public int getPositionCount() {
+          if (positionBuilder_ == null) {
+            return position_.size();
           } else {
-            return positionsBuilder_.getCount();
+            return positionBuilder_.getCount();
           }
         }
-        public netmsg.Base.Vect2 getPositions(int index) {
-          if (positionsBuilder_ == null) {
-            return positions_.get(index);
+        public netmsg.Base.Vect2 getPosition(int index) {
+          if (positionBuilder_ == null) {
+            return position_.get(index);
           } else {
-            return positionsBuilder_.getMessage(index);
+            return positionBuilder_.getMessage(index);
           }
         }
-        public Builder setPositions(
+        public Builder setPosition(
             int index, netmsg.Base.Vect2 value) {
-          if (positionsBuilder_ == null) {
+          if (positionBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
-            ensurePositionsIsMutable();
-            positions_.set(index, value);
+            ensurePositionIsMutable();
+            position_.set(index, value);
             onChanged();
           } else {
-            positionsBuilder_.setMessage(index, value);
+            positionBuilder_.setMessage(index, value);
           }
           return this;
         }
-        public Builder setPositions(
+        public Builder setPosition(
             int index, netmsg.Base.Vect2.Builder builderForValue) {
-          if (positionsBuilder_ == null) {
-            ensurePositionsIsMutable();
-            positions_.set(index, builderForValue.build());
+          if (positionBuilder_ == null) {
+            ensurePositionIsMutable();
+            position_.set(index, builderForValue.build());
             onChanged();
           } else {
-            positionsBuilder_.setMessage(index, builderForValue.build());
+            positionBuilder_.setMessage(index, builderForValue.build());
           }
           return this;
         }
-        public Builder addPositions(netmsg.Base.Vect2 value) {
-          if (positionsBuilder_ == null) {
+        public Builder addPosition(netmsg.Base.Vect2 value) {
+          if (positionBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
-            ensurePositionsIsMutable();
-            positions_.add(value);
+            ensurePositionIsMutable();
+            position_.add(value);
             onChanged();
           } else {
-            positionsBuilder_.addMessage(value);
+            positionBuilder_.addMessage(value);
           }
           return this;
         }
-        public Builder addPositions(
+        public Builder addPosition(
             int index, netmsg.Base.Vect2 value) {
-          if (positionsBuilder_ == null) {
+          if (positionBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
-            ensurePositionsIsMutable();
-            positions_.add(index, value);
+            ensurePositionIsMutable();
+            position_.add(index, value);
             onChanged();
           } else {
-            positionsBuilder_.addMessage(index, value);
+            positionBuilder_.addMessage(index, value);
           }
           return this;
         }
-        public Builder addPositions(
+        public Builder addPosition(
             netmsg.Base.Vect2.Builder builderForValue) {
-          if (positionsBuilder_ == null) {
-            ensurePositionsIsMutable();
-            positions_.add(builderForValue.build());
+          if (positionBuilder_ == null) {
+            ensurePositionIsMutable();
+            position_.add(builderForValue.build());
             onChanged();
           } else {
-            positionsBuilder_.addMessage(builderForValue.build());
+            positionBuilder_.addMessage(builderForValue.build());
           }
           return this;
         }
-        public Builder addPositions(
+        public Builder addPosition(
             int index, netmsg.Base.Vect2.Builder builderForValue) {
-          if (positionsBuilder_ == null) {
-            ensurePositionsIsMutable();
-            positions_.add(index, builderForValue.build());
+          if (positionBuilder_ == null) {
+            ensurePositionIsMutable();
+            position_.add(index, builderForValue.build());
             onChanged();
           } else {
-            positionsBuilder_.addMessage(index, builderForValue.build());
+            positionBuilder_.addMessage(index, builderForValue.build());
           }
           return this;
         }
-        public Builder addAllPositions(
+        public Builder addAllPosition(
             java.lang.Iterable<? extends netmsg.Base.Vect2> values) {
-          if (positionsBuilder_ == null) {
-            ensurePositionsIsMutable();
-            super.addAll(values, positions_);
+          if (positionBuilder_ == null) {
+            ensurePositionIsMutable();
+            super.addAll(values, position_);
             onChanged();
           } else {
-            positionsBuilder_.addAllMessages(values);
+            positionBuilder_.addAllMessages(values);
           }
           return this;
         }
-        public Builder clearPositions() {
-          if (positionsBuilder_ == null) {
-            positions_ = java.util.Collections.emptyList();
+        public Builder clearPosition() {
+          if (positionBuilder_ == null) {
+            position_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000001);
             onChanged();
           } else {
-            positionsBuilder_.clear();
+            positionBuilder_.clear();
           }
           return this;
         }
-        public Builder removePositions(int index) {
-          if (positionsBuilder_ == null) {
-            ensurePositionsIsMutable();
-            positions_.remove(index);
+        public Builder removePosition(int index) {
+          if (positionBuilder_ == null) {
+            ensurePositionIsMutable();
+            position_.remove(index);
             onChanged();
           } else {
-            positionsBuilder_.remove(index);
+            positionBuilder_.remove(index);
           }
           return this;
         }
-        public netmsg.Base.Vect2.Builder getPositionsBuilder(
+        public netmsg.Base.Vect2.Builder getPositionBuilder(
             int index) {
-          return getPositionsFieldBuilder().getBuilder(index);
+          return getPositionFieldBuilder().getBuilder(index);
         }
-        public netmsg.Base.Vect2OrBuilder getPositionsOrBuilder(
+        public netmsg.Base.Vect2OrBuilder getPositionOrBuilder(
             int index) {
-          if (positionsBuilder_ == null) {
-            return positions_.get(index);  } else {
-            return positionsBuilder_.getMessageOrBuilder(index);
+          if (positionBuilder_ == null) {
+            return position_.get(index);  } else {
+            return positionBuilder_.getMessageOrBuilder(index);
           }
         }
         public java.util.List<? extends netmsg.Base.Vect2OrBuilder> 
-             getPositionsOrBuilderList() {
-          if (positionsBuilder_ != null) {
-            return positionsBuilder_.getMessageOrBuilderList();
+             getPositionOrBuilderList() {
+          if (positionBuilder_ != null) {
+            return positionBuilder_.getMessageOrBuilderList();
           } else {
-            return java.util.Collections.unmodifiableList(positions_);
+            return java.util.Collections.unmodifiableList(position_);
           }
         }
-        public netmsg.Base.Vect2.Builder addPositionsBuilder() {
-          return getPositionsFieldBuilder().addBuilder(
+        public netmsg.Base.Vect2.Builder addPositionBuilder() {
+          return getPositionFieldBuilder().addBuilder(
               netmsg.Base.Vect2.getDefaultInstance());
         }
-        public netmsg.Base.Vect2.Builder addPositionsBuilder(
+        public netmsg.Base.Vect2.Builder addPositionBuilder(
             int index) {
-          return getPositionsFieldBuilder().addBuilder(
+          return getPositionFieldBuilder().addBuilder(
               index, netmsg.Base.Vect2.getDefaultInstance());
         }
         public java.util.List<netmsg.Base.Vect2.Builder> 
-             getPositionsBuilderList() {
-          return getPositionsFieldBuilder().getBuilderList();
+             getPositionBuilderList() {
+          return getPositionFieldBuilder().getBuilderList();
         }
         private com.google.protobuf.RepeatedFieldBuilder<
             netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder> 
-            getPositionsFieldBuilder() {
-          if (positionsBuilder_ == null) {
-            positionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+            getPositionFieldBuilder() {
+          if (positionBuilder_ == null) {
+            positionBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
                 netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder>(
-                    positions_,
+                    position_,
                     ((bitField0_ & 0x00000001) == 0x00000001),
                     getParentForChildren(),
                     isClean());
-            positions_ = null;
+            position_ = null;
           }
-          return positionsBuilder_;
+          return positionBuilder_;
         }
         
         // @@protoc_insertion_point(builder_scope:game.MMovement.Positions)
@@ -33996,104 +33996,104 @@ public final class Game {
       "\n.game.Team\022\037\n\004self\030\006 \002(\0132\021.game.PlayerS" +
       "tate\022\'\n\rother_players\030\007 \003(\0132\020.game.InitP" +
       "layer\"&\n\007MEvents\022\033\n\006events\030\001 \003(\0132\013.game." +
-      "Event\"\027\n\006MError\022\r\n\005error\030\001 \002(\t\"\373\001\n\tMMove",
+      "Event\"\027\n\006MError\022\r\n\005error\030\001 \002(\t\"\371\001\n\tMMove",
       "ment\022\030\n\002id\030\001 \002(\0132\014.game.WObjID\022$\n\005paths\030" +
       "\002 \001(\0132\025.game.MMovement.Paths\022,\n\tposition" +
       "s\030\003 \001(\0132\031.game.MMovement.Positions\032%\n\004Pa" +
-      "th\022\035\n\010position\030\001 \003(\0132\013.base.Vect2\032,\n\005Pat" +
-      "hs\022#\n\005paths\030\001 \003(\0132\024.game.MMovement.Path\032" +
-      "+\n\tPositions\022\036\n\tpositions\030\001 \003(\0132\013.base.V" +
-      "ect2\" \n\006TeamID\022\026\n\002id\030\001 \002(\0132\n.base.UUID\"\"" +
-      "\n\010PlayerID\022\026\n\002id\030\001 \002(\0132\n.base.UUID\"K\n\007Ow" +
-      "nerID\022\035\n\007team_id\030\001 \001(\0132\014.game.TeamID\022!\n\t" +
-      "player_id\030\002 \001(\0132\016.game.PlayerID\" \n\006WObjI",
-      "D\022\026\n\002id\030\001 \002(\0132\n.base.UUID\" \n\004Team\022\030\n\002id\030" +
-      "\001 \002(\0132\014.game.TeamID\"Q\n\006Player\022\014\n\004name\030\001 " +
-      "\002(\t\022\032\n\002id\030\002 \002(\0132\016.game.PlayerID\022\035\n\007team_" +
-      "id\030\003 \002(\0132\014.game.TeamID\"1\n\013PlayerState\022\021\n" +
-      "\tresources\030\001 \002(\r\022\017\n\007actions\030\002 \002(\r\"L\n\nIni" +
-      "tPlayer\022\034\n\006player\030\001 \002(\0132\014.game.Player\022 \n" +
-      "\005state\030\002 \001(\0132\021.game.PlayerState\"\205\013\n\007WObj" +
-      "ect\022\030\n\002id\030\001 \002(\0132\014.game.WObjID\022\035\n\010positio" +
-      "n\030\002 \002(\0132\013.base.Vect2\022 \n\004kind\030\003 \002(\0162\022.gam" +
-      "e.WObject.Kind\022*\n\tsized_obj\030\350\007 \001(\0132\026.gam",
-      "e.WObject.SizedObj\022*\n\towned_obj\030\351\007 \001(\0132\026" +
-      ".game.WObject.OwnedObj\0224\n\016giving_actions" +
-      "\030\352\007 \001(\0132\033.game.WObject.GivingActions\022)\n\010" +
-      "warpable\030\353\007 \001(\0132\026.game.WObject.Warpable\022" +
-      "4\n\016special_action\030\354\007 \001(\0132\033.game.WObject." +
-      "SpecialAction\022\'\n\007fighter\030\355\007 \001(\0132\025.game.W" +
-      "Object.Fighter\022?\n\024move_attack_actioned\030\356" +
-      "\007 \001(\0132 .game.WObject.MoveAttackActioned\022" +
-      "\'\n\007movable\030\357\007 \001(\0132\025.game.WObject.Movable" +
-      "\022)\n\010asteroid\030\320\017 \001(\0132\026.game.WObject.Aster",
-      "oid\022+\n\textractor\030\321\017 \001(\0132\027.game.WObject.E" +
-      "xtractor\022)\n\010corvette\030\322\017 \001(\0132\026.game.WObje" +
-      "ct.Corvette\032%\n\010SizedObj\022\031\n\004size\030\001 \002(\0132\013." +
-      "base.Vect2\032\220\001\n\010OwnedObj\022\037\n\010owner_id\030\001 \002(" +
-      "\0132\r.game.OwnerID\022\023\n\013is_critical\030\002 \002(\010\022\034\n" +
-      "\002hp\030\003 \002(\0132\020.base.ValWithMax\022\034\n\007defense\030\004" +
-      " \002(\0132\013.base.Range\022\022\n\nvisibility\030\005 \002(\r\032&\n" +
-      "\rGivingActions\022\025\n\ractions_given\030\001 \002(\r\032>\n" +
-      "\010Warpable\022$\n\nwarp_state\030\001 \002(\0132\020.base.Val" +
-      "WithMax\022\014\n\004cost\030\002 \002(\r\032\'\n\rSpecialAction\022\026",
-      "\n\016actions_needed\030\001 \002(\r\032N\n\007Fighter\022\033\n\006att" +
-      "ack\030\001 \002(\0132\013.base.Range\022\024\n\014attack_range\030\002" +
-      " \002(\r\022\020\n\010attacked\030\003 \002(\010\032G\n\022MoveAttackActi" +
-      "oned\022\026\n\016actions_needed\030\001 \002(\r\022\031\n\021moved_or" +
-      "_attacked\030\002 \002(\010\032\033\n\007Movable\022\020\n\010movement\030\001" +
-      " \002(\r\032\035\n\010Asteroid\022\021\n\tresources\030\001 \002(\r\032B\n\tE" +
-      "xtractor\022\033\n\023turn_start_extracts\030\001 \002(\r\022\030\n" +
-      "\020special_extracts\030\002 \002(\r\032*\n\010Corvette\022\036\n\026s" +
-      "pecial_movement_added\030\001 \002(\r\"\211\001\n\004Kind\022\016\n\n" +
-      "P_ASTEROID\020\001\022\017\n\013B_WARP_GATE\020\002\022\017\n\013B_EXTRA",
-      "CTOR\020\003\022\021\n\rB_WARP_LINKER\020\004\022\r\n\tB_SPAWNER\020\005" +
-      "\022\021\n\rB_LASER_TOWER\020\006\022\016\n\nU_CORVETTE\020\007\022\n\n\006U" +
-      "_WASP\020\010\"\331\004\n\005Event\022*\n\014turn_started\030\001 \001(\0132" +
-      "\024.game.TurnStartedEvt\022&\n\nturn_ended\030\002 \001(" +
-      "\0132\022.game.TurnEndedEvt\0224\n\021visibility_chan" +
-      "ge\030\003 \001(\0132\031.game.VisibilityChangeEvt\022\033\n\004w" +
-      "arp\030\004 \001(\0132\r.game.WarpEvt\022(\n\013obj_visible\030" +
-      "\005 \001(\0132\023.game.ObjVisibleEvt\022\033\n\004move\030\006 \001(\013" +
-      "2\r.game.MoveEvt\022\037\n\006attack\030\007 \001(\0132\017.game.A" +
-      "ttackEvt\0220\n\017movement_change\030\010 \001(\0132\027.game",
-      ".MovementChangeEvt\022@\n\030moved_or_attacked_" +
-      "change\030\t \001(\0132\036.game.MovedOrAttackedChang" +
-      "eEvt\0220\n\017resource_change\030\n \001(\0132\027.game.Res" +
-      "ourceChangeEvt\022.\n\016actions_change\030\013 \001(\0132\026" +
-      ".game.ActionsChangeEvt\022-\n\013warp_change\030\014 " +
-      "\001(\0132\030.game.WarpStateChangeEvt\022\034\n\004join\030\350\007" +
-      " \001(\0132\r.game.JoinEvt\022\036\n\005leave\030\351\007 \001(\0132\016.ga" +
-      "me.LeaveEvt\"+\n\007JoinEvt\022 \n\006player\030\001 \002(\0132\020" +
-      ".game.InitPlayer\"-\n\010LeaveEvt\022!\n\tplayer_i" +
-      "d\030\001 \002(\0132\016.game.PlayerID\"/\n\016TurnStartedEv",
-      "t\022\035\n\007team_id\030\001 \002(\0132\014.game.TeamID\"-\n\014Turn" +
-      "EndedEvt\022\035\n\007team_id\030\001 \002(\0132\014.game.TeamID\"" +
-      "g\n\023VisibilityChangeEvt\022&\n\021visible_positi" +
-      "ons\030\001 \003(\0132\013.base.Vect2\022(\n\023invisible_posi" +
-      "tions\030\002 \003(\0132\013.base.Vect2\"(\n\007WarpEvt\022\035\n\006o" +
-      "bject\030\001 \002(\0132\r.game.WObject\".\n\rObjVisible" +
-      "Evt\022\035\n\006object\030\001 \002(\0132\r.game.WObject\"o\n\007Mo" +
-      "veEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\031\n\004f" +
-      "rom\030\002 \002(\0132\013.base.Vect2\022\027\n\002to\030\003 \002(\0132\013.bas" +
-      "e.Vect2\022\022\n\nmoves_left\030\004 \002(\r\"\250\001\n\tAttackEv",
-      "t\022!\n\013attacker_id\030\001 \002(\0132\014.game.WObjID\022&\n\021" +
-      "attacker_position\030\002 \002(\0132\013.base.Vect2\022!\n\013" +
-      "defender_id\030\003 \002(\0132\014.game.WObjID\022\017\n\007hp_le" +
-      "ft\030\004 \002(\r\022\034\n\006attack\030\005 \002(\0132\014.game.Attack\"J" +
-      "\n\006Attack\022\025\n\rattacker_roll\030\001 \002(\r\022\025\n\rdefen" +
-      "der_roll\030\002 \002(\r\022\022\n\nsuccessful\030\003 \002(\010\"G\n\021Mo" +
-      "vementChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.W" +
-      "ObjID\022\024\n\014new_movement\030\002 \002(\r\"S\n\030MovedOrAt" +
-      "tackedChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.W" +
-      "ObjID\022\031\n\021moved_or_attacked\030\002 \002(\010\"k\n\021Reso",
-      "urceChangeEvt\022\034\n\006obj_id\030\001 \001(\0132\014.game.WOb" +
-      "jID\022!\n\tplayer_id\030\002 \001(\0132\016.game.PlayerID\022\025" +
-      "\n\rnew_resources\030\003 \002(\r\"J\n\020ActionsChangeEv" +
-      "t\022!\n\tplayer_id\030\001 \002(\0132\016.game.PlayerID\022\023\n\013" +
-      "new_actions\030\002 \002(\r\"J\n\022WarpStateChangeEvt\022" +
-      "\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\026\n\016new_war" +
-      "p_state\030\002 \002(\rB\010\n\006netmsg"
+      "th\022\035\n\010position\030\001 \003(\0132\013.base.Vect2\032+\n\005Pat" +
+      "hs\022\"\n\004path\030\001 \003(\0132\024.game.MMovement.Path\032*" +
+      "\n\tPositions\022\035\n\010position\030\001 \003(\0132\013.base.Vec" +
+      "t2\" \n\006TeamID\022\026\n\002id\030\001 \002(\0132\n.base.UUID\"\"\n\010" +
+      "PlayerID\022\026\n\002id\030\001 \002(\0132\n.base.UUID\"K\n\007Owne" +
+      "rID\022\035\n\007team_id\030\001 \001(\0132\014.game.TeamID\022!\n\tpl" +
+      "ayer_id\030\002 \001(\0132\016.game.PlayerID\" \n\006WObjID\022",
+      "\026\n\002id\030\001 \002(\0132\n.base.UUID\" \n\004Team\022\030\n\002id\030\001 " +
+      "\002(\0132\014.game.TeamID\"Q\n\006Player\022\014\n\004name\030\001 \002(" +
+      "\t\022\032\n\002id\030\002 \002(\0132\016.game.PlayerID\022\035\n\007team_id" +
+      "\030\003 \002(\0132\014.game.TeamID\"1\n\013PlayerState\022\021\n\tr" +
+      "esources\030\001 \002(\r\022\017\n\007actions\030\002 \002(\r\"L\n\nInitP" +
+      "layer\022\034\n\006player\030\001 \002(\0132\014.game.Player\022 \n\005s" +
+      "tate\030\002 \001(\0132\021.game.PlayerState\"\205\013\n\007WObjec" +
+      "t\022\030\n\002id\030\001 \002(\0132\014.game.WObjID\022\035\n\010position\030" +
+      "\002 \002(\0132\013.base.Vect2\022 \n\004kind\030\003 \002(\0162\022.game." +
+      "WObject.Kind\022*\n\tsized_obj\030\350\007 \001(\0132\026.game.",
+      "WObject.SizedObj\022*\n\towned_obj\030\351\007 \001(\0132\026.g" +
+      "ame.WObject.OwnedObj\0224\n\016giving_actions\030\352" +
+      "\007 \001(\0132\033.game.WObject.GivingActions\022)\n\010wa" +
+      "rpable\030\353\007 \001(\0132\026.game.WObject.Warpable\0224\n" +
+      "\016special_action\030\354\007 \001(\0132\033.game.WObject.Sp" +
+      "ecialAction\022\'\n\007fighter\030\355\007 \001(\0132\025.game.WOb" +
+      "ject.Fighter\022?\n\024move_attack_actioned\030\356\007 " +
+      "\001(\0132 .game.WObject.MoveAttackActioned\022\'\n" +
+      "\007movable\030\357\007 \001(\0132\025.game.WObject.Movable\022)" +
+      "\n\010asteroid\030\320\017 \001(\0132\026.game.WObject.Asteroi",
+      "d\022+\n\textractor\030\321\017 \001(\0132\027.game.WObject.Ext" +
+      "ractor\022)\n\010corvette\030\322\017 \001(\0132\026.game.WObject" +
+      ".Corvette\032%\n\010SizedObj\022\031\n\004size\030\001 \002(\0132\013.ba" +
+      "se.Vect2\032\220\001\n\010OwnedObj\022\037\n\010owner_id\030\001 \002(\0132" +
+      "\r.game.OwnerID\022\023\n\013is_critical\030\002 \002(\010\022\034\n\002h" +
+      "p\030\003 \002(\0132\020.base.ValWithMax\022\034\n\007defense\030\004 \002" +
+      "(\0132\013.base.Range\022\022\n\nvisibility\030\005 \002(\r\032&\n\rG" +
+      "ivingActions\022\025\n\ractions_given\030\001 \002(\r\032>\n\010W" +
+      "arpable\022$\n\nwarp_state\030\001 \002(\0132\020.base.ValWi" +
+      "thMax\022\014\n\004cost\030\002 \002(\r\032\'\n\rSpecialAction\022\026\n\016",
+      "actions_needed\030\001 \002(\r\032N\n\007Fighter\022\033\n\006attac" +
+      "k\030\001 \002(\0132\013.base.Range\022\024\n\014attack_range\030\002 \002" +
+      "(\r\022\020\n\010attacked\030\003 \002(\010\032G\n\022MoveAttackAction" +
+      "ed\022\026\n\016actions_needed\030\001 \002(\r\022\031\n\021moved_or_a" +
+      "ttacked\030\002 \002(\010\032\033\n\007Movable\022\020\n\010movement\030\001 \002" +
+      "(\r\032\035\n\010Asteroid\022\021\n\tresources\030\001 \002(\r\032B\n\tExt" +
+      "ractor\022\033\n\023turn_start_extracts\030\001 \002(\r\022\030\n\020s" +
+      "pecial_extracts\030\002 \002(\r\032*\n\010Corvette\022\036\n\026spe" +
+      "cial_movement_added\030\001 \002(\r\"\211\001\n\004Kind\022\016\n\nP_" +
+      "ASTEROID\020\001\022\017\n\013B_WARP_GATE\020\002\022\017\n\013B_EXTRACT",
+      "OR\020\003\022\021\n\rB_WARP_LINKER\020\004\022\r\n\tB_SPAWNER\020\005\022\021" +
+      "\n\rB_LASER_TOWER\020\006\022\016\n\nU_CORVETTE\020\007\022\n\n\006U_W" +
+      "ASP\020\010\"\331\004\n\005Event\022*\n\014turn_started\030\001 \001(\0132\024." +
+      "game.TurnStartedEvt\022&\n\nturn_ended\030\002 \001(\0132" +
+      "\022.game.TurnEndedEvt\0224\n\021visibility_change" +
+      "\030\003 \001(\0132\031.game.VisibilityChangeEvt\022\033\n\004war" +
+      "p\030\004 \001(\0132\r.game.WarpEvt\022(\n\013obj_visible\030\005 " +
+      "\001(\0132\023.game.ObjVisibleEvt\022\033\n\004move\030\006 \001(\0132\r" +
+      ".game.MoveEvt\022\037\n\006attack\030\007 \001(\0132\017.game.Att" +
+      "ackEvt\0220\n\017movement_change\030\010 \001(\0132\027.game.M",
+      "ovementChangeEvt\022@\n\030moved_or_attacked_ch" +
+      "ange\030\t \001(\0132\036.game.MovedOrAttackedChangeE" +
+      "vt\0220\n\017resource_change\030\n \001(\0132\027.game.Resou" +
+      "rceChangeEvt\022.\n\016actions_change\030\013 \001(\0132\026.g" +
+      "ame.ActionsChangeEvt\022-\n\013warp_change\030\014 \001(" +
+      "\0132\030.game.WarpStateChangeEvt\022\034\n\004join\030\350\007 \001" +
+      "(\0132\r.game.JoinEvt\022\036\n\005leave\030\351\007 \001(\0132\016.game" +
+      ".LeaveEvt\"+\n\007JoinEvt\022 \n\006player\030\001 \002(\0132\020.g" +
+      "ame.InitPlayer\"-\n\010LeaveEvt\022!\n\tplayer_id\030" +
+      "\001 \002(\0132\016.game.PlayerID\"/\n\016TurnStartedEvt\022",
+      "\035\n\007team_id\030\001 \002(\0132\014.game.TeamID\"-\n\014TurnEn" +
+      "dedEvt\022\035\n\007team_id\030\001 \002(\0132\014.game.TeamID\"g\n" +
+      "\023VisibilityChangeEvt\022&\n\021visible_position" +
+      "s\030\001 \003(\0132\013.base.Vect2\022(\n\023invisible_positi" +
+      "ons\030\002 \003(\0132\013.base.Vect2\"(\n\007WarpEvt\022\035\n\006obj" +
+      "ect\030\001 \002(\0132\r.game.WObject\".\n\rObjVisibleEv" +
+      "t\022\035\n\006object\030\001 \002(\0132\r.game.WObject\"o\n\007Move" +
+      "Evt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\031\n\004fro" +
+      "m\030\002 \002(\0132\013.base.Vect2\022\027\n\002to\030\003 \002(\0132\013.base." +
+      "Vect2\022\022\n\nmoves_left\030\004 \002(\r\"\250\001\n\tAttackEvt\022",
+      "!\n\013attacker_id\030\001 \002(\0132\014.game.WObjID\022&\n\021at" +
+      "tacker_position\030\002 \002(\0132\013.base.Vect2\022!\n\013de" +
+      "fender_id\030\003 \002(\0132\014.game.WObjID\022\017\n\007hp_left" +
+      "\030\004 \002(\r\022\034\n\006attack\030\005 \002(\0132\014.game.Attack\"J\n\006" +
+      "Attack\022\025\n\rattacker_roll\030\001 \002(\r\022\025\n\rdefende" +
+      "r_roll\030\002 \002(\r\022\022\n\nsuccessful\030\003 \002(\010\"G\n\021Move" +
+      "mentChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WOb" +
+      "jID\022\024\n\014new_movement\030\002 \002(\r\"S\n\030MovedOrAtta" +
+      "ckedChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WOb" +
+      "jID\022\031\n\021moved_or_attacked\030\002 \002(\010\"k\n\021Resour",
+      "ceChangeEvt\022\034\n\006obj_id\030\001 \001(\0132\014.game.WObjI" +
+      "D\022!\n\tplayer_id\030\002 \001(\0132\016.game.PlayerID\022\025\n\r" +
+      "new_resources\030\003 \002(\r\"J\n\020ActionsChangeEvt\022" +
+      "!\n\tplayer_id\030\001 \002(\0132\016.game.PlayerID\022\023\n\013ne" +
+      "w_actions\030\002 \002(\r\"J\n\022WarpStateChangeEvt\022\034\n" +
+      "\006obj_id\030\001 \002(\0132\014.game.WObjID\022\026\n\016new_warp_" +
+      "state\030\002 \002(\rB\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -34225,7 +34225,7 @@ public final class Game {
           internal_static_game_MMovement_Paths_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MMovement_Paths_descriptor,
-              new java.lang.String[] { "Paths", },
+              new java.lang.String[] { "Path", },
               netmsg.Game.MMovement.Paths.class,
               netmsg.Game.MMovement.Paths.Builder.class);
           internal_static_game_MMovement_Positions_descriptor =
@@ -34233,7 +34233,7 @@ public final class Game {
           internal_static_game_MMovement_Positions_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MMovement_Positions_descriptor,
-              new java.lang.String[] { "Positions", },
+              new java.lang.String[] { "Position", },
               netmsg.Game.MMovement.Positions.class,
               netmsg.Game.MMovement.Positions.Builder.class);
           internal_static_game_TeamID_descriptor =

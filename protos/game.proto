@@ -93,11 +93,11 @@ message MMovement {
   }
 
   message Paths {
-    repeated Path paths = 1;
+    repeated Path path = 1;
   }
 
   message Positions {
-    repeated base.Vect2 positions = 1;
+    repeated base.Vect2 position = 1;
   }
 
   required WObjID id = 1;
