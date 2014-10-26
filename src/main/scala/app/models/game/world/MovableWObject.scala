@@ -1,7 +1,7 @@
 package app.models.game.world
 
 import app.algorithms.Pathfinding.Path
-import app.models.game.events.{Evented, MoveEvt, MovedOrAttackedChangeEvt, MovementChangeEvt}
+import app.models.game.events._
 import implicits._
 import utils.data.NonEmptyVector
 
@@ -31,11 +31,11 @@ extends WObjectOps with MoveAttackActionedOps[Self]
     val newSelf = moveTo(target)(self)
     Evented(
       newSelf,
-      Vector(MoveEvt(world, self, target, newSelf.movementLeft)) ++ (
+      (
         if (self.movedOrAttacked =/= newSelf.movedOrAttacked)
           Vector(MovedOrAttackedChangeEvt(world, newSelf))
         else Vector.empty
-      )
+      ) :+ MoveEvt(world, self, target, newSelf.movementLeft)
     )
   }
 }
@@ -73,8 +73,12 @@ with Mobility[Mobility.Movable.type] {
       s"$this needed ${path.movementNeeded} movement for $path, had $movementLeft".left
     else if (path.vects.head =/= position)
       s"Starting $path vect =/= $this position".left
+    else if (path.movementNeeded.isZero)
+      // If we don't need to go anywhere, don't go.
+      Evented((world, Some(self))).right
     else
-      travel(path.vects, Evented((world, Some(self)))).right
+      // The first vect is self position
+      travel(path.vects.tail, Evented((world, Some(self)))).right
   }
 
   def moveTo(
@@ -93,12 +97,15 @@ with Mobility[Mobility.Movable.type] {
         vects.tail,
         for {
           newSelf <- self |> companion.moveTo(world, vects.head)
-          newEvtWorld = world.updated(self, newSelf)
-          world <- World.revealObjects(owner.team, newEvtWorld)
-          t <- world.reactTo(newSelf)
+          movedWorld = world.updated(self, newSelf)
+          revealedWorld <- World.revealObjects(owner.team, movedWorld)
+          t <- revealedWorld.reactTo(newSelf)
         } yield t
       )
       case (_, None) => current
     }
   }
+
+
+  def hasAttack(current: WObject.WorldObjOptUpdate[Self]) = current.events.exists(_.isInstanceOf[AttackEvt[_]])
 }
