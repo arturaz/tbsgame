@@ -14,7 +14,7 @@ extends Pipeline[ByteString, Vector[Frame], Frame, ByteString] {
 
   def fromClient(data: ByteString): Vector[Frame] = {
     buffer ++= data
-    Log.debug(s"Received ${data.size} bytes ($data).")
+//    Log.debug(s"Received ${data.size} bytes ($data).")
     val (newBuf, frames) = process(buffer)
     buffer = newBuf
     frames
@@ -25,7 +25,7 @@ extends Pipeline[ByteString, Vector[Frame], Frame, ByteString] {
     bb.putInt(data.data.size)
     bb ++= data.data
     val result = bb.result()
-    Log.debug(s"Encoded frame of size ${data.data.size} ($data) to $result")
+//    Log.debug(s"Encoded frame of size ${data.data.size} ($data) to $result")
     result
   }
 
@@ -38,14 +38,14 @@ extends Pipeline[ByteString, Vector[Frame], Frame, ByteString] {
       val rest = iter.toByteString
       if (rest.length >= frameSize) {
         val (frame, newBuf) = rest.splitAt(frameSize)
-        Log.debug(
-          s"Frame of size $frameSize received, rest of the buffer is ${
-            newBuf.size} bytes"
-        )
+//        Log.debug(
+//          s"Frame of size $frameSize received, rest of the buffer is ${
+//            newBuf.size} bytes"
+//        )
         return process(newBuf, frames :+ Frame(frame))
       }
       else {
-        Log.debug(s"Still need ${frameSize - rest.length} bytes for frame.")
+//        Log.debug(s"Still need ${frameSize - rest.length} bytes for frame.")
       }
     }
 
