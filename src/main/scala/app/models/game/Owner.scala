@@ -5,9 +5,10 @@ import java.util.UUID
 import app.models.User
 import app.models.game.world.OwnedObj
 import implicits._
+import utils.IdObj
 
 object Owner {
-  sealed trait Id extends Any
+  sealed trait Id extends Any with IdObj
 }
 
 sealed trait Owner {
@@ -19,7 +20,9 @@ sealed trait Owner {
 }
 
 object Team {
-  case class Id(id: UUID) extends AnyVal with Owner.Id
+  case class Id(id: UUID) extends AnyVal with Owner.Id {
+    override protected def prefix = "TID"
+  }
   @inline def newId = Id(UUID.randomUUID())
 }
 case class Team(id: Team.Id=Team.newId) extends Owner {
@@ -27,7 +30,9 @@ case class Team(id: Team.Id=Team.newId) extends Owner {
 }
 
 object Player {
-  case class Id(id: UUID) extends AnyVal with Owner.Id
+  case class Id(id: UUID) extends AnyVal with Owner.Id {
+    override protected def prefix = "PID"
+  }
   @inline def newId = Id(UUID.randomUUID())
 
   def unapply(fo: OwnedObj) = fo.owner match {

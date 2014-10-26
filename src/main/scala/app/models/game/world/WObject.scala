@@ -3,6 +3,7 @@ package app.models.game.world
 import java.util.UUID
 
 import app.models.game.events.Evented
+import utils.IdObj
 
 trait WObjectOps {
   def bounds(position: Vect2) = Bounds(position, Vect2.one)
@@ -13,7 +14,9 @@ trait WObjectStats
 trait WObjectCompanion extends WObjectOps with WObjectStats
 
 object WObject {
-  case class Id(id: UUID) extends AnyVal
+  case class Id(id: UUID) extends AnyVal with IdObj {
+    override protected def prefix = "WObjID"
+  }
   /* A world update where a new World and Obj is returned. */
   type WorldObjUpdate[Obj] = Evented[(World, Obj)]
   /* A world update where a new World and Optional Obj (it might have been destroyed in a
