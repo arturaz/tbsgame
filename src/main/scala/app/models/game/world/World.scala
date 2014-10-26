@@ -172,7 +172,7 @@ object World {
     }.flatten
     evtWorld.flatMap { newWorld =>
       val newVisibleObjs = newWorld.objectsIn(newVisiblePoints)
-      val newVisibleObjEvents = newVisibleObjs.map(ObjVisibleEvt(newWorld, _))
+      val newVisibleObjEvents = newVisibleObjs.map(ObjVisibleEvt(team, newWorld, _))
       Evented(newWorld, newVisibleObjEvents.toVector)
     }
   }

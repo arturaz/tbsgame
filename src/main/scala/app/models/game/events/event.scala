@@ -52,8 +52,8 @@ case class WarpStateChangeEvt(world: World, newObj: Warpable) extends BoundedEve
   def bounds = newObj.bounds
 }
 
-case class ObjVisibleEvt(world: World, obj: WObject) extends BoundedEvent {
-  def bounds = obj.bounds
+case class ObjVisibleEvt(team: Team, world: World, obj: WObject) extends VisibleEvent {
+  override def visibleBy(owner: Owner) = owner.team === team
 }
 
 case class MoveEvt(
@@ -62,7 +62,7 @@ case class MoveEvt(
   override def asViewedBy(owner: Owner) =
     if (world.isVisibleFor(owner, oldObj.position)) Iterable(this)
     else if (world.isVisibleFor(owner, to))
-      Iterable(ObjVisibleEvt(world, oldObj), this)
+      Iterable(ObjVisibleEvt(owner.team, world, oldObj), this)
     else Iterable.empty
 }
 
