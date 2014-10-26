@@ -25,7 +25,7 @@ with SpecialActionCompanion[Extractor] {
     val objects = world.objects.filter(_.bounds === b)
     val isAsteroid = objects.exists(_.isInstanceOf[Asteroid])
     if (! isAsteroid || objects.size =/= 1)
-      Left(s"Expected $b to only have asteroid, but there were $objects")
+      Left(s"Warping in: expected $b to only have asteroid, but there were $objects")
     else
       Right(Extractor(position, owner))
   }
