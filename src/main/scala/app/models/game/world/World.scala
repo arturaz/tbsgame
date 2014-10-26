@@ -21,8 +21,7 @@ case class World private (
 ) extends TurnBased[World] {
   import app.models.game.world.World._
 
-  override def toString =
-    s"World($bounds, objects: ${objects.size}, resources: $resourcesMap, $visibilityMap)"
+  override def toString = s"World($bounds, objects: ${objects.size})"
 
   def gameTurnStarted = Evented(this) |> gameTurnX(_.gameTurnStarted)
   def gameTurnFinished = Evented(this) |> gameTurnX(_.gameTurnFinished)
