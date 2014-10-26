@@ -12,20 +12,23 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
     data: WObject.WorldObjUpdate[Self]
   ): WObject.WorldObjUpdate[Self] =
     data.flatMap { case orig @ (world, self) =>
-      val targets = world.objects.collect {
-        case obj: OwnedObj if shouldReact(self, obj) && self.canAttack(obj, world) => obj
+      if (self.isWarpedIn) {
+        val targets = world.objects.collect {
+          case obj: OwnedObj if shouldReact(self, obj) && self.canAttack(obj, world) => obj
+        }
+        if (targets.isEmpty) data
+        else {
+          val target = targets.reduce(SingleMindAI.atkOrdRndLtOO)
+          self.attackWS(target, world).fold(
+            err => {
+              Log.error(s"$self tried to attack reachable $target, but failed: $err")
+              data
+            },
+            _.map { case (w, s) => (w, s.asInstanceOf[Self])}
+          )
+        }
       }
-      if (targets.isEmpty) data
-      else {
-        val target = targets.reduce(SingleMindAI.atkOrdRndLtOO)
-        self.attackWS(target, world).fold(
-          err => {
-            Log.error(s"$self tried to attack reachable $target, but failed: $err")
-            data
-          },
-          _.map { case (w, s) => (w, s.asInstanceOf[Self]) }
-        )
-      }
+      else data
     }
 }
 
