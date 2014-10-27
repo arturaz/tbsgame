@@ -36,6 +36,7 @@ package object implicits {
     @inline def left[B]: Either[A, B] = Left(a)
     @inline def right[B]: Either[B, A] = Right(a)
     @inline def mapVal[B](f: A => B) = f(a)
+    @inline def tap(f: A => Unit) = { f(a); a }
     @inline def cast[B : ClassTag]: Option[B] =
       a match { case b: B => Some(b); case _ => None }
   }
