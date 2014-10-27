@@ -10,7 +10,7 @@ sealed trait FinalEvent
 /* Base event class. */
 sealed trait Event extends FinalEvent {
   /* Some events expand into several events when viewed in prism of some owner. */
-  def asViewedBy(owner: Owner): Iterable[Event]
+  def asViewedBy(owner: Owner): Iterable[FinalEvent]
 }
 
 sealed trait VisibleEvent extends Event {

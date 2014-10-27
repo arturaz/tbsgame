@@ -20,7 +20,7 @@ object Combat {
         target.path
 
     unit.moveTo(world, moveTarget).right.flatMap { movedEvtWorldSelf =>
-      lazy val movedEvtWorld = movedEvtWorldSelf.map(_._1)
+      @inline def movedEvtWorld = movedEvtWorldSelf.map(_._1)
       movedEvtWorldSelf.value match {
         case (newWorld, Some(movedUnit)) =>
           movedUnit.attackW(target.value, newWorld).fold(

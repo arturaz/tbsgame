@@ -4,7 +4,7 @@ import app.models.game.Attack
 import app.models.game.events.{AttackEvt, Evented}
 import implicits._
 
-trait FighterOps[Self] extends OwnedObjOps[Self]
+trait FighterOps[Self <: Fighter] extends OwnedObjOps[Self]
 with MoveAttackActionedOps[Self] {
   def attacked(value: Boolean)(self: Self): Self
 }
@@ -14,7 +14,7 @@ trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
   val attackRange: TileDistance
 }
 
-trait FighterCompanion[Self] extends FighterOps[Self] with FighterStats
+trait FighterCompanion[Self <: Fighter] extends FighterOps[Self] with FighterStats
 
 trait Fighter extends OwnedObj with MoveAttackActioned {
   type Self <: Fighter

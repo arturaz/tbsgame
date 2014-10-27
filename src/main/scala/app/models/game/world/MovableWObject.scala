@@ -3,12 +3,13 @@ package app.models.game.world
 import app.algorithms.Pathfinding.Path
 import app.models.game.events._
 import implicits._
+import infrastructure.Log
 import utils.data.NonEmptyVector
 
 trait MovableWObjectOps[Self <: MovableWObject]
 extends WObjectOps with MoveAttackActionedOps[Self]
 { _: MovableWObjectStats =>
-  def setMoveValues(position: Vect2, movementLeft: TileDistance)(self: Self): Self
+  protected def setMoveValues(position: Vect2, movementLeft: TileDistance)(self: Self): Self
 
   private[this] def resetMovementLeft(self: Self): Self =
     self |> setMoveValues(self.position, movement)
@@ -18,25 +19,22 @@ extends WObjectOps with MoveAttackActionedOps[Self]
     Evented(
       newSelf,
       if (self === newSelf) Vector.empty
-      else Vector(MovementChangeEvt(world, newSelf))
+      else {
+        Log.debug(s"movement change: \n$self\n$newSelf")
+        Vector(MovementChangeEvt(world, newSelf))
+      }
     )
   }
 
-  private[this] def moveTo(target: Vect2)(self: Self): Self =
-    self |>
-      setMoveValues(target, self.movementLeft - self.position.tileDistance(target)) |>
-      withMovedOrAttacked(true)
-
   def moveTo(world: World, target: Vect2)(self: Self): Evented[Self] = {
-    val newSelf = moveTo(target)(self)
-    Evented(
-      newSelf,
-      (
-        if (self.movedOrAttacked =/= newSelf.movedOrAttacked)
-          Vector(MovedOrAttackedChangeEvt(world, newSelf))
-        else Vector.empty
-      ) :+ MoveEvt(world, self, target, newSelf.movementLeft)
-    )
+    for {
+      newSelf <- self |> withMovedOrAttackedEvt(world, true)
+      newSelf <- Evented(
+        newSelf |>
+        setMoveValues(target, newSelf.movementLeft - self.position.tileDistance(target))
+      )
+      newSelf <- Evented(newSelf, MoveEvt(world, self, target, newSelf.movementLeft))
+    } yield newSelf
   }
 }
 
@@ -64,7 +62,9 @@ with Mobility[Mobility.Movable.type] {
   override def teamTurnStartedSelf(world: World) =
     super.teamTurnStartedSelf(world) |>
     selfEventedUpdate(companion.resetMovementLeft) |>
-    selfUpdate(_ |> companion.withMovedOrAttacked(companion.InitialMovedOrAttacked))
+    selfEventedUpdate((world, self) =>
+      self |> companion.withMovedOrAttackedEvt(world, companion.InitialMovedOrAttacked)
+    )
 
   def moveTo(
     world: World, path: Path
@@ -102,7 +102,7 @@ with Mobility[Mobility.Movable.type] {
           t <- revealedWorld.reactTo(newSelf)
         } yield t
       )
-      case (_, None) => current
+      case orig @ (_, None) => Evented(orig)
     }
   }
 

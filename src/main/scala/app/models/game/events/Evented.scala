@@ -30,4 +30,6 @@ case class Evented[+A](value: A, events: Events=Vector.empty) {
     implicit ev: A <:< Either[B, Evented[C]]
   ): Either[B, Evented[C]] =
     extract.right.map(_.flatten)
+
+  def debugStr = s"Evented:\n## value=$value\n## events=\n${events.mkString("### ", "\n### ", "")}"
 }

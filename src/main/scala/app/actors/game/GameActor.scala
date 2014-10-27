@@ -9,7 +9,6 @@ import app.models.game._
 import app.models.game.events._
 import app.models.game.world._
 import implicits._
-import infrastructure.Log
 import utils.data.NonEmptyVector
 
 import scala.annotation.tailrec
@@ -87,8 +86,9 @@ object GameActor {
       ref ! _
     )
 
-  private def events(human: Human, ref: ActorRef, events: Events): Unit =
-    ref ! Out.Events(events.flatMap(_.asViewedBy(human)))
+  private def events(
+    human: Human, ref: ActorRef, events: Events
+  ): Unit = ref ! Out.Events(events.flatMap(_.asViewedBy(human)))
 
   @tailrec private def nextReadyTeam(
     game: Evented[TurnBasedGame]
@@ -195,8 +195,9 @@ class GameActor private (
   private[this] def update(
     requester: ActorRef, f: TurnBasedGame => TurnBasedGame.Result
   ): Unit = {
+    log.debug("Updating game by a request from {}", requester)
     f(game).right.map(nextReadyTeam).fold(err => {
-      Log.error(err)
+      log.error(err)
       requester ! Out.Error(err)
     }, evented => {
       game = evented.value
