@@ -59,9 +59,7 @@ trait OwnedObj extends WObject {
   override protected def selfEventedUpdate(
     f: (World, Self) => Evented[Self]
   )(evented: WorldSelfUpdate) = evented |> super.selfEventedUpdate(f) |> { evt =>
-    evt.flatMap { case (world, self) =>
-      World.revealObjects(self.owner.team, Evented(world, evt.events)).map((_, self))
-    }
+    World.revealObjects(self.owner.team, evt.map(_._1)).map((_, evt.value._2))
   }
 }
 
