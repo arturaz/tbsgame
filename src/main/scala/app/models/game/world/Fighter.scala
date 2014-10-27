@@ -1,12 +1,20 @@
 package app.models.game.world
 
 import app.models.game.Attack
-import app.models.game.events.{AttackEvt, Evented}
+import app.models.game.events.{AttackedChangeEvt, AttackEvt, Evented}
 import implicits._
 
 trait FighterOps[Self <: Fighter] extends OwnedObjOps[Self]
 with MoveAttackActionedOps[Self] {
-  def attacked(value: Boolean)(self: Self): Self
+  protected def attacked(value: Boolean)(self: Self): Self
+  def attackedEvt(value: Boolean)(world: World, self: Self): Evented[Self] = {
+    val newSelf = self |> attacked(value)
+    Evented(
+      newSelf,
+      if (self === newSelf) Vector.empty
+      else Vector(AttackedChangeEvt(world, newSelf))
+    )
+  }
 }
 
 trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
@@ -27,8 +35,8 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
 
   protected def resetAttack(data: Evented[(World, Self)]) =
     data |>
-    selfUpdate(_ |> companion.attacked(false)) |>
-    selfUpdate(_ |> companion.withMovedOrAttacked(companion.InitialMovedOrAttacked))
+    selfEventedUpdate(companion.attackedEvt(false)) |>
+    selfEventedUpdate(companion.withMovedOrAttackedEvt(companion.InitialMovedOrAttacked))
 
   def canReachAttack(obj: OwnedObj) =
     obj.bounds.withinTileDistance(position, companion.attackRange)
@@ -48,12 +56,15 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
 
   private[this] def attackSimple[Target <: OwnedObj](
     obj: Target, world: World
-  ): Either[String, (Attack, Self, Option[Target])] =
+  ): Either[String, (Attack, Evented[Self], Option[Target])] =
     cantAttackReason(obj, world).fold2({
       val attack = Attack(companion.attack.random, obj.companion.defense.random)
       (
         attack,
-        self |> companion.attacked(true) |> companion.withMovedOrAttacked(true),
+        for {
+          newSelf <- companion.attackedEvt(true)(world, self)
+          newSelf <- companion.withMovedOrAttackedEvt(true)(world, newSelf)
+        } yield newSelf,
         attack(obj)
       ).right
     }, _.left)
@@ -61,11 +72,14 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
   def attack[Target <: OwnedObj](
     obj: Target, world: World
   ): Either[String, Evented[(World, Self, Attack, Option[Target])]] = {
-    attackSimple(obj, world).right.map { case (attack, attacked, newObj) =>
-      (
-        AttackEvt(world, attacked, obj -> newObj, attack) +:
-        world.updated(this, attacked)
-      ).flatMap(_.updated(obj, newObj)).map((_, attacked, attack, newObj))
+    attackSimple(obj, world).right.map { case (attack, attackedEvt, newObj) =>
+      for {
+        attacked <- attackedEvt
+        newWorld <-
+          AttackEvt(world, attacked, obj -> newObj, attack) +:
+          world.updated(self, attacked)
+        newWorld <- newWorld.updated(obj, newObj)
+      } yield (newWorld, attacked, attack, newObj)
     }
   }
 

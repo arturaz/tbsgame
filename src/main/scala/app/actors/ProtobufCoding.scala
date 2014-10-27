@@ -295,6 +295,10 @@ object ProtobufCoding {
       Game.WarpStateChangeEvt.newBuilder().
         setObjId(evt.newObj.id).setNewWarpState(evt.newObj.warpState).build()
 
+    implicit def convert(evt: AttackedChangeEvt): Game.AttackedChangeEvt =
+      Game.AttackedChangeEvt.newBuilder().
+        setObjId(evt.newObj.id).setNewAttacked(evt.newObj.hasAttacked).build()
+
     implicit def convert(evt: JoinEvt): Game.JoinEvt =
       Game.JoinEvt.newBuilder().setPlayer(convert(evt.human, Some(evt.state))).build()
 
@@ -317,6 +321,7 @@ object ProtobufCoding {
         case evt: JoinEvt => b.setJoin(evt)
         case evt: LeaveEvt => b.setLeave(evt)
         case evt: WarpStateChangeEvt => b.setWarpChange(evt)
+        case evt: AttackedChangeEvt => b.setAttackedChange(evt)
       } }.build()
 
     /* Messages */

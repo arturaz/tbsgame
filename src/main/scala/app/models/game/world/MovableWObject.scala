@@ -28,7 +28,7 @@ extends WObjectOps with MoveAttackActionedOps[Self]
 
   def moveTo(world: World, target: Vect2)(self: Self): Evented[Self] = {
     for {
-      newSelf <- self |> withMovedOrAttackedEvt(world, true)
+      newSelf <- withMovedOrAttackedEvt(true)(world, self)
       newSelf <- Evented(
         newSelf |>
         setMoveValues(target, newSelf.movementLeft - self.position.tileDistance(target))
@@ -62,8 +62,8 @@ with Mobility[Mobility.Movable.type] {
   override def teamTurnStartedSelf(world: World) =
     super.teamTurnStartedSelf(world) |>
     selfEventedUpdate(companion.resetMovementLeft) |>
-    selfEventedUpdate((world, self) =>
-      self |> companion.withMovedOrAttackedEvt(world, companion.InitialMovedOrAttacked)
+    selfEventedUpdate(
+      companion.withMovedOrAttackedEvt(companion.InitialMovedOrAttacked)
     )
 
   def moveTo(

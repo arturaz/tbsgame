@@ -6,7 +6,7 @@ import implicits._
 
 trait MoveAttackActionedOps[Self <: MoveAttackActioned] extends OwnedObjOps[Self] {
   protected def withMovedOrAttacked(value: Boolean)(self: Self): Self
-  def withMovedOrAttackedEvt(world: World, value: Boolean)(self: Self): Evented[Self] = {
+  def withMovedOrAttackedEvt(value: Boolean)(world: World, self: Self): Evented[Self] = {
     for {
       newSelf <- Evented(self |> withMovedOrAttacked(value))
       newSelf <- Evented(

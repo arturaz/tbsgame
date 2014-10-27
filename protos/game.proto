@@ -256,6 +256,7 @@ message Event { // {{{
   optional ResourceChangeEvt resource_change = 10;
   optional ActionsChangeEvt actions_change = 11;
   optional WarpStateChangeEvt warp_change = 12;
+  optional AttackedChangeEvt attacked_change = 13;
 
   optional JoinEvt join = 1000;
   optional LeaveEvt leave = 1001;
@@ -336,5 +337,10 @@ message ActionsChangeEvt {
 message WarpStateChangeEvt {
   required WObjID obj_id = 1;
   required uint32 new_warp_state = 2;
+}
+
+message AttackedChangeEvt {
+  required WObjID obj_id = 1;
+  required bool new_attacked = 2;
 }
 

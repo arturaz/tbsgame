@@ -72,6 +72,12 @@ case class AttackEvt[D <: OwnedObj](
   def bounds = defender._1.bounds
 }
 
+case class AttackedChangeEvt(
+  world: World, newObj: Fighter
+) extends BoundedEvent {
+  def bounds = newObj.bounds
+}
+
 case class MovementChangeEvt(
   world: World, changedObj: MovableWObject
 ) extends BoundedEvent {
