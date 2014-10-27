@@ -68,8 +68,23 @@ case class MoveEvt(
 
 case class AttackEvt[D <: OwnedObj](
   world: World, attacker: Fighter, defender: (D, Option[D]), attack: Attack
-) extends BoundedEvent {
-  def bounds = defender._1.bounds
+) extends Event {
+  override def asViewedBy(owner: Owner) =
+    if (world.isVisiblePartial(owner, defender._1.bounds)) {
+      if (world.isVisiblePartial(owner, attacker.bounds))
+        // Just attack
+        Iterable(this)
+      else
+        // Show, attack, then hide.
+        Iterable(
+          ObjVisibleEvt(owner.team, world, attacker),
+          this,
+          VisibilityChangeEvt(
+            owner.team, invisiblePositions = attacker.bounds.points.toVector
+          )
+        )
+    }
+    else Iterable.empty
 }
 
 case class AttackedChangeEvt(

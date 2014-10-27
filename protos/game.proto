@@ -300,10 +300,9 @@ message MoveEvt {
 
 message AttackEvt {
   required WObjID attacker_id = 1;
-  required base.Vect2 attacker_position = 2;
-  required WObjID defender_id = 3;
-  required uint32 hp_left = 4;
-  required Attack attack = 5;
+  required WObjID defender_id = 2;
+  required uint32 hp_left = 3;
+  required Attack attack = 4;
 }
 
 message Attack {

@@ -269,8 +269,7 @@ object ProtobufCoding {
 
     implicit def convert(evt: AttackEvt[_ <: OwnedObj]): Game.AttackEvt =
       Game.AttackEvt.newBuilder().
-        setAttackerId(evt.attacker.id).setAttackerPosition(evt.attacker.position).
-        setDefenderId(evt.defender._1.id).
+        setAttackerId(evt.attacker.id).setDefenderId(evt.defender._1.id).
         setHpLeft(evt.defender._2.map(_.hp).getOrElse(HP(0)).value).
         setAttack(evt.attack).build()
 
