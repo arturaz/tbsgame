@@ -35,6 +35,7 @@ trait OwnedObj extends WObject {
   def isFriend(o: OwnedObj) = ! isEnemy(o)
   def givesWarpVisibility: Boolean
   override def asOwnedObj = Some(this)
+  def defense = if (isWarpingIn) 0 to 0 else companion.defense
 
   lazy val visibility = {
     val vis = companion.visibility

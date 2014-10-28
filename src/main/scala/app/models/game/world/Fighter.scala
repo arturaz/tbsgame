@@ -58,7 +58,7 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
     obj: Target, world: World
   ): Either[String, (Attack, Evented[Self], Option[Target])] =
     cantAttackReason(obj, world).fold2({
-      val attack = Attack(companion.attack.random, obj.companion.defense.random)
+      val attack = Attack(companion.attack.random, obj.defense.random)
       (
         attack,
         for {
