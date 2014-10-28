@@ -45,13 +45,13 @@ case class Corvette(
 
   override def specialImpl(world: World) = Either.cond(
     ! hasAttacked,
-    {
-      val updated = copy(
-        hasAttacked = true,
-        movementLeft = movementLeft + companion.specialMovementAdded
+    for {
+      self <- companion.attackedEvt(true)(world, self)
+      self <- companion.setMoveValues(
+        world, self, movementLeft + companion.specialMovementAdded
       )
-      world.updated(this, updated) :+ MovementChangeEvt(world, updated)
-    },
+      world <- world.updated(this, self)
+    } yield world,
     s"Cannot toggle special action for $this: already attacked!"
   )
 }

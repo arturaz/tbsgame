@@ -11,20 +11,17 @@ extends WObjectOps with MoveAttackActionedOps[Self]
 { _: MovableWObjectStats =>
   protected def setMoveValues(position: Vect2, movementLeft: TileDistance)(self: Self): Self
 
-  private[this] def resetMovementLeft(self: Self): Self =
-    self |> setMoveValues(self.position, movement)
-
-  def resetMovementLeft(world: World, self: Self): Evented[Self] = {
-    val newSelf = resetMovementLeft(self)
+  def setMoveValues(world: World, self: Self, newMovement: TileDistance): Evented[Self] = {
+    val newSelf = self |> setMoveValues(self.position, newMovement)
     Evented(
       newSelf,
       if (self === newSelf) Vector.empty
-      else {
-        Log.debug(s"movement change: \n$self\n$newSelf")
-        Vector(MovementChangeEvt(world, newSelf))
-      }
+      else Vector(MovementChangeEvt(world, newSelf))
     )
   }
+
+  def resetMovementLeft(world: World, self: Self): Evented[Self] =
+    setMoveValues(world, self, movement)
 
   def moveTo(world: World, target: Vect2)(self: Self): Evented[Self] = {
     for {
