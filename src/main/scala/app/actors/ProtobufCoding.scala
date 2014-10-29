@@ -252,10 +252,14 @@ object ProtobufCoding {
     implicit def convert(evt: TurnEndedEvt): Game.TurnEndedEvt =
       Game.TurnEndedEvt.newBuilder().setTeamId(evt.team.id).build()
 
-    implicit def convert(evt: VisibilityChangeEvt): Game.VisibilityChangeEvt =
-      Game.VisibilityChangeEvt.newBuilder().
-        addAllVisiblePositions(convert(evt.visiblePositions)).
-        addAllInvisiblePositions(convert(evt.invisiblePositions)).build()
+    implicit def convert(evt: PointOwnershipChangeEvt): Game.PointOwnerMapChangeEvt =
+      Game.PointOwnerMapChangeEvt.newBuilder().
+        setKind(evt match {
+          case _: WarpZoneChangeEvt => Game.PointOwnerMapChangeEvt.Kind.WARP_ZONE
+          case _: VisibilityChangeEvt => Game.PointOwnerMapChangeEvt.Kind.VISIBILITY
+        }).
+        addAllOwned(convert(evt.ownedVects)).
+        addAllUnowned(convert(evt.unownedVects)).build()
 
     implicit def convert(evt: WarpEvt): Game.WarpEvt =
       Game.WarpEvt.newBuilder().setObject(evt.obj).build()
@@ -312,7 +316,7 @@ object ProtobufCoding {
       Game.Event.newBuilder().mapVal { b => event match {
         case evt: TurnStartedEvt => b.setTurnStarted(evt)
         case evt: TurnEndedEvt => b.setTurnEnded(evt)
-        case evt: VisibilityChangeEvt => b.setVisibilityChange(evt)
+        case evt: PointOwnershipChangeEvt => b.setPointOwnerMapChange(evt)
         case evt: WarpEvt => b.setWarp(evt)
         case evt: ObjVisibleEvt => b.setObjVisible(evt)
         case evt: MoveEvt => b.setMove(evt)
@@ -348,6 +352,7 @@ object ProtobufCoding {
     implicit def convert(msg: GameActor.Out.Init): Game.MInit =
       Game.MInit.newBuilder().setBounds(msg.bounds).
         addAllObjects(convert(msg.objects)).
+        addAllWarpZone(convert(msg.warpZonePoints)).
         addAllVisiblePoints(convert(msg.visiblePoints)).
         setSelfTeam(msg.selfTeam).
         addAllOtherTeams(convert(msg.otherTeams)).

@@ -10,6 +10,7 @@ with GivingActionsCompanion[WarpGate] {
   override val isCritical: Boolean = true
   override val actionsGiven = Actions(3)
   override val defense = emptyRange
+  override val warpGiven = RectDistance(visibility)
 
   override def withNewHp(hp: HP)(self: WarpGate) = self.copy(hp = hp)
 }

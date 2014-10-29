@@ -28,3 +28,17 @@ object HP {
     override def fromInt(x: Int) = HP(x)
   }
 }
+
+case class RectDistance(value: Int) extends AnyVal with IntValueClass[RectDistance] {
+  override def self(v: Int) = RectDistance(v)
+
+  def extend(bounds: Bounds) = Bounds(
+    bounds.x.start - value to bounds.x.end + value,
+    bounds.y.start - value to bounds.y.end + value
+  )
+}
+object RectDistance {
+  implicit object Numeric extends IntValueClass.Numeric[RectDistance] {
+    override def fromInt(x: Int) = RectDistance(x)
+  }
+}

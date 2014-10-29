@@ -39,7 +39,8 @@ object GameActor {
   object Out {
     case class Joined(human: Human, game: ActorRef) extends Out
     case class Init(
-      bounds: Bounds, objects: Iterable[WObject], visiblePoints: Iterable[Vect2],
+      bounds: Bounds, objects: Iterable[WObject],
+      warpZonePoints: Iterable[Vect2], visiblePoints: Iterable[Vect2],
       selfTeam: Team, otherTeams: Iterable[Team],
       self: HumanState, others: Iterable[(Player, Option[HumanState])]
     ) extends ClientOut
@@ -71,6 +72,7 @@ object GameActor {
     stateFor(human).right.map { selfState =>
       Out.Init(
         visibleGame.world.bounds, visibleGame.world.objects,
+        visibleGame.world.warpZoneMap.map.keys.map(_._1),
         visibleGame.world.visibilityMap.map.keys.map(_._1),
         human.team, visibleGame.world.teams - human.team, selfState,
         (visibleGame.world.players - human).map { player =>

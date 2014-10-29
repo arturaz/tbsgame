@@ -36,12 +36,24 @@ case class LeaveEvt(human: Human) extends AlwaysVisibleEvent
 case class TurnStartedEvt(team: Team) extends AlwaysVisibleEvent
 case class TurnEndedEvt(team: Team) extends AlwaysVisibleEvent
 
-case class VisibilityChangeEvt(
-  team: Team,
-  visiblePositions: Vector[Vect2]=Vector.empty,
-  invisiblePositions: Vector[Vect2]=Vector.empty
-) extends VisibleEvent {
+sealed trait PointOwnershipChangeEvt extends VisibleEvent {
+  def team: Team
+  def ownedVects: Vector[Vect2]
+  def unownedVects: Vector[Vect2]
   override def visibleBy(owner: Owner) = owner.team === team
+}
+
+case class WarpZoneChangeEvt(
+  team: Team, ownedVects: Vector[Vect2]=Vector.empty,
+  unownedVects: Vector[Vect2]=Vector.empty
+) extends PointOwnershipChangeEvt
+
+case class VisibilityChangeEvt(
+  team: Team, visible: Vector[Vect2]=Vector.empty,
+  invisible: Vector[Vect2]=Vector.empty
+) extends PointOwnershipChangeEvt {
+  override def ownedVects = visible
+  override def unownedVects = invisible
 }
 
 case class WarpEvt(world: World, obj: Warpable) extends BoundedEvent {
@@ -79,9 +91,7 @@ case class AttackEvt[D <: OwnedObj](
         Iterable(
           ObjVisibleEvt(owner.team, world, attacker),
           this,
-          VisibilityChangeEvt(
-            owner.team, invisiblePositions = attacker.bounds.points.toVector
-          )
+          VisibilityChangeEvt(owner.team, invisible = attacker.bounds.points.toVector)
         )
     }
     else Iterable.empty

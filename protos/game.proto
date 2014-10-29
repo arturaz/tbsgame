@@ -69,13 +69,14 @@ message MJoined {
 message MInit {
   required base.Bounds bounds = 1;
   repeated WObject objects = 2;
-  repeated base.Vect2 visible_points = 3;
+  repeated base.Vect2 warp_zone = 3;
+  repeated base.Vect2 visible_points = 4;
   // Team in which the client is.
-  required Team self_team = 4;
-  repeated Team other_teams = 5;
+  required Team self_team = 5;
+  repeated Team other_teams = 6;
   // Client player.
-  required PlayerState self = 6;
-  repeated InitPlayer other_players = 7;
+  required PlayerState self = 7;
+  repeated InitPlayer other_players = 8;
 }
 
 message MEvents {
@@ -247,7 +248,7 @@ message WObject { // {{{
 message Event { // {{{
   optional TurnStartedEvt turn_started = 1;
   optional TurnEndedEvt turn_ended = 2;
-  optional VisibilityChangeEvt visibility_change = 3;
+  optional PointOwnerMapChangeEvt point_owner_map_change = 3;
   optional WarpEvt warp = 4;
   optional ObjVisibleEvt obj_visible = 5;
   optional MoveEvt move = 6;
@@ -281,9 +282,15 @@ message TurnEndedEvt {
   required TeamID team_id = 1;
 }
 
-message VisibilityChangeEvt {
-  repeated base.Vect2 visible_positions = 1;
-  repeated base.Vect2 invisible_positions = 2;
+message PointOwnerMapChangeEvt {
+  enum Kind { 
+    WARP_ZONE = 1;
+    VISIBILITY = 2;
+  }
+  
+  required Kind kind = 1;
+  repeated base.Vect2 owned = 2;
+  repeated base.Vect2 unowned = 3;
 }
 
 message WarpEvt {

@@ -16,5 +16,4 @@ with EmptySpaceWarpableCompanion[Self]
 trait WUnit extends PlayerObj with MovableWObject with Warpable {
   type Self <: WUnit
   type Companion <: WUnitOps[Self] with WUnitStats
-  override def givesWarpVisibility = false
 }

@@ -5,6 +5,7 @@ import app.models.game.ai.GrowingSpawnerAI
 import app.models.game.events._
 import app.models.game.world.WObject.Id
 import app.models.game.world.buildings.{Spawner, WarpGate}
+import app.models.game.world.maps.{VisibilityMap, WarpZoneMap}
 import app.models.game.world.props.Asteroid
 import app.models.game.world.units.Wasp
 import implicits._
@@ -17,7 +18,7 @@ import scala.util.Random
 case class World private (
   bounds: Bounds, objects: Set[WObject],
   resourcesMap: Map[Player, Resources],
-  visibilityMap: VisibilityMap
+  warpZoneMap: WarpZoneMap, visibilityMap: VisibilityMap
 ) extends TurnBased[World] {
   import app.models.game.world.World._
 
@@ -40,22 +41,39 @@ case class World private (
     total
   }
 
-  private[this] def changeWithVisibility(obj: WObject)(
-    fo: (Set[WObject], WObject) => Set[WObject]
-  )(fv: (VisibilityMap, OwnedObj) => Evented[VisibilityMap]): Evented[World] = {
+  private[this] def changeWithMapUpdates(obj: WObject)(
+    fo: (Set[WObject], WObject) => Set[WObject],
+    fwz: (WarpZoneMap, OwnedObj) => Evented[WarpZoneMap],
+    fvis: (VisibilityMap, OwnedObj) => Evented[VisibilityMap]
+  ): Evented[World] = {
     val newWorld = copy(objects = fo(objects, obj))
     obj.asOwnedObj.fold2(
-      Evented(newWorld), fv(visibilityMap, _).map(newWorld.updated)
+      Evented(newWorld),
+      oo => for {
+        visibilityMap <- fvis(visibilityMap, oo)
+        warpZoneMap <- fwz(warpZoneMap, oo)
+      } yield newWorld.copy(
+        warpZoneMap = warpZoneMap,
+        visibilityMap = visibilityMap
+      )
     )
   }
 
-  def add(obj: WObject): Evented[World] = changeWithVisibility(obj)(_ + _)(_ + _)
+  def add(obj: WObject): Evented[World] =
+    changeWithMapUpdates(obj)(_ + _, _ + _, _ + _)
+  def remove(obj: WObject): Evented[World] =
+    changeWithMapUpdates(obj)(_ - _, _ - _, _ - _)
 
-  def remove(obj: WObject): Evented[World] = changeWithVisibility(obj)(_ - _)(_ - _)
   def updated[A <: WObject](before: A, after: A): Evented[World] = {
     val newWorld = copy(objects = objects - before + after)
     (before.asOwnedObj, after.asOwnedObj) match {
-      case (Some(bOO), Some(aOO)) => visibilityMap.updated(bOO, aOO).map(newWorld.updated)
+      case (Some(bOO), Some(aOO)) =>
+        for {
+          visibilityMap <- visibilityMap.updated(bOO, aOO)
+          warpZoneMap <- warpZoneMap.updated(bOO, aOO)
+        } yield newWorld.copy(
+          warpZoneMap = warpZoneMap, visibilityMap = visibilityMap
+        )
       case _ => Evented(newWorld)
     }
   }
@@ -64,7 +82,6 @@ case class World private (
   def updated[A <: WObject](before: A)(afterFn: A => A): Evented[World] =
     updated(before, afterFn(before))
   private def updated(objects: Set[WObject]): World = copy(objects = objects)
-  private def updated(map: VisibilityMap): World = copy(visibilityMap = map)
   private def updated(resources: Map[Player, Resources]): World =
     copy(resourcesMap = resources)
 
@@ -107,6 +124,7 @@ case class World private (
   def visibleBy(owner: Owner): World = copy(
     objects = objects.filter(o => isVisiblePartial(owner, o.bounds)),
     resourcesMap = resourcesMap.filter { case (player, _) => owner.isFriendOf(player) },
+    warpZoneMap = warpZoneMap.filter(owner),
     visibilityMap = visibilityMap.filter(owner)
   )
 
@@ -118,12 +136,7 @@ case class World private (
     visibilityMap.isVisibleFull(owner, b)
   def isVisibleFor(owner: Owner, v: Vect2): Boolean =
     visibilityMap.isVisible(owner, v)
-  def isValidForWarp(owner: Owner, v: Vect2): Boolean =
-    objects.exists {
-      case oo: OwnedObj if oo.givesWarpVisibility && owner.isFriendOf(oo.owner) =>
-        oo.visibility.contains(v)
-      case _ => false
-    }
+  def isValidForWarp(owner: Owner, v: Vect2): Boolean = warpZoneMap.isVisible(owner, v)
 
   def objectsIn(vects: Vector[Vect2]): Set[WObject] =
     if (vects.isEmpty) Set.empty
@@ -166,8 +179,7 @@ case class World private (
 object World {
   def revealObjects(team: Team, evtWorld: Evented[World]): Evented[World] = {
     val newVisiblePoints = evtWorld.events.collect {
-      case evt: VisibilityChangeEvt if evt.team === team =>
-        evt.visiblePositions
+      case evt: VisibilityChangeEvt if evt.team === team => evt.visible
     }.flatten
     evtWorld.flatMap { newWorld =>
       val newVisibleObjs = newWorld.objectsIn(newVisiblePoints)
@@ -331,7 +343,7 @@ object World {
     val bounds = this.bounds(objects) expandBy 5
     new World(
       bounds, objects, Map.empty,
-      VisibilityMap(bounds, objects)
+      WarpZoneMap(bounds, objects), VisibilityMap(bounds, objects)
     )
   }
 }

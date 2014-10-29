@@ -176,7 +176,7 @@ case class Game private (
     withState(human) { state =>
     withActions(human, Warpable.ActionsNeeded, state) { state =>
     withResources(human, warpable.cost, world) { evtWorld =>
-    withWarpVisibility(human, position) {
+    withWarpZone(human, position) {
       evtWorld.map { warpable.warpW(_, human, position).right.map { _.map {
         updated(_, human -> state)
       } } }.extract.right.map(_.flatten)
@@ -255,7 +255,7 @@ case class Game private (
     if (world.isVisiblePartial(human, obj.bounds)) f
     else s"$human does not see $obj".left
 
-  private[this] def withWarpVisibility(
+  private[this] def withWarpZone(
     human: Human, position: Vect2
   )(f: => Game.Result): Game.Result =
     if (world.isValidForWarp(human, position)) f
