@@ -1,6 +1,6 @@
 package app.models.game.world
 
-import app.models.game.Attack
+import app.models.game.{Player, Attack}
 import app.models.game.events.{AttackedChangeEvt, AttackEvt, Evented}
 import implicits._
 
@@ -79,6 +79,11 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
           AttackEvt(world, attacked, obj -> newObj, attack) +:
           world.updated(self, attacked)
         newWorld <- newWorld.updated(obj, newObj)
+        newWorld <- owner.cast[Player].flatMap { p =>
+          newObj.fold2(obj.destroyReward.map((p, _)), _ => None)
+        }.fold2(Evented(newWorld), { case (player, resources) =>
+          newWorld.addResources(player, resources).right.get
+        })
       } yield (newWorld, attacked, attack, newObj)
     }
   }

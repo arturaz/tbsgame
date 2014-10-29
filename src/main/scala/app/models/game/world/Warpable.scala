@@ -5,6 +5,8 @@ import implicits._
 
 import app.models.game.{Actions, Player}
 
+import scala.util.Random
+
 trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
   /* Create Warpable at given position. */
   protected def warpWOReactionImpl(
@@ -24,8 +26,9 @@ trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
     world: World, player: Player, position: Vect2
   ): Either[String, WObject.WorldObjOptUpdate[Self]] =
     warpWOReaction(world, player, position).right.map { warpedIn =>
-      (Vector(WarpEvt(world, warpedIn)) ++: world.add(warpedIn)).
-        flatMap(_.reactTo(warpedIn))
+      World.revealObjects(
+        player.team, WarpEvt(world, warpedIn) +: world.add(warpedIn)
+      ).flatMap(_.reactTo(warpedIn))
     }
 
   def warpW(
@@ -62,6 +65,9 @@ trait Warpable extends OwnedObj {
 
   val warpState: WarpTime
   override def isWarpingIn = warpState < companion.warpTime
+  override def destroyReward = Some(Resources(
+    (companion.cost.value * Random.double(0.1, 1f / 3)).round.toInt
+  ))
 
   override def teamTurnStartedSelf(world: World) =
     super.teamTurnStartedSelf(world) |>

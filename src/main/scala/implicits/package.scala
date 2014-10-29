@@ -21,6 +21,10 @@ package object implicits {
       else r.start + Random.nextInt(r.end - r.start)
   }
 
+  implicit class RandomExts(val r: Random) extends AnyVal {
+    def double(from: Double, to: Double) = (to - from) * r.nextDouble() + from
+  }
+
   implicit class IndexedSeqExts[A](val is: IndexedSeq[A]) extends AnyVal {
     def random = if (is.isEmpty) None else Some(is(Random.nextInt(is.size)))
   }
