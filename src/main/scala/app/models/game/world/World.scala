@@ -219,7 +219,7 @@ object World {
     spawners: Int = 2,
     jumpDistance: Range = 3 to 6,
     blobSize: Range = 2 to 5,
-    blobRichness: Range = 15 to 35,
+    blobRichness: Range = 10 to 25,
     asteroidResources: Range = 5 to 20,
     directionChangeChance: Double = 0.2,
     branchChance: Double = 0.2,
@@ -246,6 +246,10 @@ object World {
         waspsAtMaxDistance
       )
       var resourcesLeft = blobRichness.random
+      // Subtract resources already in the bounds.
+      resourcesLeft -= objects.collect {
+        case a: Asteroid if bounds.contains(a.position) => a.resources
+      }.sum.value
       var waspsInBounds =
         objects.count(o => o.isInstanceOf[Wasp] && bounds.contains(o.position))
       log(
