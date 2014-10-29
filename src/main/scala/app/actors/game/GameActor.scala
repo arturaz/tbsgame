@@ -42,7 +42,8 @@ object GameActor {
       bounds: Bounds, objects: Iterable[WObject],
       warpZonePoints: Iterable[Vect2], visiblePoints: Iterable[Vect2],
       selfTeam: Team, otherTeams: Iterable[Team],
-      self: HumanState, others: Iterable[(Player, Option[HumanState])]
+      self: HumanState, others: Iterable[(Player, Option[HumanState])],
+      wObjectStats: Iterable[WObjectStats]
     ) extends ClientOut
     case class Events(events: Vector[FinalEvent]) extends ClientOut
     case class Error(error: String) extends ClientOut

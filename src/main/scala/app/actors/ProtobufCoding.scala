@@ -358,6 +358,7 @@ object ProtobufCoding {
         addAllOtherTeams(convert(msg.otherTeams)).
         setSelf(msg.self).
         addAllOtherPlayers(convert(msg.others)(convert)).
+        addAllWobjectStats(convert(msg.wObjectStats)(convert)).
         build()
 
     implicit def convert(out: GameActor.ClientOut): Game.FromServer =
