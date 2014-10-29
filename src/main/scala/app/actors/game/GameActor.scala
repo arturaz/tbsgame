@@ -31,7 +31,7 @@ object GameActor {
     case class Move(human: Human, id: WObject.Id, path: Vector[Vect2]) extends In
     case class Attack(human: Human, id: WObject.Id, targetId: WObject.Id) extends In
     case class Special(human: Human, id: WObject.Id) extends In
-    case class ConsumeActions(human: Human) extends In
+    case class EndTurn(human: Human) extends In
   }
 
   sealed trait Out
@@ -88,7 +88,18 @@ object GameActor {
 
   private def events(
     human: Human, ref: ActorRef, events: Events
-  ): Unit = ref ! Out.Events(events.flatMap(_.asViewedBy(human)))
+  )(implicit log: LoggingAdapter): Unit = {
+    log.debug("### Dispatching events for {} ###", human)
+    log.debug("Events ({}):", events.size)
+    val viewedEvents = events.flatMap { event =>
+      log.debug("* {}", event)
+      val viewed = event.asViewedBy(human)
+      if (log.isDebugEnabled) viewed.foreach(log.debug("*** {}", _))
+      viewed
+    }
+
+    ref ! Out.Events(viewedEvents)
+  }
 
   @tailrec private def nextReadyTeam(
     game: Evented[TurnBasedGame]
@@ -178,8 +189,8 @@ class GameActor private (
       update(sender(), _.attack(human, id, target))
     case In.Special(human, id) =>
       update(sender(), _.special(human, id))
-    case In.ConsumeActions(human) =>
-      update(sender(), _.consumeActions(human))
+    case In.EndTurn(human) =>
+      update(sender(), _.endTurn(human))
     case In.GetMovement(human, id) =>
       game.game.movementFor(id).fold(
         err => sender() ! Out.Error(err),

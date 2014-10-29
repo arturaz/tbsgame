@@ -68,7 +68,7 @@ case class TurnBasedGame private (
   override def attack(human: Human, id: WObject.Id, targetId: WObject.Id) =
     humanDo(human)(game.attack(_, id, targetId))
 
-  override def consumeActions(human: Human) = humanDo(human)(game.consumeActions)
+  override def endTurn(human: Human) = humanDo(human)(game.endTurn)
 
   def nextTeamTurn(implicit log: LoggingAdapter): Evented[TurnBasedGame] = {
     log.debug("current team finishing: {}", currentTeam)
@@ -91,6 +91,5 @@ case class TurnBasedGame private (
     }
   }
 
-  def currentTeamActionsLeft = game.actionsLeftFor(currentTeam)
-  def currentTeamFinished = currentTeamActionsLeft.isZero
+  def currentTeamFinished = game.allPlayersTurnEnded(currentTeam)
 }

@@ -35,7 +35,7 @@ object Game {
   }
 
   def startingState(world: World, human: Human) =
-    GameHumanState(world.actionsFor(human))
+    GameHumanState(world.actionsFor(human), turnEnded = false)
 
   def startingStates(
     world: World, humans: Iterable[Human]
@@ -98,7 +98,7 @@ trait GameLike[A] {
   def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]): Game.ResultT[A]
   def attack(human: Human, id: WObject.Id, targetId: WObject.Id): Game.ResultT[A]
   def special(human: Human, id: WObject.Id): Game.ResultT[A]
-  def consumeActions(human: Human): Game.ResultT[A]
+  def endTurn(human: Human): Game.ResultT[A]
 }
 
 case class Game private (
@@ -108,26 +108,30 @@ case class Game private (
 
   private[this] def fromWorld(w: Evented[World]) = w.map(updated)
 
-  private[this] def recalculateActions
+  private[this] def recalculateHumanStatesOnTeamTurnStart
   (team: Team)(g: Evented[Game]): Evented[Game] =
     g.flatMap { game =>
       val teamStates = game.states.filterKeys(_.team === team)
       teamStates.foldLeft(Evented(game.states)) { case (e, (human, state)) =>
-        val newActions = game.world.actionsFor(human)
-        if (state.actions === newActions) e
-        else e.flatMap { curStates =>
-          Evented(
-            curStates + (human -> state.copy(actions = game.world.actionsFor(human))),
-            Vector(ActionsChangeEvt(human, newActions))
+        val newState = state.copy(
+          actions = game.world.actionsFor(human), turnEnded = false
+        )
+        if (state === newState) e
+        else e.flatMap { curStates => Evented(
+          curStates + (human -> newState),
+          Vector(
+            TurnEndedChangeEvt(human, newState.turnEnded),
+            ActionsChangeEvt(human, newState.actions)
           )
-        }
+        ) }
       }.map(game.updated)
     }
 
   def gameTurnStarted = world.gameTurnStarted |> fromWorld
   def gameTurnFinished = world.gameTurnFinished |> fromWorld
   def teamTurnStarted(team: Team) =
-    world.teamTurnStarted(team) |> fromWorld |> recalculateActions(team)
+    world.teamTurnStarted(team) |> fromWorld |>
+    recalculateHumanStatesOnTeamTurnStart(team)
   def teamTurnFinished(team: Team) = world.teamTurnFinished(team) |> fromWorld
 
   def winner: Option[Team] = {
@@ -139,8 +143,11 @@ case class Game private (
     }
   }
 
-  def actionsLeftFor(team: Team) =
-    states.view.filter(_._1.team === team).map(_._2.actions).sum
+  private[this] def teamStates(team: Team) = states.view.filter(_._1.team === team)
+
+  def actionsLeftFor(team: Team) = teamStates(team).map(_._2.actions).sum
+  /* Checks if all players have sent the turn ended flag. */
+  def allPlayersTurnEnded(team: Team) = teamStates(team).forall(_._2.turnEnded)
 
   def isJoined(human: Human) = states.contains(human)
 
@@ -209,12 +216,12 @@ case class Game private (
       obj.special(world).right.map(_.map(world => updated(world, human -> state)))
     } } }
 
-  def consumeActions(human: Human): Game.Result =
+  def endTurn(human: Human): Game.Result =
     withState(human) { state =>
-      val actions = Actions(0)
+      val turnEnded = true
       Evented(
-        updated(world, human -> state.copy(actions = actions)),
-        Vector(ActionsChangeEvt(human, actions))
+        updated(world, human -> state.copy(turnEnded = turnEnded)),
+        TurnEndedChangeEvt(human, turnEnded)
       ).right
     }
 

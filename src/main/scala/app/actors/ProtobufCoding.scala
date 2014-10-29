@@ -54,8 +54,8 @@ object ProtobufCoding {
           mapVal { m => In.Attack(_: Human, m.getId, m.getTargetId) }.right
       else if (m.hasSpecial)
         m.getSpecial.mapVal { m => Special(_: Human, m.getId) }.right
-      else if (m.hasConsumeActions)
-        (ConsumeActions.apply(_: Human)).right
+      else if (m.hasEndTurn)
+        (EndTurn.apply(_: Human)).right
       else if (m.hasGetMovement)
         m.getGetMovement.mapVal { m => GetMovement(_: Human, m.getId) }.right
       else if (m.hasLeave)
@@ -147,7 +147,7 @@ object ProtobufCoding {
     implicit def convert(state: HumanState): Game.PlayerState =
       Game.PlayerState.newBuilder().
         setActions(state.gameState.actions).
-        setResources(state.resources).build()
+        setResources(state.resources).setTurnEnded(state.gameState.turnEnded).build()
 
     def convert(player: Player, state: Option[HumanState]): Game.InitPlayer =
       Game.InitPlayer.newBuilder().setPlayer(convert(player)).
@@ -298,6 +298,10 @@ object ProtobufCoding {
       Game.AttackedChangeEvt.newBuilder().
         setObjId(evt.newObj.id).setNewAttacked(evt.newObj.hasAttacked).build()
 
+    implicit def convert(evt: TurnEndedChangeEvt): Game.TurnEndedChangeEvt =
+      Game.TurnEndedChangeEvt.newBuilder().
+        setPlayerId(evt.human.id).setNewTurnEnded(evt.turnEnded).build()
+
     implicit def convert(evt: JoinEvt): Game.JoinEvt =
       Game.JoinEvt.newBuilder().setPlayer(convert(evt.human, Some(evt.state))).build()
 
@@ -321,6 +325,7 @@ object ProtobufCoding {
         case evt: LeaveEvt => b.setLeave(evt)
         case evt: WarpStateChangeEvt => b.setWarpChange(evt)
         case evt: AttackedChangeEvt => b.setAttackedChange(evt)
+        case evt: TurnEndedChangeEvt => b.setTurnEndedChange(evt)
       } }.build()
 
     /* Messages */

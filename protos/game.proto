@@ -14,7 +14,7 @@ message FromClient {
   optional MGetMovement get_movement = 5;
 
   optional MLeave leave = 1001;
-  optional MConsumeActions consume_actions = 1002;
+  optional MEndTurn end_turn = 1002;
 }
 
 message MLeave {}
@@ -50,7 +50,7 @@ message MGetMovement {
   required WObjID id = 1;
 }
 
-message MConsumeActions {}
+message MEndTurn {}
 
 /* Server Out messages */
 
@@ -139,6 +139,7 @@ message Player { // {{{
 message PlayerState { // {{{
   required uint32 resources = 1;
   required uint32 actions = 2;
+  required bool turn_ended = 3;
 } // }}}
 
 message InitPlayer { // {{{
@@ -257,6 +258,8 @@ message Event { // {{{
   optional ActionsChangeEvt actions_change = 11;
   optional WarpStateChangeEvt warp_change = 12;
   optional AttackedChangeEvt attacked_change = 13;
+  // Player state
+  optional TurnEndedChangeEvt turn_ended_change = 14;
 
   optional JoinEvt join = 1000;
   optional LeaveEvt leave = 1001;
@@ -341,5 +344,10 @@ message WarpStateChangeEvt {
 message AttackedChangeEvt {
   required WObjID obj_id = 1;
   required bool new_attacked = 2;
+}
+
+message TurnEndedChangeEvt {
+  required PlayerID player_id = 1;
+  required bool new_turn_ended = 2;
 }
 

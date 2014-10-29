@@ -8,4 +8,4 @@ object GameHumanState {
   val actions = lenser(_.actions)
 }
 
-case class GameHumanState(actions: Actions)
+case class GameHumanState(actions: Actions, turnEnded: Boolean)

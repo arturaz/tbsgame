@@ -119,3 +119,9 @@ case class ActionsChangeEvt(
 ) extends VisibleEvent {
   override def visibleBy(owner: Owner) = human.isFriendOf(owner)
 }
+
+case class TurnEndedChangeEvt(
+  human: Human, turnEnded: Boolean
+) extends VisibleEvent {
+  override def visibleBy(owner: Owner) = human.isFriendOf(owner)
+}
