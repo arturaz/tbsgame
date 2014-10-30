@@ -4,8 +4,8 @@ import app.models.game.{Actions, Player}
 import app.models.game.world._
 
 object LaserTower extends BuildingCompanion[LaserTower]
-with ReactiveFighterCompanion[LaserTower]
-with EmptySpaceWarpableCompanion[LaserTower] {
+with EmptySpaceWarpableCompanion[LaserTower]
+with ReactiveFighterCompanion[LaserTower] {
   override val maxHp = HP(3)
   override val warpTime = WarpTime(1)
   override val cost = Resources(10)
