@@ -7,7 +7,7 @@ object WarpLinker extends BuildingCompanion[WarpLinker]
 with EmptySpaceWarpableCompanion[WarpLinker] {
   override val maxHp = HP(2)
   override val warpTime = WarpTime(2)
-  override val cost = Resources(15)
+  override val cost = Resources(12)
   override val defense = 2 to 5
   override val visibility = 5
   override val warpGiven = RectDistance(visibility)

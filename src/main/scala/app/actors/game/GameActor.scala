@@ -137,7 +137,11 @@ class GameActor private (
   private[this] var game = {
     val singleAi = Bot(AiTeam)
     val spawnerAi = Bot(AiTeam)
-    val world = World.create(HumanTeam, singleAi, spawnerAi)
+    val world = World.create(
+      HumanTeam, singleAi, spawnerAi,
+      spawners = 1, blobRichness = 15 to 30, asteroidResources = 8 to 20,
+      endDistance = TileDistance(40)
+    )
     log.debug("World initialized to {}", world)
     TurnBasedGame(
       world, startingHuman, GameActor.StartingResources

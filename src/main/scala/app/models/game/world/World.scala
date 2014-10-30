@@ -237,7 +237,7 @@ object World {
     asteroidResources: Range = 5 to 20,
     directionChangeChance: Double = 0.2,
     branchChance: Double = 0.2,
-    safeDistance: TileDistance = TileDistance(WarpGate.visibility + Wasp.visibility),
+    safeDistance: TileDistance = TileDistance(10),
     waspsAtMaxDistance: Int = 3
   ) = {
     val warpGate = WarpGate(startingPoint, playersTeam)

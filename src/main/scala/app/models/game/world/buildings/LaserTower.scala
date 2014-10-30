@@ -8,7 +8,7 @@ with EmptySpaceWarpableCompanion[LaserTower]
 with ReactiveFighterCompanion[LaserTower] {
   override val maxHp = HP(3)
   override val warpTime = WarpTime(1)
-  override val cost = Resources(10)
+  override val cost = Resources(8)
   override val attack = 2 to 14
   override val attackRange = TileDistance(5)
   override val defense = 3 to 8

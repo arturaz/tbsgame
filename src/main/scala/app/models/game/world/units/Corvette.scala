@@ -1,21 +1,20 @@
 package app.models.game.world.units
 
-import app.models.game.{Actions, Player}
-import app.models.game.events.MovementChangeEvt
 import app.models.game.world._
+import app.models.game.{Actions, Player}
 
 object Corvette extends WUnitCompanion[Corvette] 
 with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
   override val attack = 2 to 7
   override val defense = 2 to 7
   override val attackRange = TileDistance(3)
-  override val movement = TileDistance(3)
-  override val visibility: Int = 4
+  override val movement = TileDistance(4)
+  override val visibility: Int = 3
   override val maxHp = HP(1)
   override val warpTime = WarpTime(0)
   override val cost = Resources(5)
 
-  val specialMovementAdded = TileDistance(4)
+  val specialMovementAdded = TileDistance(7)
   override val specialActionsNeeded = Actions(0)
 
   override def warp(owner: Player, position: Vect2) = Corvette(position, owner)
