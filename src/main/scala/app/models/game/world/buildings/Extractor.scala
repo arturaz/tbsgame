@@ -1,9 +1,9 @@
 package app.models.game.world.buildings
 
-import app.models.game.{Actions, Player}
 import app.models.game.events.{Evented, ResourceChangeEvt}
 import app.models.game.world._
 import app.models.game.world.props.Asteroid
+import app.models.game.{Actions, Player}
 import implicits._
 import infrastructure.Log
 import monocle.syntax._
@@ -18,6 +18,7 @@ with SpecialActionCompanion[Extractor] {
   val turnStartExtracts = Resources(1)
   /* How much resources does special action extract? */
   val specialExtracts = Resources(2)
+  val specialCollapseResources = cost + specialExtracts
   override val specialActionsNeeded = Actions(1)
 
   override def warpWOReactionImpl(world: World, owner: Player, position: Vect2) = {
@@ -47,14 +48,15 @@ case class Extractor(
   override type Companion = Extractor.type
 
   override def teamTurnStartedSelf(w: World) = {
-    super.teamTurnStartedSelf(w).mapVal { upd => upd.flatMap { case (world, self) =>
+    super.teamTurnStartedSelf(w).mapVal { upd => upd.flatMap {
+    case orig @ (world, self) =>
       findAsteroid(world).fold(
         err => {
           Log.error(s"Can't find asteroid when team turn started for $this: $err")
-          upd
+          Evented(orig)
         },
         asteroid => {
-          if (asteroid.resources.isZero) upd
+          if (asteroid.resources.isZero) Evented(orig)
           else turnStartExtractResources(world)(asteroid).fold(
             err => {
               Log.error(s"Error while extracting resources on turn start for $this: $err")
@@ -95,6 +97,13 @@ case class Extractor(
 
   override def specialImpl(world: World) = {
     val extracts = companion.specialExtracts
-    findAsteroid(world).right.flatMap(extractResources(world, extracts))
+    findAsteroid(world).right.flatMap { asteroid =>
+      if (asteroid.resources.isZero) (for {
+        world <- world.addResources(owner, companion.specialCollapseResources).right.get
+        world <- world.removeEvt(this)
+        world <- world.removeEvt(asteroid)
+      } yield world).right
+      else extractResources(world, extracts)(asteroid)
+    }
   }
 }

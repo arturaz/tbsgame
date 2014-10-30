@@ -224,7 +224,8 @@ object ProtobufCoding {
     implicit def convert(obj: Extractor.type): Game.WObject.Extractor.Stats =
       Game.WObject.Extractor.Stats.newBuilder().
         setSpecialExtracts(obj.specialExtracts).
-        setTurnStartExtracts(obj.turnStartExtracts).build()
+        setTurnStartExtracts(obj.turnStartExtracts).
+        setSpecialConsumeExtracts(obj.specialCollapseResources).build()
 
     implicit def convert(obj: Extractor): Game.WObject.Extractor =
       Game.WObject.Extractor.newBuilder().setStats(obj.companion).build()
@@ -364,6 +365,9 @@ object ProtobufCoding {
       Game.TurnEndedChangeEvt.newBuilder().
         setPlayerId(evt.human.id).setNewTurnEnded(evt.turnEnded).build()
 
+    implicit def convert(evt: ObjDestroyedEvt): Game.ObjDestroyedEvt =
+      Game.ObjDestroyedEvt.newBuilder().setObjId(evt.obj.id).build()
+
     implicit def convert(evt: JoinEvt): Game.JoinEvt =
       Game.JoinEvt.newBuilder().setPlayer(convert(evt.human, Some(evt.state))).build()
 
@@ -388,6 +392,7 @@ object ProtobufCoding {
         case evt: WarpStateChangeEvt => b.setWarpChange(evt)
         case evt: AttackedChangeEvt => b.setAttackedChange(evt)
         case evt: TurnEndedChangeEvt => b.setTurnEndedChange(evt)
+        case evt: ObjDestroyedEvt => b.setObjDestroyed(evt)
       } }.build()
 
     /* Messages */

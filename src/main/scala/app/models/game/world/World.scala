@@ -63,6 +63,8 @@ case class World private (
     changeWithMapUpdates(obj)(_ + _, _ + _, _ + _)
   def remove(obj: WObject): Evented[World] =
     changeWithMapUpdates(obj)(_ - _, _ - _, _ - _)
+  def removeEvt(obj: WObject): Evented[World] =
+    Evented(this, ObjDestroyedEvt(this, obj)).flatMap(_.remove(obj))
 
   def updated[A <: WObject](before: A, after: A): Evented[World] = {
     val newWorld = copy(objects = objects - before + after)

@@ -68,6 +68,10 @@ case class ObjVisibleEvt(team: Team, world: World, obj: WObject) extends Visible
   override def visibleBy(owner: Owner) = owner.team === team
 }
 
+case class ObjDestroyedEvt(world: World, obj: WObject) extends BoundedEvent {
+  override def bounds = obj.bounds
+}
+
 case class MoveEvt(
   world: World, oldObj: MovableWObject, to: Vect2, movesLeft: TileDistance
 ) extends Event {

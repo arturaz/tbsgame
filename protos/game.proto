@@ -249,6 +249,7 @@ message WObject { // {{{
     message Stats {
       required uint32 turn_start_extracts = 1;
       required uint32 special_extracts = 2;
+      required uint32 special_consume_extracts = 3;
     }
 
     required Stats stats = 1;
@@ -322,6 +323,7 @@ message Event { // {{{
   optional AttackedChangeEvt attacked_change = 13;
   // Player state
   optional TurnEndedChangeEvt turn_ended_change = 14;
+  optional ObjDestroyedEvt obj_destroyed = 15;
 
   optional JoinEvt join = 1000;
   optional LeaveEvt leave = 1001;
@@ -417,5 +419,9 @@ message AttackedChangeEvt {
 message TurnEndedChangeEvt {
   required PlayerID player_id = 1;
   required bool new_turn_ended = 2;
+}
+
+message ObjDestroyedEvt {
+  required WObjID obj_id = 1;
 }
 
