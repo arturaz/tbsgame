@@ -139,14 +139,14 @@ object Pathfinding {
     originNode: Node, worldBounds: Bounds, obstacles: Set[Bounds]
   )(abortSearch: Node => Boolean, onNodeVisited: Node => Unit): Unit = {
     var queue = Queue(originNode)
-    var visited = Set.empty[Node]
+    var visited = Set.empty[Vect2]
 
     while (queue.nonEmpty) {
       val (current, rest) = queue.dequeue
-      if (abortSearch(current) || visited.contains(current))
+      if (abortSearch(current) || visited.contains(current.position))
         queue = rest
       else {
-        visited += current
+        visited += current.position
         onNodeVisited(current)
 
         def node(v: Vect2) =
