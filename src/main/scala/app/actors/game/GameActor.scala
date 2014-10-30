@@ -201,7 +201,11 @@ class GameActor private (
     case In.EndTurn(human) =>
       update(sender(), _.endTurn(human))
     case In.GetMovement(human, id) =>
-      game.game.movementFor(id).fold(
+      game.game.world.find {
+        case o: MovableWObject if o.id == id => o
+      }.toRight(s"Can't find movable world object with $id").right.map { obj =>
+        (obj, game.game.movementFor(obj))
+      }.fold(
         err => sender() ! Out.Error(err),
         { case (obj, paths) =>
           val response =

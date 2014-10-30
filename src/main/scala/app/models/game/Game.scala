@@ -225,12 +225,10 @@ case class Game private (
       ).right
     }
 
-  def movementFor(id: WObject.Id): Either[String, (MovableWObject, Vector[Path])] =
-    for {
-      wObj <- world.findObjE(id).right
-      mObj <-
-        wObj.cast[MovableWObject].toRight(s"obj $id is not a movable obj: $wObj").right
-    } yield (mObj, Pathfinding.movement(mObj, world.bounds, world.objects.map(_.bounds)))
+  def movementFor(obj: MovableWObject): Vector[Path] =
+    Pathfinding.movement(
+      obj, world.bounds, world.objects.map(_.bounds)
+    ).filter(_.vects.forall(world.visibilityMap.isVisible(obj.owner, _)))
 
   def visibleBy(owner: Owner) =
     copy(world = world.visibleBy(owner), states = states.filterKeys(_.isFriendOf(owner)))
