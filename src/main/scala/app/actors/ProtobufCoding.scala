@@ -158,36 +158,62 @@ object ProtobufCoding {
     implicit def convert(team: Team): Game.Team =
       Game.Team.newBuilder().setId(team.id).build()
 
+    implicit def convert(obj: SizedWObjectStats): Game.WObject.SizedObj.Stats =
+      Game.WObject.SizedObj.Stats.newBuilder().setSize(obj.size).build()
+
     implicit def convert(obj: SizedWObject): Game.WObject.SizedObj =
-      Game.WObject.SizedObj.newBuilder().setSize(obj.companion.size).build()
+      Game.WObject.SizedObj.newBuilder().setStats(obj.companion).build()
+
+    implicit def convert(obj: OwnedObjStats): Game.WObject.OwnedObj.Stats =
+      Game.WObject.OwnedObj.Stats.newBuilder().setDefense(obj.defense).
+        setMaxHp(obj.maxHp).setIsCritical(obj.isCritical).
+        setVisibility(obj.visibility).build()
 
     implicit def convert(obj: OwnedObj): Game.WObject.OwnedObj =
-      Game.WObject.OwnedObj.newBuilder().setDefense(obj.companion.defense).
-        setHp(valWithMax(obj.hp, obj.companion.maxHp)).
-        setIsCritical(obj.companion.isCritical).setOwnerId(obj.owner.id).
-        setVisibility(obj.companion.visibility).build()
+      Game.WObject.OwnedObj.newBuilder().setStats(obj.companion).
+        setHp(obj.hp).setOwnerId(obj.owner.id).build()
+
+    implicit def convert(obj: GivingActionsStats): Game.WObject.GivingActions.Stats =
+      Game.WObject.GivingActions.Stats.newBuilder().
+        setActionsGiven(obj.actionsGiven.value).build()
 
     implicit def convert(obj: GivingActions): Game.WObject.GivingActions =
-      Game.WObject.GivingActions.newBuilder().
-        setActionsGiven(obj.companion.actionsGiven.value).build()
+      Game.WObject.GivingActions.newBuilder().setStats(obj.companion).build()
+
+    implicit def convert(obj: WarpableStats): Game.WObject.Warpable.Stats =
+      Game.WObject.Warpable.Stats.newBuilder().setCost(obj.cost).
+        setWarpTime(obj.warpTime).build()
 
     implicit def convert(obj: Warpable): Game.WObject.Warpable =
-      Game.WObject.Warpable.newBuilder().setCost(obj.companion.cost).
-        setWarpState(valWithMax(obj.warpState, obj.companion.warpTime)).build()
+      Game.WObject.Warpable.newBuilder().setStats(obj.companion).
+        setWarpState(obj.warpState).build()
+
+    implicit def convert(obj: SpecialActionStats): Game.WObject.SpecialAction.Stats =
+      Game.WObject.SpecialAction.Stats.newBuilder().
+        setActionsNeeded(obj.specialActionsNeeded).build()
 
     implicit def convert(obj: SpecialAction): Game.WObject.SpecialAction =
-      Game.WObject.SpecialAction.newBuilder().
-        setActionsNeeded(obj.companion.specialActionsNeeded).build()
+      Game.WObject.SpecialAction.newBuilder().setStats(obj.companion).build()
+
+    implicit def convert(obj: FighterStats): Game.WObject.Fighter.Stats =
+      Game.WObject.Fighter.Stats.newBuilder().
+        setAttack(obj.attack).setAttackRange(obj.attackRange).build()
 
     implicit def convert(obj: Fighter): Game.WObject.Fighter =
       Game.WObject.Fighter.newBuilder().
-        setAttack(obj.companion.attack).setAttacked(obj.hasAttacked).
-        setAttackRange(obj.companion.attackRange).build()
+        setStats(obj.companion).setAttacked(obj.hasAttacked).build()
+
+    implicit def convert(obj: MoveAttackActionedStats)
+    : Game.WObject.MoveAttackActioned.Stats =
+      Game.WObject.MoveAttackActioned.Stats.newBuilder().
+        setActionsNeeded(obj.moveAttackActionsNeeded).build()
 
     implicit def convert(obj: MoveAttackActioned): Game.WObject.MoveAttackActioned =
-      Game.WObject.MoveAttackActioned.newBuilder().
-        setActionsNeeded(obj.companion.moveAttackActionsNeeded).
+      Game.WObject.MoveAttackActioned.newBuilder().setStats(obj.companion).
         setMovedOrAttacked(obj.movedOrAttacked).build()
+
+    implicit def convert(obj: MovableWObjectStats): Game.WObject.Movable.Stats =
+      Game.WObject.Movable.Stats.newBuilder().setMovementRange(obj.movement).build()
 
     implicit def convert(obj: MovableWObject): Game.WObject.Movable =
       Game.WObject.Movable.newBuilder().setMovement(obj.movementLeft).build()
@@ -195,14 +221,20 @@ object ProtobufCoding {
     implicit def convert(obj: Asteroid): Game.WObject.Asteroid =
       Game.WObject.Asteroid.newBuilder().setResources(obj.resources).build()
 
+    implicit def convert(obj: Extractor.type): Game.WObject.Extractor.Stats =
+      Game.WObject.Extractor.Stats.newBuilder().
+        setSpecialExtracts(obj.specialExtracts).
+        setTurnStartExtracts(obj.turnStartExtracts).build()
+
     implicit def convert(obj: Extractor): Game.WObject.Extractor =
-      Game.WObject.Extractor.newBuilder().
-        setSpecialExtracts(obj.companion.specialExtracts).
-        setTurnStartExtracts(obj.companion.turnStartExtracts).build()
+      Game.WObject.Extractor.newBuilder().setStats(obj.companion).build()
+
+    implicit def convert(obj: Corvette.type): Game.WObject.Corvette.Stats =
+      Game.WObject.Corvette.Stats.newBuilder().
+        setSpecialMovementAdded(obj.specialMovementAdded).build()
 
     implicit def convert(obj: Corvette): Game.WObject.Corvette =
-      Game.WObject.Corvette.newBuilder().
-        setSpecialMovementAdded(obj.companion.specialMovementAdded).build()
+      Game.WObject.Corvette.newBuilder().setStats(obj.companion).build()
 
     implicit def convert(obj: WObject): Game.WObject =
       Game.WObject.newBuilder().setId(obj.id).setPosition(obj.position).
@@ -213,8 +245,8 @@ object ProtobufCoding {
         mapVal { b => obj.cast[SpecialAction].fold2(b, o => b.setSpecialAction(o)) }.
         mapVal { b => obj.cast[Fighter].fold2(b, o => b.setFighter(o)) }.
         mapVal { b =>
-        obj.cast[MoveAttackActioned].fold2(b, o => b.setMoveAttackActioned(o))
-      }.
+          obj.cast[MoveAttackActioned].fold2(b, o => b.setMoveAttackActioned(o))
+        }.
         mapVal { b => obj.cast[MovableWObject].fold2(b, o => b.setMovable(o)) }.
         mapVal { b =>
           import netmsg.Game.WObject.Kind._
@@ -227,6 +259,32 @@ object ProtobufCoding {
             case o: LaserTower => b.setKind(B_LASER_TOWER)
             case o: Corvette => b.setKind(U_CORVETTE).setCorvette(o)
             case o: Wasp => b.setKind(U_WASP)
+          }
+        }.build()
+
+    implicit def convert(obj: WObjectStats): Game.WObject.Stats =
+      Game.WObject.Stats.newBuilder().
+        mapVal { b => obj.cast[SizedWObjectStats].fold2(b, o => b.setSizedObj(o)) }.
+        mapVal { b => obj.cast[OwnedObjStats].fold2(b, o => b.setOwnedObj(o)) }.
+        mapVal { b => obj.cast[GivingActionsStats].fold2(b, o => b.setGivingActions(o)) }.
+        mapVal { b => obj.cast[WarpableStats].fold2(b, o => b.setWarpable(o)) }.
+        mapVal { b => obj.cast[SpecialActionStats].fold2(b, o => b.setSpecialAction(o)) }.
+        mapVal { b => obj.cast[FighterStats].fold2(b, o => b.setFighter(o)) }.
+        mapVal { b =>
+          obj.cast[MoveAttackActionedStats].fold2(b, o => b.setMoveAttackActioned(o))
+        }.
+        mapVal { b => obj.cast[MovableWObjectStats].fold2(b, o => b.setMovable(o)) }.
+        mapVal { b =>
+          import netmsg.Game.WObject.Kind._
+          obj match {
+            case Asteroid => b.setKind(P_ASTEROID)
+            case WarpGate => b.setKind(B_WARP_GATE)
+            case o: Extractor.type => b.setKind(B_EXTRACTOR).setExtractor(o)
+            case WarpLinker => b.setKind(B_WARP_LINKER)
+            case Spawner => b.setKind(B_SPAWNER)
+            case LaserTower => b.setKind(B_LASER_TOWER)
+            case o: Corvette.type => b.setKind(U_CORVETTE).setCorvette(o)
+            case Wasp => b.setKind(U_WASP)
           }
         }.build()
 
@@ -358,7 +416,7 @@ object ProtobufCoding {
         addAllOtherTeams(convert(msg.otherTeams)).
         setSelf(msg.self).
         addAllOtherPlayers(convert(msg.others)(convert)).
-        addAllWobjectStats(convert(msg.wObjectStats)(convert)).
+        addAllWobjectStats(convert(msg.wObjectStats)).
         build()
 
     implicit def convert(out: GameActor.ClientOut): Game.FromServer =

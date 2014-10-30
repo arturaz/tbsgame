@@ -8,6 +8,9 @@ import app.models.User
 import app.models.game._
 import app.models.game.events._
 import app.models.game.world._
+import app.models.game.world.buildings._
+import app.models.game.world.props.Asteroid
+import app.models.game.world.units.{Wasp, Corvette}
 import implicits._
 import utils.data.NonEmptyVector
 
@@ -78,7 +81,10 @@ object GameActor {
         human.team, visibleGame.world.teams - human.team, selfState,
         (visibleGame.world.players - human).map { player =>
           player -> stateFor(player).right.toOption
-        }
+        },
+        Vector(
+          Asteroid, WarpGate, Extractor, WarpLinker, LaserTower, Corvette, Spawner, Wasp
+        )
       )
     }
   }
