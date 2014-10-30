@@ -6,13 +6,15 @@ import implicits._
 import infrastructure.Log
 
 trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
-  def shouldReact(self: OwnedObj, target: OwnedObj) = self.isEnemy(target)
+  def shouldReact(self: OwnedObj): Boolean = self.isWarpedIn
+  def shouldReact(self: OwnedObj, target: OwnedObj): Boolean =
+    shouldReact(self) && self.isEnemy(target)
 
   def attackReachable(
     data: WObject.WorldObjUpdate[Self]
   ): WObject.WorldObjUpdate[Self] =
     data.flatMap { case orig @ (world, self) =>
-      if (self.isWarpedIn) {
+      if (shouldReact(self)) {
         val targets = world.objects.collect {
           case obj: OwnedObj if shouldReact(self, obj) && self.canAttack(obj, world) => obj
         }
