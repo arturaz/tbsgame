@@ -158,6 +158,12 @@ object ProtobufCoding {
     implicit def convert(team: Team): Game.Team =
       Game.Team.newBuilder().setId(team.id).build()
 
+    implicit def convert(group: WarpableGroup): Game.WObject.Warpable.Group =
+      group match {
+        case WarpableGroup.Building => Game.WObject.Warpable.Group.BUILDING
+        case WarpableGroup.Unit => Game.WObject.Warpable.Group.UNIT
+      }
+
     implicit def convert(obj: SizedWObjectStats): Game.WObject.SizedObj.Stats =
       Game.WObject.SizedObj.Stats.newBuilder().setSize(obj.size).build()
 
@@ -182,7 +188,7 @@ object ProtobufCoding {
 
     implicit def convert(obj: WarpableStats): Game.WObject.Warpable.Stats =
       Game.WObject.Warpable.Stats.newBuilder().setCost(obj.cost).
-        setWarpTime(obj.warpTime).build()
+        setWarpTime(obj.warpTime).setGroup(obj.group).build()
 
     implicit def convert(obj: Warpable): Game.WObject.Warpable =
       Game.WObject.Warpable.newBuilder().setStats(obj.companion).
@@ -288,6 +294,21 @@ object ProtobufCoding {
             case Wasp => b.setKind(U_WASP)
           }
         }.build()
+
+    implicit def convert(obj: GameActor.Out.Init.Stats): Game.InitWObjectStats =
+      Game.InitWObjectStats.newBuilder().mapVal { b =>
+        if (obj.showInWarpables) b.setWarpable {
+          import Game.MWarp.HumanWarpable._
+          obj.stats match {
+            case Extractor => B_EXTRACTOR
+            case LaserTower => B_LASER_TOWER
+            case WarpLinker => B_WARP_LINKER
+            case Corvette => U_CORVETTE
+          }
+        }
+        else b
+      }.
+      setStats(obj.stats).build()
 
     implicit def convert(attack: Attack): Game.Attack =
       Game.Attack.newBuilder().setAttackerRoll(attack.attackerRoll).

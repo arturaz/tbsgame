@@ -3,7 +3,7 @@ package app.models.game.world.buildings
 import app.models.game.{Actions, Player}
 import app.models.game.world._
 
-object LaserTower extends BuildingCompanion[LaserTower]
+object LaserTower extends WBuildingCompanion[LaserTower]
 with EmptySpaceWarpableCompanion[LaserTower]
 with ReactiveFighterCompanion[LaserTower] {
   override val maxHp = HP(3)
@@ -31,7 +31,7 @@ case class LaserTower(
   id: WObject.Id=WObject.newId, hp: HP=LaserTower.maxHp,
   warpState: WarpTime=LaserTower.InitialWarpState, hasAttacked: Boolean=false,
   movedOrAttacked: Boolean=LaserTower.InitialMovedOrAttacked
-) extends PlayerBuilding with Warpable with ReactiveFighter {
+) extends PlayerBuilding with WBuilding with ReactiveFighter {
   type Self = LaserTower
   def self = this
   override def companion = LaserTower

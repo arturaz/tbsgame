@@ -77,7 +77,7 @@ message MInit {
   // Client player.
   required PlayerState self = 7;
   repeated InitPlayer other_players = 8;
-  repeated WObject.Stats wobject_stats = 9;
+  repeated InitWObjectStats wobject_stats = 9;
 }
 
 message MEvents {
@@ -149,6 +149,12 @@ message InitPlayer { // {{{
   optional PlayerState state = 2;
 } // }}}
 
+message InitWObjectStats {
+  required WObject.Stats stats = 1;
+  // Not set if a player cannot warp this in.
+  optional MWarp.HumanWarpable warpable = 2;
+}
+
 message WObject { // {{{
   enum Kind {
     P_ASTEROID = 1;
@@ -193,9 +199,15 @@ message WObject { // {{{
   }
 
   message Warpable {
+    enum Group {
+      BUILDING = 1;
+      UNIT = 2;
+    }
+
     message Stats {
       required uint32 warp_time = 1;
       required uint32 cost = 2;
+      required Group group = 3;
     }
 
     required Stats stats = 1;

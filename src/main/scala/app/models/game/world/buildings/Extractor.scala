@@ -8,7 +8,7 @@ import implicits._
 import infrastructure.Log
 import monocle.syntax._
 
-object Extractor extends BuildingCompanion[Extractor] with WarpableCompanion[Extractor]
+object Extractor extends WBuildingCompanion[Extractor]
 with SpecialActionCompanion[Extractor] {
   override val maxHp = HP(1)
   override val warpTime = WarpTime(1)
@@ -41,7 +41,7 @@ case class Extractor(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=Extractor.maxHp,
   warpState: WarpTime=Extractor.InitialWarpState
-) extends PlayerBuilding with Warpable with SpecialAction {
+) extends PlayerBuilding with WBuilding with SpecialAction {
   type Self = Extractor
   def self = this
   override def companion = Extractor

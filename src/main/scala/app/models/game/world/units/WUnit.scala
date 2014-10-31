@@ -7,7 +7,9 @@ with WarpableOps[Self] with EmptySpaceWarpableOps[Self]
 { _: WUnitStats => }
 
 trait WUnitStats extends OwnedObjStats with MovableWObjectStats
-with WarpableStats
+with WarpableStats {
+  override val group = WarpableGroup.Unit
+}
 
 trait WUnitCompanion[Self <: WUnit] extends WUnitOps[Self] with WUnitStats
 with EmptySpaceWarpableCompanion[Self]

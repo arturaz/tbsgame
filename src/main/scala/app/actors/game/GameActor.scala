@@ -27,7 +27,7 @@ object GameActor {
     case class Join(user: User) extends In
     case class Leave(human: Human) extends In
     case class Warp(
-      human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
+      human: Human, position: Vect2, warpable: WarpableCompanion.Some
     ) extends In
     case class GetMovement(human: Human, id: WObject.Id) extends In
     /* path does not include objects position and ends in target position */
@@ -41,12 +41,15 @@ object GameActor {
   sealed trait ClientOut extends Out
   object Out {
     case class Joined(human: Human, game: ActorRef) extends Out
+    object Init {
+      case class Stats(stats: WObjectStats, showInWarpables: Boolean=false)
+    }
     case class Init(
       bounds: Bounds, objects: Iterable[WObject],
       warpZonePoints: Iterable[Vect2], visiblePoints: Iterable[Vect2],
       selfTeam: Team, otherTeams: Iterable[Team],
       self: HumanState, others: Iterable[(Player, Option[HumanState])],
-      wObjectStats: Iterable[WObjectStats]
+      wObjectStats: Iterable[Init.Stats]
     ) extends ClientOut
     case class Events(events: Vector[FinalEvent]) extends ClientOut
     case class Error(error: String) extends ClientOut
@@ -81,10 +84,15 @@ object GameActor {
         human.team, visibleGame.world.teams - human.team, selfState,
         (visibleGame.world.players - human).map { player =>
           player -> stateFor(player).right.toOption
-        },
-        Vector(
-          Asteroid, WarpGate, Extractor, WarpLinker, LaserTower, Corvette, Spawner, Wasp
-        )
+        }, {
+          import Out.Init.Stats
+          Vector(
+            Stats(Asteroid), Stats(WarpGate), Stats(Extractor),
+            Stats(WarpLinker, showInWarpables = true),
+            Stats(LaserTower, showInWarpables = true),
+            Stats(Corvette, showInWarpables = true), Stats(Spawner), Stats(Wasp)
+          )
+        }
       )
     }
   }

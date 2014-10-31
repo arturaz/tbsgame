@@ -49,10 +49,15 @@ trait WarpableStats extends OwnedObjStats {
   val InitialWarpState = WarpTime(0)
   val warpTime: WarpTime
   val cost: Resources
+  val group: WarpableGroup
 }
 
 trait WarpableCompanion[Self <: Warpable] extends WarpableOps[Self]
 with WarpableStats
+
+object WarpableCompanion {
+  type Some = WarpableCompanion[_ <: Warpable]
+}
 
 object Warpable {
   /* Actions needed to warp in something */
@@ -88,3 +93,9 @@ trait EmptySpaceWarpableOps[Self <: Warpable] { _: WarpableOps[Self] =>
 
 trait EmptySpaceWarpableCompanion[Self <: Warpable]
 extends WarpableCompanion[Self] with EmptySpaceWarpableOps[Self]
+
+sealed trait WarpableGroup
+object WarpableGroup {
+  case object Building extends WarpableGroup
+  case object Unit extends WarpableGroup
+}
