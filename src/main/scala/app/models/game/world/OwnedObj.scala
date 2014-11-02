@@ -45,8 +45,8 @@ trait OwnedObj extends WObject {
     if (companion.warpGiven.isNotZero) Some(companion.warpGiven.extend(bounds))
     else None
 
-  def takeDamage: Option[Self] =
-    if (hp === HP(1)) None else Some(self |> companion.withNewHp(hp - HP(1)))
+  def takeDamage(damage: HP): Option[Self] =
+    if (hp <= damage) None else Some(self |> companion.withNewHp(hp - damage))
 
   def teamTurnStartedSelf(world: World): WorldSelfUpdate = Evented((world, self))
   final def teamTurnStarted(world: World): Evented[World] =

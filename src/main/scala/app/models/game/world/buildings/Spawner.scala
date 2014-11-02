@@ -6,7 +6,7 @@ import app.models.game.world._
 
 object Spawner extends BuildingCompanion[Spawner] with SizedWObjectCompanion
 with GrowingSpawnerCompanion[Spawner] {
-  override val maxHp = HP(10)
+  override val maxHp = HP(100)
   override val size: Vect2 = Vect2(2, 2)
   override val isCritical: Boolean = true
   override val defense = emptyRange

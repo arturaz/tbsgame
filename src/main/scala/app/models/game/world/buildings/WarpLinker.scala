@@ -5,10 +5,10 @@ import app.models.game.world._
 
 object WarpLinker extends WBuildingCompanion[WarpLinker]
 with EmptySpaceWarpableCompanion[WarpLinker] {
-  override val maxHp = HP(2)
-  override val warpTime = WarpTime(2)
+  override val maxHp = HP(20)
+  override val warpTime = WarpTime(1)
   override val cost = Resources(12)
-  override val defense = 2 to 5
+  override val defense = 1 to 3
   override val visibility = 5
   override val warpGiven = RectDistance(visibility)
 

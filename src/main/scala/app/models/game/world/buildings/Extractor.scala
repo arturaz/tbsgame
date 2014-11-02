@@ -10,10 +10,10 @@ import monocle.syntax._
 
 object Extractor extends WBuildingCompanion[Extractor]
 with SpecialActionCompanion[Extractor] {
-  override val maxHp = HP(1)
+  override val maxHp = HP(10)
   override val warpTime = WarpTime(1)
   override val cost = Resources(4)
-  override val defense = 2 to 7
+  override val defense = 1 to 1
   /* How much resources does turn start extract? */
   val turnStartExtracts = Resources(1)
   /* How much resources does special action extract? */
