@@ -10,7 +10,7 @@ import app.models.game.events._
 import app.models.game.world._
 import app.models.game.world.buildings._
 import app.models.game.world.props.Asteroid
-import app.models.game.world.units.{Corvette, Wasp}
+import app.models.game.world.units.{Scout, Corvette, Wasp}
 import app.models.game._
 import implicits._
 import netmsg.{Management, Base, Game, Messages}
@@ -37,6 +37,7 @@ object ProtobufCoding {
       case Game.MWarp.HumanWarpable.B_WARP_LINKER => WarpLinker
       case Game.MWarp.HumanWarpable.B_LASER_TOWER => LaserTower
       case Game.MWarp.HumanWarpable.U_CORVETTE => Corvette
+      case Game.MWarp.HumanWarpable.U_SCOUT => Scout
     }
 
     def parse(m: Game.FromClient): Either[String, GameInMsg] = {
@@ -266,6 +267,7 @@ object ProtobufCoding {
             case o: LaserTower => b.setKind(B_LASER_TOWER)
             case o: Corvette => b.setKind(U_CORVETTE).setCorvette(o)
             case o: Wasp => b.setKind(U_WASP)
+            case o: Scout => b.setKind(U_SCOUT)
           }
         }.build()
 
@@ -292,6 +294,7 @@ object ProtobufCoding {
             case LaserTower => b.setKind(B_LASER_TOWER)
             case o: Corvette.type => b.setKind(U_CORVETTE).setCorvette(o)
             case Wasp => b.setKind(U_WASP)
+            case Scout => b.setKind(U_SCOUT)
           }
         }.build()
 
@@ -304,6 +307,7 @@ object ProtobufCoding {
             case LaserTower => B_LASER_TOWER
             case WarpLinker => B_WARP_LINKER
             case Corvette => U_CORVETTE
+            case Scout => U_SCOUT
           }
         }
         else b

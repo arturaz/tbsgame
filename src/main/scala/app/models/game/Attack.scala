@@ -5,9 +5,11 @@ import app.models.game.world.{HP, OwnedObj}
 /**
  * Created by arturas on 2014-10-08.
  */
-case class Attack(attackerRoll: Int, defenderRoll: Int) {
+case class Attack(attackerRoll: Int, critical: Option[Double], defenderRoll: Int) {
   def successful = attackerRoll > defenderRoll
-  def damage = HP((attackerRoll - defenderRoll).max(0))
+  def damage = HP(
+    ((attackerRoll * critical.getOrElse(1d)).round.toInt - defenderRoll).max(0)
+  )
 
   /* None if destroyed, Some otherwise */
   def apply[A <: OwnedObj](obj: A): Option[A] =

@@ -1,6 +1,8 @@
 package app.models.game.world
 
-import utils.IntValueClass
+import utils.{DoubleValueClass, IntValueClass}
+
+import scala.util.Random
 
 case class Resources(value: Int) extends AnyVal with IntValueClass[Resources] {
   override def self(v: Int) = Resources(v)
@@ -40,5 +42,17 @@ case class RectDistance(value: Int) extends AnyVal with IntValueClass[RectDistan
 object RectDistance {
   implicit object Numeric extends IntValueClass.Numeric[RectDistance] {
     override def fromInt(x: Int) = RectDistance(x)
+  }
+}
+
+
+case class Chance(value: Double) extends AnyVal with DoubleValueClass[Chance] {
+  override def self(v: Double) = Chance(v)
+
+  def struck = Random.nextDouble() <= value
+}
+object Chance {
+  implicit object Numeric extends DoubleValueClass.Numeric[Chance] {
+    override def fromInt(x: Int) = Chance(x)
   }
 }

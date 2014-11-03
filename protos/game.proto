@@ -25,6 +25,7 @@ message MWarp {
     B_WARP_LINKER = 2;
     B_LASER_TOWER = 3;
     U_CORVETTE = 4;
+    U_SCOUT = 5;
   }
 
   required base.Vect2 position = 1;
@@ -165,6 +166,7 @@ message WObject { // {{{
     B_LASER_TOWER = 6;
     U_CORVETTE = 7;
     U_WASP = 8;
+    U_SCOUT = 9;
   }
 
   /* Trait properties {{{ */

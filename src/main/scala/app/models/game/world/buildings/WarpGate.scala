@@ -8,7 +8,7 @@ with GivingActionsCompanion[WarpGate] {
   override val maxHp = HP(350)
   override val size: Vect2 = Vect2(6, 4)
   override val isCritical: Boolean = true
-  override val actionsGiven = Actions(4)
+  override val actionsGiven = Actions(2)
   override val defense = emptyRange
   override val visibility: Int = 3
   override val warpGiven = RectDistance(2)

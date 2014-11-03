@@ -5,7 +5,7 @@ import app.models.game.{Actions, Player}
 
 object Corvette extends WUnitCompanion[Corvette] 
 with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
-  override val attack = 4 to 8
+  override val attack = 4 to 9
   override val defense = 0 to 1
   override val attackRange = TileDistance(3)
   override val movement = TileDistance(4)
@@ -32,7 +32,7 @@ with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
 
 case class Corvette(
   position: Vect2, owner: Player,
-  id: WObject.Id=WObject.newId, hp: HP=Wasp.maxHp, hasAttacked: Boolean=false,
+  id: WObject.Id=WObject.newId, hp: HP=Corvette.maxHp, hasAttacked: Boolean=false,
   movementLeft: TileDistance=Corvette.movement,
   warpState: WarpTime=Corvette.InitialWarpState,
   movedOrAttacked: Boolean=Corvette.InitialMovedOrAttacked

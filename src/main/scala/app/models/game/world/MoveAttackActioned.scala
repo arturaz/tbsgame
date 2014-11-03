@@ -21,7 +21,7 @@ trait MoveAttackActionedOps[Self <: MoveAttackActioned] extends OwnedObjOps[Self
 
 trait MoveAttackActionedStats extends OwnedObjStats {
   val InitialMovedOrAttacked = false
-  val moveAttackActionsNeeded: Actions = Actions(1)
+  val moveAttackActionsNeeded: Actions = Actions(0)
 }
 
 trait MoveAttackActionedCompanion[Self <: MoveAttackActioned]
