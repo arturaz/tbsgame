@@ -10,7 +10,7 @@ import app.models.game.events._
 import app.models.game.world._
 import app.models.game.world.buildings._
 import app.models.game.world.props.Asteroid
-import app.models.game.world.units.{Scout, Wasp, Corvette}
+import app.models.game.world.units.{RayShip, Scout, Wasp, Corvette}
 import implicits._
 import utils.data.NonEmptyVector
 
@@ -92,7 +92,7 @@ object GameActor {
             Stats(LaserTower, showInWarpables = true),
             Stats(Corvette, showInWarpables = true),
             Stats(Scout, showInWarpables = true),
-            Stats(Spawner), Stats(Wasp)
+            Stats(Spawner), Stats(Wasp), Stats(RayShip)
           )
         }
       )

@@ -29,7 +29,7 @@ case class Wasp(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=Wasp.maxHp, hasAttacked: Boolean=false,
   movementLeft: TileDistance=Wasp.movement, warpState: WarpTime=Wasp.InitialWarpState,
-  movedOrAttacked: Boolean=Corvette.InitialMovedOrAttacked
+  movedOrAttacked: Boolean=Wasp.InitialMovedOrAttacked
 ) extends WUnit with Fighter {
   type Self = Wasp
   type Companion = Wasp.type

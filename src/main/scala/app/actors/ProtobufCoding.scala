@@ -10,7 +10,7 @@ import app.models.game.events._
 import app.models.game.world._
 import app.models.game.world.buildings._
 import app.models.game.world.props.Asteroid
-import app.models.game.world.units.{Scout, Corvette, Wasp}
+import app.models.game.world.units.{RayShip, Scout, Corvette, Wasp}
 import app.models.game._
 import implicits._
 import netmsg.{Management, Base, Game, Messages}
@@ -268,6 +268,7 @@ object ProtobufCoding {
             case o: Corvette => b.setKind(U_CORVETTE).setCorvette(o)
             case o: Wasp => b.setKind(U_WASP)
             case o: Scout => b.setKind(U_SCOUT)
+            case o: RayShip => b.setKind(U_RAY_SHIP)
           }
         }.build()
 
@@ -295,6 +296,7 @@ object ProtobufCoding {
             case o: Corvette.type => b.setKind(U_CORVETTE).setCorvette(o)
             case Wasp => b.setKind(U_WASP)
             case Scout => b.setKind(U_SCOUT)
+            case RayShip => b.setKind(U_RAY_SHIP)
           }
         }.build()
 

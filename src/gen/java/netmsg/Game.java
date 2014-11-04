@@ -16632,6 +16632,7 @@ public final class Game {
       U_CORVETTE(6, 7),
       U_WASP(7, 8),
       U_SCOUT(8, 9),
+      U_RAY_SHIP(9, 10),
       ;
       
       public static final int P_ASTEROID_VALUE = 1;
@@ -16643,6 +16644,7 @@ public final class Game {
       public static final int U_CORVETTE_VALUE = 7;
       public static final int U_WASP_VALUE = 8;
       public static final int U_SCOUT_VALUE = 9;
+      public static final int U_RAY_SHIP_VALUE = 10;
       
       
       public final int getNumber() { return value; }
@@ -16658,6 +16660,7 @@ public final class Game {
           case 7: return U_CORVETTE;
           case 8: return U_WASP;
           case 9: return U_SCOUT;
+          case 10: return U_RAY_SHIP;
           default: return null;
         }
       }
@@ -16688,7 +16691,7 @@ public final class Game {
       }
       
       private static final Kind[] VALUES = {
-        P_ASTEROID, B_WARP_GATE, B_EXTRACTOR, B_WARP_LINKER, B_SPAWNER, B_LASER_TOWER, U_CORVETTE, U_WASP, U_SCOUT, 
+        P_ASTEROID, B_WARP_GATE, B_EXTRACTOR, B_WARP_LINKER, B_SPAWNER, B_LASER_TOWER, U_CORVETTE, U_WASP, U_SCOUT, U_RAY_SHIP, 
       };
       
       public static Kind valueOf(
@@ -43503,7 +43506,7 @@ public final class Game {
       "Player\022 \n\005state\030\002 \001(\0132\021.game.PlayerState" +
       "\"c\n\020InitWObjectStats\022\"\n\005stats\030\001 \002(\0132\023.ga",
       "me.WObject.Stats\022+\n\010warpable\030\002 \001(\0162\031.gam" +
-      "e.MWarp.HumanWarpable\"\342\024\n\007WObject\022\030\n\002id\030" +
+      "e.MWarp.HumanWarpable\"\362\024\n\007WObject\022\030\n\002id\030" +
       "\001 \002(\0132\014.game.WObjID\022\035\n\010position\030\002 \002(\0132\013." +
       "base.Vect2\022 \n\004kind\030\003 \002(\0162\022.game.WObject." +
       "Kind\022*\n\tsized_obj\030\350\007 \001(\0132\026.game.WObject." +
@@ -43566,65 +43569,65 @@ public final class Game {
       "2\033.game.WObject.Movable.Stats\0221\n\textract" +
       "or\030\321\017 \001(\0132\035.game.WObject.Extractor.Stats" +
       "\022/\n\010corvette\030\322\017 \001(\0132\034.game.WObject.Corve" +
-      "tte.Stats\"\226\001\n\004Kind\022\016\n\nP_ASTEROID\020\001\022\017\n\013B_" +
+      "tte.Stats\"\246\001\n\004Kind\022\016\n\nP_ASTEROID\020\001\022\017\n\013B_" +
       "WARP_GATE\020\002\022\017\n\013B_EXTRACTOR\020\003\022\021\n\rB_WARP_L" +
       "INKER\020\004\022\r\n\tB_SPAWNER\020\005\022\021\n\rB_LASER_TOWER\020" +
       "\006\022\016\n\nU_CORVETTE\020\007\022\n\n\006U_WASP\020\010\022\013\n\007U_SCOUT" +
-      "\020\t\"\366\005\n\005Event\022*\n\014turn_started\030\001 \001(\0132\024.gam" +
-      "e.TurnStartedEvt\022&\n\nturn_ended\030\002 \001(\0132\022.g",
-      "ame.TurnEndedEvt\022<\n\026point_owner_map_chan" +
-      "ge\030\003 \001(\0132\034.game.PointOwnerMapChangeEvt\022\033" +
-      "\n\004warp\030\004 \001(\0132\r.game.WarpEvt\022(\n\013obj_visib" +
-      "le\030\005 \001(\0132\023.game.ObjVisibleEvt\022\033\n\004move\030\006 " +
-      "\001(\0132\r.game.MoveEvt\022\037\n\006attack\030\007 \001(\0132\017.gam" +
-      "e.AttackEvt\0220\n\017movement_change\030\010 \001(\0132\027.g" +
-      "ame.MovementChangeEvt\022@\n\030moved_or_attack" +
-      "ed_change\030\t \001(\0132\036.game.MovedOrAttackedCh" +
-      "angeEvt\0220\n\017resource_change\030\n \001(\0132\027.game." +
-      "ResourceChangeEvt\022.\n\016actions_change\030\013 \001(",
-      "\0132\026.game.ActionsChangeEvt\022-\n\013warp_change" +
-      "\030\014 \001(\0132\030.game.WarpStateChangeEvt\0220\n\017atta" +
-      "cked_change\030\r \001(\0132\027.game.AttackedChangeE" +
-      "vt\0223\n\021turn_ended_change\030\016 \001(\0132\030.game.Tur" +
-      "nEndedChangeEvt\022,\n\robj_destroyed\030\017 \001(\0132\025" +
-      ".game.ObjDestroyedEvt\022\034\n\004join\030\350\007 \001(\0132\r.g" +
-      "ame.JoinEvt\022\036\n\005leave\030\351\007 \001(\0132\016.game.Leave" +
-      "Evt\"+\n\007JoinEvt\022 \n\006player\030\001 \002(\0132\020.game.In" +
-      "itPlayer\"-\n\010LeaveEvt\022!\n\tplayer_id\030\001 \002(\0132" +
-      "\016.game.PlayerID\"/\n\016TurnStartedEvt\022\035\n\007tea",
-      "m_id\030\001 \002(\0132\014.game.TeamID\"-\n\014TurnEndedEvt" +
-      "\022\035\n\007team_id\030\001 \002(\0132\014.game.TeamID\"\252\001\n\026Poin" +
-      "tOwnerMapChangeEvt\022/\n\004kind\030\001 \002(\0162!.game." +
-      "PointOwnerMapChangeEvt.Kind\022\032\n\005owned\030\002 \003" +
-      "(\0132\013.base.Vect2\022\034\n\007unowned\030\003 \003(\0132\013.base." +
-      "Vect2\"%\n\004Kind\022\r\n\tWARP_ZONE\020\001\022\016\n\nVISIBILI" +
-      "TY\020\002\"(\n\007WarpEvt\022\035\n\006object\030\001 \002(\0132\r.game.W" +
-      "Object\".\n\rObjVisibleEvt\022\035\n\006object\030\001 \002(\0132" +
-      "\r.game.WObject\"o\n\007MoveEvt\022\034\n\006obj_id\030\001 \002(" +
-      "\0132\014.game.WObjID\022\031\n\004from\030\002 \002(\0132\013.base.Vec",
-      "t2\022\027\n\002to\030\003 \002(\0132\013.base.Vect2\022\022\n\nmoves_lef" +
-      "t\030\004 \002(\r\"\200\001\n\tAttackEvt\022!\n\013attacker_id\030\001 \002" +
-      "(\0132\014.game.WObjID\022!\n\013defender_id\030\002 \002(\0132\014." +
-      "game.WObjID\022\017\n\007hp_left\030\003 \002(\r\022\034\n\006attack\030\004" +
-      " \002(\0132\014.game.Attack\"J\n\006Attack\022\025\n\rattacker" +
-      "_roll\030\001 \002(\r\022\025\n\rdefender_roll\030\002 \002(\r\022\022\n\nsu" +
-      "ccessful\030\003 \002(\010\"G\n\021MovementChangeEvt\022\034\n\006o" +
-      "bj_id\030\001 \002(\0132\014.game.WObjID\022\024\n\014new_movemen" +
-      "t\030\002 \002(\r\"S\n\030MovedOrAttackedChangeEvt\022\034\n\006o" +
-      "bj_id\030\001 \002(\0132\014.game.WObjID\022\031\n\021moved_or_at",
-      "tacked\030\002 \002(\010\"k\n\021ResourceChangeEvt\022\034\n\006obj" +
-      "_id\030\001 \001(\0132\014.game.WObjID\022!\n\tplayer_id\030\002 \001" +
-      "(\0132\016.game.PlayerID\022\025\n\rnew_resources\030\003 \002(" +
-      "\r\"J\n\020ActionsChangeEvt\022!\n\tplayer_id\030\001 \002(\013" +
-      "2\016.game.PlayerID\022\023\n\013new_actions\030\002 \002(\r\"J\n" +
-      "\022WarpStateChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.ga" +
-      "me.WObjID\022\026\n\016new_warp_state\030\002 \002(\r\"G\n\021Att" +
-      "ackedChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WO" +
-      "bjID\022\024\n\014new_attacked\030\002 \002(\010\"O\n\022TurnEndedC" +
-      "hangeEvt\022!\n\tplayer_id\030\001 \002(\0132\016.game.Playe",
-      "rID\022\026\n\016new_turn_ended\030\002 \002(\010\"/\n\017ObjDestro" +
-      "yedEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjIDB\010\n\006" +
-      "netmsg"
+      "\020\t\022\016\n\nU_RAY_SHIP\020\n\"\366\005\n\005Event\022*\n\014turn_sta" +
+      "rted\030\001 \001(\0132\024.game.TurnStartedEvt\022&\n\nturn",
+      "_ended\030\002 \001(\0132\022.game.TurnEndedEvt\022<\n\026poin" +
+      "t_owner_map_change\030\003 \001(\0132\034.game.PointOwn" +
+      "erMapChangeEvt\022\033\n\004warp\030\004 \001(\0132\r.game.Warp" +
+      "Evt\022(\n\013obj_visible\030\005 \001(\0132\023.game.ObjVisib" +
+      "leEvt\022\033\n\004move\030\006 \001(\0132\r.game.MoveEvt\022\037\n\006at" +
+      "tack\030\007 \001(\0132\017.game.AttackEvt\0220\n\017movement_" +
+      "change\030\010 \001(\0132\027.game.MovementChangeEvt\022@\n" +
+      "\030moved_or_attacked_change\030\t \001(\0132\036.game.M" +
+      "ovedOrAttackedChangeEvt\0220\n\017resource_chan" +
+      "ge\030\n \001(\0132\027.game.ResourceChangeEvt\022.\n\016act",
+      "ions_change\030\013 \001(\0132\026.game.ActionsChangeEv" +
+      "t\022-\n\013warp_change\030\014 \001(\0132\030.game.WarpStateC" +
+      "hangeEvt\0220\n\017attacked_change\030\r \001(\0132\027.game" +
+      ".AttackedChangeEvt\0223\n\021turn_ended_change\030" +
+      "\016 \001(\0132\030.game.TurnEndedChangeEvt\022,\n\robj_d" +
+      "estroyed\030\017 \001(\0132\025.game.ObjDestroyedEvt\022\034\n" +
+      "\004join\030\350\007 \001(\0132\r.game.JoinEvt\022\036\n\005leave\030\351\007 " +
+      "\001(\0132\016.game.LeaveEvt\"+\n\007JoinEvt\022 \n\006player" +
+      "\030\001 \002(\0132\020.game.InitPlayer\"-\n\010LeaveEvt\022!\n\t" +
+      "player_id\030\001 \002(\0132\016.game.PlayerID\"/\n\016TurnS",
+      "tartedEvt\022\035\n\007team_id\030\001 \002(\0132\014.game.TeamID" +
+      "\"-\n\014TurnEndedEvt\022\035\n\007team_id\030\001 \002(\0132\014.game" +
+      ".TeamID\"\252\001\n\026PointOwnerMapChangeEvt\022/\n\004ki" +
+      "nd\030\001 \002(\0162!.game.PointOwnerMapChangeEvt.K" +
+      "ind\022\032\n\005owned\030\002 \003(\0132\013.base.Vect2\022\034\n\007unown" +
+      "ed\030\003 \003(\0132\013.base.Vect2\"%\n\004Kind\022\r\n\tWARP_ZO" +
+      "NE\020\001\022\016\n\nVISIBILITY\020\002\"(\n\007WarpEvt\022\035\n\006objec" +
+      "t\030\001 \002(\0132\r.game.WObject\".\n\rObjVisibleEvt\022" +
+      "\035\n\006object\030\001 \002(\0132\r.game.WObject\"o\n\007MoveEv" +
+      "t\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\031\n\004from\030",
+      "\002 \002(\0132\013.base.Vect2\022\027\n\002to\030\003 \002(\0132\013.base.Ve" +
+      "ct2\022\022\n\nmoves_left\030\004 \002(\r\"\200\001\n\tAttackEvt\022!\n" +
+      "\013attacker_id\030\001 \002(\0132\014.game.WObjID\022!\n\013defe" +
+      "nder_id\030\002 \002(\0132\014.game.WObjID\022\017\n\007hp_left\030\003" +
+      " \002(\r\022\034\n\006attack\030\004 \002(\0132\014.game.Attack\"J\n\006At" +
+      "tack\022\025\n\rattacker_roll\030\001 \002(\r\022\025\n\rdefender_" +
+      "roll\030\002 \002(\r\022\022\n\nsuccessful\030\003 \002(\010\"G\n\021Moveme" +
+      "ntChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjI" +
+      "D\022\024\n\014new_movement\030\002 \002(\r\"S\n\030MovedOrAttack" +
+      "edChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjI",
+      "D\022\031\n\021moved_or_attacked\030\002 \002(\010\"k\n\021Resource" +
+      "ChangeEvt\022\034\n\006obj_id\030\001 \001(\0132\014.game.WObjID\022" +
+      "!\n\tplayer_id\030\002 \001(\0132\016.game.PlayerID\022\025\n\rne" +
+      "w_resources\030\003 \002(\r\"J\n\020ActionsChangeEvt\022!\n" +
+      "\tplayer_id\030\001 \002(\0132\016.game.PlayerID\022\023\n\013new_" +
+      "actions\030\002 \002(\r\"J\n\022WarpStateChangeEvt\022\034\n\006o" +
+      "bj_id\030\001 \002(\0132\014.game.WObjID\022\026\n\016new_warp_st" +
+      "ate\030\002 \002(\r\"G\n\021AttackedChangeEvt\022\034\n\006obj_id" +
+      "\030\001 \002(\0132\014.game.WObjID\022\024\n\014new_attacked\030\002 \002" +
+      "(\010\"O\n\022TurnEndedChangeEvt\022!\n\tplayer_id\030\001 ",
+      "\002(\0132\016.game.PlayerID\022\026\n\016new_turn_ended\030\002 " +
+      "\002(\010\"/\n\017ObjDestroyedEvt\022\034\n\006obj_id\030\001 \002(\0132\014" +
+      ".game.WObjIDB\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

@@ -23,6 +23,7 @@ package object implicits {
 
   implicit class RandomExts(val r: Random) extends AnyVal {
     def double(from: Double, to: Double) = (to - from) * r.nextDouble() + from
+    def chance(chance: Double) = r.nextDouble() <= chance
   }
 
   implicit class IndexedSeqExts[A](val is: IndexedSeq[A]) extends AnyVal {

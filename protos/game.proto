@@ -167,6 +167,7 @@ message WObject { // {{{
     U_CORVETTE = 7;
     U_WASP = 8;
     U_SCOUT = 9;
+    U_RAY_SHIP = 10;
   }
 
   /* Trait properties {{{ */
