@@ -45,6 +45,7 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
 
   def cantAttackReason(obj: OwnedObj, world: World): Option[String] = {
     if (hasAttacked) Some(s"$self has already attacked!")
+    else if (isWarpingIn) Some(s"$self is still warping in!")
     else if (! world.isVisiblePartial(owner, obj.bounds))
       Some(s"$self cannot see $obj")
     else if (! canReachAttack(obj))
