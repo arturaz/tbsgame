@@ -160,7 +160,7 @@ case class Game private (
     states.get(human).fold2(
       evt(Game.startingState(world, human)).map { g =>
         if (g.world.resourcesMap.contains(human)) Evented(g).right
-        else g.world.addResources(human, startingResources).right.map(_.map(updated))
+        else g.world.addResources(human, startingResources).right.map(_.map(g.updated))
       }.extractFlatten,
       state => s"$human is already in the game!".left
     )
