@@ -10,7 +10,7 @@ with GrowingSpawnerCompanion[Spawner] {
   override val size: Vect2 = Vect2(2, 2)
   override val isCritical: Boolean = true
   override val defense = emptyRange
-  val DefaultTurnsPerStrength = 6
+  val DefaultTurnsPerStrength = 5
 
   override def withNewHp(hp: HP)(self: Spawner) = self.copy(hp = hp)
   override def withTurnsPerStrength(value: Int)(self: Spawner) =

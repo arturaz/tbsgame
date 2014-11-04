@@ -10,7 +10,7 @@ import monocle.syntax._
 
 object Extractor extends WBuildingCompanion[Extractor]
 with SpecialActionCompanion[Extractor] {
-  override val maxHp = HP(10)
+  override val maxHp = HP(3)
   override val warpTime = WarpTime(1)
   override val cost = Resources(4)
   override val defense = 1 to 1
