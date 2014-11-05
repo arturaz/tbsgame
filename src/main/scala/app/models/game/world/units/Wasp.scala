@@ -12,6 +12,7 @@ object Wasp extends WUnitCompanion[Wasp] with FighterCompanion[Wasp] {
   override val maxHp = HP(10)
   override val warpTime = WarpTime(0)
   override val cost = Resources(5)
+  override val kind = WObjKind.Medium
 
   override def warp(owner: Player, position: Vect2) = Wasp(position, owner)
   override def setWarpState(newState: WarpTime)(self: Wasp) =

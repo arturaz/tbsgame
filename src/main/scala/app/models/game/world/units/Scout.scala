@@ -13,6 +13,7 @@ object Scout extends WUnitCompanion[Scout] {
   override val defense = emptyRange
   override val visibility = 5
   override val maxHp = HP(3)
+  override val kind = WObjKind.Light
 
   override protected def withMovedOrAttacked(value: Boolean)(self: Scout) =
     self.copy(movedOrAttacked = value)

@@ -16,6 +16,7 @@ trait OwnedObjStats extends WObjectStats {
      loses the game. */
   val isCritical: Boolean = false
   val warpGiven: RectDistance = RectDistance(0)
+  val kind: WObjKind
 
   protected def emptyRange = 0 to -1
 }

@@ -1,21 +1,16 @@
 package app.models.game.ai
 
-import implicits._
-
-import app.algorithms.Pathfinding.SearchRes
 import app.algorithms.{Combat, Pathfinding}
 import app.models.game.Owner
 import app.models.game.events.Evented
 import app.models.game.world.buildings.GrowingSpawner
 import app.models.game.world.{OwnedObj, WObject, World}
+import implicits._
 import infrastructure.Log
 
 import scala.annotation.tailrec
 import scala.util.Random
 
-/**
- * Created by arturas on 2014-09-18.
- */
 object GrowingSpawnerAI {
   type Result = Evented[World]
 
@@ -66,19 +61,38 @@ object GrowingSpawnerAI {
   def act(
     world: World, unit: GrowingSpawner#Controlled
   ): Result = {
-    val opt = for {
-      target <- world.objects.collect {
-        case fo: OwnedObj if fo.isEnemy(unit) => fo
-      } match {
-        case s if s.isEmpty => None
-        case s => Some(s.minBy(_.bounds.tileDistance(unit.position)))
-      }
-      path <- Pathfinding.aStar(
-        unit, target.bounds, world.bounds,
-        unit.obstacles(world.objects).map(_.bounds)
-      )
-    } yield SearchRes(target, path)
-    opt.fold(Evented(world))(Combat.moveAttackLoose(world, unit, _))
+    val possibleTargets = world.objects.collect {
+      case fo: OwnedObj if fo.isEnemy(unit) => fo
+    }
+
+    // Try to move-attack someone in the range.
+    if (possibleTargets.isEmpty) Evented(world)
+    else SingleMindAI.findTarget(world, possibleTargets, unit).fold2(
+      // If that fails move towards either nearest critical object or just nearest object
+      {
+        def select(s: Iterable[OwnedObj]) = s.minBy(_.bounds.tileDistance(unit.position))
+        val optNewWorld = for {
+          target <- possibleTargets.filter(_.companion.isCritical) match {
+            case s if s.isEmpty =>
+              if (possibleTargets.isEmpty) None
+              else Some(select(possibleTargets))
+            case s => Some(select(s))
+          }
+          path <- Pathfinding.aStar(
+            unit, target.bounds, world.bounds,
+            unit.obstacles(world.objects).map(_.bounds)
+          )
+        } yield unit.moveTo(world, path.limit(unit.movementLeft)).fold(
+          err => {
+            Log.error(s"GrowingSpawnerAI act $unit: $err")
+            Evented(world)
+          },
+          _.map(_._1)
+        )
+        optNewWorld.fold2(Evented(world), identity)
+      },
+      Combat.moveAttack(world, unit, _).right.get
+    )
   }
 
   private[this] def spawn(

@@ -13,6 +13,7 @@ with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
   override val maxHp = HP(10)
   override val warpTime = WarpTime(0)
   override val cost = Resources(5)
+  override val kind = WObjKind.Medium
 
   val specialMovementAdded = TileDistance(7)
   override val specialActionsNeeded = Actions(0)

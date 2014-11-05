@@ -20,7 +20,7 @@ with MoveAttackActionedOps[Self] {
 trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
   val attack: Range.Inclusive
   val attackRange: TileDistance
-  val critical: Chance = Chance(0.25)
+  val critical: Chance = Chance(0.1)
   val criticalMultiplier: Double = 2
 }
 
@@ -61,11 +61,7 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
     obj: Target, world: World
   ): Either[String, (Attack, Evented[Self], Option[Target])] =
     cantAttackReason(obj, world).fold2({
-      val attack = Attack(
-        companion.attack.random,
-        companion.critical.struck.opt(companion.criticalMultiplier),
-        obj.defense.random
-      )
+      val attack = Attack(this, obj)
       (
         attack,
         for {

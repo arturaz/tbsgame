@@ -12,10 +12,10 @@ object RayShip extends WUnitCompanion[RayShip] with FighterCompanion[RayShip] {
   override val attack = 3 to 7
   override val defense = 0 to 1
   override val visibility = 6
-
   override val cost = Resources(10)
   override val warpTime = WarpTime(0)
   override val movement = TileDistance(2)
+  override val kind = WObjKind.Light
 
   override def warp(owner: Player, position: Vect2) = RayShip(position, owner)
   override protected def attacked(value: Boolean)(self: RayShip) =

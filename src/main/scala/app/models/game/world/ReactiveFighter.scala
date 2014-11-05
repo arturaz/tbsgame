@@ -20,7 +20,7 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
         }
         if (targets.isEmpty) data
         else {
-          val target = targets.reduce(SingleMindAI.atkOrdRndLtOO)
+          val target = targets.reduce(SingleMindAI.atkOrdRndLtOO(self))
           self.attackWS(target, world).fold(
             err => {
               Log.error(s"$self tried to attack reachable $target, but failed: $err")
