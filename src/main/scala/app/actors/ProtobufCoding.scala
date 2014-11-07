@@ -324,11 +324,15 @@ object ProtobufCoding {
     : Game.MMovement.Positions =
       Game.MMovement.Positions.newBuilder().addAllPosition(convert(data.points)).build()
 
-    implicit def convert(path: Path): Game.MMovement.Path =
-      Game.MMovement.Path.newBuilder().addAllPosition(convert(path.vects.tail)).build()
+    implicit def convert(path: Path): Option[Game.MMovement.Path] = {
+      val tail = path.vects.tail
+      if (tail.isEmpty) None
+      else Some(Game.MMovement.Path.newBuilder().addAllPosition(convert(tail)).build())
+    }
 
     implicit def convert(data: GameActor.Out.Movement.Movable): Game.MMovement.Paths =
-      Game.MMovement.Paths.newBuilder().addAllPath(convert(data.paths)).build()
+      Game.MMovement.Paths.newBuilder().
+        addAllPath(data.paths.flatMap(path => convert(path)).asJava).build()
 
     /* Events */
 
