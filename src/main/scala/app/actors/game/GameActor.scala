@@ -81,8 +81,8 @@ object GameActor {
         visibleGame.world.bounds, visibleGame.world.objects,
         visibleGame.world.warpZoneMap.map.keys.map(_._1),
         visibleGame.world.visibilityMap.map.keys.map(_._1),
-        human.team, visibleGame.world.teams - human.team, selfState,
-        (visibleGame.world.players - human).map { player =>
+        human.team, game.world.teams - human.team,
+        selfState, (game.world.players - human).map { player =>
           player -> stateFor(player).right.toOption
         }, {
           import Out.Init.Stats
