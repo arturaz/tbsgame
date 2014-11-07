@@ -8,7 +8,7 @@ import infrastructure.Log
 trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
   def shouldReact(self: OwnedObj): Boolean = self.isWarpedIn
   def shouldReact(self: OwnedObj, target: OwnedObj): Boolean =
-    shouldReact(self) && self.isEnemy(target)
+    shouldReact(self) && self.isEnemy(target) && target.isInstanceOf[MovableWObject]
 
   def attackReachable(
     data: WObject.WorldObjUpdate[Self]
