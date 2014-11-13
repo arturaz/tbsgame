@@ -91,7 +91,13 @@ object GrowingSpawnerAI {
         )
         optNewWorld.fold2(Evented(world), identity)
       },
-      Combat.moveAttack(world, unit, _).right.get
+      target => Combat.moveAttack(world, unit, target).fold(
+        err => {
+          Log.error(s"Error in GrowingSpawnerAI: can't attack $target: $err")
+          Evented(world)
+        },
+        identity
+      )
     )
   }
 
