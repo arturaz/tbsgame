@@ -7,7 +7,7 @@ object LaserTower extends WBuildingCompanion[LaserTower]
 with EmptySpaceWarpableCompanion[LaserTower]
 with ReactiveFighterCompanion[LaserTower] {
   override val maxHp = HP(12)
-  override val warpTime = WarpTime(3)
+  override val warpTime = WarpTime(2)
   override val cost = Resources(12)
   override val attack = 8 to 15
   override val attackRange = TileDistance(5)
