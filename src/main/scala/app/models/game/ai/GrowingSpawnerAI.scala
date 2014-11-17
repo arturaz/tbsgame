@@ -52,7 +52,7 @@ object GrowingSpawnerAI {
 
     val readyUnits = world.objects.collect {
       case unit: spawner.Controlled
-        if unit.owner === spawner.owner && ! unit.hasAttacked => unit
+        if unit.owner === spawner.owner && ! unit.noAttacksLeft => unit
     }.toList
 
     work(spawner.strength, Evented(world), readyUnits)

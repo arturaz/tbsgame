@@ -21,14 +21,14 @@ object ProtobufCoding {
   import scala.language.implicitConversions
 
   object Parsing {
-    implicit def parseVect2(v: Base.Vect2) = Vect2(v.getX, v.getY)
+    implicit def parseVect2(v: Base.Vect2): Vect2 = Vect2(v.getX, v.getY)
 
-    implicit def parseUUID(v: Base.UUID) =
+    implicit def parseUUID(v: Base.UUID): UUID =
       new UUID(v.getMostSignificant, v.getLeastSignificant)
 
-    implicit def parsePid(v: Game.PlayerID) = Player.Id(v.getId)
-    implicit def parseTid(v: Game.TeamID) = Team.Id(v.getId)
-    implicit def parseWid(v: Game.WObjID) = WObject.Id(v.getId)
+    implicit def parsePid(v: Game.PlayerID): Player.Id = Player.Id(v.getId)
+    implicit def parseTid(v: Game.TeamID): Team.Id = Team.Id(v.getId)
+    implicit def parseWid(v: Game.WObjID): WObject.Id = WObject.Id(v.getId)
 
     implicit def parseWarpable(
       w: Game.MWarp.HumanWarpable
@@ -204,11 +204,12 @@ object ProtobufCoding {
 
     implicit def convert(obj: FighterStats): Game.WObject.Fighter.Stats =
       Game.WObject.Fighter.Stats.newBuilder().
-        setAttack(obj.attack).setAttackRange(obj.attackRange).build()
+        setAttack(obj.attack).setAttackRange(obj.attackRange).setAttacks(obj.attacks).
+        build()
 
     implicit def convert(obj: Fighter): Game.WObject.Fighter =
       Game.WObject.Fighter.newBuilder().
-        setStats(obj.companion).setAttacked(obj.hasAttacked).build()
+        setStats(obj.companion).setAttacksLeft(obj.attacksLeft).build()
 
     implicit def convert(obj: MoveAttackActionedStats)
     : Game.WObject.MoveAttackActioned.Stats =
@@ -388,9 +389,9 @@ object ProtobufCoding {
       Game.WarpStateChangeEvt.newBuilder().
         setObjId(evt.newObj.id).setNewWarpState(evt.newObj.warpState).build()
 
-    implicit def convert(evt: AttackedChangeEvt): Game.AttackedChangeEvt =
-      Game.AttackedChangeEvt.newBuilder().
-        setObjId(evt.newObj.id).setNewAttacked(evt.newObj.hasAttacked).build()
+    implicit def convert(evt: AttacksChangedEvt): Game.AttacksChangeEvt =
+      Game.AttacksChangeEvt.newBuilder().
+        setObjId(evt.newObj.id).setAttacksLeft(evt.newObj.attacksLeft).build()
 
     implicit def convert(evt: TurnEndedChangeEvt): Game.TurnEndedChangeEvt =
       Game.TurnEndedChangeEvt.newBuilder().
@@ -421,7 +422,7 @@ object ProtobufCoding {
         case evt: JoinEvt => b.setJoin(evt)
         case evt: LeaveEvt => b.setLeave(evt)
         case evt: WarpStateChangeEvt => b.setWarpChange(evt)
-        case evt: AttackedChangeEvt => b.setAttackedChange(evt)
+        case evt: AttacksChangedEvt => b.setAttacksChange(evt)
         case evt: TurnEndedChangeEvt => b.setTurnEndedChange(evt)
         case evt: ObjDestroyedEvt => b.setObjDestroyed(evt)
       } }.build()

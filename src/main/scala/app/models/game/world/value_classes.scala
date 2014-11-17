@@ -31,6 +31,15 @@ object HP {
   }
 }
 
+case class Attacks(value: Int) extends AnyVal with IntValueClass[Attacks] {
+  override def self(v: Int) = Attacks(v)
+}
+object Attacks {
+  implicit object Numeric extends IntValueClass.Numeric[Attacks] {
+    override def fromInt(x: Int) = Attacks(x)
+  }
+}
+
 case class RectDistance(value: Int) extends AnyVal with IntValueClass[RectDistance] {
   override def self(v: Int) = RectDistance(v)
 

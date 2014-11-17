@@ -16,10 +16,11 @@ object RayShip extends WUnitCompanion[RayShip] with FighterCompanion[RayShip] {
   override val warpTime = WarpTime(0)
   override val movement = TileDistance(2)
   override val kind = WObjKind.Light
+  override val attacks = Attacks(1)
 
   override def warp(owner: Player, position: Vect2) = RayShip(position, owner)
-  override protected def attacked(value: Boolean)(self: RayShip) =
-    self.copy(hasAttacked = value)
+  override protected def withAttacksLeft(value: Attacks)(self: RayShip) =
+    self.copy(attacksLeft = value)
   override protected def withMovedOrAttacked(value: Boolean)(self: RayShip) =
     self.copy(movedOrAttacked = value)
   override def withNewHp(hp: HP)(self: RayShip) = self.copy(hp = hp)
@@ -32,7 +33,8 @@ object RayShip extends WUnitCompanion[RayShip] with FighterCompanion[RayShip] {
 
 case class RayShip(
   position: Vect2, owner: Player,
-  id: WObject.Id=WObject.newId, hp: HP=RayShip.maxHp, hasAttacked: Boolean=false,
+  id: WObject.Id=WObject.newId, hp: HP=RayShip.maxHp,
+  attacksLeft: Attacks=RayShip.InitialAttacks,
   movementLeft: TileDistance=RayShip.movement, warpState: WarpTime=RayShip.InitialWarpState,
   movedOrAttacked: Boolean=RayShip.InitialMovedOrAttacked
 ) extends WUnit with Fighter {

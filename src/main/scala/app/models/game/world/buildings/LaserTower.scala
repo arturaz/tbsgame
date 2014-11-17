@@ -6,20 +6,21 @@ import app.models.game.world._
 object LaserTower extends WBuildingCompanion[LaserTower]
 with EmptySpaceWarpableCompanion[LaserTower]
 with ReactiveFighterCompanion[LaserTower] {
-  override val maxHp = HP(12)
-  override val warpTime = WarpTime(2)
+  override val maxHp = HP(20)
+  override val warpTime = WarpTime(1)
   override val cost = Resources(12)
   override val attack = 8 to 15
   override val attackRange = TileDistance(5)
   override val defense = 3 to 4
   override val moveAttackActionsNeeded = Actions(2)
+  override val attacks = Attacks(1)
 
   override def warp(owner: Player, position: Vect2) =
     LaserTower(position, owner)
   override def setWarpState(newState: WarpTime)(self: LaserTower) =
     self.copy(warpState=newState)
-  override def attacked(value: Boolean)(self: LaserTower) =
-    self.copy(hasAttacked=value)
+  override def withAttacksLeft(value: Attacks)(self: LaserTower) =
+    self.copy(attacksLeft=value)
   override def withMovedOrAttacked(value: Boolean)(self: LaserTower) =
     self.copy(movedOrAttacked = value)
   override def withNewHp(hp: HP)(self: LaserTower) = self.copy(hp = hp)
@@ -29,7 +30,8 @@ with ReactiveFighterCompanion[LaserTower] {
 case class LaserTower(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=LaserTower.maxHp,
-  warpState: WarpTime=LaserTower.InitialWarpState, hasAttacked: Boolean=false,
+  warpState: WarpTime=LaserTower.InitialWarpState,
+  attacksLeft: Attacks=LaserTower.InitialAttacks,
   movedOrAttacked: Boolean=LaserTower.InitialMovedOrAttacked
 ) extends PlayerBuilding with WBuilding with ReactiveFighter {
   type Self = LaserTower

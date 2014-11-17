@@ -149,8 +149,8 @@ class GameActor private (
     val spawnerAi = Bot(AiTeam)
     val world = World.create(
       HumanTeam, singleAi, spawnerAi,
-      spawners = 1, blobRichness = 15 to 30, asteroidResources = 8 to 20,
-      endDistance = TileDistance(25), waspsAtMaxDistance = 2
+      spawners = 2, blobRichness = 15 to 30, asteroidResources = 8 to 20,
+      endDistance = TileDistance(20), waspsAtMaxDistance = 2
     )
     log.debug("World initialized to {}", world)
     TurnBasedGame(

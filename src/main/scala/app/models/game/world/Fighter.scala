@@ -1,18 +1,18 @@
 package app.models.game.world
 
 import app.models.game.{Player, Attack}
-import app.models.game.events.{AttackedChangeEvt, AttackEvt, Evented}
+import app.models.game.events.{AttacksChangedEvt, AttackEvt, Evented}
 import implicits._
 
 trait FighterOps[Self <: Fighter] extends OwnedObjOps[Self]
 with MoveAttackActionedOps[Self] {
-  protected def attacked(value: Boolean)(self: Self): Self
-  def attackedEvt(value: Boolean)(world: World, self: Self): Evented[Self] = {
-    val newSelf = self |> attacked(value)
+  protected def withAttacksLeft(value: Attacks)(self: Self): Self
+  def withAttacksLeftEvt(value: Attacks)(world: World, self: Self): Evented[Self] = {
+    val newSelf = self |> withAttacksLeft(value)
     Evented(
       newSelf,
       if (self === newSelf) Vector.empty
-      else Vector(AttackedChangeEvt(world, newSelf))
+      else Vector(AttacksChangedEvt(world, newSelf))
     )
   }
 }
@@ -20,8 +20,10 @@ with MoveAttackActionedOps[Self] {
 trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
   val attack: Range.Inclusive
   val attackRange: TileDistance
+  val attacks: Attacks
   val critical: Chance = Chance(0.1)
   val criticalMultiplier: Double = 2
+  @inline def InitialAttacks = attacks
 }
 
 trait FighterCompanion[Self <: Fighter] extends FighterOps[Self] with FighterStats
@@ -30,21 +32,24 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
   type Self <: Fighter
   type Companion <: FighterOps[Self] with FighterStats
 
-  val hasAttacked: Boolean
+  val attacksLeft: Attacks
 
   override def teamTurnStartedSelf(world: World) =
     super.teamTurnStartedSelf(world) |> resetAttack
 
   protected def resetAttack(data: Evented[(World, Self)]) =
     data |>
-    selfEventedUpdate(companion.attackedEvt(false)) |>
+    selfEventedUpdate(companion.withAttacksLeftEvt(companion.attacks)) |>
     selfEventedUpdate(companion.withMovedOrAttackedEvt(companion.InitialMovedOrAttacked))
+
+  def noAttacksLeft = attacksLeft.isZero
+  def hasAttacksLeft = attacksLeft.isNotZero
 
   def canReachAttack(obj: OwnedObj) =
     obj.bounds.withinTileDistance(position, companion.attackRange)
 
   def cantAttackReason(obj: OwnedObj, world: World): Option[String] = {
-    if (hasAttacked) Some(s"$self has already attacked!")
+    if (noAttacksLeft) Some(s"$self has already used all its attacks!")
     else if (isWarpingIn) Some(s"$self is still warping in!")
     else if (! world.isVisiblePartial(owner, obj.bounds))
       Some(s"$self cannot see $obj")
@@ -65,7 +70,9 @@ trait Fighter extends OwnedObj with MoveAttackActioned {
       (
         attack,
         for {
-          newSelf <- companion.attackedEvt(true)(world, self)
+          newSelf <- companion.withAttacksLeftEvt(
+            self.attacksLeft - Attacks(1)
+          )(world, self)
           newSelf <- companion.withMovedOrAttackedEvt(true)(world, newSelf)
         } yield newSelf,
         attack(obj)

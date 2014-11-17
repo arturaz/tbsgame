@@ -101,7 +101,7 @@ case class AttackEvt[D <: OwnedObj](
     else Iterable.empty
 }
 
-case class AttackedChangeEvt(
+case class AttacksChangedEvt(
   world: World, newObj: Fighter
 ) extends BoundedEvent {
   def bounds = newObj.bounds
