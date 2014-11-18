@@ -39,8 +39,8 @@ trait ReactiveFighterStats extends FighterStats
 trait ReactiveFighterCompanion[Self <: ReactiveFighter] extends ReactiveFighterOps[Self]
 with ReactiveFighterStats
 
-trait ReactiveFighter extends Fighter {
-  type Self <: ReactiveFighter
+trait ReactiveFighter extends Fighter { traitSelf =>
+  type Self >: traitSelf.type <: ReactiveFighter
   type Companion <: ReactiveFighterOps[Self] with ReactiveFighterStats
 
   /* Needed to be able to react to other player actions. */

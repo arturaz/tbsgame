@@ -4,50 +4,58 @@ import app.algorithms.Pathfinding.{Path, SearchRes}
 import app.models.game.events.Evented
 import app.models.game.world._
 import implicits._
+import utils.ErrOpt
 
 object Combat {
-  type ActionResult = Evented[World]
-  type EitherActionResult = Either[String, ActionResult]
+  type RawResult[A <: MovableFighter] = Evented[(World, Option[A])]
+  type RawWorldResult = Evented[World]
+  type Result[A <: MovableFighter] = ErrOpt[RawResult[A]]
+  type WorldResult = ErrOpt[RawWorldResult]
+  type MovableFighter = MovableWObject with Fighter
 
-  def moveAttack(
-    world: World, unit: MovableWObject with Fighter,
+  def moveAttack[A <: MovableFighter](
+    world: World, unit: A,
     target: SearchRes[OwnedObj], strict: Boolean=true
-  ): EitherActionResult = {
+  ): Result[A] = {
     moveAndThen(world, unit, target.path, strict) { case (newWorld, movedUnit) =>
-      movedUnit.attackW(target.value, newWorld)
+      movedUnit.attackWS(target.value, newWorld).right.map(_.map {
+        case (w, u) => (w, u.asInstanceOf[A])
+      })
     }
   }
 
-  def moveAndThen(
-    world: World, unit: MovableWObject with Fighter,
+  def moveAndThen[A <: MovableFighter](
+    world: World, unit: A,
     movePath: Path, strict: Boolean=true
   )(
-    andThen: (World, MovableWObject with Fighter) => EitherActionResult
-  ): EitherActionResult = {
+    andThen: (World, A) => ErrOpt[Evented[(World, A)]]
+  ): Result[A] = {
     val moveTarget =
       if (!strict && unit.movementLeft < movePath.movementNeeded)
         movePath.limit(unit.movementLeft)
       else
         movePath
 
-    unit.moveTo(world, moveTarget).right.flatMap { movedEvtWorldSelf =>
-      @inline def movedEvtWorld = movedEvtWorldSelf.map(_._1)
+    unit.moveTo(world, moveTarget).right.map(_.map {
+      case (w, opt) => (w, opt.map(_.asInstanceOf[A]))
+    }).right.flatMap { movedEvtWorldSelf =>
       movedEvtWorldSelf.value match {
-        case (newWorld, Some(movedUnit)) => andThen(
-          newWorld, movedUnit.asInstanceOf[MovableWObject with Fighter]
-        ).fold(
-          err => if (! strict) movedEvtWorld.right else err.left,
-          andThenEvtWorld => (movedEvtWorldSelf.events ++: andThenEvtWorld).right
+        case (newWorld, Some(movedUnit)) => andThen(newWorld, movedUnit).fold(
+          err => if (! strict) movedEvtWorldSelf.right else err.left,
+          andThenEvtWorld => (
+            movedEvtWorldSelf.events ++:
+              andThenEvtWorld.map { case (w, u) => (w, Some(u)) }
+          ).right
         )
-        case (_, None) => movedEvtWorld.right
+        case (_, None) => movedEvtWorldSelf.right
       }
     }
   }
 
   /* Tries to move attack, but does not fail if cannot. */
-  def moveAttackLoose(
-    world: World, unit: MovableWObject with Fighter, target: SearchRes[OwnedObj]
-  ): ActionResult = moveAttack(world, unit, target, strict = false).fold(
+  def moveAttackLoose[A <: MovableFighter](
+    world: World, unit: A, target: SearchRes[OwnedObj]
+  ): RawResult[A] = moveAttack(world, unit, target, strict = false).fold(
     err => throw new Exception(s"[search res=$target]: $err]"), identity
   )
 }

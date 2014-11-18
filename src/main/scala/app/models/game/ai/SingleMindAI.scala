@@ -62,7 +62,7 @@ object SingleMindAI {
     atkOrdRndLt(AttackSearchResOrdering(self))(a, b)
 
   /* Simulate AI actions for all units. */
-  def act(world: World, owner: Owner): Combat.ActionResult = {
+  def act(world: World, owner: Owner): Combat.RawWorldResult = {
     val units = world.objects.
       collect { case o: WUnit with Fighter if owner === o.owner => o }
     units.foldLeft(Evented(world)) { case (curWorld, unit) =>
@@ -78,33 +78,70 @@ object SingleMindAI {
 
   def act(
     world: Evented[World], unit: WUnit with Fighter
-  ): Combat.EitherActionResult =
+  ): Combat.WorldResult =
     act(world.value, unit).right.map { world.events ++: _ }
 
-  def act(world: World, unit: WUnit with Fighter): Combat.EitherActionResult = {
-    val visibleTargets =
-      world.objects.view.
-      collect { case o: OwnedObj => o }.
-      filter(o => o.isEnemy(unit) && unit.sees(o)).
-      toSeq
+  def act(world: World, unit: WUnit with Fighter): Combat.WorldResult = {
+    whileHasAttacksLeft(world, unit)((world, unit) => {
+      val visibleTargets =
+        world.objects.view.
+          collect { case o: OwnedObj => o }.
+          filter(o => o.isEnemy(unit) && unit.sees(o)).
+          toSeq
 
-    findTarget(world, visibleTargets, unit).fold2(
-      Right(Evented(world)),
-      Combat.moveAttack(world, unit, _)
-    )
+      findAndMoveAttackTarget(world, visibleTargets, unit)
+    })
   }
 
   def findTarget(
     world: World, targets: Iterable[OwnedObj], unit: WUnit with Fighter
   ): Option[SearchRes[OwnedObj]] = {
+    if (targets.isEmpty) return None
+
     val obstacles = unit.obstacles(world.objects).map(_.bounds)
     val attackableTargets =
       Pathfinding.attackSearch(unit, targets, world.bounds, obstacles)(_.bounds)
 
-    if (attackableTargets.isEmpty) None
+    if (attackableTargets.isEmpty) {
+      Log.debug(s"findTarget: no attackable targets from $targets for $unit")
+      None
+    }
     else {
       val target = attackableTargets.reduce(atkOrdRndLt(AttackSearchResOrdering(unit)))
+      Log.debug(s"findTarget: attackable target = $target from $targets for $unit")
       Some(target)
     }
+  }
+
+  def findAndMoveAttackTarget(
+    world: World, targets: Iterable[OwnedObj], unit: WUnit with Fighter
+  ) = findTarget(world, targets, unit).map { target =>
+    Combat.moveAttack(world, unit, target)
+  }
+
+  def whileHasAttacksLeft[A <: WUnit with Fighter](world: World, unit: A)(
+    doAct: (World, A) => Option[Combat.Result[A]],
+    onNoTarget: (Evented[World], A) => Combat.WorldResult =
+      (newWorld: Evented[World], _: A) => newWorld.right[String]
+  ): Combat.WorldResult = {
+    var newWorld = Evented(world)
+    var newUnitOpt = Option(unit)
+    do {
+      val newUnit = newUnitOpt.get
+      doAct(newWorld.value, newUnit).fold2(
+        // No more things to do.
+        return onNoTarget(newWorld, newUnit),
+        {
+          case Left(err) => return err.left[Evented[World]]
+          case Right(evented) =>
+            newWorld = newWorld.events ++: evented.map { case (_world, unitOpt) =>
+              newUnitOpt = unitOpt
+              _world
+            }
+        }
+      )
+    } while (newUnitOpt.exists(_.attacksLeft.isNotZero))
+
+    newWorld.right[String]
   }
 }

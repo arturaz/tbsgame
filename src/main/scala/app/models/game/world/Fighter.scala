@@ -28,8 +28,8 @@ trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
 
 trait FighterCompanion[Self <: Fighter] extends FighterOps[Self] with FighterStats
 
-trait Fighter extends OwnedObj with MoveAttackActioned {
-  type Self <: Fighter
+trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
+  type Self >: traitSelf.type  <: Fighter
   type Companion <: FighterOps[Self] with FighterStats
 
   val attacksLeft: Attacks

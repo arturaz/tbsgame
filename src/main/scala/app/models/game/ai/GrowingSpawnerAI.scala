@@ -1,6 +1,6 @@
 package app.models.game.ai
 
-import app.algorithms.{Combat, Pathfinding}
+import app.algorithms.Pathfinding
 import app.models.game.Owner
 import app.models.game.events.Evented
 import app.models.game.world.buildings.GrowingSpawner
@@ -52,7 +52,7 @@ object GrowingSpawnerAI {
 
     val readyUnits = world.objects.collect {
       case unit: spawner.Controlled
-        if unit.owner === spawner.owner && ! unit.noAttacksLeft => unit
+        if unit.owner === spawner.owner && unit.hasAttacksLeft => unit
     }.toList
 
     work(spawner.strength, Evented(world), readyUnits)
@@ -61,15 +61,18 @@ object GrowingSpawnerAI {
   def act(
     world: World, unit: GrowingSpawner#Controlled
   ): Result = {
-    val possibleTargets = world.objects.collect {
-      case fo: OwnedObj if fo.isEnemy(unit) => fo
-    }
+    var possibleTargets = Set.empty[OwnedObj]
 
-    // Try to move-attack someone in the range.
-    if (possibleTargets.isEmpty) Evented(world)
-    else SingleMindAI.findTarget(world, possibleTargets, unit).fold2(
+    SingleMindAI.whileHasAttacksLeft(world, unit)(
+      (world, unit) => {
+        possibleTargets = world.objects.collect {
+          case fo: OwnedObj if fo.isEnemy(unit) => fo
+        }
+
+        SingleMindAI.findAndMoveAttackTarget(world, possibleTargets, unit)
+      },
       // If that fails move towards either nearest critical object or just nearest object
-      {
+      (evtWorld, unit) => {
         def select(s: Iterable[OwnedObj]) = s.minBy(_.bounds.tileDistance(unit.position))
         val optNewWorld = for {
           target <- possibleTargets.filter(_.companion.isCritical) match {
@@ -84,20 +87,19 @@ object GrowingSpawnerAI {
           )
         } yield unit.moveTo(world, path.limit(unit.movementLeft)).fold(
           err => {
-            Log.error(s"GrowingSpawnerAI act $unit: $err")
+            Log.error(s"GrowingSpawnerAI move act $unit: $err")
             Evented(world)
           },
           _.map(_._1)
         )
-        optNewWorld.fold2(Evented(world), identity)
+        optNewWorld.getOrElse(Evented(world)).right
+      }
+    ).fold(
+      err => {
+        Log.error(s"GrowingSpawnerAI act $unit: $err")
+        Evented(world)
       },
-      target => Combat.moveAttack(world, unit, target).fold(
-        err => {
-          Log.error(s"Error in GrowingSpawnerAI: can't attack $target: $err")
-          Evented(world)
-        },
-        identity
-      )
+      identity
     )
   }
 

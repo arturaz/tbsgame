@@ -3,7 +3,6 @@ package app.models.game.world
 import app.algorithms.Pathfinding.Path
 import app.models.game.events._
 import implicits._
-import infrastructure.Log
 import utils.data.NonEmptyVector
 
 trait MovableWObjectOps[Self <: MovableWObject]
@@ -44,8 +43,8 @@ extends MovableWObjectOps[Self] with MovableWObjectStats
 
 /* Objects that can move. All such objects have 1x1 size. */
 trait MovableWObject extends WObject with MoveAttackActioned
-with Mobility[Mobility.Movable.type] {
-  type Self <: MovableWObject
+with Mobility[Mobility.Movable.type] { traitSelf =>
+  type Self >: traitSelf.type <: MovableWObject
   type Companion <: MovableWObjectOps[Self] with MovableWObjectStats
 
   val movementLeft: TileDistance
