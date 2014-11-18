@@ -14,6 +14,7 @@ with ReactiveFighterCompanion[LaserTower] {
   override val defense = 3 to 4
   override val moveAttackActionsNeeded = Actions(2)
   override val attacks = Attacks(1)
+  override val kind = WObjKind.Heavy
 
   override def warp(owner: Player, position: Vect2) =
     LaserTower(position, owner)

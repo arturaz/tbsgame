@@ -5,12 +5,12 @@ import app.models.game.{Actions, Player}
 
 object Corvette extends WUnitCompanion[Corvette] 
 with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
-  override val attack = 5 to 10
+  override val attack = 4 to 6
   override val defense = 0 to 1
   override val attackRange = TileDistance(4)
   override val movement = TileDistance(6)
   override val visibility: Int = 4
-  override val maxHp = HP(14)
+  override val maxHp = HP(10)
   override val warpTime = WarpTime(0)
   override val cost = Resources(5)
   override val kind = WObjKind.Medium

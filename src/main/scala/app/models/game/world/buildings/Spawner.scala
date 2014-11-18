@@ -1,10 +1,8 @@
 package app.models.game.world.buildings
 
 import app.models.game.Bot
-import app.models.game.world.units.{RayShip, Wasp}
 import app.models.game.world._
-
-import scala.util.Random
+import app.models.game.world.units.{Fortress, RayShip, Wasp}
 import implicits._
 
 object Spawner extends BuildingCompanion[Spawner] with SizedWObjectCompanion
@@ -14,12 +12,19 @@ with GrowingSpawnerCompanion[Spawner] {
   override val isCritical: Boolean = true
   override val defense = emptyRange
   val DefaultTurnsPerStrength = 5
+  val kind = WObjKind.Heavy
 
   override def withNewHp(hp: HP)(self: Spawner) = self.copy(hp = hp)
   override def withTurnsPerStrength(value: Int)(self: Spawner) =
     self.copy(turnsPerStrength = value)
   override def withTurns(turns: Int)(self: Spawner) =
     self.copy(turns = turns)
+
+  val Spawnables = IndexedSeq(
+    WObjKind.Light -> Wasp,
+    WObjKind.Medium -> Fortress,
+    WObjKind.Heavy -> RayShip
+  )
 }
 
 case class Spawner(
@@ -34,20 +39,25 @@ case class Spawner(
   override type Companion = Spawner.type
 
   override def spawn(world: World, position: Vect2) = {
-    case class Counter(movable: Int, immovable: Int) {
-      lazy val total = movable + immovable
-      def waspChance = percent(movable)
-      def rayShipChance = percent(immovable)
-      private[this] def percent(p: Double) = if (total == 0) 0.5 else p / total
+    case class Counter(counts: Map[WObjKind, Int]=Map.empty.withDefaultValue(0)) {
+      def +(kind: WObjKind) = Counter(counts updated (kind, counts(kind) + 1))
+
+      lazy val total = counts.values.sum
+      lazy val warpableWeights = Spawner.Spawnables.map {
+        case (kind, warpable) => warpable -> counts(kind)
+      }
+
+      def randomWarpable = {
+        if (total == 0) Spawner.Spawnables.random.get._2
+        else warpableWeights.weightedRandom.get
+      }
     }
 
-    val counts = world.objects.view.collect {
-      case o: OwnedObj with Fighter if o.isEnemy(this) => o
-    }.foldLeft(Counter(0, 0)) {
-      case (cnt, obj: MovableWObject) => cnt.copy(movable = cnt.movable + 1)
-      case (cnt, obj) => cnt.copy(immovable = cnt.immovable + 1)
+    val counts = world.objects.foldLeft(Counter()) {
+      case (cnt, o: OwnedObj) if o.isEnemy(this) => cnt + o.companion.kind
+      case (cnt, _) => cnt
     }
-    val warpable = if (Random.chance(counts.waspChance)) Wasp else RayShip
+    val warpable = counts.randomWarpable
     warpable.warp(world, owner, position)
   }
 }

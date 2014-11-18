@@ -11,6 +11,7 @@ with EmptySpaceWarpableCompanion[WarpLinker] {
   override val defense = 0 to 1
   override val visibility = 5
   override val warpGiven = RectDistance(visibility)
+  override val kind = WObjKind.Light
 
   override def warp(owner: Player, position: Vect2) =
     WarpLinker(position, owner)

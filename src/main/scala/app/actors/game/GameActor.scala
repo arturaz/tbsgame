@@ -10,7 +10,7 @@ import app.models.game.events._
 import app.models.game.world._
 import app.models.game.world.buildings._
 import app.models.game.world.props.Asteroid
-import app.models.game.world.units.{RayShip, Scout, Wasp, Corvette}
+import app.models.game.world.units._
 import implicits._
 import utils.data.NonEmptyVector
 
@@ -92,7 +92,9 @@ object GameActor {
             Stats(LaserTower, showInWarpables = true),
             Stats(Corvette, showInWarpables = true),
             Stats(Scout, showInWarpables = true),
-            Stats(Spawner), Stats(Wasp), Stats(RayShip)
+            Stats(RocketFrigate, showInWarpables = true),
+            Stats(Gunship, showInWarpables = true),
+            Stats(Spawner), Stats(Wasp), Stats(RayShip), Stats(Fortress)
           )
         }
       )
@@ -150,7 +152,7 @@ class GameActor private (
     val world = World.create(
       HumanTeam, singleAi, spawnerAi,
       spawners = 2, blobRichness = 15 to 30, asteroidResources = 8 to 20,
-      endDistance = TileDistance(20), waspsAtMaxDistance = 2
+      endDistance = TileDistance(30), waspsAtMaxDistance = 2
     )
     log.debug("World initialized to {}", world)
     TurnBasedGame(

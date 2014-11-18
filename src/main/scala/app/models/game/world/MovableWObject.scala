@@ -69,6 +69,8 @@ with Mobility[Mobility.Movable.type] { traitSelf =>
       s"$this needed ${path.movementNeeded} movement for $path, had $movementLeft".left
     else if (path.vects.head =/= position)
       s"Starting $path vect =/= $this position".left
+    else if (isWarpingIn)
+      s"$this is still warping in!".left
     else if (path.movementNeeded.isZero)
       // If we don't need to go anywhere, don't go.
       Evented((world, Some(self))).right

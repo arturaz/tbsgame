@@ -26,6 +26,8 @@ message MWarp {
     B_LASER_TOWER = 3;
     U_CORVETTE = 4;
     U_SCOUT = 5;
+    U_ROCKET_FRIGATE = 6;
+    U_GUNSHIP = 7;
   }
 
   required base.Vect2 position = 1;
@@ -168,6 +170,9 @@ message WObject { // {{{
     U_WASP = 8;
     U_SCOUT = 9;
     U_RAY_SHIP = 10;
+    U_ROCKET_FRIGATE = 11;
+    U_GUNSHIP = 12;
+    U_FORTRESS = 13;
   }
 
   /* Trait properties {{{ */

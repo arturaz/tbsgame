@@ -20,6 +20,7 @@ with SpecialActionCompanion[Extractor] {
   val specialExtracts = Resources(2)
   val specialCollapseResources = cost + specialExtracts
   override val specialActionsNeeded = Actions(1)
+  override val kind = WObjKind.Medium
 
   override def warpWOReactionImpl(world: World, owner: Player, position: Vect2) = {
     val b = bounds(position)

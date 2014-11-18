@@ -30,6 +30,41 @@ package object implicits {
     def random = if (is.isEmpty) None else Some(is(Random.nextInt(is.size)))
   }
 
+  implicit class IndexedSeq2Exts[A](val is: IndexedSeq[(A, Int)])
+  extends AnyVal {
+    /** http://stackoverflow.com/a/2149533/1513157 **/
+    def weightedSample(itemCount: Int): Either[String, IndexedSeq[A]] = {
+      if (is.size < itemCount)
+        return s"Expected collection to have at least $itemCount items, but it had ${
+          is.size} items.".left
+
+      var sample = IndexedSeq.empty[A]
+      var total = is.view.map(_._2).sum.toDouble
+      var i = 0
+      var (value, weight) = {
+        val tuple = is(i)
+        (tuple._1, tuple._2.toDouble)
+      }
+      while (sample.size < itemCount) {
+        var x = total * (1 - math.pow(Random.nextDouble(), 1.0 / itemCount))
+        total -= x
+        while (x > weight) {
+          x -= weight
+          i += 1
+          val tuple = is(i)
+          value = tuple._1
+          weight = tuple._2.toDouble
+        }
+        weight -= x
+        sample :+= value
+      }
+
+      sample.right
+    }
+
+    def weightedRandom: Option[A] = weightedSample(1).right.toOption.map(_.head)
+  }
+
   implicit class OrderingOps[T](val ord: Ordering[T]) extends AnyVal {
     def orElse(ord2: Ordering[T]) = new CompositeOrdering[T](ord, ord2)
   }

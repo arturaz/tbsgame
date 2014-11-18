@@ -7,7 +7,6 @@ trait BuildingOps[Self] extends OwnedObjOps[Self] {
 
 trait BuildingStats extends OwnedObjStats {
   override val visibility = 3
-  override val kind = WObjKind.Heavy
 }
 
 trait BuildingCompanion[Self] extends BuildingOps[Self] with BuildingStats

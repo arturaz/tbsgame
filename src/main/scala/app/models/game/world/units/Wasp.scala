@@ -9,7 +9,7 @@ object Wasp extends WUnitCompanion[Wasp] with FighterCompanion[Wasp] {
   override val attackRange = TileDistance(3)
   override val movement = TileDistance(3)
   override val visibility: Int = 4
-  override val maxHp = HP(10)
+  override val maxHp = HP(14)
   override val warpTime = WarpTime(0)
   override val cost = Resources(5)
   override val kind = WObjKind.Medium

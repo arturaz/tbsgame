@@ -44,7 +44,8 @@ object GrowingSpawnerAI {
             case Right(newWorld) =>
               work(
                 newActions, world.events ++: newWorld.map(_._1),
-                newWorld.value._2.fold2(List.empty, List(_)) ::: readyUnits
+                newWorld.value._2.filter(_.isWarpedIn).fold2(List.empty, List(_))
+                  ::: readyUnits
               )
         }
       }
@@ -52,7 +53,7 @@ object GrowingSpawnerAI {
 
     val readyUnits = world.objects.collect {
       case unit: spawner.Controlled
-        if unit.owner === spawner.owner && unit.hasAttacksLeft => unit
+        if unit.owner === spawner.owner && unit.hasAttacksLeft && unit.isWarpedIn => unit
     }.toList
 
     work(spawner.strength, Evented(world), readyUnits)
