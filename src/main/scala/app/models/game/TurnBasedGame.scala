@@ -12,18 +12,19 @@ object TurnBasedGame {
 
   def apply(
     world: World, startingHuman: Human, startingResources: Resources
-  ): StartedGame = {
+  )(implicit log: LoggingAdapter): StartedGame = {
     val game = Game(world, startingHuman, startingResources)
     game.right.flatMap(apply)
   }
 
-  def apply(game: Game): StartedGame = {
+  def apply(game: Game)(implicit log: LoggingAdapter): StartedGame = {
     val teams = game.world.teams.toVector
     if (teams.isEmpty) s"No teams found in $game!".left
     else newGameTurn(game, teams).right
   }
 
-  private def newGameTurn(game: Game, teams: Vector[Team]): Evented[TurnBasedGame] = {
+  private def newGameTurn(game: Game, teams: Vector[Team])(implicit log: LoggingAdapter)
+  : Evented[TurnBasedGame] = {
     val startingTeam = teams.head
     val gameTurnStartedGame = game.gameTurnStarted
     val teamTurnStartedGame = gameTurnStartedGame.flatMap(_.teamTurnStarted(startingTeam))

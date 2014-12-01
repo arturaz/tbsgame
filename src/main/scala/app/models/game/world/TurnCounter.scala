@@ -1,5 +1,6 @@
 package app.models.game.world
 
+import akka.event.LoggingAdapter
 import implicits._
 
 trait TurnCounterOps[Self <: TurnCounter] extends WObjectOps {
@@ -17,7 +18,7 @@ trait TurnCounter extends WObject {
   type Companion <: TurnCounterOps[Self] with TurnCounterStats
   val turns: Int
 
-  override def gameTurnStartedSelf(world: World) =
+  override def gameTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
     super.gameTurnStartedSelf(world) |>
     selfUpdate(companion.incTurns)
 }

@@ -1,11 +1,11 @@
 package app.models.game.world.buildings
 
+import akka.event.LoggingAdapter
 import app.models.game.events.{Evented, ResourceChangeEvt}
 import app.models.game.world._
 import app.models.game.world.props.Asteroid
 import app.models.game.{Actions, Player}
 import implicits._
-import infrastructure.Log
 import monocle.syntax._
 
 object Extractor extends WBuildingCompanion[Extractor]
@@ -48,19 +48,19 @@ case class Extractor(
   override def companion = Extractor
   override type Companion = Extractor.type
 
-  override def teamTurnStartedSelf(w: World) = {
+  override def teamTurnStartedSelf(w: World)(implicit log: LoggingAdapter) = {
     super.teamTurnStartedSelf(w).mapVal { upd => upd.flatMap {
     case orig @ (world, self) =>
       findAsteroid(world).fold(
         err => {
-          Log.error(s"Can't find asteroid when team turn started for $this: $err")
+          log.error(s"Can't find asteroid when team turn started for $this: $err")
           Evented(orig)
         },
         asteroid => {
           if (asteroid.resources.isZero) Evented(orig)
           else turnStartExtractResources(world)(asteroid).fold(
             err => {
-              Log.error(s"Error while extracting resources on turn start for $this: $err")
+              log.error(s"Error while extracting resources on turn start for $this: $err")
               upd
             },
             _.map((_, self))

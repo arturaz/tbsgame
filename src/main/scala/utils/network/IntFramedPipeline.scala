@@ -3,7 +3,6 @@ package utils.network
 import java.nio.ByteOrder
 
 import akka.util.ByteString
-import infrastructure.Log
 import utils.network.IntFramedPipeline.Frame
 
 class IntFramedPipeline(implicit byteOrder: ByteOrder)

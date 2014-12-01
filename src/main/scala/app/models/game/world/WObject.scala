@@ -2,6 +2,7 @@ package app.models.game.world
 
 import java.util.UUID
 
+import akka.event.LoggingAdapter
 import app.models.game.events.Evented
 import utils.IdObj
 
@@ -40,12 +41,14 @@ trait WObject {
   def self: Self
   def asOwnedObj: Option[OwnedObj] = None
 
-  def gameTurnStartedSelf(world: World): WorldSelfUpdate = Evented((world, self))
-  final def gameTurnStarted(world: World): Evented[World] =
+  def gameTurnStartedSelf(world: World)(implicit log: LoggingAdapter): WorldSelfUpdate =
+    Evented((world, self))
+  final def gameTurnStarted(world: World)(implicit log: LoggingAdapter): Evented[World] =
     gameTurnStartedSelf(world).map(_._1)
 
-  def gameTurnFinishedSelf(world: World): WorldSelfUpdate = Evented((world, self))
-  final def gameTurnFinished(world: World): Evented[World] =
+  def gameTurnFinishedSelf(world: World)(implicit log: LoggingAdapter): WorldSelfUpdate =
+    Evented((world, self))
+  final def gameTurnFinished(world: World)(implicit log: LoggingAdapter): Evented[World] =
     gameTurnFinishedSelf(world).map(_._1)
 
   protected def selfEventedUpdate

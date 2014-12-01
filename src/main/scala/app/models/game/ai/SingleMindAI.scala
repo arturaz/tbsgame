@@ -1,5 +1,6 @@
 package app.models.game.ai
 
+import akka.event.LoggingAdapter
 import app.algorithms.Pathfinding.SearchRes
 import app.algorithms.{Combat, Pathfinding}
 import app.models.game.{Attack, Owner}
@@ -7,12 +8,14 @@ import app.models.game.events.Evented
 import app.models.game.world._
 import app.models.game.world.units.WUnit
 import implicits._
-import infrastructure.Log
+import infrastructure.PrefixedLoggingAdapter
 
 import scala.util.Random
 
 /* AI for units that have no central controlling entity. */
 object SingleMindAI {
+  private[this] val LogPrefix = "SingleMindAI|"
+
   private[this] def srOrd[A](f: SearchRes[OwnedObj] => A)(implicit ord: Ordering[A])
   : Ordering[SearchRes[OwnedObj]] = Ordering.by(f)
   private[this] def fOrd[A](f: OwnedObj => A)(implicit ord: Ordering[A])
@@ -62,13 +65,14 @@ object SingleMindAI {
     atkOrdRndLt(AttackSearchResOrdering(self))(a, b)
 
   /* Simulate AI actions for all units. */
-  def act(world: World, owner: Owner): Combat.RawWorldResult = {
+  def act(world: World, owner: Owner)(implicit log: LoggingAdapter)
+  : Combat.RawWorldResult = {
     val units = world.objects.
       collect { case o: WUnit with Fighter if owner === o.owner => o }
     units.foldLeft(Evented(world)) { case (curWorld, unit) =>
       act(curWorld, unit).fold(
         err => {
-          Log.error(s"$owner unit $unit failed to act: $err")
+          log.error(s"$LogPrefix{} unit {} failed to act: {}", owner, unit, err)
           curWorld
         },
         identity
@@ -78,10 +82,11 @@ object SingleMindAI {
 
   def act(
     world: Evented[World], unit: WUnit with Fighter
-  ): Combat.WorldResult =
+  )(implicit log: LoggingAdapter): Combat.WorldResult =
     act(world.value, unit).right.map { world.events ++: _ }
 
-  def act(world: World, unit: WUnit with Fighter): Combat.WorldResult = {
+  def act(world: World, unit: WUnit with Fighter)(implicit log: LoggingAdapter)
+  : Combat.WorldResult = {
     whileHasAttacksLeft(world, unit)((world, unit) => {
       val visibleTargets =
         world.objects.view.
@@ -95,7 +100,7 @@ object SingleMindAI {
 
   def findTarget(
     world: World, targets: Iterable[OwnedObj], unit: WUnit with Fighter
-  ): Option[SearchRes[OwnedObj]] = {
+  )(implicit log: LoggingAdapter): Option[SearchRes[OwnedObj]] = {
     if (targets.isEmpty) return None
 
     val obstacles = unit.obstacles(world.objects).map(_.bounds)
@@ -103,19 +108,24 @@ object SingleMindAI {
       Pathfinding.attackSearch(unit, targets, world.bounds, obstacles)(_.bounds)
 
     if (attackableTargets.isEmpty) {
-      Log.debug(s"findTarget: no attackable targets from $targets for $unit")
+      log.debug(
+        s"${LogPrefix}findTarget: no attackable targets from {} for {}", targets, unit
+      )
       None
     }
     else {
       val target = attackableTargets.reduce(atkOrdRndLt(AttackSearchResOrdering(unit)))
-      Log.debug(s"findTarget: attackable target = $target from $targets for $unit")
+      log.debug(
+        s"${LogPrefix}findTarget: attackable target = {} from {} for {}",
+        target, targets, unit
+      )
       Some(target)
     }
   }
 
   def findAndMoveAttackTarget(
     world: World, targets: Iterable[OwnedObj], unit: WUnit with Fighter
-  ) = findTarget(world, targets, unit).map { target =>
+  )(implicit log: LoggingAdapter) = findTarget(world, targets, unit).map { target =>
     Combat.moveAttack(world, unit, target)
   }
 

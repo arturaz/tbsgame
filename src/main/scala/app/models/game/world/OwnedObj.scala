@@ -1,5 +1,6 @@
 package app.models.game.world
 
+import akka.event.LoggingAdapter
 import app.models.game.{Bot, Human, Player, Owner}
 import app.models.game.events.Evented
 import implicits._
@@ -49,12 +50,14 @@ trait OwnedObj extends WObject {
   def takeDamage(damage: HP): Option[Self] =
     if (hp <= damage) None else Some(self |> companion.withNewHp(hp - damage))
 
-  def teamTurnStartedSelf(world: World): WorldSelfUpdate = Evented((world, self))
-  final def teamTurnStarted(world: World): Evented[World] =
+  def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter): WorldSelfUpdate =
+    Evented((world, self))
+  final def teamTurnStarted(world: World)(implicit log: LoggingAdapter): Evented[World] =
     teamTurnStartedSelf(world).map(_._1)
 
-  def teamTurnFinishedSelf(world: World): WorldSelfUpdate = Evented((world, self))
-  final def teamTurnFinished(world: World): Evented[World] =
+  def teamTurnFinishedSelf(world: World)(implicit log: LoggingAdapter): WorldSelfUpdate =
+    Evented((world, self))
+  final def teamTurnFinished(world: World)(implicit log: LoggingAdapter): Evented[World] =
     teamTurnFinishedSelf(world).map(_._1)
 
   override protected def selfEventedUpdate(

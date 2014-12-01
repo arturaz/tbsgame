@@ -1,5 +1,6 @@
 package app.models.game.world
 
+import akka.event.LoggingAdapter
 import app.models.game._
 import app.models.game.ai.GrowingSpawnerAI
 import app.models.game.events._
@@ -9,7 +10,7 @@ import app.models.game.world.maps.{VisibilityMap, WarpZoneMap}
 import app.models.game.world.props.Asteroid
 import app.models.game.world.units.Wasp
 import implicits._
-import infrastructure.Log
+import infrastructure.PrefixedLoggingAdapter
 
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
@@ -24,12 +25,14 @@ case class World private (
 
   override def toString = s"World($bounds, objects: ${objects.size})"
 
-  def gameTurnStarted = Evented(this) |> gameTurnX(_.gameTurnStarted)
-  def gameTurnFinished = Evented(this) |> gameTurnX(_.gameTurnFinished)
-  def teamTurnStarted(team: Team) =
+  def gameTurnStarted(implicit log: LoggingAdapter) =
+    Evented(this) |> gameTurnX(_.gameTurnStarted)
+  def gameTurnFinished(implicit log: LoggingAdapter) =
+    Evented(this) |> gameTurnX(_.gameTurnFinished)
+  def teamTurnStarted(team: Team)(implicit log: LoggingAdapter) =
     Evented(this, Vector(TurnStartedEvt(team))) |> teamTurnX(team)(_.teamTurnStarted) |>
     runAI(team)
-  def teamTurnFinished(team: Team) =
+  def teamTurnFinished(team: Team)(implicit log: LoggingAdapter) =
     Evented(this, Vector(TurnEndedEvt(team))) |> teamTurnX(team)(_.teamTurnFinished)
 
   def actionsFor(player: Player): Actions = {
@@ -207,7 +210,7 @@ object World {
   )(f: OwnedObj => World => Evented[World])(world: Evented[World]) =
     xTurnX[OwnedObj](_.owner.team === team, f)(world)
 
-  private def runAI(team: Team)(e: Evented[World]) = {
+  private def runAI(team: Team)(e: Evented[World])(implicit log: LoggingAdapter) = {
     val bots = e.value.bots.filter(_.team === team)
     bots.foldLeft(e) { case (fEvtWorld, bot) =>
       fEvtWorld.flatMap { fWorld => GrowingSpawnerAI.act(fWorld, bot) }
@@ -239,19 +242,20 @@ object World {
     branchChance: Double = 0.2,
     safeDistance: TileDistance = TileDistance(10),
     waspsAtMaxDistance: Int = 3
-  ) = {
+  )(implicit log1: LoggingAdapter) = {
+    val log = new PrefixedLoggingAdapter("World#create|", log1)
     val warpGate = WarpGate(startingPoint, playersTeam)
     var objects = Set.apply[WObject](warpGate)
     // Main branch is also a branch.
     var branchesLeft = branches.random + 1
     var spawnersLeft = spawners
-    Log.debug(s"Creating map. Branches: $branchesLeft")
+    log.debug(s"Creating map. Branches: $branchesLeft")
 
     def pTaken(v: Vect2): Boolean = objects.exists(_.bounds.contains(v))
     def bTaken(bounds: Bounds): Boolean =
       objects.exists(_.bounds.intersects(bounds))
 
-    def spawnBlob(bounds: Bounds, log: (=> String) => Unit): Unit = {
+    def spawnBlob(bounds: Bounds, log: LoggingAdapter): Unit = {
       val waspsNeeded = math.min(
         (
           bounds.center.tileDistance(startingPoint).value.toDouble *
@@ -266,9 +270,9 @@ object World {
       }.sum.value
       var waspsInBounds =
         objects.count(o => o.isInstanceOf[Wasp] && bounds.contains(o.position))
-      log(
-        s"Blob spawn | bounds: $bounds, resources: $resourcesLeft, " +
-          s"wasps: $waspsNeeded, already placed: $waspsInBounds"
+      log.debug(
+        s"Blob spawn | bounds: {}, resources: $resourcesLeft, wasps: ${waspsNeeded
+        }, already placed: $waspsInBounds", bounds
       )
 
       for (objPos <- Random.shuffle(bounds.points)) {
@@ -284,7 +288,7 @@ object World {
         ) {
           val resources = math.min(resourcesLeft, asteroidResources.random)
           resourcesLeft -= resources
-          log(s"asteroid @ $objPos with $resources res, left: $resourcesLeft")
+          log.debug(s"asteroid @ {} with $resources res, left: $resourcesLeft", objPos)
           objects += Asteroid(objPos, Resources(resources))
         }
         else if (
@@ -294,18 +298,18 @@ object World {
           ! pTaken(objPos)
         ) {
           waspsInBounds += 1
-          log(s"wasp @ $objPos, left: ${waspsNeeded - waspsInBounds}")
+          log.debug(s"wasp @ {}, left: ${waspsNeeded - waspsInBounds}", objPos)
           objects += Wasp(objPos, waspsOwner)
         }
       }
 
-      log("Blob spawn end")
+      log.debug("Blob spawn end")
     }
 
     def branch(branchStart: Vect2): Unit = {
       val branchId = branchesLeft
-      def log(s: => String) = Log.debug(s"Branch $branchId: $s")
-      log(s"Creating at $branchStart")
+      val branchLog = log.prefixed(s"b$branchId|")
+      branchLog.debug("Creating at {}", branchStart)
       branchesLeft -= 1
       var position = branchStart
       var direction = randomDirection
@@ -319,27 +323,27 @@ object World {
         spawnBlob(bounds, log)
 
         if (branchesLeft > 0 && Random.nextDouble() <= branchChance) {
-          log(s"Branching off at $position")
+          branchLog.debug(s"Branching off at {}", position)
           branch(position)
         }
 
         if (Random.nextDouble() <= directionChangeChance) direction = randomDirection
         position += direction * jumpDistance.random
-        log(s"jump to $position")
+        branchLog.debug(s"jump to {}", position)
       } while (position.tileDistance(startingPoint) < endDistance)
 
       if (spawnersLeft > 0) {
         var spawnerPos = position
         while (bTaken(Bounds(spawnerPos, Spawner.size))) spawnerPos += direction
-        log(s"Spawner @ $spawnerPos")
+        branchLog.debug(s"Spawner @ {}", spawnerPos)
         objects += Spawner(spawnerPos, spawnerOwner)
         spawnersLeft -= 1
       }
 
-      log("end of branch")
+      branchLog.debug("end of branch")
     }
 
-    (1 to 3).foreach { _ => spawnBlob(warpGate.visibility, Log.debug) }
+    (1 to 3).foreach { _ => spawnBlob(warpGate.visibility, log) }
     while (branchesLeft > 0) branch(warpGate.bounds.center)
 
     val bounds = this.bounds(objects) expandBy 5

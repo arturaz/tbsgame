@@ -1,5 +1,6 @@
 package app.models.game.world
 
+import akka.event.LoggingAdapter
 import app.models.game.{Player, Attack}
 import app.models.game.events.{AttacksChangedEvt, AttackEvt, Evented}
 import implicits._
@@ -34,7 +35,7 @@ trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
 
   val attacksLeft: Attacks
 
-  override def teamTurnStartedSelf(world: World) =
+  override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
     super.teamTurnStartedSelf(world) |> resetAttack
 
   protected def resetAttack(data: Evented[(World, Self)]) =

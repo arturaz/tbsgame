@@ -1,5 +1,6 @@
 package app.models.game
 
+import akka.event.LoggingAdapter
 import app.algorithms.Pathfinding
 import app.algorithms.Pathfinding.Path
 import app.models.game.Game.States
@@ -127,12 +128,13 @@ case class Game private (
       }.map(game.updated)
     }
 
-  def gameTurnStarted = world.gameTurnStarted |> fromWorld
-  def gameTurnFinished = world.gameTurnFinished |> fromWorld
-  def teamTurnStarted(team: Team) =
+  def gameTurnStarted(implicit log: LoggingAdapter) = world.gameTurnStarted |> fromWorld
+  def gameTurnFinished(implicit log: LoggingAdapter) = world.gameTurnFinished |> fromWorld
+  def teamTurnStarted(team: Team)(implicit log: LoggingAdapter) =
     world.teamTurnStarted(team) |> fromWorld |>
     recalculateHumanStatesOnTeamTurnStart(team)
-  def teamTurnFinished(team: Team) = world.teamTurnFinished(team) |> fromWorld
+  def teamTurnFinished(team: Team)(implicit log: LoggingAdapter) =
+    world.teamTurnFinished(team) |> fromWorld
 
   def winner: Option[Team] = {
     world.objects.collect {

@@ -1,9 +1,9 @@
 package app.models.game.world
 
+import akka.event.LoggingAdapter
 import app.models.game.ai.SingleMindAI
 import app.models.game.events.Evented
 import implicits._
-import infrastructure.Log
 
 trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
   def shouldReact(self: OwnedObj): Boolean = self.isWarpedIn
@@ -12,7 +12,7 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
 
   def attackReachable(
     data: WObject.WorldObjUpdate[Self]
-  ): WObject.WorldObjUpdate[Self] =
+  )(implicit log: LoggingAdapter): WObject.WorldObjUpdate[Self] =
     data.flatMap { case orig @ (world, self) =>
       if (shouldReact(self)) {
         val targets = world.objects.collect {
@@ -23,7 +23,9 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
           val target = targets.reduce(SingleMindAI.atkOrdRndLtOO(self))
           self.attackWS(target, world).fold(
             err => {
-              Log.error(s"$self tried to attack reachable $target, but failed: $err")
+              log.error(
+                s"{} tried to attack reachable {}, but failed: {}", self, target, err
+              )
               data
             },
             _.map { case (w, s) => (w, s.asInstanceOf[Self])}
@@ -44,7 +46,7 @@ trait ReactiveFighter extends Fighter { traitSelf =>
   type Companion <: ReactiveFighterOps[Self] with ReactiveFighterStats
 
   /* Needed to be able to react to other player actions. */
-  override def teamTurnFinishedSelf(world: World) =
+  override def teamTurnFinishedSelf(world: World)(implicit log: LoggingAdapter) =
     super.teamTurnFinishedSelf(world) |> resetAttack |> companion.attackReachable
 
   /* Attacks the target if he can. Returns None if there was no reaction. */

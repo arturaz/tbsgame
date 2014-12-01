@@ -1,12 +1,12 @@
 package app.models.game.ai
 
+import akka.event.LoggingAdapter
 import app.algorithms.Pathfinding
 import app.models.game.Owner
 import app.models.game.events.Evented
 import app.models.game.world.buildings.GrowingSpawner
 import app.models.game.world.{OwnedObj, WObject, World}
 import implicits._
-import infrastructure.Log
 
 import scala.annotation.tailrec
 import scala.util.Random
@@ -14,7 +14,7 @@ import scala.util.Random
 object GrowingSpawnerAI {
   type Result = Evented[World]
 
-  def act(world: World, owner: Owner): Result = {
+  def act(world: World, owner: Owner)(implicit log: LoggingAdapter): Result = {
     val spawners = world.objects.collect {
       case spawner: GrowingSpawner if owner === (spawner.owner: Owner) => spawner
     }
@@ -23,11 +23,11 @@ object GrowingSpawnerAI {
       SingleMindAI.act(world, owner)
     else
       spawners.foldLeft(Evented(world)) { case (w, spawner) =>
-        w.events ++: act(w.value, spawner)
+        w.events ++: act(w.value, spawner)(log.prefixed(s"GrowingSpawnerAI[$spawner]|"))
       }
   }
 
-  def act(world: World, spawner: GrowingSpawner): Result = {
+  def act(world: World, spawner: GrowingSpawner)(implicit log: LoggingAdapter): Result = {
     @tailrec def work(
       actionsLeft: Int, world: Evented[World], readyUnits: List[spawner.Controlled]
     ): Result = actionsLeft match {
@@ -39,7 +39,7 @@ object GrowingSpawnerAI {
             work(newActions, world.flatMap(act(_, unit)), rest)
           case Nil => spawn(world.value, spawner) match {
             case Left(err) =>
-              Log.error(err)
+              log.error(err)
               world
             case Right(newWorld) =>
               work(
@@ -61,7 +61,7 @@ object GrowingSpawnerAI {
 
   def act(
     world: World, unit: GrowingSpawner#Controlled
-  ): Result = {
+  )(implicit log: LoggingAdapter): Result = {
     var possibleTargets = Set.empty[OwnedObj]
 
     SingleMindAI.whileHasAttacksLeft(world, unit)(
@@ -88,7 +88,7 @@ object GrowingSpawnerAI {
           )
         } yield unit.moveTo(world, path.limit(unit.movementLeft)).fold(
           err => {
-            Log.error(s"GrowingSpawnerAI move act $unit: $err")
+            log.error("move act {}: {}", unit, err)
             Evented(world)
           },
           _.map(_._1)
@@ -97,7 +97,7 @@ object GrowingSpawnerAI {
       }
     ).fold(
       err => {
-        Log.error(s"GrowingSpawnerAI act $unit: $err")
+        log.error(s"act {}: {}", unit, err)
         Evented(world)
       },
       identity

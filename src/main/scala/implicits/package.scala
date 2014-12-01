@@ -1,3 +1,5 @@
+import akka.event.LoggingAdapter
+import infrastructure.PrefixedLoggingAdapter
 import utils.CompositeOrdering
 
 import scala.reflect.ClassTag
@@ -79,5 +81,9 @@ package object implicits {
     @inline def tap(f: A => Unit) = { f(a); a }
     @inline def cast[B : ClassTag]: Option[B] =
       a match { case b: B => Some(b); case _ => None }
+  }
+
+  implicit class LoggingAdapterExts(val log: LoggingAdapter) extends AnyVal {
+    @inline def prefixed(prefix: String) = new PrefixedLoggingAdapter(prefix, log)
   }
 }

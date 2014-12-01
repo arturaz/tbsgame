@@ -1,5 +1,6 @@
 package app.models.game.world
 
+import akka.event.LoggingAdapter
 import app.algorithms.Pathfinding.Path
 import app.models.game.events._
 import implicits._
@@ -55,7 +56,7 @@ with Mobility[Mobility.Movable.type] { traitSelf =>
     // TODO: fix the optimization
     objects/*.filter(o => movementZone.exists(o.bounds.contains))*/
 
-  override def teamTurnStartedSelf(world: World) =
+  override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
     super.teamTurnStartedSelf(world) |>
     selfEventedUpdate(companion.resetMovementLeft) |>
     selfEventedUpdate(

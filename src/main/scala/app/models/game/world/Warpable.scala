@@ -1,5 +1,6 @@
 package app.models.game.world
 
+import akka.event.LoggingAdapter
 import app.models.game.events.{WarpStateChangeEvt, WarpEvt, Evented}
 import implicits._
 
@@ -74,7 +75,7 @@ trait Warpable extends OwnedObj {
     (companion.cost.value * Random.double(0.1, 1f / 3)).round.toInt
   ))
 
-  override def teamTurnStartedSelf(world: World) =
+  override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
     super.teamTurnStartedSelf(world) |>
     selfEventedUpdate(companion.nextWarpState)
 }
