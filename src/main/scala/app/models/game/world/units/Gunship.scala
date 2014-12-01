@@ -5,14 +5,14 @@ import app.models.game.world._
 
 object Gunship extends WUnitCompanion[Gunship] with FighterCompanion[Gunship] {
   override val attackRange = TileDistance(3)
-  override val attacks = Attacks(4)
-  override val attack = 4 to 8
-  override val cost = Resources(20)
+  override val attacks = Attacks(5)
+  override val attack = 6 to 10
+  override val cost = Resources(6)
   override val warpTime = WarpTime(0)
-  override val defense = 1 to 2
+  override val defense = 0 to 2
   override val kind = WObjKind.Heavy
   override val visibility = 3
-  override val maxHp = HP(8)
+  override val maxHp = HP(6)
   override val movement = TileDistance(4)
 
   override protected def withMovedOrAttacked(value: Boolean)(self: Gunship) =

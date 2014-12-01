@@ -6,15 +6,15 @@ import app.models.game.world._
 // slow, armor, -range, +dmg
 object Fortress extends WUnitCompanion[Fortress] with FighterCompanion[Fortress] {
   override val attackRange = TileDistance(5)
-  override val attacks = Attacks(3)
+  override val attacks = Attacks(2)
   override val attack = 6 to 10
-  override val movement = TileDistance(1)
+  override val movement = TileDistance(2)
   override val cost = Resources(35)
   override val warpTime = WarpTime(2)
   override val kind = WObjKind.Heavy
   override val visibility = 5
-  override val maxHp = HP(30)
-  override val defense = 6 to 10
+  override val maxHp = HP(35)
+  override val defense = 3 to 8
 
   override protected def setMoveValues(
     position: Vect2, movementLeft: TileDistance
