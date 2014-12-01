@@ -49,7 +49,7 @@ object GameActor {
       warpZonePoints: Iterable[Vect2], visiblePoints: Iterable[Vect2],
       selfTeam: Team, otherTeams: Iterable[Team],
       self: HumanState, others: Iterable[(Player, Option[HumanState])],
-      wObjectStats: Iterable[Init.Stats]
+      wObjectStats: Iterable[Init.Stats], attackMultipliers: Set[(WObjKind, WObjKind)]
     ) extends ClientOut
     case class Events(events: Vector[FinalEvent]) extends ClientOut
     case class Error(error: String) extends ClientOut
@@ -96,7 +96,8 @@ object GameActor {
             Stats(Gunship, showInWarpables = true),
             Stats(Spawner), Stats(Wasp), Stats(RayShip), Stats(Fortress)
           )
-        }
+        },
+        for (from <- WObjKind.All; to <- WObjKind.All) yield from -> to
       )
     }
   }

@@ -2,6 +2,7 @@ package app.models.game.world
 
 /* < Light < Medium < Heavy < */
 sealed trait WObjKind {
+  /* Multiplier if `this` attacks `kind` */
   def multiplierAt(kind: WObjKind): Double
 }
 object WObjKind {
@@ -29,4 +30,6 @@ object WObjKind {
       case Heavy => 1
     }
   }
+
+  val All = Set(Light, Medium, Heavy)
 }

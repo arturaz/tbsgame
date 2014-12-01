@@ -70,6 +70,12 @@ message MJoined {
 }
 
 message MInit {
+  message AttackMultiplier {
+    required WObjKind from_kind = 1;
+    required WObjKind to_kind = 2;
+    required float multiplier = 3;
+  }
+
   required base.Bounds bounds = 1;
   repeated WObject objects = 2;
   repeated base.Vect2 warp_zone = 3;
@@ -81,6 +87,13 @@ message MInit {
   required PlayerState self = 7;
   repeated InitPlayer other_players = 8;
   repeated InitWObjectStats wobject_stats = 9;
+  repeated AttackMultiplier attack_multipliers = 10;
+}
+
+enum WObjKind {
+  LIGHT = 1;
+  MEDIUM = 2;
+  HEAVY = 3;
 }
 
 message MEvents {
@@ -191,6 +204,7 @@ message WObject { // {{{
       required base.Range defense = 2;
       required uint32 visibility = 3;
       required uint32 max_hp = 4;
+      required WObjKind kind = 5;
     }
 
     required Stats stats = 1;

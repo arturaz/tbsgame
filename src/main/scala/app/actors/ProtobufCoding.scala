@@ -176,7 +176,7 @@ object ProtobufCoding {
     implicit def convert(obj: OwnedObjStats): Game.WObject.OwnedObj.Stats =
       Game.WObject.OwnedObj.Stats.newBuilder().setDefense(obj.defense).
         setMaxHp(obj.maxHp).setIsCritical(obj.isCritical).
-        setVisibility(obj.visibility).build()
+        setVisibility(obj.visibility).setKind(obj.kind).build()
 
     implicit def convert(obj: OwnedObj): Game.WObject.OwnedObj =
       Game.WObject.OwnedObj.newBuilder().setStats(obj.companion).
@@ -331,6 +331,17 @@ object ProtobufCoding {
       Game.Attack.newBuilder().setAttackerRoll(attack.attackerRoll).
         setDefenderRoll(attack.defenderRoll).setSuccessful(attack.successful).build()
 
+    implicit def convert(kind: WObjKind): Game.WObjKind = kind match {
+      case WObjKind.Light => Game.WObjKind.LIGHT
+      case WObjKind.Medium => Game.WObjKind.MEDIUM
+      case WObjKind.Heavy => Game.WObjKind.HEAVY
+    }
+
+    def attackMultiplier(from: WObjKind, to: WObjKind): Game.MInit.AttackMultiplier =
+      Game.MInit.AttackMultiplier.newBuilder().
+        setFromKind(from).setToKind(to).setMultiplier(from.multiplierAt(to).toFloat).
+        build()
+
     implicit def convert(data: GameActor.Out.Movement.Immovable)
     : Game.MMovement.Positions =
       Game.MMovement.Positions.newBuilder().addAllPosition(convert(data.points)).build()
@@ -464,6 +475,9 @@ object ProtobufCoding {
         setSelf(msg.self).
         addAllOtherPlayers(convert(msg.others)(convert)).
         addAllWobjectStats(convert(msg.wObjectStats)).
+        addAllAttackMultipliers(msg.attackMultipliers.map { case (from, to) =>
+          attackMultiplier(from, to)
+        }.asJava).
         build()
 
     implicit def convert(out: GameActor.ClientOut): Game.FromServer =
