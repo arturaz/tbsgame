@@ -236,7 +236,7 @@ object World {
     jumpDistance: Range = 3 to 6,
     blobSize: Range = 2 to 5,
     blobRichness: Range = 15 to 60,
-    asteroidResources: Range = 15 to 40,
+    asteroidResources: Range = 25 to 50,
     directionChangeChance: Double = 0.2,
     branchChance: Double = 0.2,
     safeDistance: TileDistance = TileDistance(10),
@@ -244,14 +244,14 @@ object World {
     npcChances: WeightedIS[WeightedIS[EmptySpaceWarpableCompanion[_ <: Warpable]]] =
       IndexedSeq(
         IndexedSeq(Wasp -> 1) -> 3,
-        IndexedSeq(RayShip -> 1) -> 3,
-        IndexedSeq(Fortress -> 1) -> 3,
+//        IndexedSeq(RayShip -> 1) -> 3,
+//        IndexedSeq(Fortress -> 1) -> 3,
         IndexedSeq(Wasp -> 2, Fortress -> 1) -> 2,
-        IndexedSeq(Wasp -> 2, RayShip -> 1) -> 2,
+//        IndexedSeq(Wasp -> 2, RayShip -> 1) -> 2,
         IndexedSeq(Fortress -> 2, Wasp -> 1) -> 2,
-        IndexedSeq(Fortress -> 2, RayShip -> 1) -> 2,
-        IndexedSeq(RayShip -> 2, Wasp -> 1) -> 2,
-        IndexedSeq(RayShip -> 2, Fortress -> 1) -> 2,
+        IndexedSeq(Fortress -> 2, RayShip -> 1) -> 1,
+//        IndexedSeq(RayShip -> 2, Wasp -> 1) -> 2,
+//        IndexedSeq(RayShip -> 2, Fortress -> 1) -> 2,
         IndexedSeq(Wasp -> 1, RayShip -> 1, Fortress -> 1) -> 1
       )
   )(implicit log1: LoggingAdapter) = {

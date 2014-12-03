@@ -7,12 +7,12 @@ import app.models.game.world._
  * Created by arturas on 2014-11-03.
  */
 object Scout extends WUnitCompanion[Scout] {
+  override val maxHp = HP(25)
   override val warpTime = WarpTime(0)
-  override val cost = Resources(6)
+  override val cost = Resources(5)
   override val movement = TileDistance(16)
   override val defense = emptyRange
   override val visibility = RectDistance(7)
-  override val maxHp = HP(4)
   override val kind = WObjKind.Light
 
   override protected def withMovedOrAttacked(value: Boolean)(self: Scout) =

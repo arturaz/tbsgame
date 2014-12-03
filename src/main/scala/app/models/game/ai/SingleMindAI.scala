@@ -26,7 +26,7 @@ object SingleMindAI {
     /* Filter out those targets which we can't inflict damage to. */
     fOrd { o =>
       Attack(
-        self.companion.attack.end, self.companion.kind.multiplierAt(o.companion.kind),
+        self.companion.attack, self.companion.kind.multiplierAt(o.companion.kind),
         None, o.companion.defense.start
       ).successful
     }.reverse orElse
@@ -43,7 +43,7 @@ object SingleMindAI {
     }.reverse orElse
     /* Attack ones with biggest damage output first. */
     fOrd {
-      case f: Fighter => f.companion.attack.end
+      case f: Fighter => f.companion.attack.value
       case _ => 0
     }.reverse
 

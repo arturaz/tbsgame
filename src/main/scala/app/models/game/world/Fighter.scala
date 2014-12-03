@@ -5,6 +5,8 @@ import app.models.game.{Player, Attack}
 import app.models.game.events.{AttacksChangedEvt, AttackEvt, Evented}
 import implicits._
 
+import scala.util.Random
+
 trait FighterOps[Self <: Fighter] extends OwnedObjOps[Self]
 with MoveAttackActionedOps[Self] {
   protected def withAttacksLeft(value: Attacks)(self: Self): Self
@@ -19,7 +21,13 @@ with MoveAttackActionedOps[Self] {
 }
 
 trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
-  val attack: Range.Inclusive
+  val attack: Atk
+  val attackSpread = AtkSpread(0.3)
+  def randomAttack = {
+    val from = (attack.value * (1 - attackSpread.value)).round.toInt
+    val to = (attack.value * (1 + attackSpread.value)).round.toInt
+    Atk(Random.int(from, to))
+  }
   val attackRange: TileDistance
   val attacks: Attacks
   val critical: Chance = Chance(0.1)

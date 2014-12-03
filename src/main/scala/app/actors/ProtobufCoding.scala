@@ -206,7 +206,8 @@ object ProtobufCoding {
 
     implicit def convert(obj: FighterStats): Game.WObject.Fighter.Stats =
       Game.WObject.Fighter.Stats.newBuilder().
-        setAttack(obj.attack).setAttackRange(obj.attackRange).setAttacks(obj.attacks).
+        // TODO: fixme
+        setAttack(0 to 0).setAttackRange(obj.attackRange).setAttacks(obj.attacks).
         build()
 
     implicit def convert(obj: Fighter): Game.WObject.Fighter =

@@ -32,6 +32,24 @@ object HP {
   }
 }
 
+case class Atk(value: Int) extends AnyVal with IntValueClass[Atk] {
+  override def self(v: Int) = Atk(v)
+}
+object Atk {
+  implicit object Numeric extends IntValueClass.Numeric[Atk] {
+    override def fromInt(x: Int) = Atk(x)
+  }
+}
+
+case class AtkSpread(value: Double) extends AnyVal with DoubleValueClass[AtkSpread] {
+  override def self(v: Double) = AtkSpread(v)
+}
+object AtkSpread {
+  implicit object Numeric extends DoubleValueClass.Numeric[AtkSpread] {
+    override def fromInt(x: Int) = AtkSpread(x)
+  }
+}
+
 case class SpawnerStr(value: Int) extends AnyVal with IntValueClass[SpawnerStr] {
   override def self(v: Int) = SpawnerStr(v)
 }

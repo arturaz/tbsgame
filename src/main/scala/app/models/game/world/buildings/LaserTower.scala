@@ -6,14 +6,15 @@ import app.models.game.world._
 object LaserTower extends WBuildingCompanion[LaserTower]
 with EmptySpaceWarpableCompanion[LaserTower]
 with ReactiveFighterCompanion[LaserTower] {
-  override val maxHp = HP(65)
+  override val maxHp = HP(400)
+  override val attack = Atk(65)
+  override val attacks = Attacks(4)
   override val warpTime = WarpTime(1)
   override val cost = Resources(12)
-  override val attack = 8 to 15
-  override val attackRange = TileDistance(5)
-  override val defense = 3 to 4
+  override val attackRange = TileDistance(7)
+  override val visibility = RectDistance(7)
+  override val defense = 0 to 0
   override val moveAttackActionsNeeded = Actions(2)
-  override val attacks = Attacks(1)
   override val kind = WObjKind.Heavy
 
   override def warp(owner: Player, position: Vect2) =

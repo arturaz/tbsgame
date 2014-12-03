@@ -5,10 +5,10 @@ import app.models.game.world._
 
 object WarpGate extends BuildingCompanion[WarpGate] with SizedWObjectCompanion
 with GivingActionsCompanion[WarpGate] {
-  override val maxHp = HP(100)
+  override val maxHp = HP(1600)
   override val size = Vect2(6, 3)
   override val isCritical: Boolean = true
-  override val actionsGiven = Actions(2)
+  override val actionsGiven = Actions(3)
   override val defense = emptyRange
   override val visibility = RectDistance(4)
   override val warpGiven = RectDistance(2)

@@ -1,17 +1,17 @@
 package app.models.game
 
-import app.models.game.world.{Fighter, HP, OwnedObj}
+import app.models.game.world.{Atk, Fighter, HP, OwnedObj}
 import implicits._
 
 case class Attack(
-  private val attackerRollPure: Int,
+  private val attackerRollPure: Atk,
   private val kindMultiplier: Double,
   private val criticalMultiplier: Option[Double],
   defenderRoll: Int
 ) {
   @inline private[this] def criticalMult = criticalMultiplier.getOrElse(1d)
   val attackerRoll =
-    (attackerRollPure * kindMultiplier).mapVal(_ * criticalMult).
+    (attackerRollPure.value * kindMultiplier).mapVal(_ * criticalMult).
     round.toInt
   def successful = attackerRoll > defenderRoll
   def damage = HP((attackerRoll - defenderRoll).max(0))
@@ -28,7 +28,7 @@ case class Attack(
 object Attack {
   def apply(fighter: Fighter, target: OwnedObj): Attack = {
     apply(
-      fighter.companion.attack.random,
+      fighter.companion.randomAttack,
       fighter.companion.kind.multiplierAt(target.companion.kind),
       fighter.companion.critical.struck.opt(fighter.companion.criticalMultiplier),
       target.defense.random

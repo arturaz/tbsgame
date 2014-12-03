@@ -34,6 +34,7 @@ package object implicits {
   }
 
   implicit class RandomExts(val r: Random) extends AnyVal {
+    def int(from: Int, to: Int) = from + r.nextInt(to - from)
     def double(from: Double, to: Double) = (to - from) * r.nextDouble() + from
     def chance(chance: Double) = r.nextDouble() <= chance
   }

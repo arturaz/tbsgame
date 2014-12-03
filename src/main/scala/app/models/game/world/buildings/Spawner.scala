@@ -7,7 +7,7 @@ import implicits._
 
 object Spawner extends BuildingCompanion[Spawner] with SizedWObjectCompanion
 with GrowingSpawnerCompanion[Spawner] {
-  override val maxHp = HP(250)
+  override val maxHp = HP(1000)
   override val size: Vect2 = Vect2(2, 2)
   override val isCritical: Boolean = true
   override val defense = emptyRange
