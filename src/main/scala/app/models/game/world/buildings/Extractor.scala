@@ -12,13 +12,13 @@ object Extractor extends WBuildingCompanion[Extractor]
 with SpecialActionCompanion[Extractor] {
   override val maxHp = HP(3)
   override val warpTime = WarpTime(1)
-  override val cost = Resources(4)
+  override val cost = Resources(12)
   override val defense = 1 to 1
   /* How much resources does turn start extract? */
-  val turnStartExtracts = Resources(1)
+  val turnStartExtracts = Resources(3)
   /* How much resources does special action extract? */
-  val specialExtracts = Resources(2)
-  val specialCollapseResources = cost + specialExtracts
+  val specialExtracts = turnStartExtracts * Resources(2)
+  val specialCollapseResources = cost
   override val specialActionsNeeded = Actions(1)
   override val kind = WObjKind.Medium
 

@@ -4,6 +4,7 @@ import utils.CompositeOrdering
 
 import scala.reflect.ClassTag
 import scala.util.Random
+import scalaz.{\/-, -\/, \/}
 
 /**
  * Created by arturas on 2014-09-11.
@@ -11,6 +12,15 @@ import scala.util.Random
 package object implicits {
   implicit class OptionExts[A](val o: Option[A]) extends AnyVal {
     @inline def fold2[B](ifEmpty: => B, ifSome: A => B) = o.fold(ifEmpty)(ifSome)
+  }
+
+  class LeftSideException(msg: String) extends IllegalStateException(msg)
+
+  implicit class EitherZExts[A, B](val either: A \/ B) extends AnyVal {
+    def right_! = either.fold(
+      err => throw new LeftSideException(s"Left where right: $err"),
+      identity
+    )
   }
 
   implicit class BoolExts(val b: Boolean) extends AnyVal {
@@ -32,7 +42,9 @@ package object implicits {
     def random = if (is.isEmpty) None else Some(is(Random.nextInt(is.size)))
   }
 
-  implicit class IndexedSeq2Exts[A](val is: IndexedSeq[(A, Int)])
+  type WeightedIS[+A] = IndexedSeq[(A, Int)]
+
+  implicit class WeightedISExts[A](val is: WeightedIS[A])
   extends AnyVal {
     /** http://stackoverflow.com/a/2149533/1513157 **/
     def weightedSample(itemCount: Int): Either[String, IndexedSeq[A]] = {
@@ -76,7 +88,9 @@ package object implicits {
     @inline def =/=(a1: A) = a != a1
     @inline def |>[B](f: A => B) = f(a)
     @inline def left[B]: Either[A, B] = Left(a)
+    @inline def leftZ[B]: A \/ B = -\/(a)
     @inline def right[B]: Either[B, A] = Right(a)
+    @inline def rightZ[B]: B \/ A = \/-(a)
     @inline def mapVal[B](f: A => B) = f(a)
     @inline def tap(f: A => Unit) = { f(a); a }
     @inline def cast[B : ClassTag]: Option[B] =

@@ -5,11 +5,12 @@ import app.models.game.world.units.WUnit
 
 trait GrowingSpawnerOps[Self <: GrowingSpawner]
 extends TurnCounterOps[Self] with OwnedObjOps[Self] {
-  def withTurnsPerStrength(value: Int)(self: Self): Self
+  def withTurnsPerStrength(value: SpawnerStr)(self: Self): Self
 }
 
 trait GrowingSpawnerStats extends TurnCounterStats with OwnedObjStats {
-  val DefaultTurnsPerStrength: Int
+  val DefaultStartingStrength: SpawnerStr
+  val DefaultTurnsPerStrength: SpawnerStr
 }
 
 trait GrowingSpawnerCompanion[Self <: GrowingSpawner]
@@ -20,8 +21,9 @@ trait GrowingSpawner extends TurnCounter with BotObj {
   type Companion <: GrowingSpawnerOps[Self] with GrowingSpawnerStats
   type Controlled = WUnit with Fighter
 
-  def strength = turns / turnsPerStrength
-  val turnsPerStrength: Int
+  def strength = startingStrength + SpawnerStr(turns) / turnsPerStrength
+  val startingStrength: SpawnerStr
+  val turnsPerStrength: SpawnerStr
 
   /* Try to spawn at position, returning Right(None) if unit was killed after spawn. */
   def spawn(

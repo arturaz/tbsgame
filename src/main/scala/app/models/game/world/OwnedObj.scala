@@ -11,7 +11,7 @@ trait OwnedObjOps[Self] extends WObjectOps {
 
 trait OwnedObjStats extends WObjectStats {
   val maxHp: HP
-  val visibility: Int
+  val visibility: RectDistance
   val defense: Range.Inclusive
   /* If team has no critical objects it cannot do any more actions and
      loses the game. */
@@ -40,7 +40,7 @@ trait OwnedObj extends WObject {
   def defense = if (isWarpingIn) 0 to 0 else companion.defense
   def destroyReward = Option.empty[Resources]
 
-  lazy val visibility = RectDistance(companion.visibility).extend(bounds)
+  lazy val visibility = companion.visibility.extend(bounds)
   def sees(obj: WObject) = visibility.intersects(obj.bounds)
 
   lazy val warpZone =

@@ -45,7 +45,7 @@ object GameActor {
       case class Stats(stats: WObjectStats, showInWarpables: Boolean=false)
     }
     case class Init(
-      bounds: Bounds, objects: Iterable[WObject],
+      bounds: Bounds, objects: WorldObjs,
       warpZonePoints: Iterable[Vect2], visiblePoints: Iterable[Vect2],
       selfTeam: Team, otherTeams: Iterable[Team],
       self: HumanState, others: Iterable[(Player, Option[HumanState])],
@@ -91,9 +91,9 @@ object GameActor {
             Stats(WarpLinker, showInWarpables = true),
             Stats(LaserTower, showInWarpables = true),
             Stats(Corvette, showInWarpables = true),
-            Stats(Scout, showInWarpables = true),
             Stats(RocketFrigate, showInWarpables = true),
             Stats(Gunship, showInWarpables = true),
+            Stats(Scout, showInWarpables = true),
             Stats(Spawner), Stats(Wasp), Stats(RayShip), Stats(Fortress)
           )
         },
@@ -152,8 +152,7 @@ class GameActor private (
     val spawnerAi = Bot(AiTeam)
     val world = World.create(
       HumanTeam, singleAi, spawnerAi,
-      spawners = 2, blobRichness = 15 to 30, asteroidResources = 8 to 20,
-      endDistance = TileDistance(30), waspsAtMaxDistance = 2
+      spawners = 2, endDistance = TileDistance(25)
     )
     log.debug("World initialized to {}", world)
     TurnBasedGame(

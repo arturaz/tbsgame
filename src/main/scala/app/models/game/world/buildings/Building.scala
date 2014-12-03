@@ -6,7 +6,7 @@ trait BuildingOps[Self] extends OwnedObjOps[Self] {
 }
 
 trait BuildingStats extends OwnedObjStats {
-  override val visibility = 3
+  override val visibility = RectDistance(3)
 }
 
 trait BuildingCompanion[Self] extends BuildingOps[Self] with BuildingStats

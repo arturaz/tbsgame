@@ -229,7 +229,7 @@ case class Game private (
 
   def movementFor(obj: MovableWObject): Vector[Path] =
     Pathfinding.movement(
-      obj, world.bounds, world.objects.map(_.bounds)
+      obj, world.bounds, world.objects
     ).filter(_.vects.forall(world.visibilityMap.isVisible(obj.owner, _)))
 
   def visibleBy(owner: Owner) =

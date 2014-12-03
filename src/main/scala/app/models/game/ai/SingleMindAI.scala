@@ -103,9 +103,8 @@ object SingleMindAI {
   )(implicit log: LoggingAdapter): Option[SearchRes[OwnedObj]] = {
     if (targets.isEmpty) return None
 
-    val obstacles = unit.obstacles(world.objects).map(_.bounds)
     val attackableTargets =
-      Pathfinding.attackSearch(unit, targets, world.bounds, obstacles)(_.bounds)
+      Pathfinding.attackSearch(unit, targets, world.bounds, world.objects)(_.bounds)
 
     if (attackableTargets.isEmpty) {
       log.debug(

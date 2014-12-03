@@ -9,11 +9,11 @@ object Fortress extends WUnitCompanion[Fortress] with FighterCompanion[Fortress]
   override val attacks = Attacks(2)
   override val attack = 6 to 10
   override val movement = TileDistance(2)
-  override val cost = Resources(35)
-  override val warpTime = WarpTime(2)
+  override val cost = Resources(10)
+  override val warpTime = WarpTime(0)
   override val kind = WObjKind.Heavy
-  override val visibility = 5
-  override val maxHp = HP(35)
+  override val visibility = RectDistance(5)
+  override val maxHp = HP(25)
   override val defense = 3 to 8
 
   override protected def setMoveValues(

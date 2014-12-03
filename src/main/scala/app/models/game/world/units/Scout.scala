@@ -11,8 +11,8 @@ object Scout extends WUnitCompanion[Scout] {
   override val cost = Resources(6)
   override val movement = TileDistance(16)
   override val defense = emptyRange
-  override val visibility = 7
-  override val maxHp = HP(25)
+  override val visibility = RectDistance(7)
+  override val maxHp = HP(4)
   override val kind = WObjKind.Light
 
   override protected def withMovedOrAttacked(value: Boolean)(self: Scout) =

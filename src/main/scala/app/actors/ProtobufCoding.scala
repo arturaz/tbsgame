@@ -467,7 +467,7 @@ object ProtobufCoding {
 
     implicit def convert(msg: GameActor.Out.Init): Game.MInit =
       Game.MInit.newBuilder().setBounds(msg.bounds).
-        addAllObjects(convert(msg.objects)).
+        addAllObjects(convert(msg.objects.objects)).
         addAllWarpZone(convert(msg.warpZonePoints)).
         addAllVisiblePoints(convert(msg.visiblePoints)).
         setSelfTeam(msg.selfTeam).

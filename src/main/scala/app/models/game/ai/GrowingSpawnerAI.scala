@@ -2,10 +2,10 @@ package app.models.game.ai
 
 import akka.event.LoggingAdapter
 import app.algorithms.Pathfinding
-import app.models.game.Owner
+import app.models.game.{Actions, Owner}
 import app.models.game.events.Evented
 import app.models.game.world.buildings.GrowingSpawner
-import app.models.game.world.{OwnedObj, WObject, World}
+import app.models.game.world.{SpawnerStr, OwnedObj, WObject, World}
 import implicits._
 
 import scala.annotation.tailrec
@@ -29,11 +29,11 @@ object GrowingSpawnerAI {
 
   def act(world: World, spawner: GrowingSpawner)(implicit log: LoggingAdapter): Result = {
     @tailrec def work(
-      actionsLeft: Int, world: Evented[World], readyUnits: List[spawner.Controlled]
+      actionsLeft: SpawnerStr, world: Evented[World], readyUnits: List[spawner.Controlled]
     ): Result = actionsLeft match {
-      case i if i <= 0 => world
+      case i if i <= SpawnerStr(0) => world
       case _ =>
-        val newActions = actionsLeft - 1
+        val newActions = actionsLeft - SpawnerStr(1)
         readyUnits match {
           case unit :: rest =>
             work(newActions, world.flatMap(act(_, unit)), rest)
@@ -68,7 +68,7 @@ object GrowingSpawnerAI {
       (world, unit) => {
         possibleTargets = world.objects.collect {
           case fo: OwnedObj if fo.isEnemy(unit) => fo
-        }
+        }.toSet
 
         SingleMindAI.findAndMoveAttackTarget(world, possibleTargets, unit)
       },
@@ -83,8 +83,7 @@ object GrowingSpawnerAI {
             case s => Some(select(s))
           }
           path <- Pathfinding.aStar(
-            unit, target.bounds, world.bounds,
-            unit.obstacles(world.objects).map(_.bounds)
+            unit, target.bounds, world.bounds, world.objects
           )
         } yield unit.moveTo(world, path.limit(unit.movementLeft)).fold(
           err => {

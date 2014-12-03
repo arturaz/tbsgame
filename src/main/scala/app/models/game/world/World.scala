@@ -8,7 +8,7 @@ import app.models.game.world.WObject.Id
 import app.models.game.world.buildings.{Spawner, WarpGate}
 import app.models.game.world.maps.{VisibilityMap, WarpZoneMap}
 import app.models.game.world.props.Asteroid
-import app.models.game.world.units.Wasp
+import app.models.game.world.units.{Fortress, RayShip, Wasp}
 import implicits._
 import infrastructure.PrefixedLoggingAdapter
 
@@ -17,7 +17,7 @@ import scala.reflect.ClassTag
 import scala.util.Random
 
 case class World private (
-  bounds: Bounds, objects: Set[WObject],
+  bounds: Bounds, objects: WorldObjs,
   resourcesMap: Map[Player, Resources],
   warpZoneMap: WarpZoneMap, visibilityMap: VisibilityMap
 ) extends TurnBased[World] {
@@ -45,7 +45,7 @@ case class World private (
   }
 
   private[this] def changeWithMapUpdates(obj: WObject)(
-    fo: (Set[WObject], WObject) => Set[WObject],
+    fo: (WorldObjs, WObject) => WorldObjs,
     fwz: (WarpZoneMap, OwnedObj) => Evented[WarpZoneMap],
     fvis: (VisibilityMap, OwnedObj) => Evented[VisibilityMap]
   ): Evented[World] = {
@@ -62,15 +62,16 @@ case class World private (
     )
   }
 
-  def add(obj: WObject): Evented[World] =
+  def add(obj: WObject): Evented[World] = {
     changeWithMapUpdates(obj)(_ + _, _ + _, _ + _)
+  }
   def remove(obj: WObject): Evented[World] =
     changeWithMapUpdates(obj)(_ - _, _ - _, _ - _)
   def removeEvt(obj: WObject): Evented[World] =
     Evented(this, ObjDestroyedEvt(this, obj)).flatMap(_.remove(obj))
 
   def updated[A <: WObject](before: A, after: A): Evented[World] = {
-    val newWorld = copy(objects = objects - before + after)
+    val newWorld = copy(objects = objects update_! (before, after))
     (before.asOwnedObj, after.asOwnedObj) match {
       case (Some(bOO), Some(aOO)) =>
         for {
@@ -86,7 +87,7 @@ case class World private (
     after.fold(remove(before))(a => updated(before, a))
   def updated[A <: WObject](before: A)(afterFn: A => A): Evented[World] =
     updated(before, afterFn(before))
-  private def updated(objects: Set[WObject]): World = copy(objects = objects)
+  private def updated(objects: WorldObjs): World = copy(objects = objects)
   private def updated(resources: Map[Player, Resources]): World =
     copy(resourcesMap = resources)
 
@@ -143,9 +144,7 @@ case class World private (
     visibilityMap.isVisible(owner, v)
   def isValidForWarp(owner: Owner, v: Vect2): Boolean = warpZoneMap.isVisible(owner, v)
 
-  def objectsIn(vects: Vector[Vect2]): Set[WObject] =
-    if (vects.isEmpty) Set.empty
-    else objects.filter(obj => vects.exists(obj.bounds.contains))
+  def objectsIn(vects: Vector[Vect2]): WorldObjs = objects.filter(vects)
 
   def reactTo[A <: OwnedObj](obj: A): WObject.WorldObjOptUpdate[A] = {
     @tailrec def react(
@@ -174,7 +173,7 @@ case class World private (
     objects.collectFirst(predicate)
   def contains(id: Id): Boolean = objects.exists(_.id === id)
 
-  lazy val owners = objects.collect { case fo: OwnedObj => fo.owner }
+  lazy val owners = objects.collect { case fo: OwnedObj => fo.owner }.toSet
   lazy val teams = owners.map(_.team)
   lazy val players = owners.collect { case p: Player => p }.toSet ++ resourcesMap.keySet
   lazy val humans = players.collect { case h: Human => h }.toSet
@@ -224,11 +223,11 @@ object World {
     Vect2(hDir, vDir)
   }
 
-  private[this] def bounds(objects: Set[WObject]) =
+  private[this] def bounds(objects: TraversableOnce[WObject]) =
     objects.map(_.bounds).reduce(_ join _)
 
   def create(
-    playersTeam: Team, waspsOwner: => Bot,
+    playersTeam: Team, npcOwner: => Bot,
     spawnerOwner: => Bot,
     startingPoint: Vect2 = Vect2(0, 0),
     endDistance: TileDistance = TileDistance(30),
@@ -236,43 +235,71 @@ object World {
     spawners: Int = 2,
     jumpDistance: Range = 3 to 6,
     blobSize: Range = 2 to 5,
-    blobRichness: Range = 10 to 25,
-    asteroidResources: Range = 5 to 20,
+    blobRichness: Range = 15 to 60,
+    asteroidResources: Range = 15 to 40,
     directionChangeChance: Double = 0.2,
     branchChance: Double = 0.2,
     safeDistance: TileDistance = TileDistance(10),
-    waspsAtMaxDistance: Int = 3
+    enemyResourcesAtMaxDistance: Resources = Wasp.cost * Resources(3),
+    npcChances: WeightedIS[WeightedIS[EmptySpaceWarpableCompanion[_ <: Warpable]]] =
+      IndexedSeq(
+        IndexedSeq(Wasp -> 1) -> 3,
+        IndexedSeq(RayShip -> 1) -> 3,
+        IndexedSeq(Fortress -> 1) -> 3,
+        IndexedSeq(Wasp -> 2, Fortress -> 1) -> 2,
+        IndexedSeq(Wasp -> 2, RayShip -> 1) -> 2,
+        IndexedSeq(Fortress -> 2, Wasp -> 1) -> 2,
+        IndexedSeq(Fortress -> 2, RayShip -> 1) -> 2,
+        IndexedSeq(RayShip -> 2, Wasp -> 1) -> 2,
+        IndexedSeq(RayShip -> 2, Fortress -> 1) -> 2,
+        IndexedSeq(Wasp -> 1, RayShip -> 1, Fortress -> 1) -> 1
+      )
   )(implicit log1: LoggingAdapter) = {
     val log = new PrefixedLoggingAdapter("World#create|", log1)
     val warpGate = WarpGate(startingPoint, playersTeam)
-    var objects = Set.apply[WObject](warpGate)
+    var objects = WorldObjs(warpGate).right_!
     // Main branch is also a branch.
     var branchesLeft = branches.random + 1
     var spawnersLeft = spawners
     log.debug(s"Creating map. Branches: $branchesLeft")
 
-    def pTaken(v: Vect2): Boolean = objects.exists(_.bounds.contains(v))
-    def bTaken(bounds: Bounds): Boolean =
-      objects.exists(_.bounds.intersects(bounds))
+    def pTaken(v: Vect2): Boolean = objects.contains(v)
+    def bTaken(bounds: Bounds): Boolean = ! objects.isAllFree(bounds)
+
+    def tryN[A](n: Int)(f: => Option[A]): Option[A] = {
+      var a = Option.empty[A]
+      var i = 0
+      while (i < n && a.isEmpty) {
+        a = f
+        i += 1
+      }
+      a
+    }
 
     def spawnBlob(bounds: Bounds, log: LoggingAdapter): Unit = {
-      val waspsNeeded = math.min(
+      val npcPool = npcChances.weightedRandom.get
+      val enemyResourcesNeeded = Resources(math.min(
         (
           bounds.center.tileDistance(startingPoint).value.toDouble *
-          waspsAtMaxDistance / endDistance.value
+          enemyResourcesAtMaxDistance.value / endDistance.value
         ).round.toInt,
-        waspsAtMaxDistance
-      )
+        enemyResourcesAtMaxDistance.value
+      ))
+
       var resourcesLeft = blobRichness.random
       // Subtract resources already in the bounds.
       resourcesLeft -= objects.collect {
         case a: Asteroid if bounds.contains(a.position) => a.resources
       }.sum.value
-      var waspsInBounds =
-        objects.count(o => o.isInstanceOf[Wasp] && bounds.contains(o.position))
+
+      var enemyResourcesInBounds = objects.view.
+        filter(o => bounds.contains(o.position)).collect {
+          case oo: Warpable if oo.owner.team != playersTeam => oo.companion.cost
+        }.sum
       log.debug(
-        s"Blob spawn | bounds: {}, resources: $resourcesLeft, wasps: ${waspsNeeded
-        }, already placed: $waspsInBounds", bounds
+        s"Blob spawn | bounds: {}, resources: ${resourcesLeft
+        }, enemy resources needed: ${enemyResourcesNeeded
+        }, already placed: $enemyResourcesInBounds", bounds
       )
 
       for (objPos <- Random.shuffle(bounds.points)) {
@@ -292,14 +319,23 @@ object World {
           objects += Asteroid(objPos, Resources(resources))
         }
         else if (
-          waspsInBounds < waspsNeeded &&
+          enemyResourcesInBounds < enemyResourcesNeeded &&
           warpGate.bounds.perimeter.map(_.tileDistance(objPos)).
             forall(_ > safeDistance) &&
           ! pTaken(objPos)
         ) {
-          waspsInBounds += 1
-          log.debug(s"wasp @ {}, left: ${waspsNeeded - waspsInBounds}", objPos)
-          objects += Wasp(objPos, waspsOwner)
+          val enemyOpt = tryN(10) {
+            npcPool.weightedRandom.
+              filter(_.cost <= enemyResourcesNeeded - enemyResourcesInBounds)
+          }
+          enemyOpt.foreach { enemyWarpable =>
+            objects += enemyWarpable.warp(npcOwner, objPos)
+            enemyResourcesInBounds += enemyWarpable.cost
+          }
+          log.debug(
+            s"{} @ {}, left: ${enemyResourcesNeeded - enemyResourcesInBounds}",
+            enemyOpt, objPos
+          )
         }
       }
 

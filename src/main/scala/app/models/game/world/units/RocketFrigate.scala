@@ -10,8 +10,8 @@ with FighterCompanion[RocketFrigate] {
   override val movement = TileDistance(6)
   override val defense = 0 to 1
   override val attacks = Attacks(1)
-  override val attack = 4 to 8
-  override val visibility = 2
+  override val attack = 5 to 9
+  override val visibility = RectDistance(2)
   override val cost = Resources(6)
   override val warpTime = WarpTime(0)
   override val kind = WObjKind.Light

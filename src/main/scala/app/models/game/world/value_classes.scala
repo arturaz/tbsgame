@@ -1,5 +1,6 @@
 package app.models.game.world
 
+import app.models.game.Actions
 import utils.{DoubleValueClass, IntValueClass}
 
 import scala.util.Random
@@ -28,6 +29,15 @@ case class HP(value: Int) extends AnyVal with IntValueClass[HP] {
 object HP {
   implicit object Numeric extends IntValueClass.Numeric[HP] {
     override def fromInt(x: Int) = HP(x)
+  }
+}
+
+case class SpawnerStr(value: Int) extends AnyVal with IntValueClass[SpawnerStr] {
+  override def self(v: Int) = SpawnerStr(v)
+}
+object SpawnerStr {
+  implicit object Numeric extends IntValueClass.Numeric[SpawnerStr] {
+    override def fromInt(x: Int) = SpawnerStr(x)
   }
 }
 

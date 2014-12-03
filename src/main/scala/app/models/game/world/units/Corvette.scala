@@ -9,7 +9,7 @@ with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
   override val defense = 0 to 1
   override val attackRange = TileDistance(5)
   override val movement = TileDistance(6)
-  override val visibility: Int = 4
+  override val visibility = RectDistance(4)
   override val maxHp = HP(10)
   override val warpTime = WarpTime(0)
   override val cost = Resources(6)

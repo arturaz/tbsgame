@@ -51,11 +51,6 @@ with Mobility[Mobility.Movable.type] { traitSelf =>
   val movementLeft: TileDistance
   def movementZone = movementLeft.reachable(position)
 
-  /* Returns a set of objects which are in units movement zone. */
-  def obstacles(objects: Set[WObject]) =
-    // TODO: fix the optimization
-    objects/*.filter(o => movementZone.exists(o.bounds.contains))*/
-
   override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
     super.teamTurnStartedSelf(world) |>
     selfEventedUpdate(companion.resetMovementLeft) |>

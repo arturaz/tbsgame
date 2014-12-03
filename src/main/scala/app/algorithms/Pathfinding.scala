@@ -7,9 +7,6 @@ import scala.collection.immutable.Queue
 import scala.collection.mutable
 import implicits._
 
-/**
- * Created by arturas on 2014-09-15.
- */
 object Pathfinding {
   case class SearchRes[+A](value: A, path: Path) {
     def movementNeeded = path.movementNeeded
@@ -48,7 +45,7 @@ object Pathfinding {
   }
 
   def movement(
-    origin: MovableWObject, worldBounds: Bounds, obstacles: Set[Bounds]
+    origin: MovableWObject, worldBounds: Bounds, obstacles: WorldObjs
   ): Vector[Path] = {
     val oNode = originNode(origin.position)
     var paths = Vector.empty[Path]
@@ -61,7 +58,7 @@ object Pathfinding {
   /* Finds objects which can be attacked with fewest moves. */
   def attackSearch[A](
     origin: MovableWObject with Fighter, targets: Iterable[A],
-    worldBounds: Bounds, obstacles: Set[Bounds]
+    worldBounds: Bounds, obstacles: WorldObjs
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = attackSearch(
     origin.position, origin.movementLeft, origin.companion.attackRange,
     targets, worldBounds, obstacles
@@ -69,7 +66,7 @@ object Pathfinding {
 
   /* Finds objects which can be attacked with fewest moves. */
   def attackSearch[A](
-    origin: Fighter, targets: Iterable[A], worldBounds: Bounds, obstacles: Set[Bounds]
+    origin: Fighter, targets: Iterable[A], worldBounds: Bounds, obstacles: WorldObjs
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = attackSearch(
     origin.position, TileDistance(0), origin.companion.attackRange,
     targets, worldBounds, obstacles
@@ -79,7 +76,7 @@ object Pathfinding {
   private def attackSearch[A](
     /* Only objects that don't move or are 1x1 sized can use this method. */
     origin: Vect2, movementRange: TileDistance, attackRange: TileDistance,
-    targets: Iterable[A], worldBounds: Bounds, obstacles: Set[Bounds],
+    targets: Iterable[A], worldBounds: Bounds, obstacles: WorldObjs,
     resultsNeeded: Int=Int.MaxValue
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = {
     def attackableTargets(from: Vect2): Iterable[A] = targets.filter { target =>
@@ -115,7 +112,7 @@ object Pathfinding {
 
   private[this] def bfs(
     originNode: Node, movementRange: TileDistance, worldBounds: Bounds,
-    obstacles: Set[Bounds]
+    obstacles: WorldObjs
   )(abortSearch: Node => Boolean, onNodeVisited: Node => Unit): Unit = {
     if (movementRange.isNotZero) {
       val (pos, mr) = (originNode.position, movementRange.value)
@@ -131,12 +128,12 @@ object Pathfinding {
   }
 
   private[this] def bfs(
-    origin: Vect2, worldBounds: Bounds, obstacles: Set[Bounds]
+    origin: Vect2, worldBounds: Bounds, obstacles: WorldObjs
   )(abortSearch: Node => Boolean, onNodeVisited: Node => Unit): Unit =
     bfs(originNode(origin), worldBounds, obstacles)(abortSearch, onNodeVisited)
 
   private[this] def bfs(
-    originNode: Node, worldBounds: Bounds, obstacles: Set[Bounds]
+    originNode: Node, worldBounds: Bounds, obstacles: WorldObjs
   )(abortSearch: Node => Boolean, onNodeVisited: Node => Unit): Unit = {
     var queue = Queue(originNode)
     var visited = Set.empty[Vect2]
@@ -158,11 +155,11 @@ object Pathfinding {
     }
   }
 
-  private[this] def obstructed(v: Vect2, obstacles: Set[Bounds]) =
-    obstacles.exists(_.contains(v))
+  @inline private[this] def obstructed(v: Vect2, obstacles: WorldObjs) =
+    obstacles.contains(v)
 
   private[this] def neighbours(
-    current: Vect2, worldBounds: Bounds, obstacles: Set[Bounds]
+    current: Vect2, worldBounds: Bounds, obstacles: WorldObjs
   ): Iterator[Vect2] = {
     def add(v: Vect2) =
       if (worldBounds.contains(v) && ! obstructed(v, obstacles)) Iterator(v)
@@ -175,7 +172,7 @@ object Pathfinding {
 
   def aStar(
     unit: MovableWObject, target: Bounds, worldBounds: Bounds,
-    obstacles: Set[Bounds]
+    obstacles: WorldObjs
   ): Option[Path] = {
     val start = unit.position
     val goal = Iterator.from(1).map { n =>
@@ -188,7 +185,7 @@ object Pathfinding {
   }
 
   private[this] def aStar(
-    start: Vect2, goal: Vect2, worldBounds: Bounds, obstacles: Set[Bounds]
+    start: Vect2, goal: Vect2, worldBounds: Bounds, obstacles: WorldObjs
   )(h: (Vect2, Vect2) => TileDistance): Option[Path] = {
     def reconstructPath(
       cameFrom: Map[Vect2, Vect2], currentNode: Vect2
