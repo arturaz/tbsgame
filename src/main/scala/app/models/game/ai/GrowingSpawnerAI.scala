@@ -12,6 +12,7 @@ import scala.annotation.tailrec
 import scala.util.Random
 
 object GrowingSpawnerAI {
+  type ReadyUnits = List[GrowingSpawner#Controlled]
   type Result = Evented[World]
 
   def act(world: World, owner: Owner)(implicit log: LoggingAdapter): Result = {
@@ -21,40 +22,57 @@ object GrowingSpawnerAI {
 
     if (spawners.isEmpty)
       SingleMindAI.act(world, owner)
-    else
-      spawners.foldLeft(Evented(world)) { case (w, spawner) =>
-        w.events ++: act(w.value, spawner)(log.prefixed(s"GrowingSpawnerAI[$spawner]|"))
-      }
+    else {
+      val readyUnits = world.objects.collect {
+        case unit: GrowingSpawner#Controlled
+          if (unit.owner: Owner) === owner && (
+            unit.movementLeft.isNotZero || unit.hasAttacksLeft
+          ) && unit.isWarpedIn => unit
+      }.toList
+
+      spawners.foldLeft(Evented((world, readyUnits))) { case (fEvtWorld, spawner) =>
+        fEvtWorld.flatMap { case (fWorld, fReadyUnits) =>
+          val (newWorld, newReadyUnits) = act(
+            fWorld, spawner, fReadyUnits
+          )(log.prefixed(s"GrowingSpawnerAI[$spawner]|"))
+          newWorld.map((_, newReadyUnits))
+        }
+      }.map(_._1)
+    }
   }
 
-  def act(world: World, spawner: GrowingSpawner)(implicit log: LoggingAdapter): Result = {
+  def act(
+    world: World, spawner: GrowingSpawner, readyUnits: ReadyUnits
+  )(implicit log: LoggingAdapter): (Result, ReadyUnits) = {
     @tailrec def work(
-      actionsLeft: SpawnerStr, world: Evented[World], readyUnits: List[spawner.Controlled]
-    ): Result = actionsLeft match {
-      case i if i <= SpawnerStr(0) => world
-      case _ =>
+      actionsLeft: SpawnerStr, world: Evented[World], readyUnits: ReadyUnits
+    ): (Result, ReadyUnits) = {
+      val orig = (world, readyUnits)
+      log.debug("acting with actions left={}", actionsLeft)
+      if (actionsLeft.isZero) orig
+      else if (actionsLeft <= SpawnerStr(0)) {
+        log.error("actionsLeft < 0! {}", actionsLeft)
+        orig
+      }
+      else {
         val newActions = actionsLeft - SpawnerStr(1)
         readyUnits match {
           case unit :: rest =>
             work(newActions, world.flatMap(act(_, unit)), rest)
           case Nil => spawn(world.value, spawner) match {
             case Left(err) =>
-              log.error(err)
-              world
+              log.error("error while spawning unit: {}", err)
+              orig
             case Right(newWorld) =>
-              work(
-                newActions, world.events ++: newWorld.map(_._1),
-                newWorld.value._2.filter(_.isWarpedIn).fold2(List.empty, List(_))
-                  ::: readyUnits
-              )
+              log.debug("spawned {}, events: {}", newWorld.value._2, newWorld.events)
+              val newReadyUnits =
+                newWorld.value._2.filter(_.isWarpedIn).fold2(List.empty, List(_)) :::
+                  readyUnits
+              work(newActions, world.events ++: newWorld.map(_._1), newReadyUnits)
+          }
         }
       }
     }
-
-    val readyUnits = world.objects.collect {
-      case unit: spawner.Controlled
-        if unit.owner === spawner.owner && unit.hasAttacksLeft && unit.isWarpedIn => unit
-    }.toList
 
     work(spawner.strength, Evented(world), readyUnits)
   }
@@ -62,6 +80,7 @@ object GrowingSpawnerAI {
   def act(
     world: World, unit: GrowingSpawner#Controlled
   )(implicit log: LoggingAdapter): Result = {
+    log.debug("unit {} acting", unit)
     var possibleTargets = Set.empty[OwnedObj]
 
     SingleMindAI.whileHasAttacksLeft(world, unit)(
@@ -90,7 +109,10 @@ object GrowingSpawnerAI {
             log.error("move act {}: {}", unit, err)
             Evented(world)
           },
-          _.map(_._1)
+          update => {
+            log.debug("nothing to attack, {} moving towards {}", unit, target)
+            update.map(_._1)
+          }
         )
         optNewWorld.getOrElse(Evented(world)).right
       }
