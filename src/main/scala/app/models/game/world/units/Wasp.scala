@@ -4,7 +4,7 @@ import app.models.game.Player
 import app.models.game.world._
 
 object Wasp extends WUnitCompanion[Wasp] with FighterCompanion[Wasp] {
-  override val maxHp = HP(130)
+  override val maxHp = HP(140)
   override val attack = Atk(30)
   override val attacks = Attacks(2)
   override val attackRange = TileDistance(3)
