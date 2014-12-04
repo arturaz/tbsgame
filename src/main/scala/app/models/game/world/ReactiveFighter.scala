@@ -5,9 +5,12 @@ import app.models.game.ai.SingleMindAI
 import app.models.game.events.Evented
 import implicits._
 
+import scala.annotation.tailrec
+
 trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
-  def shouldReact(self: OwnedObj): Boolean = self.isWarpedIn
-  def shouldReact(self: OwnedObj, target: OwnedObj): Boolean =
+  def shouldReact(self: ReactiveFighter): Boolean =
+    self.isWarpedIn && self.attacksLeft.isNotZero
+  def shouldReact(self: ReactiveFighter, target: OwnedObj): Boolean =
     shouldReact(self) && self.isEnemy(target) && target.isInstanceOf[MovableWObject]
 
   def attackReachable(
@@ -18,7 +21,10 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
         val targets = world.objects.collect {
           case obj: OwnedObj if shouldReact(self, obj) && self.canAttack(obj, world) => obj
         }
-        if (targets.isEmpty) data
+        if (targets.isEmpty) {
+          log.debug("no targets to react to")
+          Evented(orig)
+        }
         else {
           val target = targets.reduce(SingleMindAI.atkOrdRndLtOO(self))
           self.attackWS(target, world).fold(
@@ -26,14 +32,32 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
               log.error(
                 s"{} tried to attack reachable {}, but failed: {}", self, target, err
               )
-              data
+              Evented(orig)
             },
-            _.map { case (w, s) => (w, s.asInstanceOf[Self])}
+            newData => {
+              log.debug("reacted against {}", target)
+              newData.map { case (w, s) => (w, s.asInstanceOf[Self])}
+            }
           )
         }
       }
-      else data
+      else {
+        log.debug("not reacting because we shouldn't")
+        Evented(orig)
+      }
     }
+
+  @tailrec final def attackReachableWhileHasAttacks(
+    data: WObject.WorldObjUpdate[Self]
+  )(implicit log: LoggingAdapter): WObject.WorldObjUpdate[Self] = {
+    val newData = attackReachable(data)
+
+    if (data.events.size == newData.events.size) {
+      log.debug("nothing happened")
+      newData
+    }
+    else attackReachableWhileHasAttacks(newData)
+  }
 }
 
 trait ReactiveFighterStats extends FighterStats
@@ -47,7 +71,10 @@ trait ReactiveFighter extends Fighter { traitSelf =>
 
   /* Needed to be able to react to other player actions. */
   override def teamTurnFinishedSelf(world: World)(implicit log: LoggingAdapter) =
-    super.teamTurnFinishedSelf(world) |> resetAttack |> companion.attackReachable
+    super.teamTurnFinishedSelf(world) |> resetAttack |> {
+      (w: WObject.WorldObjUpdate[Self]) =>
+        companion.attackReachableWhileHasAttacks(w)(log.prefixed("react|"))
+    }
 
   /* Attacks the target if he can. Returns None if there was no reaction. */
   def reactToOpt[A <: OwnedObj](

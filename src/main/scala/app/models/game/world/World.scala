@@ -26,14 +26,18 @@ case class World private (
   override def toString = s"World($bounds, objects: ${objects.size})"
 
   def gameTurnStarted(implicit log: LoggingAdapter) =
-    Evented(this) |> gameTurnX(_.gameTurnStarted)
+    Evented(this) |>
+    gameTurnX(log.prefixed("started|"))(implicit log => _.gameTurnStarted)
   def gameTurnFinished(implicit log: LoggingAdapter) =
-    Evented(this) |> gameTurnX(_.gameTurnFinished)
+    Evented(this) |>
+    gameTurnX(log.prefixed("finished|"))(implicit log => _.gameTurnFinished)
   def teamTurnStarted(team: Team)(implicit log: LoggingAdapter) =
-    Evented(this, Vector(TurnStartedEvt(team))) |> teamTurnX(team)(_.teamTurnStarted) |>
+    Evented(this, Vector(TurnStartedEvt(team))) |>
+    teamTurnX(team, log.prefixed("started|"))(implicit log => _.teamTurnStarted) |>
     runAI(team)
   def teamTurnFinished(team: Team)(implicit log: LoggingAdapter) =
-    Evented(this, Vector(TurnEndedEvt(team))) |> teamTurnX(team)(_.teamTurnFinished)
+    Evented(this, Vector(TurnEndedEvt(team))) |>
+    teamTurnX(team, log.prefixed("finished|"))(implicit log => _.teamTurnFinished)
 
   def actionsFor(player: Player): Actions = {
     val actions = objects.collect {
@@ -193,26 +197,28 @@ object World {
   }
 
   private def xTurnX[A : ClassTag](
-    filter: A => Boolean, f: A => World => Evented[World]
+    log: LoggingAdapter, filter: A => Boolean,
+    f: LoggingAdapter => A => World => Evented[World]
   )(world: Evented[World]) = world.value.objects.foldLeft(world) {
-    case (w, o: A) if filter(o) => w.laterFlatMap(f(o))
+    case (w, o: A) if filter(o) => w.laterFlatMap(f(log.prefixed(o.toString))(o))
     case (w, o) => w
   }
 
-  private def gameTurnX(
-    f: WObject => World => Evented[World]
+  private def gameTurnX(log: LoggingAdapter)(
+    f: LoggingAdapter => WObject => World => Evented[World]
   )(world: Evented[World]) =
-    xTurnX[WObject](_ => true, f)(world)
+    xTurnX[WObject](log.prefixed("game|"), _ => true, f)(world)
 
-  private def teamTurnX(
-    team: Team
-  )(f: OwnedObj => World => Evented[World])(world: Evented[World]) =
-    xTurnX[OwnedObj](_.owner.team === team, f)(world)
+  private def teamTurnX(team: Team, log: LoggingAdapter)(
+    f: LoggingAdapter => OwnedObj => World => Evented[World]
+  )(world: Evented[World]) =
+    xTurnX[OwnedObj](log.prefixed("team|"), _.owner.team === team, f)(world)
 
   private def runAI(team: Team)(e: Evented[World])(implicit log: LoggingAdapter) = {
+    val scopedLog = log.prefixed("runAI|")
     val bots = e.value.bots.filter(_.team === team)
     bots.foldLeft(e) { case (fEvtWorld, bot) =>
-      fEvtWorld.flatMap { fWorld => GrowingSpawnerAI.act(fWorld, bot) }
+      fEvtWorld.flatMap { fWorld => GrowingSpawnerAI.act(fWorld, bot)(scopedLog) }
     }
   }
 
