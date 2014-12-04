@@ -1,12 +1,17 @@
 package app.actors.game
 
-import akka.actor.{Actor, ActorRef}
+import akka.actor.SupervisorStrategy.Stop
+import akka.actor.{OneForOneStrategy,  Actor, ActorRef}
 import akka.event.LoggingReceive
 import app.models.User
 import implicits._
 
 class GamesManagerActor extends Actor {
   private[this] var game = Option.empty[ActorRef]
+
+  override def supervisorStrategy = OneForOneStrategy() {
+    case _ => Stop
+  }
 
   override def receive = LoggingReceive {
     case msg @ GameActor.In.Join(user) =>

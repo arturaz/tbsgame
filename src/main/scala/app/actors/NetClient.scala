@@ -83,16 +83,22 @@ class NetClient(
 
     case GameActor.Out.Joined(human, game) =>
       GameJoined(human).out()
-      context.become(inGame(human, game))
+      context.become(inGame(user, human, game))
   }: Receive) orElse common)
 
-  private[this] def inGame(human: Human, game: ActorRef): Receive = LoggingReceive(({
-    case FromClient.Game(msgFn) =>
-      val msg = msgFn(human)
-      game ! msg
-    case msg: GameActor.ClientOut =>
-      msg.out()
-  }: Receive) orElse common)
+  private[this] def inGame(user: User, human: Human, game: ActorRef): Receive = {
+    context.watch(game)
+    LoggingReceive(({
+      case FromClient.Game(msgFn) =>
+        val msg = msgFn(human)
+        game ! msg
+      case msg: GameActor.ClientOut =>
+        msg.out()
+      case Terminated if sender() == game =>
+        log.error("Game was terminated")
+        context.become(loggedIn(user))
+    }: Receive) orElse common)
+  }
 }
 
 
