@@ -16,7 +16,7 @@ with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
   override val cost = Resources(6)
   override val kind = WObjKind.Medium
 
-  val specialMovementAdded = TileDistance(3)
+  val specialMovementAdded = TileDistance(4)
   override val specialActionsNeeded = Actions(0)
 
   override def warp(owner: Player, position: Vect2) = Corvette(position, owner)
@@ -48,12 +48,11 @@ case class Corvette(
   override def specialImpl(world: World) = Either.cond(
     ! noAttacksLeft,
     {
-      val multiplier = TileDistance(self.attacksLeft.value)
       for {
-        self <- companion.withAttacksLeftEvt(Attacks(0))(world, self)
+        self <- companion.withAttacksLeftEvt(self.attacksLeft - Attacks(1))(world, self)
         self <- companion.setMoveValues(
           world, self,
-          movementLeft + companion.specialMovementAdded * multiplier
+          movementLeft + companion.specialMovementAdded
         )
         world <- world.updated(this, self)
       } yield world
