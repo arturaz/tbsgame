@@ -23,6 +23,7 @@ object RayShip extends WUnitCompanion[RayShip] with FighterCompanion[RayShip] {
   override protected def withMovedOrAttacked(value: Boolean)(self: RayShip) =
     self.copy(movedOrAttacked = value)
   override def withNewHp(hp: HP)(self: RayShip) = self.copy(hp = hp)
+  override def withNewXP(xp: XP)(self: RayShip) = self.copy(xp = xp)
   override def setWarpState(newState: WarpTime)(self: RayShip) =
     self.copy(warpState = newState)
   override protected def setMoveValues(
@@ -32,9 +33,10 @@ object RayShip extends WUnitCompanion[RayShip] with FighterCompanion[RayShip] {
 
 case class RayShip(
   position: Vect2, owner: Player,
-  id: WObject.Id=WObject.newId, hp: HP=RayShip.maxHp,
+  id: WObject.Id=WObject.newId, hp: HP=RayShip.maxHp, xp: XP=RayShip.InitialXP,
   attacksLeft: Attacks=RayShip.InitialAttacks,
-  movementLeft: TileDistance=RayShip.movement, warpState: WarpTime=RayShip.InitialWarpState,
+  movementLeft: TileDistance=RayShip.movement,
+  warpState: WarpTime=RayShip.InitialWarpState,
   movedOrAttacked: Boolean=RayShip.InitialMovedOrAttacked
 ) extends WUnit with Fighter {
   type Self = RayShip

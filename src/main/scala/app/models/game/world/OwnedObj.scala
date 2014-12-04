@@ -2,11 +2,18 @@ package app.models.game.world
 
 import akka.event.LoggingAdapter
 import app.models.game.{Bot, Human, Player, Owner}
-import app.models.game.events.Evented
+import app.models.game.events.{HPChangeEvt, Evented}
 import implicits._
 
-trait OwnedObjOps[Self] extends WObjectOps {
+trait OwnedObjOps[Self <: OwnedObj] extends WObjectOps {
   def withNewHp(hp: HP)(self: Self): Self
+  def withNewHPEvt(hp: HP)(world: World, self: Self): Evented[Self] = {
+    val newSelf = self |> withNewHp(hp)
+    Evented(
+      newSelf,
+      if (self.hp == newSelf.hp) Vector.empty else Vector(HPChangeEvt(world, newSelf))
+    )
+  }
 }
 
 trait OwnedObjStats extends WObjectStats {
@@ -19,7 +26,7 @@ trait OwnedObjStats extends WObjectStats {
   val kind: WObjKind
 }
 
-trait OwnedObjCompanion[Self]
+trait OwnedObjCompanion[Self <: OwnedObj]
 extends OwnedObjOps[Self] with OwnedObjStats
 
 /* Object that belongs to some faction and not just a world prop */

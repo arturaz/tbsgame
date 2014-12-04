@@ -212,7 +212,8 @@ object ProtobufCoding {
 
     implicit def convert(obj: Fighter): Game.WObject.Fighter =
       Game.WObject.Fighter.newBuilder().
-        setStats(obj.companion).setAttacksLeft(obj.attacksLeft).build()
+        setStats(obj.companion).setAttacksLeft(obj.attacksLeft).setLevel(obj.level).
+        build()
 
     implicit def convert(obj: MoveAttackActionedStats)
     : Game.WObject.MoveAttackActioned.Stats =
@@ -407,6 +408,14 @@ object ProtobufCoding {
       Game.ActionsChangeEvt.newBuilder().
         setPlayerId(evt.human.id).setNewActions(evt.actions.value).build()
 
+    implicit def convert(evt: HPChangeEvt): Game.HPChangeEvt =
+      Game.HPChangeEvt.newBuilder().
+        setObjId(evt.newObj.id).setNewHp(evt.newObj.hp).build()
+
+    implicit def convert(evt: LevelChangeEvt): Game.LevelChangeEvt =
+      Game.LevelChangeEvt.newBuilder().
+        setObjId(evt.newObj.id).setNewLevel(evt.newObj.level).build()
+
     implicit def convert(evt: WarpStateChangeEvt): Game.WarpStateChangeEvt =
       Game.WarpStateChangeEvt.newBuilder().
         setObjId(evt.newObj.id).setNewWarpState(evt.newObj.warpState).build()
@@ -441,6 +450,8 @@ object ProtobufCoding {
         case evt: MovedOrAttackedChangeEvt => b.setMovedOrAttackedChange(evt)
         case evt: ResourceChangeEvt => b.setResourceChange(evt)
         case evt: ActionsChangeEvt => b.setActionsChange(evt)
+        case evt: HPChangeEvt => b.setHpChange(evt)
+        case evt: LevelChangeEvt => b.setLevelChange(evt)
         case evt: JoinEvt => b.setJoin(evt)
         case evt: LeaveEvt => b.setLeave(evt)
         case evt: WarpStateChangeEvt => b.setWarpChange(evt)

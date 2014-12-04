@@ -69,6 +69,24 @@ object Attacks {
   }
 }
 
+case class Level(value: Int) extends AnyVal with IntValueClass[Level] {
+  override def self(v: Int) = Level(v)
+}
+object Level {
+  implicit object Numeric extends IntValueClass.Numeric[Level] {
+    override def fromInt(x: Int) = Level(x)
+  }
+}
+
+case class XP(value: Int) extends AnyVal with IntValueClass[XP] {
+  override def self(v: Int) = XP(v)
+}
+object XP {
+  implicit object Numeric extends IntValueClass.Numeric[XP] {
+    override def fromInt(x: Int) = XP(x)
+  }
+}
+
 case class RectDistance(value: Int) extends AnyVal with IntValueClass[RectDistance] {
   override def self(v: Int) = RectDistance(v)
 

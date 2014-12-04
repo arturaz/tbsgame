@@ -25,15 +25,15 @@ with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
     self.copy(position = position, movementLeft = movementLeft)
   override def withMovedOrAttacked(value: Boolean)(self: Corvette) =
     self.copy(movedOrAttacked = value)
-  override def withNewHp(hp: HP)(self: Corvette) =
-    self.copy(hp = hp)
+  override def withNewHp(hp: HP)(self: Corvette) = self.copy(hp = hp)
+  override def withNewXP(xp: XP)(self: Corvette) = self.copy(xp = xp)
   override def withAttacksLeft(value: Attacks)(self: Corvette) =
     self.copy(attacksLeft = value)
 }
 
 case class Corvette(
   position: Vect2, owner: Player,
-  id: WObject.Id=WObject.newId, hp: HP=Corvette.maxHp,
+  id: WObject.Id=WObject.newId, hp: HP=Corvette.maxHp, xp: XP=Corvette.InitialXP,
   attacksLeft: Attacks=Corvette.InitialAttacks,
   movementLeft: TileDistance=Corvette.movement,
   warpState: WarpTime=Corvette.InitialWarpState,

@@ -2,17 +2,17 @@ package app.models.game.world.buildings
 
 import app.models.game.world._
 
-trait BuildingOps[Self] extends OwnedObjOps[Self] {
-}
+trait BuildingOps[Self <: Building] extends OwnedObjOps[Self]
 
 trait BuildingStats extends OwnedObjStats {
   override val visibility = RectDistance(3)
 }
 
-trait BuildingCompanion[Self] extends BuildingOps[Self] with BuildingStats
+trait BuildingCompanion[Self <: Building] extends BuildingOps[Self] with BuildingStats
 
 /* Building existing in game world. */
 trait Building extends OwnedObj {
+  type Self <: Building
   type Companion <: BuildingOps[Self] with BuildingStats
 }
 

@@ -27,7 +27,7 @@ case class Attack(
 object Attack {
   def apply(fighter: Fighter, target: OwnedObj): Attack = {
     apply(
-      fighter.companion.randomAttack,
+      fighter.companion.randomAttack(fighter),
       fighter.companion.kind.multiplierAt(target.companion.kind),
       fighter.companion.critical.struck.opt(fighter.companion.criticalMultiplier)
     )

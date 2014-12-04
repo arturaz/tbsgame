@@ -4,13 +4,14 @@ import app.models.game.Actions
 import app.models.game.events.Evented
 import implicits._
 
-trait SpecialActionOps[Self] extends OwnedObjOps[Self]
+trait SpecialActionOps[Self <: SpecialAction] extends OwnedObjOps[Self]
 
 trait SpecialActionStats extends OwnedObjStats {
   val specialActionsNeeded: Actions
 }
 
-trait SpecialActionCompanion[Self] extends SpecialActionOps[Self] with SpecialActionStats
+trait SpecialActionCompanion[Self <: SpecialAction] extends SpecialActionOps[Self]
+with SpecialActionStats
 
 trait SpecialAction extends OwnedObj {
   type Self <: SpecialAction

@@ -107,6 +107,18 @@ case class AttacksChangedEvt(
   def bounds = newObj.bounds
 }
 
+case class LevelChangeEvt(
+  world: World, newObj: Fighter
+) extends BoundedEvent {
+  def bounds = newObj.bounds
+}
+
+case class HPChangeEvt(
+  world: World, newObj: OwnedObj
+) extends BoundedEvent {
+  def bounds = newObj.bounds
+}
+
 case class MovementChangeEvt(
   world: World, changedObj: MovableWObject
 ) extends BoundedEvent {

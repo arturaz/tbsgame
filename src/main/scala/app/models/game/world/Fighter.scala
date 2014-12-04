@@ -2,7 +2,7 @@ package app.models.game.world
 
 import akka.event.LoggingAdapter
 import app.models.game.{Player, Attack}
-import app.models.game.events.{AttacksChangedEvt, AttackEvt, Evented}
+import app.models.game.events.{LevelChangeEvt, AttacksChangedEvt, AttackEvt, Evented}
 import implicits._
 
 import scala.util.Random
@@ -18,6 +18,19 @@ with MoveAttackActionedOps[Self] {
       else Vector(AttacksChangedEvt(world, newSelf))
     )
   }
+
+  protected def withNewXP(value: XP)(self: Self): Self
+  def withNewXPEvt(value: XP)(world: World, self: Self): Evented[Self] = {
+    val newSelf = self |> withNewXP(value)
+    Evented(
+      newSelf,
+      if (self.level == newSelf.level) Vector.empty
+      else Vector(LevelChangeEvt(world, newSelf))
+    )
+  }
+
+  def randomAttack(f: Fighter): Atk =
+    Atk((f.companion.randomAttack.value * f.attackMultiplier).round.toInt)
 }
 
 trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
@@ -29,12 +42,30 @@ trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
     val to = Atk((attack.value * (1 + attackSpread.value)).round.toInt)
     AtkRange(from, to)
   }
-  def randomAttack = Atk(attackDamageRange.random)
+  def randomAttack: Atk = Atk(attackDamageRange.random)
+
   val attackRange: TileDistance
   val attacks: Attacks
   val critical: Chance = Chance(0.1)
   val criticalMultiplier: Double = 2
   @inline def InitialAttacks = attacks
+
+  val LevelMultiplierTable = Map(
+    Level(1) -> 1.15, Level(2) -> 1.45, Level(3) -> 2.0
+  ).withDefaultValue(1.0)
+  def maxHpAt(l: Level) = HP((maxHp.value * LevelMultiplierTable(l)).round.toInt)
+
+  val InitialXP = XP(0)
+  /* XP needed -> Level reached */
+  val XPTable = IndexedSeq(
+    XP(3) -> Level(1),
+    XP(8) -> Level(2),
+    XP(20) -> Level(3)
+  )
+
+  def level(xp: XP) = XPTable.collectFirst {
+    case (lvlXP, level) if xp < lvlXP => level - Level(1)
+  }.getOrElse(XPTable.last._2)
 }
 
 trait FighterCompanion[Self <: Fighter] extends FighterOps[Self] with FighterStats
@@ -44,6 +75,10 @@ trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
   type Companion <: FighterOps[Self] with FighterStats
 
   val attacksLeft: Attacks
+  lazy val level = companion.level(xp)
+  lazy val attackMultiplier = companion.LevelMultiplierTable(level)
+  val xp: XP
+  def maxHp = companion.maxHpAt(level)
 
   override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
     super.teamTurnStartedSelf(world) |> resetAttack
@@ -78,6 +113,7 @@ trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
   ): Either[String, (Attack, Evented[Self], Option[Target])] =
     cantAttackReason(obj, world).fold2({
       val attack = Attack(this, obj)
+      val newObj = attack(obj)
       (
         attack,
         for {
@@ -85,8 +121,15 @@ trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
             self.attacksLeft - Attacks(1)
           )(world, self)
           newSelf <- companion.withMovedOrAttackedEvt(true)(world, newSelf)
+          newSelf <- companion.withNewXPEvt(
+            newSelf.xp + XP(newObj.map(_ => 0).getOrElse(1))
+          )(world, newSelf)
+          newSelf <- companion.withNewHPEvt(
+            if (self.level == newSelf.level) newSelf.hp
+            else newSelf.hp max newSelf.maxHp
+          )(world, newSelf)
         } yield newSelf,
-        attack(obj)
+        newObj
       ).right
     }, _.left)
 

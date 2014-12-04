@@ -25,12 +25,12 @@ with ReactiveFighterCompanion[LaserTower] {
   override def withMovedOrAttacked(value: Boolean)(self: LaserTower) =
     self.copy(movedOrAttacked = value)
   override def withNewHp(hp: HP)(self: LaserTower) = self.copy(hp = hp)
-
+  override def withNewXP(xp: XP)(self: LaserTower) = self.copy(xp = xp)
 }
 
 case class LaserTower(
   position: Vect2, owner: Player,
-  id: WObject.Id=WObject.newId, hp: HP=LaserTower.maxHp,
+  id: WObject.Id=WObject.newId, hp: HP=LaserTower.maxHp, xp: XP=LaserTower.InitialXP,
   warpState: WarpTime=LaserTower.InitialWarpState,
   attacksLeft: Attacks=LaserTower.InitialAttacks,
   movedOrAttacked: Boolean=LaserTower.InitialMovedOrAttacked
