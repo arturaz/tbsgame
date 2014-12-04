@@ -9,7 +9,6 @@ with GivingActionsCompanion[WarpGate] {
   override val size = Vect2(6, 3)
   override val isCritical: Boolean = true
   override val actionsGiven = Actions(3)
-  override val defense = emptyRange
   override val visibility = RectDistance(4)
   override val warpGiven = RectDistance(2)
   val kind = WObjKind.Heavy

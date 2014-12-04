@@ -13,7 +13,6 @@ with SpecialActionCompanion[Extractor] {
   override val maxHp = HP(95)
   override val warpTime = WarpTime(1)
   override val cost = Resources(10)
-  override val defense = 0 to 0
   /* How much resources does turn start extract? */
   val turnStartExtracts = Resources(2)
   /* How much resources does special action extract? */

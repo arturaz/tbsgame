@@ -1,7 +1,7 @@
 package app.models.game.world
 
 import app.models.game.Actions
-import utils.{DoubleValueClass, IntValueClass}
+import utils.{IntVCInclusiveRange, DoubleValueClass, IntValueClass}
 
 import scala.util.Random
 
@@ -40,6 +40,7 @@ object Atk {
     override def fromInt(x: Int) = Atk(x)
   }
 }
+case class AtkRange(from: Atk, to: Atk) extends IntVCInclusiveRange(from, to)
 
 case class AtkSpread(value: Double) extends AnyVal with DoubleValueClass[AtkSpread] {
   override def self(v: Double) = AtkSpread(v)

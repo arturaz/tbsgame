@@ -16,7 +16,7 @@ object IntValueClass {
   }
 }
 
-trait IntValueClass[A <: IntValueClass[_]] extends Any with Ordered[A] {
+trait IntValueClass[A <: IntValueClass[A]] extends Any with Ordered[A] {
   def value: Int
   def self(v: Int): A
 
@@ -34,3 +34,7 @@ trait IntValueClass[A <: IntValueClass[_]] extends Any with Ordered[A] {
 
   override def compare(that: A) = value.compareTo(that.value)
 }
+
+class IntVCInclusiveRange[A <: IntValueClass[A]](
+  from: A, to: A, step: Int=1
+) extends Range.Inclusive(from.value, to.value, 1)

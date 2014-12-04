@@ -12,14 +12,11 @@ trait OwnedObjOps[Self] extends WObjectOps {
 trait OwnedObjStats extends WObjectStats {
   val maxHp: HP
   val visibility: RectDistance
-  val defense: Range.Inclusive
   /* If team has no critical objects it cannot do any more actions and
      loses the game. */
   val isCritical: Boolean = false
   val warpGiven: RectDistance = RectDistance(0)
   val kind: WObjKind
-
-  protected def emptyRange = 0 to -1
 }
 
 trait OwnedObjCompanion[Self]
@@ -37,7 +34,6 @@ trait OwnedObj extends WObject {
   def isEnemy(o: OwnedObj) = owner.team =/= o.owner.team
   def isFriend(o: OwnedObj) = ! isEnemy(o)
   override def asOwnedObj = Some(this)
-  def defense = if (isWarpingIn) 0 to 0 else companion.defense
   def destroyReward = Option.empty[Resources]
 
   lazy val visibility = companion.visibility.extend(bounds)

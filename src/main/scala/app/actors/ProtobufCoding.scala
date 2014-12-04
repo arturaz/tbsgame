@@ -174,7 +174,7 @@ object ProtobufCoding {
       Game.WObject.SizedObj.newBuilder().setStats(obj.companion).build()
 
     implicit def convert(obj: OwnedObjStats): Game.WObject.OwnedObj.Stats =
-      Game.WObject.OwnedObj.Stats.newBuilder().setDefense(obj.defense).
+      Game.WObject.OwnedObj.Stats.newBuilder().
         setMaxHp(obj.maxHp).setIsCritical(obj.isCritical).
         setVisibility(obj.visibility).setKind(obj.kind).build()
 
@@ -206,8 +206,8 @@ object ProtobufCoding {
 
     implicit def convert(obj: FighterStats): Game.WObject.Fighter.Stats =
       Game.WObject.Fighter.Stats.newBuilder().
-        // TODO: fixme
-        setAttack(0 to 0).setAttackRange(obj.attackRange).setAttacks(obj.attacks).
+        setAttack(obj.attackDamageRange).setAttackRange(obj.attackRange).
+        setAttacks(obj.attacks).
         build()
 
     implicit def convert(obj: Fighter): Game.WObject.Fighter =
@@ -330,7 +330,7 @@ object ProtobufCoding {
 
     implicit def convert(attack: Attack): Game.Attack =
       Game.Attack.newBuilder().setAttackerRoll(attack.attackerRoll).
-        setDefenderRoll(attack.defenderRoll).setSuccessful(attack.successful).build()
+        setSuccessful(attack.successful).build()
 
     implicit def convert(kind: WObjKind): Game.WObjKind = kind match {
       case WObjKind.Light => Game.WObjKind.LIGHT

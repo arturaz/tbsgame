@@ -10,7 +10,6 @@ object Gunship extends WUnitCompanion[Gunship] with FighterCompanion[Gunship] {
   override val attackRange = TileDistance(3)
   override val cost = Resources(6)
   override val warpTime = WarpTime(0)
-  override val defense = 0 to 0
   override val kind = WObjKind.Heavy
   override val visibility = RectDistance(3)
   override val movement = TileDistance(6)

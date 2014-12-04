@@ -13,7 +13,6 @@ object Fortress extends WUnitCompanion[Fortress] with FighterCompanion[Fortress]
   override val warpTime = WarpTime(0)
   override val kind = WObjKind.Heavy
   override val visibility = RectDistance(5)
-  override val defense = 0 to 0
 
   override protected def setMoveValues(
     position: Vect2, movementLeft: TileDistance

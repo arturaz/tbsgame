@@ -23,13 +23,6 @@ object SingleMindAI {
 
   /* Ordering which implies worthyness of attacking a target. */
   def AttackOwnedObjOrd(self: Fighter) =
-    /* Filter out those targets which we can't inflict damage to. */
-    fOrd { o =>
-      Attack(
-        self.companion.attack, self.companion.kind.multiplierAt(o.companion.kind),
-        None, o.companion.defense.start
-      ).successful
-    }.reverse orElse
     /* Fighters must be dealt with first */
     fOrd(_.isInstanceOf[Fighter]).reverse orElse
     /* Attack ones where most damage can be done. */

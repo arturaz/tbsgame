@@ -10,7 +10,6 @@ with FighterCompanion[RocketFrigate] {
   override val attacks = Attacks(1)
   override val attackRange = TileDistance(8)
   override val movement = TileDistance(6)
-  override val defense = 0 to 0
   override val visibility = RectDistance(2)
   override val cost = Resources(6)
   override val warpTime = WarpTime(0)

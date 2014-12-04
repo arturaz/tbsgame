@@ -8,7 +8,6 @@ with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
   override val maxHp = HP(85)
   override val attack = Atk(35)
   override val attacks = Attacks(2)
-  override val defense = 0 to 0
   override val attackRange = TileDistance(5)
   override val movement = TileDistance(6)
   override val visibility = RectDistance(4)

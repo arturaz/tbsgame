@@ -10,7 +10,6 @@ with GrowingSpawnerCompanion[Spawner] {
   override val maxHp = HP(2200)
   override val size: Vect2 = Vect2(2, 2)
   override val isCritical: Boolean = true
-  override val defense = emptyRange
   val DefaultStartingStrength = SpawnerStr(2)
   val DefaultTurnsPerStrength = SpawnerStr(5)
   val kind = WObjKind.Heavy

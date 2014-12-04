@@ -12,7 +12,6 @@ object RayShip extends WUnitCompanion[RayShip] with FighterCompanion[RayShip] {
   override val attacks = Attacks(1)
   override val attackRange = TileDistance(7)
   override val movement = TileDistance(2)
-  override val defense = 0 to 0
   override val visibility = RectDistance(6)
   override val cost = Resources(10)
   override val warpTime = WarpTime(0)

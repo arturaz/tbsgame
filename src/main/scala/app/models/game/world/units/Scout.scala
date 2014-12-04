@@ -11,7 +11,6 @@ object Scout extends WUnitCompanion[Scout] {
   override val warpTime = WarpTime(0)
   override val cost = Resources(5)
   override val movement = TileDistance(16)
-  override val defense = emptyRange
   override val visibility = RectDistance(7)
   override val kind = WObjKind.Light
 

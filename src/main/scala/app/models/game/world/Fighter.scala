@@ -23,11 +23,13 @@ with MoveAttackActionedOps[Self] {
 trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
   val attack: Atk
   val attackSpread = AtkSpread(0.3)
-  def randomAttack = {
-    val from = (attack.value * (1 - attackSpread.value)).round.toInt
-    val to = (attack.value * (1 + attackSpread.value)).round.toInt
-    Atk(Random.int(from, to))
+  // lazy because attackSpread might be overriden
+  lazy val attackDamageRange = {
+    val from = Atk((attack.value * (1 - attackSpread.value)).round.toInt)
+    val to = Atk((attack.value * (1 + attackSpread.value)).round.toInt)
+    AtkRange(from, to)
   }
+  def randomAttack = Atk(attackDamageRange.random)
   val attackRange: TileDistance
   val attacks: Attacks
   val critical: Chance = Chance(0.1)

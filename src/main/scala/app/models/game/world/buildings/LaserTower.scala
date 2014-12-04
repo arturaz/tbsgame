@@ -13,7 +13,6 @@ with ReactiveFighterCompanion[LaserTower] {
   override val cost = Resources(12)
   override val attackRange = TileDistance(7)
   override val visibility = RectDistance(7)
-  override val defense = 0 to 0
   override val moveAttackActionsNeeded = Actions(2)
   override val kind = WObjKind.Heavy
 
