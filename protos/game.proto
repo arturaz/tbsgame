@@ -269,7 +269,8 @@ message WObject { // {{{
       required uint32 movement_range = 1;
     }
 
-    required uint32 movement = 1;
+    required Stats stats = 1;
+    required uint32 movement = 2;
   }
 
   /* End of Trait properties }}} */

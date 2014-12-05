@@ -228,7 +228,8 @@ object ProtobufCoding {
       Game.WObject.Movable.Stats.newBuilder().setMovementRange(obj.movement).build()
 
     implicit def convert(obj: MovableWObject): Game.WObject.Movable =
-      Game.WObject.Movable.newBuilder().setMovement(obj.movementLeft).build()
+      Game.WObject.Movable.newBuilder().setStats(obj.companion).
+        setMovement(obj.movementLeft).build()
 
     implicit def convert(obj: Asteroid): Game.WObject.Asteroid =
       Game.WObject.Asteroid.newBuilder().setResources(obj.resources).build()
