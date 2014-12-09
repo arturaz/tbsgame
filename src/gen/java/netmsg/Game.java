@@ -108,6 +108,11 @@ public final class Game {
     netmsg.Game.MGetMovement getGetMovement();
     netmsg.Game.MGetMovementOrBuilder getGetMovementOrBuilder();
     
+    // optional .game.MMoveAttack move_attack = 6;
+    boolean hasMoveAttack();
+    netmsg.Game.MMoveAttack getMoveAttack();
+    netmsg.Game.MMoveAttackOrBuilder getMoveAttackOrBuilder();
+    
     // optional .game.MLeave leave = 1001;
     boolean hasLeave();
     netmsg.Game.MLeave getLeave();
@@ -212,11 +217,24 @@ public final class Game {
       return getMovement_;
     }
     
+    // optional .game.MMoveAttack move_attack = 6;
+    public static final int MOVE_ATTACK_FIELD_NUMBER = 6;
+    private netmsg.Game.MMoveAttack moveAttack_;
+    public boolean hasMoveAttack() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    public netmsg.Game.MMoveAttack getMoveAttack() {
+      return moveAttack_;
+    }
+    public netmsg.Game.MMoveAttackOrBuilder getMoveAttackOrBuilder() {
+      return moveAttack_;
+    }
+    
     // optional .game.MLeave leave = 1001;
     public static final int LEAVE_FIELD_NUMBER = 1001;
     private netmsg.Game.MLeave leave_;
     public boolean hasLeave() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
+      return ((bitField0_ & 0x00000040) == 0x00000040);
     }
     public netmsg.Game.MLeave getLeave() {
       return leave_;
@@ -229,7 +247,7 @@ public final class Game {
     public static final int END_TURN_FIELD_NUMBER = 1002;
     private netmsg.Game.MEndTurn endTurn_;
     public boolean hasEndTurn() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
+      return ((bitField0_ & 0x00000080) == 0x00000080);
     }
     public netmsg.Game.MEndTurn getEndTurn() {
       return endTurn_;
@@ -244,6 +262,7 @@ public final class Game {
       attack_ = netmsg.Game.MAttack.getDefaultInstance();
       special_ = netmsg.Game.MSpecial.getDefaultInstance();
       getMovement_ = netmsg.Game.MGetMovement.getDefaultInstance();
+      moveAttack_ = netmsg.Game.MMoveAttack.getDefaultInstance();
       leave_ = netmsg.Game.MLeave.getDefaultInstance();
       endTurn_ = netmsg.Game.MEndTurn.getDefaultInstance();
     }
@@ -282,6 +301,12 @@ public final class Game {
           return false;
         }
       }
+      if (hasMoveAttack()) {
+        if (!getMoveAttack().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -305,9 +330,12 @@ public final class Game {
         output.writeMessage(5, getMovement_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeMessage(1001, leave_);
+        output.writeMessage(6, moveAttack_);
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeMessage(1001, leave_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeMessage(1002, endTurn_);
       }
       getUnknownFields().writeTo(output);
@@ -341,9 +369,13 @@ public final class Game {
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1001, leave_);
+          .computeMessageSize(6, moveAttack_);
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1001, leave_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1002, endTurn_);
       }
@@ -468,6 +500,7 @@ public final class Game {
           getAttackFieldBuilder();
           getSpecialFieldBuilder();
           getGetMovementFieldBuilder();
+          getMoveAttackFieldBuilder();
           getLeaveFieldBuilder();
           getEndTurnFieldBuilder();
         }
@@ -508,18 +541,24 @@ public final class Game {
           getMovementBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000010);
+        if (moveAttackBuilder_ == null) {
+          moveAttack_ = netmsg.Game.MMoveAttack.getDefaultInstance();
+        } else {
+          moveAttackBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
         if (leaveBuilder_ == null) {
           leave_ = netmsg.Game.MLeave.getDefaultInstance();
         } else {
           leaveBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000040);
         if (endTurnBuilder_ == null) {
           endTurn_ = netmsg.Game.MEndTurn.getDefaultInstance();
         } else {
           endTurnBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
       
@@ -601,13 +640,21 @@ public final class Game {
         if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
           to_bitField0_ |= 0x00000020;
         }
+        if (moveAttackBuilder_ == null) {
+          result.moveAttack_ = moveAttack_;
+        } else {
+          result.moveAttack_ = moveAttackBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
         if (leaveBuilder_ == null) {
           result.leave_ = leave_;
         } else {
           result.leave_ = leaveBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
         }
         if (endTurnBuilder_ == null) {
           result.endTurn_ = endTurn_;
@@ -644,6 +691,9 @@ public final class Game {
         }
         if (other.hasGetMovement()) {
           mergeGetMovement(other.getGetMovement());
+        }
+        if (other.hasMoveAttack()) {
+          mergeMoveAttack(other.getMoveAttack());
         }
         if (other.hasLeave()) {
           mergeLeave(other.getLeave());
@@ -682,6 +732,12 @@ public final class Game {
         }
         if (hasGetMovement()) {
           if (!getGetMovement().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasMoveAttack()) {
+          if (!getMoveAttack().isInitialized()) {
             
             return false;
           }
@@ -755,6 +811,15 @@ public final class Game {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setGetMovement(subBuilder.buildPartial());
+              break;
+            }
+            case 50: {
+              netmsg.Game.MMoveAttack.Builder subBuilder = netmsg.Game.MMoveAttack.newBuilder();
+              if (hasMoveAttack()) {
+                subBuilder.mergeFrom(getMoveAttack());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setMoveAttack(subBuilder.buildPartial());
               break;
             }
             case 8010: {
@@ -1231,12 +1296,102 @@ public final class Game {
         return getMovementBuilder_;
       }
       
+      // optional .game.MMoveAttack move_attack = 6;
+      private netmsg.Game.MMoveAttack moveAttack_ = netmsg.Game.MMoveAttack.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.MMoveAttack, netmsg.Game.MMoveAttack.Builder, netmsg.Game.MMoveAttackOrBuilder> moveAttackBuilder_;
+      public boolean hasMoveAttack() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      public netmsg.Game.MMoveAttack getMoveAttack() {
+        if (moveAttackBuilder_ == null) {
+          return moveAttack_;
+        } else {
+          return moveAttackBuilder_.getMessage();
+        }
+      }
+      public Builder setMoveAttack(netmsg.Game.MMoveAttack value) {
+        if (moveAttackBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          moveAttack_ = value;
+          onChanged();
+        } else {
+          moveAttackBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      public Builder setMoveAttack(
+          netmsg.Game.MMoveAttack.Builder builderForValue) {
+        if (moveAttackBuilder_ == null) {
+          moveAttack_ = builderForValue.build();
+          onChanged();
+        } else {
+          moveAttackBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      public Builder mergeMoveAttack(netmsg.Game.MMoveAttack value) {
+        if (moveAttackBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) == 0x00000020) &&
+              moveAttack_ != netmsg.Game.MMoveAttack.getDefaultInstance()) {
+            moveAttack_ =
+              netmsg.Game.MMoveAttack.newBuilder(moveAttack_).mergeFrom(value).buildPartial();
+          } else {
+            moveAttack_ = value;
+          }
+          onChanged();
+        } else {
+          moveAttackBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      public Builder clearMoveAttack() {
+        if (moveAttackBuilder_ == null) {
+          moveAttack_ = netmsg.Game.MMoveAttack.getDefaultInstance();
+          onChanged();
+        } else {
+          moveAttackBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
+        return this;
+      }
+      public netmsg.Game.MMoveAttack.Builder getMoveAttackBuilder() {
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return getMoveAttackFieldBuilder().getBuilder();
+      }
+      public netmsg.Game.MMoveAttackOrBuilder getMoveAttackOrBuilder() {
+        if (moveAttackBuilder_ != null) {
+          return moveAttackBuilder_.getMessageOrBuilder();
+        } else {
+          return moveAttack_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.MMoveAttack, netmsg.Game.MMoveAttack.Builder, netmsg.Game.MMoveAttackOrBuilder> 
+          getMoveAttackFieldBuilder() {
+        if (moveAttackBuilder_ == null) {
+          moveAttackBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Game.MMoveAttack, netmsg.Game.MMoveAttack.Builder, netmsg.Game.MMoveAttackOrBuilder>(
+                  moveAttack_,
+                  getParentForChildren(),
+                  isClean());
+          moveAttack_ = null;
+        }
+        return moveAttackBuilder_;
+      }
+      
       // optional .game.MLeave leave = 1001;
       private netmsg.Game.MLeave leave_ = netmsg.Game.MLeave.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Game.MLeave, netmsg.Game.MLeave.Builder, netmsg.Game.MLeaveOrBuilder> leaveBuilder_;
       public boolean hasLeave() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
+        return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       public netmsg.Game.MLeave getLeave() {
         if (leaveBuilder_ == null) {
@@ -1255,7 +1410,7 @@ public final class Game {
         } else {
           leaveBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         return this;
       }
       public Builder setLeave(
@@ -1266,12 +1421,12 @@ public final class Game {
         } else {
           leaveBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         return this;
       }
       public Builder mergeLeave(netmsg.Game.MLeave value) {
         if (leaveBuilder_ == null) {
-          if (((bitField0_ & 0x00000020) == 0x00000020) &&
+          if (((bitField0_ & 0x00000040) == 0x00000040) &&
               leave_ != netmsg.Game.MLeave.getDefaultInstance()) {
             leave_ =
               netmsg.Game.MLeave.newBuilder(leave_).mergeFrom(value).buildPartial();
@@ -1282,7 +1437,7 @@ public final class Game {
         } else {
           leaveBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         return this;
       }
       public Builder clearLeave() {
@@ -1292,11 +1447,11 @@ public final class Game {
         } else {
           leaveBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
       public netmsg.Game.MLeave.Builder getLeaveBuilder() {
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         onChanged();
         return getLeaveFieldBuilder().getBuilder();
       }
@@ -1326,7 +1481,7 @@ public final class Game {
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Game.MEndTurn, netmsg.Game.MEndTurn.Builder, netmsg.Game.MEndTurnOrBuilder> endTurnBuilder_;
       public boolean hasEndTurn() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
+        return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       public netmsg.Game.MEndTurn getEndTurn() {
         if (endTurnBuilder_ == null) {
@@ -1345,7 +1500,7 @@ public final class Game {
         } else {
           endTurnBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       public Builder setEndTurn(
@@ -1356,12 +1511,12 @@ public final class Game {
         } else {
           endTurnBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       public Builder mergeEndTurn(netmsg.Game.MEndTurn value) {
         if (endTurnBuilder_ == null) {
-          if (((bitField0_ & 0x00000040) == 0x00000040) &&
+          if (((bitField0_ & 0x00000080) == 0x00000080) &&
               endTurn_ != netmsg.Game.MEndTurn.getDefaultInstance()) {
             endTurn_ =
               netmsg.Game.MEndTurn.newBuilder(endTurn_).mergeFrom(value).buildPartial();
@@ -1372,7 +1527,7 @@ public final class Game {
         } else {
           endTurnBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       public Builder clearEndTurn() {
@@ -1382,11 +1537,11 @@ public final class Game {
         } else {
           endTurnBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
       public netmsg.Game.MEndTurn.Builder getEndTurnBuilder() {
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         onChanged();
         return getEndTurnFieldBuilder().getBuilder();
       }
@@ -4498,6 +4653,890 @@ public final class Game {
     }
     
     // @@protoc_insertion_point(class_scope:game.MGetMovement)
+  }
+  
+  public interface MMoveAttackOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required .game.WObjID id = 1;
+    boolean hasId();
+    netmsg.Game.WObjID getId();
+    netmsg.Game.WObjIDOrBuilder getIdOrBuilder();
+    
+    // repeated .base.Vect2 path = 2;
+    java.util.List<netmsg.Base.Vect2> 
+        getPathList();
+    netmsg.Base.Vect2 getPath(int index);
+    int getPathCount();
+    java.util.List<? extends netmsg.Base.Vect2OrBuilder> 
+        getPathOrBuilderList();
+    netmsg.Base.Vect2OrBuilder getPathOrBuilder(
+        int index);
+    
+    // required .game.WObjID target_id = 3;
+    boolean hasTargetId();
+    netmsg.Game.WObjID getTargetId();
+    netmsg.Game.WObjIDOrBuilder getTargetIdOrBuilder();
+  }
+  public static final class MMoveAttack extends
+      com.google.protobuf.GeneratedMessage
+      implements MMoveAttackOrBuilder {
+    // Use MMoveAttack.newBuilder() to construct.
+    private MMoveAttack(Builder builder) {
+      super(builder);
+    }
+    private MMoveAttack(boolean noInit) {}
+    
+    private static final MMoveAttack defaultInstance;
+    public static MMoveAttack getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public MMoveAttack getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return netmsg.Game.internal_static_game_MMoveAttack_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return netmsg.Game.internal_static_game_MMoveAttack_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // required .game.WObjID id = 1;
+    public static final int ID_FIELD_NUMBER = 1;
+    private netmsg.Game.WObjID id_;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public netmsg.Game.WObjID getId() {
+      return id_;
+    }
+    public netmsg.Game.WObjIDOrBuilder getIdOrBuilder() {
+      return id_;
+    }
+    
+    // repeated .base.Vect2 path = 2;
+    public static final int PATH_FIELD_NUMBER = 2;
+    private java.util.List<netmsg.Base.Vect2> path_;
+    public java.util.List<netmsg.Base.Vect2> getPathList() {
+      return path_;
+    }
+    public java.util.List<? extends netmsg.Base.Vect2OrBuilder> 
+        getPathOrBuilderList() {
+      return path_;
+    }
+    public int getPathCount() {
+      return path_.size();
+    }
+    public netmsg.Base.Vect2 getPath(int index) {
+      return path_.get(index);
+    }
+    public netmsg.Base.Vect2OrBuilder getPathOrBuilder(
+        int index) {
+      return path_.get(index);
+    }
+    
+    // required .game.WObjID target_id = 3;
+    public static final int TARGET_ID_FIELD_NUMBER = 3;
+    private netmsg.Game.WObjID targetId_;
+    public boolean hasTargetId() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public netmsg.Game.WObjID getTargetId() {
+      return targetId_;
+    }
+    public netmsg.Game.WObjIDOrBuilder getTargetIdOrBuilder() {
+      return targetId_;
+    }
+    
+    private void initFields() {
+      id_ = netmsg.Game.WObjID.getDefaultInstance();
+      path_ = java.util.Collections.emptyList();
+      targetId_ = netmsg.Game.WObjID.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasTargetId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getId().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      for (int i = 0; i < getPathCount(); i++) {
+        if (!getPath(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (!getTargetId().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, id_);
+      }
+      for (int i = 0; i < path_.size(); i++) {
+        output.writeMessage(2, path_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(3, targetId_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, id_);
+      }
+      for (int i = 0; i < path_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, path_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, targetId_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static netmsg.Game.MMoveAttack parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Game.MMoveAttack parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.MMoveAttack parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Game.MMoveAttack parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.MMoveAttack parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Game.MMoveAttack parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Game.MMoveAttack parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Game.MMoveAttack parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Game.MMoveAttack parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Game.MMoveAttack parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(netmsg.Game.MMoveAttack prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements netmsg.Game.MMoveAttackOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return netmsg.Game.internal_static_game_MMoveAttack_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return netmsg.Game.internal_static_game_MMoveAttack_fieldAccessorTable;
+      }
+      
+      // Construct using netmsg.Game.MMoveAttack.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getIdFieldBuilder();
+          getPathFieldBuilder();
+          getTargetIdFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        if (idBuilder_ == null) {
+          id_ = netmsg.Game.WObjID.getDefaultInstance();
+        } else {
+          idBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (pathBuilder_ == null) {
+          path_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          pathBuilder_.clear();
+        }
+        if (targetIdBuilder_ == null) {
+          targetId_ = netmsg.Game.WObjID.getDefaultInstance();
+        } else {
+          targetIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return netmsg.Game.MMoveAttack.getDescriptor();
+      }
+      
+      public netmsg.Game.MMoveAttack getDefaultInstanceForType() {
+        return netmsg.Game.MMoveAttack.getDefaultInstance();
+      }
+      
+      public netmsg.Game.MMoveAttack build() {
+        netmsg.Game.MMoveAttack result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private netmsg.Game.MMoveAttack buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        netmsg.Game.MMoveAttack result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public netmsg.Game.MMoveAttack buildPartial() {
+        netmsg.Game.MMoveAttack result = new netmsg.Game.MMoveAttack(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (idBuilder_ == null) {
+          result.id_ = id_;
+        } else {
+          result.id_ = idBuilder_.build();
+        }
+        if (pathBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            path_ = java.util.Collections.unmodifiableList(path_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.path_ = path_;
+        } else {
+          result.path_ = pathBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (targetIdBuilder_ == null) {
+          result.targetId_ = targetId_;
+        } else {
+          result.targetId_ = targetIdBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof netmsg.Game.MMoveAttack) {
+          return mergeFrom((netmsg.Game.MMoveAttack)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(netmsg.Game.MMoveAttack other) {
+        if (other == netmsg.Game.MMoveAttack.getDefaultInstance()) return this;
+        if (other.hasId()) {
+          mergeId(other.getId());
+        }
+        if (pathBuilder_ == null) {
+          if (!other.path_.isEmpty()) {
+            if (path_.isEmpty()) {
+              path_ = other.path_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensurePathIsMutable();
+              path_.addAll(other.path_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.path_.isEmpty()) {
+            if (pathBuilder_.isEmpty()) {
+              pathBuilder_.dispose();
+              pathBuilder_ = null;
+              path_ = other.path_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              pathBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getPathFieldBuilder() : null;
+            } else {
+              pathBuilder_.addAllMessages(other.path_);
+            }
+          }
+        }
+        if (other.hasTargetId()) {
+          mergeTargetId(other.getTargetId());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (!hasId()) {
+          
+          return false;
+        }
+        if (!hasTargetId()) {
+          
+          return false;
+        }
+        if (!getId().isInitialized()) {
+          
+          return false;
+        }
+        for (int i = 0; i < getPathCount(); i++) {
+          if (!getPath(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (!getTargetId().isInitialized()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
+              if (hasId()) {
+                subBuilder.mergeFrom(getId());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setId(subBuilder.buildPartial());
+              break;
+            }
+            case 18: {
+              netmsg.Base.Vect2.Builder subBuilder = netmsg.Base.Vect2.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addPath(subBuilder.buildPartial());
+              break;
+            }
+            case 26: {
+              netmsg.Game.WObjID.Builder subBuilder = netmsg.Game.WObjID.newBuilder();
+              if (hasTargetId()) {
+                subBuilder.mergeFrom(getTargetId());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setTargetId(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // required .game.WObjID id = 1;
+      private netmsg.Game.WObjID id_ = netmsg.Game.WObjID.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> idBuilder_;
+      public boolean hasId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public netmsg.Game.WObjID getId() {
+        if (idBuilder_ == null) {
+          return id_;
+        } else {
+          return idBuilder_.getMessage();
+        }
+      }
+      public Builder setId(netmsg.Game.WObjID value) {
+        if (idBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          id_ = value;
+          onChanged();
+        } else {
+          idBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder setId(
+          netmsg.Game.WObjID.Builder builderForValue) {
+        if (idBuilder_ == null) {
+          id_ = builderForValue.build();
+          onChanged();
+        } else {
+          idBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder mergeId(netmsg.Game.WObjID value) {
+        if (idBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              id_ != netmsg.Game.WObjID.getDefaultInstance()) {
+            id_ =
+              netmsg.Game.WObjID.newBuilder(id_).mergeFrom(value).buildPartial();
+          } else {
+            id_ = value;
+          }
+          onChanged();
+        } else {
+          idBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder clearId() {
+        if (idBuilder_ == null) {
+          id_ = netmsg.Game.WObjID.getDefaultInstance();
+          onChanged();
+        } else {
+          idBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      public netmsg.Game.WObjID.Builder getIdBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getIdFieldBuilder().getBuilder();
+      }
+      public netmsg.Game.WObjIDOrBuilder getIdOrBuilder() {
+        if (idBuilder_ != null) {
+          return idBuilder_.getMessageOrBuilder();
+        } else {
+          return id_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
+          getIdFieldBuilder() {
+        if (idBuilder_ == null) {
+          idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
+                  id_,
+                  getParentForChildren(),
+                  isClean());
+          id_ = null;
+        }
+        return idBuilder_;
+      }
+      
+      // repeated .base.Vect2 path = 2;
+      private java.util.List<netmsg.Base.Vect2> path_ =
+        java.util.Collections.emptyList();
+      private void ensurePathIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          path_ = new java.util.ArrayList<netmsg.Base.Vect2>(path_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder> pathBuilder_;
+      
+      public java.util.List<netmsg.Base.Vect2> getPathList() {
+        if (pathBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(path_);
+        } else {
+          return pathBuilder_.getMessageList();
+        }
+      }
+      public int getPathCount() {
+        if (pathBuilder_ == null) {
+          return path_.size();
+        } else {
+          return pathBuilder_.getCount();
+        }
+      }
+      public netmsg.Base.Vect2 getPath(int index) {
+        if (pathBuilder_ == null) {
+          return path_.get(index);
+        } else {
+          return pathBuilder_.getMessage(index);
+        }
+      }
+      public Builder setPath(
+          int index, netmsg.Base.Vect2 value) {
+        if (pathBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePathIsMutable();
+          path_.set(index, value);
+          onChanged();
+        } else {
+          pathBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setPath(
+          int index, netmsg.Base.Vect2.Builder builderForValue) {
+        if (pathBuilder_ == null) {
+          ensurePathIsMutable();
+          path_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          pathBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addPath(netmsg.Base.Vect2 value) {
+        if (pathBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePathIsMutable();
+          path_.add(value);
+          onChanged();
+        } else {
+          pathBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addPath(
+          int index, netmsg.Base.Vect2 value) {
+        if (pathBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePathIsMutable();
+          path_.add(index, value);
+          onChanged();
+        } else {
+          pathBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addPath(
+          netmsg.Base.Vect2.Builder builderForValue) {
+        if (pathBuilder_ == null) {
+          ensurePathIsMutable();
+          path_.add(builderForValue.build());
+          onChanged();
+        } else {
+          pathBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addPath(
+          int index, netmsg.Base.Vect2.Builder builderForValue) {
+        if (pathBuilder_ == null) {
+          ensurePathIsMutable();
+          path_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          pathBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllPath(
+          java.lang.Iterable<? extends netmsg.Base.Vect2> values) {
+        if (pathBuilder_ == null) {
+          ensurePathIsMutable();
+          super.addAll(values, path_);
+          onChanged();
+        } else {
+          pathBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearPath() {
+        if (pathBuilder_ == null) {
+          path_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          pathBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removePath(int index) {
+        if (pathBuilder_ == null) {
+          ensurePathIsMutable();
+          path_.remove(index);
+          onChanged();
+        } else {
+          pathBuilder_.remove(index);
+        }
+        return this;
+      }
+      public netmsg.Base.Vect2.Builder getPathBuilder(
+          int index) {
+        return getPathFieldBuilder().getBuilder(index);
+      }
+      public netmsg.Base.Vect2OrBuilder getPathOrBuilder(
+          int index) {
+        if (pathBuilder_ == null) {
+          return path_.get(index);  } else {
+          return pathBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends netmsg.Base.Vect2OrBuilder> 
+           getPathOrBuilderList() {
+        if (pathBuilder_ != null) {
+          return pathBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(path_);
+        }
+      }
+      public netmsg.Base.Vect2.Builder addPathBuilder() {
+        return getPathFieldBuilder().addBuilder(
+            netmsg.Base.Vect2.getDefaultInstance());
+      }
+      public netmsg.Base.Vect2.Builder addPathBuilder(
+          int index) {
+        return getPathFieldBuilder().addBuilder(
+            index, netmsg.Base.Vect2.getDefaultInstance());
+      }
+      public java.util.List<netmsg.Base.Vect2.Builder> 
+           getPathBuilderList() {
+        return getPathFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder> 
+          getPathFieldBuilder() {
+        if (pathBuilder_ == null) {
+          pathBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder>(
+                  path_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          path_ = null;
+        }
+        return pathBuilder_;
+      }
+      
+      // required .game.WObjID target_id = 3;
+      private netmsg.Game.WObjID targetId_ = netmsg.Game.WObjID.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> targetIdBuilder_;
+      public boolean hasTargetId() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public netmsg.Game.WObjID getTargetId() {
+        if (targetIdBuilder_ == null) {
+          return targetId_;
+        } else {
+          return targetIdBuilder_.getMessage();
+        }
+      }
+      public Builder setTargetId(netmsg.Game.WObjID value) {
+        if (targetIdBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          targetId_ = value;
+          onChanged();
+        } else {
+          targetIdBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder setTargetId(
+          netmsg.Game.WObjID.Builder builderForValue) {
+        if (targetIdBuilder_ == null) {
+          targetId_ = builderForValue.build();
+          onChanged();
+        } else {
+          targetIdBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder mergeTargetId(netmsg.Game.WObjID value) {
+        if (targetIdBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              targetId_ != netmsg.Game.WObjID.getDefaultInstance()) {
+            targetId_ =
+              netmsg.Game.WObjID.newBuilder(targetId_).mergeFrom(value).buildPartial();
+          } else {
+            targetId_ = value;
+          }
+          onChanged();
+        } else {
+          targetIdBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder clearTargetId() {
+        if (targetIdBuilder_ == null) {
+          targetId_ = netmsg.Game.WObjID.getDefaultInstance();
+          onChanged();
+        } else {
+          targetIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      public netmsg.Game.WObjID.Builder getTargetIdBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getTargetIdFieldBuilder().getBuilder();
+      }
+      public netmsg.Game.WObjIDOrBuilder getTargetIdOrBuilder() {
+        if (targetIdBuilder_ != null) {
+          return targetIdBuilder_.getMessageOrBuilder();
+        } else {
+          return targetId_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder> 
+          getTargetIdFieldBuilder() {
+        if (targetIdBuilder_ == null) {
+          targetIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Game.WObjID, netmsg.Game.WObjID.Builder, netmsg.Game.WObjIDOrBuilder>(
+                  targetId_,
+                  getParentForChildren(),
+                  isClean());
+          targetId_ = null;
+        }
+        return targetIdBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:game.MMoveAttack)
+    }
+    
+    static {
+      defaultInstance = new MMoveAttack(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:game.MMoveAttack)
   }
   
   public interface MEndTurnOrBuilder
@@ -45467,6 +46506,11 @@ public final class Game {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_game_MGetMovement_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_game_MMoveAttack_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_game_MMoveAttack_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_game_MEndTurn_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -45795,16 +46839,17 @@ public final class Game {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\ngame.proto\022\004game\032\nbase.proto\"\355\001\n\nFromC" +
+      "\n\ngame.proto\022\004game\032\nbase.proto\"\225\002\n\nFromC" +
       "lient\022\031\n\004warp\030\001 \001(\0132\013.game.MWarp\022\031\n\004move" +
       "\030\002 \001(\0132\013.game.MMove\022\035\n\006attack\030\003 \001(\0132\r.ga" +
       "me.MAttack\022\037\n\007special\030\004 \001(\0132\016.game.MSpec" +
       "ial\022(\n\014get_movement\030\005 \001(\0132\022.game.MGetMov" +
-      "ement\022\034\n\005leave\030\351\007 \001(\0132\014.game.MLeave\022!\n\010e" +
+      "ement\022&\n\013move_attack\030\006 \001(\0132\021.game.MMoveA" +
+      "ttack\022\034\n\005leave\030\351\007 \001(\0132\014.game.MLeave\022!\n\010e" +
       "nd_turn\030\352\007 \001(\0132\016.game.MEndTurn\"\010\n\006MLeave" +
       "\"\336\001\n\005MWarp\022\035\n\010position\030\001 \002(\0132\013.base.Vect" +
-      "2\022+\n\010warpable\030\002 \002(\0162\031.game.MWarp.HumanWa" +
-      "rpable\"\210\001\n\rHumanWarpable\022\017\n\013B_EXTRACTOR\020",
+      "2\022+\n\010warpable\030\002 \002(\0162\031.game.MWarp.HumanWa",
+      "rpable\"\210\001\n\rHumanWarpable\022\017\n\013B_EXTRACTOR\020" +
       "\001\022\021\n\rB_WARP_LINKER\020\002\022\021\n\rB_LASER_TOWER\020\003\022" +
       "\016\n\nU_CORVETTE\020\004\022\013\n\007U_SCOUT\020\005\022\024\n\020U_ROCKET" +
       "_FRIGATE\020\006\022\r\n\tU_GUNSHIP\020\007\"<\n\005MMove\022\030\n\002id" +
@@ -45812,176 +46857,179 @@ public final class Game {
       "e.Vect2\"D\n\007MAttack\022\030\n\002id\030\001 \002(\0132\014.game.WO" +
       "bjID\022\037\n\ttarget_id\030\002 \002(\0132\014.game.WObjID\"$\n" +
       "\010MSpecial\022\030\n\002id\030\001 \002(\0132\014.game.WObjID\"(\n\014M" +
-      "GetMovement\022\030\n\002id\030\001 \002(\0132\014.game.WObjID\"\n\n" +
-      "\010MEndTurn\"\207\001\n\nFromServer\022\035\n\006events\030\001 \001(\013" +
-      "2\r.game.MEvents\022\033\n\005error\030\002 \001(\0132\014.game.ME",
-      "rror\022!\n\010movement\030\003 \001(\0132\017.game.MMovement\022" +
-      "\032\n\004init\030\350\007 \001(\0132\013.game.MInit\"\'\n\007MJoined\022\034" +
-      "\n\006player\030\001 \002(\0132\014.game.Player\"\351\003\n\005MInit\022\034" +
-      "\n\006bounds\030\001 \002(\0132\014.base.Bounds\022\036\n\007objects\030" +
-      "\002 \003(\0132\r.game.WObject\022\036\n\twarp_zone\030\003 \003(\0132" +
-      "\013.base.Vect2\022#\n\016visible_points\030\004 \003(\0132\013.b" +
-      "ase.Vect2\022\035\n\tself_team\030\005 \002(\0132\n.game.Team" +
-      "\022\037\n\013other_teams\030\006 \003(\0132\n.game.Team\022\037\n\004sel" +
-      "f\030\007 \002(\0132\021.game.PlayerState\022\'\n\rother_play" +
-      "ers\030\010 \003(\0132\020.game.InitPlayer\022-\n\rwobject_s",
-      "tats\030\t \003(\0132\026.game.InitWObjectStats\0228\n\022at" +
-      "tack_multipliers\030\n \003(\0132\034.game.MInit.Atta" +
-      "ckMultiplier\032j\n\020AttackMultiplier\022!\n\tfrom" +
-      "_kind\030\001 \002(\0162\016.game.WObjKind\022\037\n\007to_kind\030\002" +
-      " \002(\0162\016.game.WObjKind\022\022\n\nmultiplier\030\003 \002(\002" +
-      "\"&\n\007MEvents\022\033\n\006events\030\001 \003(\0132\013.game.Event" +
-      "\"\027\n\006MError\022\r\n\005error\030\001 \002(\t\"\371\001\n\tMMovement\022" +
-      "\030\n\002id\030\001 \002(\0132\014.game.WObjID\022$\n\005paths\030\002 \001(\013" +
-      "2\025.game.MMovement.Paths\022,\n\tpositions\030\003 \001" +
-      "(\0132\031.game.MMovement.Positions\032%\n\004Path\022\035\n",
-      "\010position\030\001 \003(\0132\013.base.Vect2\032+\n\005Paths\022\"\n" +
-      "\004path\030\001 \003(\0132\024.game.MMovement.Path\032*\n\tPos" +
-      "itions\022\035\n\010position\030\001 \003(\0132\013.base.Vect2\" \n" +
-      "\006TeamID\022\026\n\002id\030\001 \002(\0132\n.base.UUID\"\"\n\010Playe" +
-      "rID\022\026\n\002id\030\001 \002(\0132\n.base.UUID\"K\n\007OwnerID\022\035" +
-      "\n\007team_id\030\001 \001(\0132\014.game.TeamID\022!\n\tplayer_" +
-      "id\030\002 \001(\0132\016.game.PlayerID\" \n\006WObjID\022\026\n\002id" +
-      "\030\001 \002(\0132\n.base.UUID\" \n\004Team\022\030\n\002id\030\001 \002(\0132\014" +
-      ".game.TeamID\"Q\n\006Player\022\014\n\004name\030\001 \002(\t\022\032\n\002" +
-      "id\030\002 \002(\0132\016.game.PlayerID\022\035\n\007team_id\030\003 \002(",
-      "\0132\014.game.TeamID\"E\n\013PlayerState\022\021\n\tresour" +
-      "ces\030\001 \002(\r\022\017\n\007actions\030\002 \002(\r\022\022\n\nturn_ended" +
-      "\030\003 \002(\010\"L\n\nInitPlayer\022\034\n\006player\030\001 \002(\0132\014.g" +
-      "ame.Player\022 \n\005state\030\002 \001(\0132\021.game.PlayerS" +
-      "tate\"c\n\020InitWObjectStats\022\"\n\005stats\030\001 \002(\0132" +
-      "\023.game.WObject.Stats\022+\n\010warpable\030\002 \001(\0162\031" +
-      ".game.MWarp.HumanWarpable\"\366\025\n\007WObject\022\030\n" +
-      "\002id\030\001 \002(\0132\014.game.WObjID\022\035\n\010position\030\002 \002(" +
-      "\0132\013.base.Vect2\022 \n\004kind\030\003 \002(\0162\022.game.WObj" +
-      "ect.Kind\022*\n\tsized_obj\030\350\007 \001(\0132\026.game.WObj",
-      "ect.SizedObj\022*\n\towned_obj\030\351\007 \001(\0132\026.game." +
-      "WObject.OwnedObj\0224\n\016giving_actions\030\352\007 \001(" +
-      "\0132\033.game.WObject.GivingActions\022)\n\010warpab" +
-      "le\030\353\007 \001(\0132\026.game.WObject.Warpable\0224\n\016spe" +
-      "cial_action\030\354\007 \001(\0132\033.game.WObject.Specia" +
-      "lAction\022\'\n\007fighter\030\355\007 \001(\0132\025.game.WObject" +
-      ".Fighter\022?\n\024move_attack_actioned\030\356\007 \001(\0132" +
-      " .game.WObject.MoveAttackActioned\022\'\n\007mov" +
-      "able\030\357\007 \001(\0132\025.game.WObject.Movable\022)\n\010as" +
-      "teroid\030\320\017 \001(\0132\026.game.WObject.Asteroid\022+\n",
-      "\textractor\030\321\017 \001(\0132\027.game.WObject.Extract" +
-      "or\022)\n\010corvette\030\322\017 \001(\0132\026.game.WObject.Cor" +
-      "vette\032[\n\010SizedObj\022+\n\005stats\030\001 \002(\0132\034.game." +
-      "WObject.SizedObj.Stats\032\"\n\005Stats\022\031\n\004size\030" +
-      "\001 \002(\0132\013.base.Vect2\032\304\001\n\010OwnedObj\022+\n\005stats" +
-      "\030\001 \002(\0132\034.game.WObject.OwnedObj.Stats\022\037\n\010" +
-      "owner_id\030\002 \002(\0132\r.game.OwnerID\022\n\n\002hp\030\003 \002(" +
-      "\r\032^\n\005Stats\022\023\n\013is_critical\030\001 \002(\010\022\022\n\nvisib" +
-      "ility\030\002 \002(\r\022\016\n\006max_hp\030\003 \002(\r\022\034\n\004kind\030\004 \002(" +
-      "\0162\016.game.WObjKind\032a\n\rGivingActions\0220\n\005st",
-      "ats\030\001 \002(\0132!.game.WObject.GivingActions.S" +
-      "tats\032\036\n\005Stats\022\025\n\ractions_given\030\001 \002(\r\032\303\001\n" +
-      "\010Warpable\022+\n\005stats\030\001 \002(\0132\034.game.WObject." +
-      "Warpable.Stats\022\022\n\nwarp_state\030\002 \002(\r\032U\n\005St" +
-      "ats\022\021\n\twarp_time\030\001 \002(\r\022\014\n\004cost\030\002 \002(\r\022+\n\005" +
-      "group\030\003 \002(\0162\034.game.WObject.Warpable.Grou" +
-      "p\"\037\n\005Group\022\014\n\010BUILDING\020\001\022\010\n\004UNIT\020\002\032b\n\rSp" +
-      "ecialAction\0220\n\005stats\030\001 \002(\0132!.game.WObjec" +
-      "t.SpecialAction.Stats\032\037\n\005Stats\022\026\n\016action" +
-      "s_needed\030\001 \002(\r\032\246\001\n\007Fighter\022*\n\005stats\030\001 \002(",
-      "\0132\033.game.WObject.Fighter.Stats\022\023\n\013attack" +
-      "sLeft\030\002 \002(\r\022\r\n\005level\030\003 \002(\r\032K\n\005Stats\022\033\n\006a" +
-      "ttack\030\001 \002(\0132\013.base.Range\022\024\n\014attack_range" +
-      "\030\002 \002(\r\022\017\n\007attacks\030\003 \002(\r\032\207\001\n\022MoveAttackAc" +
-      "tioned\0225\n\005stats\030\001 \002(\0132&.game.WObject.Mov" +
-      "eAttackActioned.Stats\022\031\n\021moved_or_attack" +
-      "ed\030\002 \002(\010\032\037\n\005Stats\022\026\n\016actions_needed\030\001 \002(" +
-      "\r\032h\n\007Movable\022*\n\005stats\030\001 \002(\0132\033.game.WObje" +
-      "ct.Movable.Stats\022\020\n\010movement\030\002 \002(\r\032\037\n\005St" +
-      "ats\022\026\n\016movement_range\030\001 \002(\r\032\035\n\010Asteroid\022",
-      "\021\n\tresources\030\001 \002(\r\032\233\001\n\tExtractor\022,\n\005stat" +
-      "s\030\001 \002(\0132\035.game.WObject.Extractor.Stats\032`" +
-      "\n\005Stats\022\033\n\023turn_start_extracts\030\001 \002(\r\022\030\n\020" +
-      "special_extracts\030\002 \002(\r\022 \n\030special_consum" +
-      "e_extracts\030\003 \002(\r\032`\n\010Corvette\022+\n\005stats\030\001 " +
-      "\002(\0132\034.game.WObject.Corvette.Stats\032\'\n\005Sta" +
-      "ts\022\036\n\026special_movement_added\030\001 \002(\r\032\277\004\n\005S" +
-      "tats\022 \n\004kind\030\001 \002(\0162\022.game.WObject.Kind\0220" +
-      "\n\tsized_obj\030\350\007 \001(\0132\034.game.WObject.SizedO" +
-      "bj.Stats\0220\n\towned_obj\030\351\007 \001(\0132\034.game.WObj",
-      "ect.OwnedObj.Stats\022:\n\016giving_actions\030\352\007 " +
-      "\001(\0132!.game.WObject.GivingActions.Stats\022/" +
-      "\n\010warpable\030\353\007 \001(\0132\034.game.WObject.Warpabl" +
-      "e.Stats\022:\n\016special_action\030\354\007 \001(\0132!.game." +
-      "WObject.SpecialAction.Stats\022-\n\007fighter\030\355" +
-      "\007 \001(\0132\033.game.WObject.Fighter.Stats\022E\n\024mo" +
-      "ve_attack_actioned\030\356\007 \001(\0132&.game.WObject" +
-      ".MoveAttackActioned.Stats\022-\n\007movable\030\357\007 " +
-      "\001(\0132\033.game.WObject.Movable.Stats\0221\n\textr" +
-      "actor\030\321\017 \001(\0132\035.game.WObject.Extractor.St",
-      "ats\022/\n\010corvette\030\322\017 \001(\0132\034.game.WObject.Co" +
-      "rvette.Stats\"\333\001\n\004Kind\022\016\n\nP_ASTEROID\020\001\022\017\n" +
-      "\013B_WARP_GATE\020\002\022\017\n\013B_EXTRACTOR\020\003\022\021\n\rB_WAR" +
-      "P_LINKER\020\004\022\r\n\tB_SPAWNER\020\005\022\021\n\rB_LASER_TOW" +
-      "ER\020\006\022\016\n\nU_CORVETTE\020\007\022\n\n\006U_WASP\020\010\022\013\n\007U_SC" +
-      "OUT\020\t\022\016\n\nU_RAY_SHIP\020\n\022\024\n\020U_ROCKET_FRIGAT" +
-      "E\020\013\022\r\n\tU_GUNSHIP\020\014\022\016\n\nU_FORTRESS\020\r\"\306\006\n\005E" +
-      "vent\022*\n\014turn_started\030\001 \001(\0132\024.game.TurnSt" +
-      "artedEvt\022&\n\nturn_ended\030\002 \001(\0132\022.game.Turn" +
-      "EndedEvt\022<\n\026point_owner_map_change\030\003 \001(\013",
-      "2\034.game.PointOwnerMapChangeEvt\022\033\n\004warp\030\004" +
-      " \001(\0132\r.game.WarpEvt\022(\n\013obj_visible\030\005 \001(\013" +
-      "2\023.game.ObjVisibleEvt\022\033\n\004move\030\006 \001(\0132\r.ga" +
-      "me.MoveEvt\022\037\n\006attack\030\007 \001(\0132\017.game.Attack" +
-      "Evt\0220\n\017movement_change\030\010 \001(\0132\027.game.Move" +
-      "mentChangeEvt\022@\n\030moved_or_attacked_chang" +
-      "e\030\t \001(\0132\036.game.MovedOrAttackedChangeEvt\022" +
-      "0\n\017resource_change\030\n \001(\0132\027.game.Resource" +
-      "ChangeEvt\022.\n\016actions_change\030\013 \001(\0132\026.game" +
-      ".ActionsChangeEvt\022-\n\013warp_change\030\014 \001(\0132\030",
-      ".game.WarpStateChangeEvt\022.\n\016attacks_chan" +
-      "ge\030\r \001(\0132\026.game.AttacksChangeEvt\0223\n\021turn" +
-      "_ended_change\030\016 \001(\0132\030.game.TurnEndedChan" +
-      "geEvt\022,\n\robj_destroyed\030\017 \001(\0132\025.game.ObjD" +
-      "estroyedEvt\022$\n\thp_change\030\020 \001(\0132\021.game.HP" +
-      "ChangeEvt\022*\n\014level_change\030\021 \001(\0132\024.game.L" +
-      "evelChangeEvt\022\034\n\004join\030\350\007 \001(\0132\r.game.Join" +
-      "Evt\022\036\n\005leave\030\351\007 \001(\0132\016.game.LeaveEvt\"+\n\007J" +
-      "oinEvt\022 \n\006player\030\001 \002(\0132\020.game.InitPlayer" +
-      "\"-\n\010LeaveEvt\022!\n\tplayer_id\030\001 \002(\0132\016.game.P",
-      "layerID\"/\n\016TurnStartedEvt\022\035\n\007team_id\030\001 \002" +
-      "(\0132\014.game.TeamID\"-\n\014TurnEndedEvt\022\035\n\007team" +
-      "_id\030\001 \002(\0132\014.game.TeamID\"\252\001\n\026PointOwnerMa" +
-      "pChangeEvt\022/\n\004kind\030\001 \002(\0162!.game.PointOwn" +
-      "erMapChangeEvt.Kind\022\032\n\005owned\030\002 \003(\0132\013.bas" +
-      "e.Vect2\022\034\n\007unowned\030\003 \003(\0132\013.base.Vect2\"%\n" +
-      "\004Kind\022\r\n\tWARP_ZONE\020\001\022\016\n\nVISIBILITY\020\002\"(\n\007" +
-      "WarpEvt\022\035\n\006object\030\001 \002(\0132\r.game.WObject\"." +
-      "\n\rObjVisibleEvt\022\035\n\006object\030\001 \002(\0132\r.game.W" +
-      "Object\"o\n\007MoveEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game",
-      ".WObjID\022\031\n\004from\030\002 \002(\0132\013.base.Vect2\022\027\n\002to" +
-      "\030\003 \002(\0132\013.base.Vect2\022\022\n\nmoves_left\030\004 \002(\r\"" +
-      "\200\001\n\tAttackEvt\022!\n\013attacker_id\030\001 \002(\0132\014.gam" +
-      "e.WObjID\022!\n\013defender_id\030\002 \002(\0132\014.game.WOb" +
-      "jID\022\017\n\007hp_left\030\003 \002(\r\022\034\n\006attack\030\004 \002(\0132\014.g" +
-      "ame.Attack\"3\n\006Attack\022\025\n\rattacker_roll\030\001 " +
-      "\002(\r\022\022\n\nsuccessful\030\002 \002(\010\"G\n\021MovementChang" +
-      "eEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\024\n\014ne" +
-      "w_movement\030\002 \002(\r\";\n\013HPChangeEvt\022\034\n\006obj_i" +
-      "d\030\001 \002(\0132\014.game.WObjID\022\016\n\006new_hp\030\002 \002(\r\"A\n",
-      "\016LevelChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.W" +
-      "ObjID\022\021\n\tnew_level\030\002 \002(\r\"S\n\030MovedOrAttac" +
-      "kedChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObj" +
-      "ID\022\031\n\021moved_or_attacked\030\002 \002(\010\"k\n\021Resourc" +
-      "eChangeEvt\022\034\n\006obj_id\030\001 \001(\0132\014.game.WObjID" +
-      "\022!\n\tplayer_id\030\002 \001(\0132\016.game.PlayerID\022\025\n\rn" +
-      "ew_resources\030\003 \002(\r\"J\n\020ActionsChangeEvt\022!" +
-      "\n\tplayer_id\030\001 \002(\0132\016.game.PlayerID\022\023\n\013new" +
-      "_actions\030\002 \002(\r\"J\n\022WarpStateChangeEvt\022\034\n\006" +
-      "obj_id\030\001 \002(\0132\014.game.WObjID\022\026\n\016new_warp_s",
-      "tate\030\002 \002(\r\"F\n\020AttacksChangeEvt\022\034\n\006obj_id" +
-      "\030\001 \002(\0132\014.game.WObjID\022\024\n\014attacks_left\030\002 \002" +
-      "(\r\"O\n\022TurnEndedChangeEvt\022!\n\tplayer_id\030\001 " +
-      "\002(\0132\016.game.PlayerID\022\026\n\016new_turn_ended\030\002 " +
-      "\002(\010\"/\n\017ObjDestroyedEvt\022\034\n\006obj_id\030\001 \002(\0132\014" +
-      ".game.WObjID*,\n\010WObjKind\022\t\n\005LIGHT\020\001\022\n\n\006M" +
-      "EDIUM\020\002\022\t\n\005HEAVY\020\003B\010\n\006netmsg"
+      "GetMovement\022\030\n\002id\030\001 \002(\0132\014.game.WObjID\"c\n" +
+      "\013MMoveAttack\022\030\n\002id\030\001 \002(\0132\014.game.WObjID\022\031",
+      "\n\004path\030\002 \003(\0132\013.base.Vect2\022\037\n\ttarget_id\030\003" +
+      " \002(\0132\014.game.WObjID\"\n\n\010MEndTurn\"\207\001\n\nFromS" +
+      "erver\022\035\n\006events\030\001 \001(\0132\r.game.MEvents\022\033\n\005" +
+      "error\030\002 \001(\0132\014.game.MError\022!\n\010movement\030\003 " +
+      "\001(\0132\017.game.MMovement\022\032\n\004init\030\350\007 \001(\0132\013.ga" +
+      "me.MInit\"\'\n\007MJoined\022\034\n\006player\030\001 \002(\0132\014.ga" +
+      "me.Player\"\351\003\n\005MInit\022\034\n\006bounds\030\001 \002(\0132\014.ba" +
+      "se.Bounds\022\036\n\007objects\030\002 \003(\0132\r.game.WObjec" +
+      "t\022\036\n\twarp_zone\030\003 \003(\0132\013.base.Vect2\022#\n\016vis" +
+      "ible_points\030\004 \003(\0132\013.base.Vect2\022\035\n\tself_t",
+      "eam\030\005 \002(\0132\n.game.Team\022\037\n\013other_teams\030\006 \003" +
+      "(\0132\n.game.Team\022\037\n\004self\030\007 \002(\0132\021.game.Play" +
+      "erState\022\'\n\rother_players\030\010 \003(\0132\020.game.In" +
+      "itPlayer\022-\n\rwobject_stats\030\t \003(\0132\026.game.I" +
+      "nitWObjectStats\0228\n\022attack_multipliers\030\n " +
+      "\003(\0132\034.game.MInit.AttackMultiplier\032j\n\020Att" +
+      "ackMultiplier\022!\n\tfrom_kind\030\001 \002(\0162\016.game." +
+      "WObjKind\022\037\n\007to_kind\030\002 \002(\0162\016.game.WObjKin" +
+      "d\022\022\n\nmultiplier\030\003 \002(\002\"&\n\007MEvents\022\033\n\006even" +
+      "ts\030\001 \003(\0132\013.game.Event\"\027\n\006MError\022\r\n\005error",
+      "\030\001 \002(\t\"\371\001\n\tMMovement\022\030\n\002id\030\001 \002(\0132\014.game." +
+      "WObjID\022$\n\005paths\030\002 \001(\0132\025.game.MMovement.P" +
+      "aths\022,\n\tpositions\030\003 \001(\0132\031.game.MMovement" +
+      ".Positions\032%\n\004Path\022\035\n\010position\030\001 \003(\0132\013.b" +
+      "ase.Vect2\032+\n\005Paths\022\"\n\004path\030\001 \003(\0132\024.game." +
+      "MMovement.Path\032*\n\tPositions\022\035\n\010position\030" +
+      "\001 \003(\0132\013.base.Vect2\" \n\006TeamID\022\026\n\002id\030\001 \002(\013" +
+      "2\n.base.UUID\"\"\n\010PlayerID\022\026\n\002id\030\001 \002(\0132\n.b" +
+      "ase.UUID\"K\n\007OwnerID\022\035\n\007team_id\030\001 \001(\0132\014.g" +
+      "ame.TeamID\022!\n\tplayer_id\030\002 \001(\0132\016.game.Pla",
+      "yerID\" \n\006WObjID\022\026\n\002id\030\001 \002(\0132\n.base.UUID\"" +
+      " \n\004Team\022\030\n\002id\030\001 \002(\0132\014.game.TeamID\"Q\n\006Pla" +
+      "yer\022\014\n\004name\030\001 \002(\t\022\032\n\002id\030\002 \002(\0132\016.game.Pla" +
+      "yerID\022\035\n\007team_id\030\003 \002(\0132\014.game.TeamID\"E\n\013" +
+      "PlayerState\022\021\n\tresources\030\001 \002(\r\022\017\n\007action" +
+      "s\030\002 \002(\r\022\022\n\nturn_ended\030\003 \002(\010\"L\n\nInitPlaye" +
+      "r\022\034\n\006player\030\001 \002(\0132\014.game.Player\022 \n\005state" +
+      "\030\002 \001(\0132\021.game.PlayerState\"c\n\020InitWObject" +
+      "Stats\022\"\n\005stats\030\001 \002(\0132\023.game.WObject.Stat" +
+      "s\022+\n\010warpable\030\002 \001(\0162\031.game.MWarp.HumanWa",
+      "rpable\"\366\025\n\007WObject\022\030\n\002id\030\001 \002(\0132\014.game.WO" +
+      "bjID\022\035\n\010position\030\002 \002(\0132\013.base.Vect2\022 \n\004k" +
+      "ind\030\003 \002(\0162\022.game.WObject.Kind\022*\n\tsized_o" +
+      "bj\030\350\007 \001(\0132\026.game.WObject.SizedObj\022*\n\town" +
+      "ed_obj\030\351\007 \001(\0132\026.game.WObject.OwnedObj\0224\n" +
+      "\016giving_actions\030\352\007 \001(\0132\033.game.WObject.Gi" +
+      "vingActions\022)\n\010warpable\030\353\007 \001(\0132\026.game.WO" +
+      "bject.Warpable\0224\n\016special_action\030\354\007 \001(\0132" +
+      "\033.game.WObject.SpecialAction\022\'\n\007fighter\030" +
+      "\355\007 \001(\0132\025.game.WObject.Fighter\022?\n\024move_at",
+      "tack_actioned\030\356\007 \001(\0132 .game.WObject.Move" +
+      "AttackActioned\022\'\n\007movable\030\357\007 \001(\0132\025.game." +
+      "WObject.Movable\022)\n\010asteroid\030\320\017 \001(\0132\026.gam" +
+      "e.WObject.Asteroid\022+\n\textractor\030\321\017 \001(\0132\027" +
+      ".game.WObject.Extractor\022)\n\010corvette\030\322\017 \001" +
+      "(\0132\026.game.WObject.Corvette\032[\n\010SizedObj\022+" +
+      "\n\005stats\030\001 \002(\0132\034.game.WObject.SizedObj.St" +
+      "ats\032\"\n\005Stats\022\031\n\004size\030\001 \002(\0132\013.base.Vect2\032" +
+      "\304\001\n\010OwnedObj\022+\n\005stats\030\001 \002(\0132\034.game.WObje" +
+      "ct.OwnedObj.Stats\022\037\n\010owner_id\030\002 \002(\0132\r.ga",
+      "me.OwnerID\022\n\n\002hp\030\003 \002(\r\032^\n\005Stats\022\023\n\013is_cr" +
+      "itical\030\001 \002(\010\022\022\n\nvisibility\030\002 \002(\r\022\016\n\006max_" +
+      "hp\030\003 \002(\r\022\034\n\004kind\030\004 \002(\0162\016.game.WObjKind\032a" +
+      "\n\rGivingActions\0220\n\005stats\030\001 \002(\0132!.game.WO" +
+      "bject.GivingActions.Stats\032\036\n\005Stats\022\025\n\rac" +
+      "tions_given\030\001 \002(\r\032\303\001\n\010Warpable\022+\n\005stats\030" +
+      "\001 \002(\0132\034.game.WObject.Warpable.Stats\022\022\n\nw" +
+      "arp_state\030\002 \002(\r\032U\n\005Stats\022\021\n\twarp_time\030\001 " +
+      "\002(\r\022\014\n\004cost\030\002 \002(\r\022+\n\005group\030\003 \002(\0162\034.game." +
+      "WObject.Warpable.Group\"\037\n\005Group\022\014\n\010BUILD",
+      "ING\020\001\022\010\n\004UNIT\020\002\032b\n\rSpecialAction\0220\n\005stat" +
+      "s\030\001 \002(\0132!.game.WObject.SpecialAction.Sta" +
+      "ts\032\037\n\005Stats\022\026\n\016actions_needed\030\001 \002(\r\032\246\001\n\007" +
+      "Fighter\022*\n\005stats\030\001 \002(\0132\033.game.WObject.Fi" +
+      "ghter.Stats\022\023\n\013attacksLeft\030\002 \002(\r\022\r\n\005leve" +
+      "l\030\003 \002(\r\032K\n\005Stats\022\033\n\006attack\030\001 \002(\0132\013.base." +
+      "Range\022\024\n\014attack_range\030\002 \002(\r\022\017\n\007attacks\030\003" +
+      " \002(\r\032\207\001\n\022MoveAttackActioned\0225\n\005stats\030\001 \002" +
+      "(\0132&.game.WObject.MoveAttackActioned.Sta" +
+      "ts\022\031\n\021moved_or_attacked\030\002 \002(\010\032\037\n\005Stats\022\026",
+      "\n\016actions_needed\030\001 \002(\r\032h\n\007Movable\022*\n\005sta" +
+      "ts\030\001 \002(\0132\033.game.WObject.Movable.Stats\022\020\n" +
+      "\010movement\030\002 \002(\r\032\037\n\005Stats\022\026\n\016movement_ran" +
+      "ge\030\001 \002(\r\032\035\n\010Asteroid\022\021\n\tresources\030\001 \002(\r\032" +
+      "\233\001\n\tExtractor\022,\n\005stats\030\001 \002(\0132\035.game.WObj" +
+      "ect.Extractor.Stats\032`\n\005Stats\022\033\n\023turn_sta" +
+      "rt_extracts\030\001 \002(\r\022\030\n\020special_extracts\030\002 " +
+      "\002(\r\022 \n\030special_consume_extracts\030\003 \002(\r\032`\n" +
+      "\010Corvette\022+\n\005stats\030\001 \002(\0132\034.game.WObject." +
+      "Corvette.Stats\032\'\n\005Stats\022\036\n\026special_movem",
+      "ent_added\030\001 \002(\r\032\277\004\n\005Stats\022 \n\004kind\030\001 \002(\0162" +
+      "\022.game.WObject.Kind\0220\n\tsized_obj\030\350\007 \001(\0132" +
+      "\034.game.WObject.SizedObj.Stats\0220\n\towned_o" +
+      "bj\030\351\007 \001(\0132\034.game.WObject.OwnedObj.Stats\022" +
+      ":\n\016giving_actions\030\352\007 \001(\0132!.game.WObject." +
+      "GivingActions.Stats\022/\n\010warpable\030\353\007 \001(\0132\034" +
+      ".game.WObject.Warpable.Stats\022:\n\016special_" +
+      "action\030\354\007 \001(\0132!.game.WObject.SpecialActi" +
+      "on.Stats\022-\n\007fighter\030\355\007 \001(\0132\033.game.WObjec" +
+      "t.Fighter.Stats\022E\n\024move_attack_actioned\030",
+      "\356\007 \001(\0132&.game.WObject.MoveAttackActioned" +
+      ".Stats\022-\n\007movable\030\357\007 \001(\0132\033.game.WObject." +
+      "Movable.Stats\0221\n\textractor\030\321\017 \001(\0132\035.game" +
+      ".WObject.Extractor.Stats\022/\n\010corvette\030\322\017 " +
+      "\001(\0132\034.game.WObject.Corvette.Stats\"\333\001\n\004Ki" +
+      "nd\022\016\n\nP_ASTEROID\020\001\022\017\n\013B_WARP_GATE\020\002\022\017\n\013B" +
+      "_EXTRACTOR\020\003\022\021\n\rB_WARP_LINKER\020\004\022\r\n\tB_SPA" +
+      "WNER\020\005\022\021\n\rB_LASER_TOWER\020\006\022\016\n\nU_CORVETTE\020" +
+      "\007\022\n\n\006U_WASP\020\010\022\013\n\007U_SCOUT\020\t\022\016\n\nU_RAY_SHIP" +
+      "\020\n\022\024\n\020U_ROCKET_FRIGATE\020\013\022\r\n\tU_GUNSHIP\020\014\022",
+      "\016\n\nU_FORTRESS\020\r\"\306\006\n\005Event\022*\n\014turn_starte" +
+      "d\030\001 \001(\0132\024.game.TurnStartedEvt\022&\n\nturn_en" +
+      "ded\030\002 \001(\0132\022.game.TurnEndedEvt\022<\n\026point_o" +
+      "wner_map_change\030\003 \001(\0132\034.game.PointOwnerM" +
+      "apChangeEvt\022\033\n\004warp\030\004 \001(\0132\r.game.WarpEvt" +
+      "\022(\n\013obj_visible\030\005 \001(\0132\023.game.ObjVisibleE" +
+      "vt\022\033\n\004move\030\006 \001(\0132\r.game.MoveEvt\022\037\n\006attac" +
+      "k\030\007 \001(\0132\017.game.AttackEvt\0220\n\017movement_cha" +
+      "nge\030\010 \001(\0132\027.game.MovementChangeEvt\022@\n\030mo" +
+      "ved_or_attacked_change\030\t \001(\0132\036.game.Move",
+      "dOrAttackedChangeEvt\0220\n\017resource_change\030" +
+      "\n \001(\0132\027.game.ResourceChangeEvt\022.\n\016action" +
+      "s_change\030\013 \001(\0132\026.game.ActionsChangeEvt\022-" +
+      "\n\013warp_change\030\014 \001(\0132\030.game.WarpStateChan" +
+      "geEvt\022.\n\016attacks_change\030\r \001(\0132\026.game.Att" +
+      "acksChangeEvt\0223\n\021turn_ended_change\030\016 \001(\013" +
+      "2\030.game.TurnEndedChangeEvt\022,\n\robj_destro" +
+      "yed\030\017 \001(\0132\025.game.ObjDestroyedEvt\022$\n\thp_c" +
+      "hange\030\020 \001(\0132\021.game.HPChangeEvt\022*\n\014level_" +
+      "change\030\021 \001(\0132\024.game.LevelChangeEvt\022\034\n\004jo",
+      "in\030\350\007 \001(\0132\r.game.JoinEvt\022\036\n\005leave\030\351\007 \001(\013" +
+      "2\016.game.LeaveEvt\"+\n\007JoinEvt\022 \n\006player\030\001 " +
+      "\002(\0132\020.game.InitPlayer\"-\n\010LeaveEvt\022!\n\tpla" +
+      "yer_id\030\001 \002(\0132\016.game.PlayerID\"/\n\016TurnStar" +
+      "tedEvt\022\035\n\007team_id\030\001 \002(\0132\014.game.TeamID\"-\n" +
+      "\014TurnEndedEvt\022\035\n\007team_id\030\001 \002(\0132\014.game.Te" +
+      "amID\"\252\001\n\026PointOwnerMapChangeEvt\022/\n\004kind\030" +
+      "\001 \002(\0162!.game.PointOwnerMapChangeEvt.Kind" +
+      "\022\032\n\005owned\030\002 \003(\0132\013.base.Vect2\022\034\n\007unowned\030" +
+      "\003 \003(\0132\013.base.Vect2\"%\n\004Kind\022\r\n\tWARP_ZONE\020",
+      "\001\022\016\n\nVISIBILITY\020\002\"(\n\007WarpEvt\022\035\n\006object\030\001" +
+      " \002(\0132\r.game.WObject\".\n\rObjVisibleEvt\022\035\n\006" +
+      "object\030\001 \002(\0132\r.game.WObject\"o\n\007MoveEvt\022\034" +
+      "\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\031\n\004from\030\002 \002" +
+      "(\0132\013.base.Vect2\022\027\n\002to\030\003 \002(\0132\013.base.Vect2" +
+      "\022\022\n\nmoves_left\030\004 \002(\r\"\200\001\n\tAttackEvt\022!\n\013at" +
+      "tacker_id\030\001 \002(\0132\014.game.WObjID\022!\n\013defende" +
+      "r_id\030\002 \002(\0132\014.game.WObjID\022\017\n\007hp_left\030\003 \002(" +
+      "\r\022\034\n\006attack\030\004 \002(\0132\014.game.Attack\"3\n\006Attac" +
+      "k\022\025\n\rattacker_roll\030\001 \002(\r\022\022\n\nsuccessful\030\002",
+      " \002(\010\"G\n\021MovementChangeEvt\022\034\n\006obj_id\030\001 \002(" +
+      "\0132\014.game.WObjID\022\024\n\014new_movement\030\002 \002(\r\";\n" +
+      "\013HPChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObj" +
+      "ID\022\016\n\006new_hp\030\002 \002(\r\"A\n\016LevelChangeEvt\022\034\n\006" +
+      "obj_id\030\001 \002(\0132\014.game.WObjID\022\021\n\tnew_level\030" +
+      "\002 \002(\r\"S\n\030MovedOrAttackedChangeEvt\022\034\n\006obj" +
+      "_id\030\001 \002(\0132\014.game.WObjID\022\031\n\021moved_or_atta" +
+      "cked\030\002 \002(\010\"k\n\021ResourceChangeEvt\022\034\n\006obj_i" +
+      "d\030\001 \001(\0132\014.game.WObjID\022!\n\tplayer_id\030\002 \001(\013" +
+      "2\016.game.PlayerID\022\025\n\rnew_resources\030\003 \002(\r\"",
+      "J\n\020ActionsChangeEvt\022!\n\tplayer_id\030\001 \002(\0132\016" +
+      ".game.PlayerID\022\023\n\013new_actions\030\002 \002(\r\"J\n\022W" +
+      "arpStateChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game" +
+      ".WObjID\022\026\n\016new_warp_state\030\002 \002(\r\"F\n\020Attac" +
+      "ksChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjI" +
+      "D\022\024\n\014attacks_left\030\002 \002(\r\"O\n\022TurnEndedChan" +
+      "geEvt\022!\n\tplayer_id\030\001 \002(\0132\016.game.PlayerID" +
+      "\022\026\n\016new_turn_ended\030\002 \002(\010\"/\n\017ObjDestroyed" +
+      "Evt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID*,\n\010WOb" +
+      "jKind\022\t\n\005LIGHT\020\001\022\n\n\006MEDIUM\020\002\022\t\n\005HEAVY\020\003B",
+      "\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -45993,7 +47041,7 @@ public final class Game {
           internal_static_game_FromClient_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_FromClient_descriptor,
-              new java.lang.String[] { "Warp", "Move", "Attack", "Special", "GetMovement", "Leave", "EndTurn", },
+              new java.lang.String[] { "Warp", "Move", "Attack", "Special", "GetMovement", "MoveAttack", "Leave", "EndTurn", },
               netmsg.Game.FromClient.class,
               netmsg.Game.FromClient.Builder.class);
           internal_static_game_MLeave_descriptor =
@@ -46044,8 +47092,16 @@ public final class Game {
               new java.lang.String[] { "Id", },
               netmsg.Game.MGetMovement.class,
               netmsg.Game.MGetMovement.Builder.class);
-          internal_static_game_MEndTurn_descriptor =
+          internal_static_game_MMoveAttack_descriptor =
             getDescriptor().getMessageTypes().get(7);
+          internal_static_game_MMoveAttack_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_game_MMoveAttack_descriptor,
+              new java.lang.String[] { "Id", "Path", "TargetId", },
+              netmsg.Game.MMoveAttack.class,
+              netmsg.Game.MMoveAttack.Builder.class);
+          internal_static_game_MEndTurn_descriptor =
+            getDescriptor().getMessageTypes().get(8);
           internal_static_game_MEndTurn_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MEndTurn_descriptor,
@@ -46053,7 +47109,7 @@ public final class Game {
               netmsg.Game.MEndTurn.class,
               netmsg.Game.MEndTurn.Builder.class);
           internal_static_game_FromServer_descriptor =
-            getDescriptor().getMessageTypes().get(8);
+            getDescriptor().getMessageTypes().get(9);
           internal_static_game_FromServer_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_FromServer_descriptor,
@@ -46061,7 +47117,7 @@ public final class Game {
               netmsg.Game.FromServer.class,
               netmsg.Game.FromServer.Builder.class);
           internal_static_game_MJoined_descriptor =
-            getDescriptor().getMessageTypes().get(9);
+            getDescriptor().getMessageTypes().get(10);
           internal_static_game_MJoined_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MJoined_descriptor,
@@ -46069,7 +47125,7 @@ public final class Game {
               netmsg.Game.MJoined.class,
               netmsg.Game.MJoined.Builder.class);
           internal_static_game_MInit_descriptor =
-            getDescriptor().getMessageTypes().get(10);
+            getDescriptor().getMessageTypes().get(11);
           internal_static_game_MInit_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MInit_descriptor,
@@ -46085,7 +47141,7 @@ public final class Game {
               netmsg.Game.MInit.AttackMultiplier.class,
               netmsg.Game.MInit.AttackMultiplier.Builder.class);
           internal_static_game_MEvents_descriptor =
-            getDescriptor().getMessageTypes().get(11);
+            getDescriptor().getMessageTypes().get(12);
           internal_static_game_MEvents_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MEvents_descriptor,
@@ -46093,7 +47149,7 @@ public final class Game {
               netmsg.Game.MEvents.class,
               netmsg.Game.MEvents.Builder.class);
           internal_static_game_MError_descriptor =
-            getDescriptor().getMessageTypes().get(12);
+            getDescriptor().getMessageTypes().get(13);
           internal_static_game_MError_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MError_descriptor,
@@ -46101,7 +47157,7 @@ public final class Game {
               netmsg.Game.MError.class,
               netmsg.Game.MError.Builder.class);
           internal_static_game_MMovement_descriptor =
-            getDescriptor().getMessageTypes().get(13);
+            getDescriptor().getMessageTypes().get(14);
           internal_static_game_MMovement_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MMovement_descriptor,
@@ -46133,7 +47189,7 @@ public final class Game {
               netmsg.Game.MMovement.Positions.class,
               netmsg.Game.MMovement.Positions.Builder.class);
           internal_static_game_TeamID_descriptor =
-            getDescriptor().getMessageTypes().get(14);
+            getDescriptor().getMessageTypes().get(15);
           internal_static_game_TeamID_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_TeamID_descriptor,
@@ -46141,7 +47197,7 @@ public final class Game {
               netmsg.Game.TeamID.class,
               netmsg.Game.TeamID.Builder.class);
           internal_static_game_PlayerID_descriptor =
-            getDescriptor().getMessageTypes().get(15);
+            getDescriptor().getMessageTypes().get(16);
           internal_static_game_PlayerID_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_PlayerID_descriptor,
@@ -46149,7 +47205,7 @@ public final class Game {
               netmsg.Game.PlayerID.class,
               netmsg.Game.PlayerID.Builder.class);
           internal_static_game_OwnerID_descriptor =
-            getDescriptor().getMessageTypes().get(16);
+            getDescriptor().getMessageTypes().get(17);
           internal_static_game_OwnerID_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_OwnerID_descriptor,
@@ -46157,7 +47213,7 @@ public final class Game {
               netmsg.Game.OwnerID.class,
               netmsg.Game.OwnerID.Builder.class);
           internal_static_game_WObjID_descriptor =
-            getDescriptor().getMessageTypes().get(17);
+            getDescriptor().getMessageTypes().get(18);
           internal_static_game_WObjID_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_WObjID_descriptor,
@@ -46165,7 +47221,7 @@ public final class Game {
               netmsg.Game.WObjID.class,
               netmsg.Game.WObjID.Builder.class);
           internal_static_game_Team_descriptor =
-            getDescriptor().getMessageTypes().get(18);
+            getDescriptor().getMessageTypes().get(19);
           internal_static_game_Team_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_Team_descriptor,
@@ -46173,7 +47229,7 @@ public final class Game {
               netmsg.Game.Team.class,
               netmsg.Game.Team.Builder.class);
           internal_static_game_Player_descriptor =
-            getDescriptor().getMessageTypes().get(19);
+            getDescriptor().getMessageTypes().get(20);
           internal_static_game_Player_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_Player_descriptor,
@@ -46181,7 +47237,7 @@ public final class Game {
               netmsg.Game.Player.class,
               netmsg.Game.Player.Builder.class);
           internal_static_game_PlayerState_descriptor =
-            getDescriptor().getMessageTypes().get(20);
+            getDescriptor().getMessageTypes().get(21);
           internal_static_game_PlayerState_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_PlayerState_descriptor,
@@ -46189,7 +47245,7 @@ public final class Game {
               netmsg.Game.PlayerState.class,
               netmsg.Game.PlayerState.Builder.class);
           internal_static_game_InitPlayer_descriptor =
-            getDescriptor().getMessageTypes().get(21);
+            getDescriptor().getMessageTypes().get(22);
           internal_static_game_InitPlayer_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_InitPlayer_descriptor,
@@ -46197,7 +47253,7 @@ public final class Game {
               netmsg.Game.InitPlayer.class,
               netmsg.Game.InitPlayer.Builder.class);
           internal_static_game_InitWObjectStats_descriptor =
-            getDescriptor().getMessageTypes().get(22);
+            getDescriptor().getMessageTypes().get(23);
           internal_static_game_InitWObjectStats_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_InitWObjectStats_descriptor,
@@ -46205,7 +47261,7 @@ public final class Game {
               netmsg.Game.InitWObjectStats.class,
               netmsg.Game.InitWObjectStats.Builder.class);
           internal_static_game_WObject_descriptor =
-            getDescriptor().getMessageTypes().get(23);
+            getDescriptor().getMessageTypes().get(24);
           internal_static_game_WObject_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_WObject_descriptor,
@@ -46389,7 +47445,7 @@ public final class Game {
               netmsg.Game.WObject.Stats.class,
               netmsg.Game.WObject.Stats.Builder.class);
           internal_static_game_Event_descriptor =
-            getDescriptor().getMessageTypes().get(24);
+            getDescriptor().getMessageTypes().get(25);
           internal_static_game_Event_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_Event_descriptor,
@@ -46397,7 +47453,7 @@ public final class Game {
               netmsg.Game.Event.class,
               netmsg.Game.Event.Builder.class);
           internal_static_game_JoinEvt_descriptor =
-            getDescriptor().getMessageTypes().get(25);
+            getDescriptor().getMessageTypes().get(26);
           internal_static_game_JoinEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_JoinEvt_descriptor,
@@ -46405,7 +47461,7 @@ public final class Game {
               netmsg.Game.JoinEvt.class,
               netmsg.Game.JoinEvt.Builder.class);
           internal_static_game_LeaveEvt_descriptor =
-            getDescriptor().getMessageTypes().get(26);
+            getDescriptor().getMessageTypes().get(27);
           internal_static_game_LeaveEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_LeaveEvt_descriptor,
@@ -46413,7 +47469,7 @@ public final class Game {
               netmsg.Game.LeaveEvt.class,
               netmsg.Game.LeaveEvt.Builder.class);
           internal_static_game_TurnStartedEvt_descriptor =
-            getDescriptor().getMessageTypes().get(27);
+            getDescriptor().getMessageTypes().get(28);
           internal_static_game_TurnStartedEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_TurnStartedEvt_descriptor,
@@ -46421,7 +47477,7 @@ public final class Game {
               netmsg.Game.TurnStartedEvt.class,
               netmsg.Game.TurnStartedEvt.Builder.class);
           internal_static_game_TurnEndedEvt_descriptor =
-            getDescriptor().getMessageTypes().get(28);
+            getDescriptor().getMessageTypes().get(29);
           internal_static_game_TurnEndedEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_TurnEndedEvt_descriptor,
@@ -46429,7 +47485,7 @@ public final class Game {
               netmsg.Game.TurnEndedEvt.class,
               netmsg.Game.TurnEndedEvt.Builder.class);
           internal_static_game_PointOwnerMapChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(29);
+            getDescriptor().getMessageTypes().get(30);
           internal_static_game_PointOwnerMapChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_PointOwnerMapChangeEvt_descriptor,
@@ -46437,7 +47493,7 @@ public final class Game {
               netmsg.Game.PointOwnerMapChangeEvt.class,
               netmsg.Game.PointOwnerMapChangeEvt.Builder.class);
           internal_static_game_WarpEvt_descriptor =
-            getDescriptor().getMessageTypes().get(30);
+            getDescriptor().getMessageTypes().get(31);
           internal_static_game_WarpEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_WarpEvt_descriptor,
@@ -46445,7 +47501,7 @@ public final class Game {
               netmsg.Game.WarpEvt.class,
               netmsg.Game.WarpEvt.Builder.class);
           internal_static_game_ObjVisibleEvt_descriptor =
-            getDescriptor().getMessageTypes().get(31);
+            getDescriptor().getMessageTypes().get(32);
           internal_static_game_ObjVisibleEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_ObjVisibleEvt_descriptor,
@@ -46453,7 +47509,7 @@ public final class Game {
               netmsg.Game.ObjVisibleEvt.class,
               netmsg.Game.ObjVisibleEvt.Builder.class);
           internal_static_game_MoveEvt_descriptor =
-            getDescriptor().getMessageTypes().get(32);
+            getDescriptor().getMessageTypes().get(33);
           internal_static_game_MoveEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MoveEvt_descriptor,
@@ -46461,7 +47517,7 @@ public final class Game {
               netmsg.Game.MoveEvt.class,
               netmsg.Game.MoveEvt.Builder.class);
           internal_static_game_AttackEvt_descriptor =
-            getDescriptor().getMessageTypes().get(33);
+            getDescriptor().getMessageTypes().get(34);
           internal_static_game_AttackEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_AttackEvt_descriptor,
@@ -46469,7 +47525,7 @@ public final class Game {
               netmsg.Game.AttackEvt.class,
               netmsg.Game.AttackEvt.Builder.class);
           internal_static_game_Attack_descriptor =
-            getDescriptor().getMessageTypes().get(34);
+            getDescriptor().getMessageTypes().get(35);
           internal_static_game_Attack_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_Attack_descriptor,
@@ -46477,7 +47533,7 @@ public final class Game {
               netmsg.Game.Attack.class,
               netmsg.Game.Attack.Builder.class);
           internal_static_game_MovementChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(35);
+            getDescriptor().getMessageTypes().get(36);
           internal_static_game_MovementChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MovementChangeEvt_descriptor,
@@ -46485,7 +47541,7 @@ public final class Game {
               netmsg.Game.MovementChangeEvt.class,
               netmsg.Game.MovementChangeEvt.Builder.class);
           internal_static_game_HPChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(36);
+            getDescriptor().getMessageTypes().get(37);
           internal_static_game_HPChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_HPChangeEvt_descriptor,
@@ -46493,7 +47549,7 @@ public final class Game {
               netmsg.Game.HPChangeEvt.class,
               netmsg.Game.HPChangeEvt.Builder.class);
           internal_static_game_LevelChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(37);
+            getDescriptor().getMessageTypes().get(38);
           internal_static_game_LevelChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_LevelChangeEvt_descriptor,
@@ -46501,7 +47557,7 @@ public final class Game {
               netmsg.Game.LevelChangeEvt.class,
               netmsg.Game.LevelChangeEvt.Builder.class);
           internal_static_game_MovedOrAttackedChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(38);
+            getDescriptor().getMessageTypes().get(39);
           internal_static_game_MovedOrAttackedChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MovedOrAttackedChangeEvt_descriptor,
@@ -46509,7 +47565,7 @@ public final class Game {
               netmsg.Game.MovedOrAttackedChangeEvt.class,
               netmsg.Game.MovedOrAttackedChangeEvt.Builder.class);
           internal_static_game_ResourceChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(39);
+            getDescriptor().getMessageTypes().get(40);
           internal_static_game_ResourceChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_ResourceChangeEvt_descriptor,
@@ -46517,7 +47573,7 @@ public final class Game {
               netmsg.Game.ResourceChangeEvt.class,
               netmsg.Game.ResourceChangeEvt.Builder.class);
           internal_static_game_ActionsChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(40);
+            getDescriptor().getMessageTypes().get(41);
           internal_static_game_ActionsChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_ActionsChangeEvt_descriptor,
@@ -46525,7 +47581,7 @@ public final class Game {
               netmsg.Game.ActionsChangeEvt.class,
               netmsg.Game.ActionsChangeEvt.Builder.class);
           internal_static_game_WarpStateChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(41);
+            getDescriptor().getMessageTypes().get(42);
           internal_static_game_WarpStateChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_WarpStateChangeEvt_descriptor,
@@ -46533,7 +47589,7 @@ public final class Game {
               netmsg.Game.WarpStateChangeEvt.class,
               netmsg.Game.WarpStateChangeEvt.Builder.class);
           internal_static_game_AttacksChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(42);
+            getDescriptor().getMessageTypes().get(43);
           internal_static_game_AttacksChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_AttacksChangeEvt_descriptor,
@@ -46541,7 +47597,7 @@ public final class Game {
               netmsg.Game.AttacksChangeEvt.class,
               netmsg.Game.AttacksChangeEvt.Builder.class);
           internal_static_game_TurnEndedChangeEvt_descriptor =
-            getDescriptor().getMessageTypes().get(43);
+            getDescriptor().getMessageTypes().get(44);
           internal_static_game_TurnEndedChangeEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_TurnEndedChangeEvt_descriptor,
@@ -46549,7 +47605,7 @@ public final class Game {
               netmsg.Game.TurnEndedChangeEvt.class,
               netmsg.Game.TurnEndedChangeEvt.Builder.class);
           internal_static_game_ObjDestroyedEvt_descriptor =
-            getDescriptor().getMessageTypes().get(44);
+            getDescriptor().getMessageTypes().get(45);
           internal_static_game_ObjDestroyedEvt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_ObjDestroyedEvt_descriptor,

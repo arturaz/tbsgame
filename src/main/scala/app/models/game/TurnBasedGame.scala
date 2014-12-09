@@ -2,6 +2,7 @@ package app.models.game
 
 import akka.event.LoggingAdapter
 import app.models.game.events.Evented
+import app.models.game.world.WObject.Id
 import app.models.game.world._
 import implicits._
 import utils.data.NonEmptyVector
@@ -68,6 +69,9 @@ case class TurnBasedGame private (
 
   override def attack(human: Human, id: WObject.Id, targetId: WObject.Id) =
     humanDo(human)(game.attack(_, id, targetId))
+
+  override def moveAttack(human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id) =
+    humanDo(human)(game.moveAttack(_, id, path, targetId))
 
   override def endTurn(human: Human) = humanDo(human)(game.endTurn)
 

@@ -5,6 +5,7 @@ import app.algorithms.Pathfinding
 import app.algorithms.Pathfinding.Path
 import app.models.game.Game.States
 import app.models.game.events._
+import app.models.game.world.WObject.Id
 import app.models.game.world._
 import implicits._
 import monocle.Lenser
@@ -98,6 +99,9 @@ trait GameLike[A] {
 
   def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]): Game.ResultT[A]
   def attack(human: Human, id: WObject.Id, targetId: WObject.Id): Game.ResultT[A]
+  def moveAttack(
+    human: Human, id: WObject.Id, path: NonEmptyVector[Vect2], targetId: WObject.Id
+  ): Game.ResultT[A]
   def special(human: Human, id: WObject.Id): Game.ResultT[A]
   def endTurn(human: Human): Game.ResultT[A]
 }
@@ -151,9 +155,9 @@ case class Game private (
   /* Checks if all players have sent the turn ended flag. */
   def allPlayersTurnEnded(team: Team) = teamStates(team).forall(_._2.turnEnded)
 
-  def isJoined(human: Human) = states.contains(human)
+  override def isJoined(human: Human) = states.contains(human)
 
-  def join(human: Human, startingResources: Resources) = {
+  override def join(human: Human, startingResources: Resources) = {
     def evt(newState: GameHumanState) = Evented(
       updated(world, human -> newState),
       JoinEvt(human, HumanState(startingResources, newState))
@@ -168,11 +172,11 @@ case class Game private (
     )
   }
 
-  def leave(human: Human) = withState(human) { state =>
+  override def leave(human: Human) = withState(human) { state =>
     Evented(updated(states - human), Vector(LeaveEvt(human))).right
   }
 
-  def warp(
+  override def warp(
     human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
   ): Game.Result =
     withState(human) { state =>
@@ -184,7 +188,7 @@ case class Game private (
       } } }.extract.right.map(_.flatten)
     } } } }
 
-  def move(
+  override def move(
     human: Human, id: WObject.Id, to: NonEmptyVector[Vect2]
   ): Game.Result =
     withState(human) { state =>
@@ -196,7 +200,7 @@ case class Game private (
       } }
     } } } }
 
-  def attack(
+  override def attack(
     human: Human, id: WObject.Id, targetId: WObject.Id
   ): Game.Result =
     withState(human) { state =>
@@ -209,7 +213,16 @@ case class Game private (
       } }
     } } } } }
 
-  def special(
+  override def moveAttack(
+    human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id
+  ) = {
+    for {
+      evtMovedGame <- move(human, id, path).right
+      evtAttackedGame <- evtMovedGame.value.attack(human, id, targetId).right
+    } yield evtMovedGame.events ++: evtAttackedGame
+  }
+
+  override def special(
     human: Human, id: WObject.Id
   ): Game.Result =
     withState(human) { state =>
@@ -218,7 +231,7 @@ case class Game private (
       obj.special(world).right.map(_.map(world => updated(world, human -> state)))
     } } }
 
-  def endTurn(human: Human): Game.Result =
+  override def endTurn(human: Human): Game.Result =
     withState(human) { state =>
       val turnEnded = true
       Evented(

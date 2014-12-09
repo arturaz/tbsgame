@@ -31,8 +31,11 @@ object GameActor {
     ) extends In
     case class GetMovement(human: Human, id: WObject.Id) extends In
     /* path does not include objects position and ends in target position */
-    case class Move(human: Human, id: WObject.Id, path: Vector[Vect2]) extends In
+    case class Move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]) extends In
     case class Attack(human: Human, id: WObject.Id, targetId: WObject.Id) extends In
+    case class MoveAttack(
+      human: Human, id: WObject.Id, path: NonEmptyVector[Vect2], targetId: WObject.Id
+    ) extends In
     case class Special(human: Human, id: WObject.Id) extends In
     case class EndTurn(human: Human) extends In
   }
@@ -205,13 +208,11 @@ class GameActor private (
     case In.Warp(human, position, warpable) =>
       update(sender(), _.warp(human, position, warpable))
     case In.Move(human, id, path) =>
-      update(sender(), tbg => {
-        NonEmptyVector.create(path).toRight(s"movement vector is empty!").right.flatMap(
-          tbg.move(human, id, _)
-        )
-      })
+      update(sender(), _.move(human, id, path))
     case In.Attack(human, id, target) =>
       update(sender(), _.attack(human, id, target))
+    case In.MoveAttack(human, id, path, target) =>
+      update(sender(), _.moveAttack(human, id, path, target))
     case In.Special(human, id) =>
       update(sender(), _.special(human, id))
     case In.EndTurn(human) =>

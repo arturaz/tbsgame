@@ -15,6 +15,7 @@ import app.models.game._
 import implicits._
 import netmsg.{Management, Base, Game, Messages}
 import utils.IntValueClass
+import utils.data.NonEmptyVector
 import collection.JavaConverters._
 
 object ProtobufCoding {
@@ -42,6 +43,14 @@ object ProtobufCoding {
       case Game.MWarp.HumanWarpable.U_GUNSHIP => Gunship
     }
 
+    def parse(pathList: java.util.List[Base.Vect2]): Vector[Vect2] =
+      pathList.asScala.map(parseVect2).toVector
+
+    def parsePath(
+      pathList: java.util.List[Base.Vect2]
+    ): Either[String, NonEmptyVector[Vect2]] =
+      NonEmptyVector.create(parse(pathList)).toRight("Can't create path from empty list!")
+
     def parse(m: Game.FromClient): Either[String, GameInMsg] = {
       import app.actors.game.GameActor.In
       import app.actors.game.GameActor.In.{Attack => _, _}
@@ -49,9 +58,9 @@ object ProtobufCoding {
       if (m.hasWarp)
         m.getWarp.mapVal { m => Warp(_: Human, m.getPosition, m.getWarpable) }.right
       else if (m.hasMove)
-        m.getMove.mapVal { m => Move(
-          _: Human, m.getId, m.getPathList.asScala.map(parseVect2).toVector
-        ) }.right
+        m.getMove.mapVal { m =>
+          parsePath(m.getPathList).right.map(path => Move(_: Human, m.getId, path))
+        }
       else if (m.hasAttack)
         m.getAttack.
           mapVal { m => In.Attack(_: Human, m.getId, m.getTargetId) }.right
@@ -61,6 +70,12 @@ object ProtobufCoding {
         (EndTurn.apply(_: Human)).right
       else if (m.hasGetMovement)
         m.getGetMovement.mapVal { m => GetMovement(_: Human, m.getId) }.right
+      else if (m.hasMoveAttack)
+        m.getMoveAttack.mapVal { m =>
+          parsePath(m.getPathList).right.map(path => MoveAttack(
+            _: Human, m.getId, path, m.getTargetId
+          ))
+        }
       else if (m.hasLeave)
         (Leave.apply(_: Human)).right
       else

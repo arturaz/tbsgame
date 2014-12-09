@@ -12,6 +12,7 @@ message FromClient {
   optional MAttack attack = 3;
   optional MSpecial special = 4;
   optional MGetMovement get_movement = 5;
+  optional MMoveAttack move_attack = 6;
 
   optional MLeave leave = 1001;
   optional MEndTurn end_turn = 1002;
@@ -51,6 +52,14 @@ message MSpecial {
 
 message MGetMovement {
   required WObjID id = 1;
+}
+
+message MMoveAttack {
+  required WObjID id = 1;
+  // Does not include objects position. Ends with target position.
+  // empty if should not move.
+  repeated base.Vect2 path = 2;
+  required WObjID target_id = 3;
 }
 
 message MEndTurn {}
