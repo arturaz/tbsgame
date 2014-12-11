@@ -136,19 +136,32 @@ trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
   def attack[Target <: OwnedObj](
     obj: Target, world: World
   ): Either[String, Evented[(World, Self, Attack, Option[Target])]] = {
-    attackSimple(obj, world).right.map { case (attack, attackedEvt, newObj) =>
+    attackSimple(obj, world).right.map { case (attack, attackedEvt, newObjOpt) =>
       for {
         attacked <- attackedEvt
         newWorld <-
-          AttackEvt(world, attacked, obj -> newObj, attack) +:
+          AttackEvt(world, attacked, obj -> newObjOpt, attack) +:
           world.updated(self, attacked)
-        newWorld <- newWorld.updated(obj, newObj)
+        newWorld <- newObjOpt.fold2(
+          // New object is dead, need to respawn
+          obj.cast[RespawnsOnDestruction].fold2(
+            // Not respawnable, just remove
+            newWorld.updated(obj, newObjOpt),
+            // Respawn
+            { respawnable =>
+              val newOwner = respawnable.ownerAfterRespawn(owner)
+              respawnable.respawn(world, newOwner).flatMap(newWorld.updated(obj, _))
+            }
+          ),
+          // Not dead, just update
+          _ => newWorld.updated(obj, newObjOpt)
+        )
         newWorld <- owner.cast[Player].flatMap { p =>
-          newObj.fold2(obj.destroyReward.map((p, _)), _ => None)
+          newObjOpt.fold2(obj.destroyReward.map((p, _)), _ => None)
         }.fold2(Evented(newWorld), { case (player, resources) =>
           newWorld.addResources(player, resources).right.get
         })
-      } yield (newWorld, attacked, attack, newObj)
+      } yield (newWorld, attacked, attack, newObjOpt)
     }
   }
 

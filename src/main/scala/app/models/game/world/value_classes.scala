@@ -14,6 +14,16 @@ object Resources {
   }
 }
 
+/* Victory Points */
+case class VPS(value: Int) extends AnyVal with IntValueClass[VPS] {
+  override def self(v: Int) = VPS(v)
+}
+object VPS {
+  implicit object Numeric extends IntValueClass.Numeric[VPS] {
+    override def fromInt(x: Int) = VPS(x)
+  }
+}
+
 case class WarpTime(value: Int) extends AnyVal with IntValueClass[WarpTime] {
   override def self(v: Int) = WarpTime(v)
 }

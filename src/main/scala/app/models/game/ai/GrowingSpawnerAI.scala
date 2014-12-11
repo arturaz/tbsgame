@@ -128,10 +128,13 @@ object GrowingSpawnerAI {
   private[this] def spawn(
     world: World, spawner: GrowingSpawner
   ): Either[String, WObject.WorldObjOptUpdate[spawner.Controlled]] = {
-    Random.shuffle(spawner.visibility.points).map(spawner.spawn(world, _)).
-      find(_.isRight).getOrElse(
-        s"$spawner couldn't find a place to spawn a unit within ${spawner.visibility}".
-          left
-      )
+    val warpZones = world.objects.collect {
+      case o: OwnedObj if o.owner.team == spawner.owner.team => o.warpZone
+    }.collect { case Some(wz) => wz }
+
+    val points = Random.shuffle(warpZones.flatMap(_.points).toVector)
+    points.view.map(spawner.spawn(world, _)).find(_.isRight).getOrElse(
+      s"$spawner couldn't find a place to spawn a unit within $warpZones".left
+    )
   }
 }

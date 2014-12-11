@@ -1,7 +1,7 @@
 package app.models.game.world
 
 import akka.event.LoggingAdapter
-import app.models.game.{Bot, Human, Player, Owner}
+import app.models.game._
 import app.models.game.events.{HPChangeEvt, Evented}
 import implicits._
 
@@ -70,6 +70,7 @@ trait OwnedObj extends WObject {
   }
 }
 
+trait TeamObj extends OwnedObj { val owner: Team }
 trait PlayerObj extends OwnedObj { val owner: Player }
 trait HumanObj extends PlayerObj { val owner: Human }
 trait BotObj extends PlayerObj { val owner: Bot }

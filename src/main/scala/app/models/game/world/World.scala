@@ -18,7 +18,7 @@ import scala.util.Random
 
 case class World private (
   bounds: Bounds, objects: WorldObjs,
-  resourcesMap: Map[Player, Resources],
+  resourcesMap: Map[Player, Resources], vpsMap: Map[Team, VPS],
   warpZoneMap: WarpZoneMap, visibilityMap: VisibilityMap
 ) extends TurnBased[World] {
   import app.models.game.world.World._
@@ -92,8 +92,9 @@ case class World private (
   def updated[A <: WObject](before: A)(afterFn: A => A): Evented[World] =
     updated(before, afterFn(before))
   private def updated(objects: WorldObjs): World = copy(objects = objects)
-  private def updated(resources: Map[Player, Resources]): World =
+  private def updatedRes(resources: Map[Player, Resources]): World =
     copy(resourcesMap = resources)
+  private def updatedVps(vps: Map[Team, VPS]): World = copy(vpsMap = vps)
 
   def updateAll(pf: PartialFunction[WObject, WObject]) = {
     val liftedPf = pf.lift
@@ -114,7 +115,7 @@ case class World private (
     else {
       val newRes = resources(player) + count
       Evented(
-        updated(resourcesMap updated(player, newRes)),
+        updatedRes(resourcesMap updated(player, newRes)),
         player.asHuman.fold2(
           Vector.empty, h => Vector(ResourceChangeEvt(h.right, newRes))
         )
@@ -124,6 +125,16 @@ case class World private (
 
   def subResources(player: Player, count: Resources): Either[String, Evented[World]] =
     addResources(player, -count)
+
+  def vps(owner: Owner) = vpsMap.getOrElse(owner.team, VPS(0))
+
+  def addVps(owner: Owner, count: VPS): Evented[World] = {
+    val newVal = vps(owner) + count
+    Evented(
+      updatedVps(vpsMap updated (owner.team, newVal)),
+      VPSChangeEvt(owner.team, newVal)
+    )
+  }
 
   def canWarp(b: Bounds) = bounds.contains(b) && ! objects.exists(_.bounds.intersects(b))
 
@@ -390,7 +401,7 @@ object World {
 
     val bounds = this.bounds(objects) expandBy 5
     new World(
-      bounds, objects, Map.empty,
+      bounds, objects, Map.empty, Map.empty,
       WarpZoneMap(bounds, objects), VisibilityMap(bounds, objects)
     )
   }

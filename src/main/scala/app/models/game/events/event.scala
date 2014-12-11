@@ -119,6 +119,12 @@ case class HPChangeEvt(
   def bounds = newObj.bounds
 }
 
+case class OwnerChangeEvt(
+  world: World, newObj: OwnedObj
+) extends BoundedEvent {
+  def bounds = newObj.bounds
+}
+
 case class MovementChangeEvt(
   world: World, changedObj: MovableWObject
 ) extends BoundedEvent {
@@ -138,6 +144,10 @@ case class ResourceChangeEvt(
     { case (world, wObj) => world.isVisiblePartial(owner, wObj.bounds) },
     owner.isFriendOf
   )
+}
+
+case class VPSChangeEvt(team: Team, newValue: VPS) extends VisibleEvent {
+  override def visibleBy(owner: Owner) = owner.team == team
 }
 
 case class ActionsChangeEvt(

@@ -16,6 +16,7 @@ trait Building extends OwnedObj {
   type Companion <: BuildingOps[Self] with BuildingStats
 }
 
+trait TeamBuilding extends Building with TeamObj
 trait PlayerBuilding extends Building with PlayerObj
 trait HumanBuilding extends Building with HumanObj
 trait BotBuilding extends Building with BotObj

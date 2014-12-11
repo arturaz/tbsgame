@@ -13,6 +13,7 @@ with GrowingSpawnerCompanion[Spawner] {
   val DefaultStartingStrength = SpawnerStr(2)
   val DefaultTurnsPerStrength = SpawnerStr(5)
   val kind = WObjKind.Heavy
+  override val warpGiven = visibility
 
   override def withNewHp(hp: HP)(self: Spawner) = self.copy(hp = hp)
   override def withTurnsPerStrength(value: SpawnerStr)(self: Spawner) =
