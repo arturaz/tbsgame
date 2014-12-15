@@ -155,19 +155,23 @@ class GameActor private (
     val spawnerAi = Bot(AiTeam)
     val world = World.create(
       HumanTeam, singleAi, spawnerAi,
-      spawners = 2, endDistance = TileDistance(25)
+      spawners = 2, endDistance = TileDistance(35)
     )
     log.debug("World initialized to {}", world)
     TurnBasedGame(
       world, startingHuman, GameActor.StartingResources
-    ).right.map(nextReadyTeam).fold(
+    ).fold(
       err => throw new IllegalStateException(s"Cannot initialize game: $err"),
       evented => {
         log.debug("Turn based game initialized to {}", evented)
         startingHumanRef ! Joined(startingHuman, self)
+        // We need to init the game to starting state.
         init(startingHuman, startingHumanRef, evented.value.game)
         events(startingHuman, startingHumanRef, evented.events)
-        evented.value
+        // And then get to the state where next ready team can act
+        val turnStartedGame = nextReadyTeam(evented)
+        events(startingHuman, startingHumanRef, turnStartedGame.events)
+        turnStartedGame.value
       }
     )
   }

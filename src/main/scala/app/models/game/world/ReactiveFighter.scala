@@ -79,13 +79,23 @@ trait ReactiveFighter extends Fighter { traitSelf =>
   /* Attacks the target if he can. Returns None if there was no reaction. */
   def reactToOpt[A <: OwnedObj](
     obj: A, world: World
-  ): Option[Reaction[WObject.WorldObjOptUpdate[A]]] =
+  ): Option[Reaction[WObject.WorldObjOptUpdate[A]]] = {
     if (companion.shouldReact(self, obj))
       attack(obj, world).right.toOption.map {
-        case evt @ Evented((newWorld, _, attack, newObj), _) =>
-          Reaction(evt.copy(value = (newWorld, newObj)), abortReacting = newObj.isEmpty)
+        case evt @ Evented((newWorld, newSelf, attack, newObjOpt), _) =>
+          def thisReaction = Reaction(
+            evt.map(_ => (newWorld, newObjOpt)), abortReacting = newObjOpt.isEmpty
+          )
+          newObjOpt.fold2(
+            thisReaction,
+            newObj => newSelf.reactToOpt(newObj, newWorld).fold2(
+              thisReaction,
+              _.map(evt.events ++: _)
+            )
+          )
       }
     else None
+  }
 
   /* Attacks the target if he can. */
   def reactTo[A <: OwnedObj](

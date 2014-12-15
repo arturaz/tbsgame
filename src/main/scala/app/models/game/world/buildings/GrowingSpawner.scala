@@ -1,5 +1,6 @@
 package app.models.game.world.buildings
 
+import app.models.game.Actions
 import app.models.game.world._
 import app.models.game.world.units.WUnit
 
@@ -10,6 +11,9 @@ extends TurnCounterOps[Self] with OwnedObjOps[Self] {
 
 trait GrowingSpawnerStats extends TurnCounterStats with OwnedObjStats {
   val DefaultStartingStrength: SpawnerStr
+  /* Each action from buildings that the team controls reduces spawner strength by this
+     much. This makes spawner get angrier as VPTowers are taken from it. */
+  val StrengthReductionPerAction: SpawnerStr
   val DefaultTurnsPerStrength: SpawnerStr
 }
 
@@ -21,7 +25,9 @@ trait GrowingSpawner extends TurnCounter with BotObj {
   type Companion <: GrowingSpawnerOps[Self] with GrowingSpawnerStats
   type Controlled = WUnit with Fighter
 
-  def strength = startingStrength + SpawnerStr(turns) / turnsPerStrength
+  def strength: SpawnerStr = startingStrength + SpawnerStr(turns) / turnsPerStrength
+  def strength(actions: Actions): SpawnerStr =
+    strength - companion.StrengthReductionPerAction * SpawnerStr(actions.value)
   val startingStrength: SpawnerStr
   val turnsPerStrength: SpawnerStr
 

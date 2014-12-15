@@ -30,7 +30,8 @@ object WorldObjs {
     id: WObject.Id, points: TraversableOnce[Vect2]
   )(positions: PositionsMap): PositionsMap =
     points.foldLeft(positions) { case (fPositions, pos) =>
-      fPositions updated (pos, fPositions(pos) - id)
+      if (fPositions contains pos) fPositions updated (pos, fPositions(pos) - id)
+      else fPositions
     }
 
   def newBuilder = new mutable.Builder[WObject, WorldObjs] {

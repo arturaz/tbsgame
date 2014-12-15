@@ -6,8 +6,8 @@ sealed trait WObjKind {
   def multiplierAt(kind: WObjKind): Double
 }
 object WObjKind {
-  private[this] val Mult = 2.5
-  private[this] val InvMult = 1.0 / Mult
+  private[this] val Mult = 1.25
+  private[this] val InvMult = 0.5
 
   case object Light extends WObjKind {
     def multiplierAt(kind: WObjKind) = kind match {

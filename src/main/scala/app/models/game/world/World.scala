@@ -5,7 +5,7 @@ import app.models.game._
 import app.models.game.ai.GrowingSpawnerAI
 import app.models.game.events._
 import app.models.game.world.WObject.Id
-import app.models.game.world.buildings.{Spawner, WarpGate}
+import app.models.game.world.buildings.{VPTower, Spawner, WarpGate}
 import app.models.game.world.maps.{VisibilityMap, WarpZoneMap}
 import app.models.game.world.props.Asteroid
 import app.models.game.world.units.{Fortress, RayShip, Wasp}
@@ -270,7 +270,8 @@ object World {
 //        IndexedSeq(RayShip -> 2, Wasp -> 1) -> 2,
 //        IndexedSeq(RayShip -> 2, Fortress -> 1) -> 2,
         IndexedSeq(Wasp -> 1, RayShip -> 1, Fortress -> 1) -> 1
-      )
+      ),
+    vpTowers: Int = 3
   )(implicit log1: LoggingAdapter) = {
     val log = new PrefixedLoggingAdapter("World#create|", log1)
     val warpGate = WarpGate(startingPoint, playersTeam)
@@ -398,6 +399,26 @@ object World {
 
     (1 to 3).foreach { _ => spawnBlob(warpGate.visibility, log) }
     while (branchesLeft > 0) branch(warpGate.bounds.center)
+
+    var vpTowersLeft = vpTowers
+    val vpDistance = endDistance / TileDistance(2)
+    while (vpTowersLeft > 0) {
+      val angle = Random.double(0, Math.PI)
+      val position = Vect2(
+        (vpDistance.value * Math.cos(angle)).round.toInt,
+        (vpDistance.value * Math.sin(angle)).round.toInt
+      ) + warpGate.bounds.center
+      if (! bTaken(Bounds(position, VPTower.size))) {
+        objects += VPTower(position, spawnerOwner.team)
+        vpTowersLeft -= 1
+      }
+      else {
+        log.debug(
+          "vp tower position {} is taken, angle={}, vpDistance={}, left={}",
+          position, angle, vpDistance, vpTowersLeft
+        )
+      }
+    }
 
     val bounds = this.bounds(objects) expandBy 5
     new World(

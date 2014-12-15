@@ -5,7 +5,7 @@ import app.algorithms.Pathfinding
 import app.models.game.{Actions, Owner}
 import app.models.game.events.Evented
 import app.models.game.world.buildings.GrowingSpawner
-import app.models.game.world.{SpawnerStr, OwnedObj, WObject, World}
+import app.models.game.world._
 import implicits._
 
 import scala.annotation.tailrec
@@ -23,6 +23,9 @@ object GrowingSpawnerAI {
     if (spawners.isEmpty)
       SingleMindAI.act(world, owner)
     else {
+      val actions = world.objects.collect {
+        case ga: GivingActions if owner.team == ga.owner.team => ga.companion.actionsGiven
+      }.sum
       val readyUnits = world.objects.collect {
         case unit: GrowingSpawner#Controlled
           if (unit.owner: Owner) === owner && (
@@ -33,7 +36,7 @@ object GrowingSpawnerAI {
       spawners.foldLeft(Evented((world, readyUnits))) { case (fEvtWorld, spawner) =>
         fEvtWorld.flatMap { case (fWorld, fReadyUnits) =>
           val (newWorld, newReadyUnits) = act(
-            fWorld, spawner, fReadyUnits
+            fWorld, spawner, actions, fReadyUnits
           )(log.prefixed(s"GrowingSpawnerAI[$spawner]|"))
           newWorld.map((_, newReadyUnits))
         }
@@ -42,7 +45,7 @@ object GrowingSpawnerAI {
   }
 
   def act(
-    world: World, spawner: GrowingSpawner, readyUnits: ReadyUnits
+    world: World, spawner: GrowingSpawner, actions: Actions, readyUnits: ReadyUnits
   )(implicit log: LoggingAdapter): (Result, ReadyUnits) = {
     @tailrec def work(
       actionsLeft: SpawnerStr, world: Evented[World], readyUnits: ReadyUnits
@@ -74,7 +77,7 @@ object GrowingSpawnerAI {
       }
     }
 
-    work(spawner.strength, Evented(world), readyUnits)
+    work(spawner.strength(actions), Evented(world), readyUnits)
   }
 
   def act(

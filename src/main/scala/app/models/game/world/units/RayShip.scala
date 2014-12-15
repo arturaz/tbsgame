@@ -7,8 +7,8 @@ import app.models.game.world._
  * Created by arturas on 2014-11-04.
  */
 object RayShip extends WUnitCompanion[RayShip] with FighterCompanion[RayShip] {
-  override val maxHp = HP(160)
-  override val attack = Atk(105)
+  override val maxHp = HP(80)
+  override val attack = Atk(65)
   override val attacks = Attacks(1)
   override val attackRange = TileDistance(7)
   override val movement = TileDistance(2)

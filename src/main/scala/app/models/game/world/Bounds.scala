@@ -1,5 +1,7 @@
 package app.models.game.world
 
+import implicits._
+
 case class Bounds(x: Range.Inclusive, y: Range.Inclusive) {
   require(
     x.size > 0 && y.size > 0,
@@ -8,6 +10,8 @@ case class Bounds(x: Range.Inclusive, y: Range.Inclusive) {
 
   def start = Vect2(x.start, y.start)
   def end = Vect2(x.end, y.end)
+
+  def random = Vect2(x.random, y.random)
 
   def points = for {
     xCoord <- Iterator.range(x.start, x.end + 1)

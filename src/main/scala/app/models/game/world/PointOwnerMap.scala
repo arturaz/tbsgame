@@ -119,7 +119,7 @@ case class PointOwnerMap[Evt <: PointOwnershipChangeEvt] private (
     afterTO: TraversableOnce[Vect2], afterTeam: Team
   ): Evented[PointOwnerMap[Evt]] = {
     val (before, after) = (beforeTO.toVector, afterTO.toVector)
-    if (before === after) Evented(this)
+    if (before === after && beforeTeam === afterTeam) Evented(this)
     else {
       val (map1, evts1) = remove(before, beforeTeam)
       val (map2, evts2) = map1.add(after, afterTeam)

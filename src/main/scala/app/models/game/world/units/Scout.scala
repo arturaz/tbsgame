@@ -7,7 +7,7 @@ import app.models.game.world._
  * Created by arturas on 2014-11-03.
  */
 object Scout extends WUnitCompanion[Scout] {
-  override val maxHp = HP(25)
+  override val maxHp = HP(70)
   override val warpTime = WarpTime(0)
   override val cost = Resources(5)
   override val movement = TileDistance(16)

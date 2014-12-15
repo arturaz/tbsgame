@@ -4,8 +4,8 @@ import app.models.game.Player
 import app.models.game.world._
 
 object Fortress extends WUnitCompanion[Fortress] with FighterCompanion[Fortress] {
-  override val maxHp = HP(270)
-  override val attack = Atk(35)
+  override val maxHp = HP(185)
+  override val attack = Atk(25)
   override val attacks = Attacks(2)
   override val attackRange = TileDistance(3)
   override val movement = TileDistance(2)

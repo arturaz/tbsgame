@@ -191,7 +191,9 @@ object ProtobufCoding {
     implicit def convert(obj: OwnedObjStats): Game.WObject.OwnedObj.Stats =
       Game.WObject.OwnedObj.Stats.newBuilder().
         setMaxHp(obj.maxHp).setIsCritical(obj.isCritical).
-        setVisibility(obj.visibility).setKind(obj.kind).build()
+        setVisibility(obj.visibility).setKind(obj.kind).
+        setIsRespawnable(obj.isInstanceOf[RespawnsOnDestructionStats]).
+        build()
 
     implicit def convert(obj: OwnedObj): Game.WObject.OwnedObj =
       Game.WObject.OwnedObj.newBuilder().setStats(obj.companion).
@@ -293,6 +295,7 @@ object ProtobufCoding {
             case o: RocketFrigate => b.setKind(U_ROCKET_FRIGATE)
             case o: Gunship => b.setKind(U_GUNSHIP)
             case o: Fortress => b.setKind(U_FORTRESS)
+            case o: VPTower => b.setKind(B_VP_TOWER)
           }
         }.build()
 
@@ -447,6 +450,10 @@ object ProtobufCoding {
     implicit def convert(evt: ObjDestroyedEvt): Game.ObjDestroyedEvt =
       Game.ObjDestroyedEvt.newBuilder().setObjId(evt.obj.id).build()
 
+    implicit def convert(evt: OwnerChangeEvt): Game.OwnerChangeEvt =
+      Game.OwnerChangeEvt.newBuilder().setObjId(evt.newObj.id).
+        setNewOwnerId(evt.newObj.owner.id).build()
+
     implicit def convert(evt: JoinEvt): Game.JoinEvt =
       Game.JoinEvt.newBuilder().setPlayer(convert(evt.human, Some(evt.state))).build()
 
@@ -474,6 +481,8 @@ object ProtobufCoding {
         case evt: AttacksChangedEvt => b.setAttacksChange(evt)
         case evt: TurnEndedChangeEvt => b.setTurnEndedChange(evt)
         case evt: ObjDestroyedEvt => b.setObjDestroyed(evt)
+        case evt: OwnerChangeEvt => b.setOwnerChange(evt)
+        case evt: VPSChangeEvt => b // TODO: set the event
       } }.build()
 
     /* Messages */

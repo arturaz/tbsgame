@@ -38,9 +38,10 @@ trait RespawnsOnDestruction extends OwnedObj {
     RespawnsOnDestructionStats with RespawnsOnDestructionOps[Self, OwnerType]
 
   def ownerAfterRespawn(attacker: Owner): OwnerType
-  def respawn(world: World, newOwner: OwnerType): Evented[Self] =
+  def respawn(world: World, newOwner: OwnerType): Evented[Self] = {
     for {
       self <- self |> companion.withNewOwnerEvt(world, newOwner)
       self <- companion.withNewHPEvt(companion.hpAfterRespawn)(world, self)
     } yield self
+  }
 }

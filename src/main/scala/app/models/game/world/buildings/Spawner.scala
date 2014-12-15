@@ -7,12 +7,14 @@ import implicits._
 
 object Spawner extends BuildingCompanion[Spawner] with SizedWObjectCompanion
 with GrowingSpawnerCompanion[Spawner] {
-  override val maxHp = HP(2200)
+  override val maxHp = HP(1200)
   override val size: Vect2 = Vect2(2, 2)
   override val isCritical: Boolean = true
-  val DefaultStartingStrength = SpawnerStr(2)
-  val DefaultTurnsPerStrength = SpawnerStr(5)
-  val kind = WObjKind.Heavy
+  override val StrengthReductionPerAction = SpawnerStr(4)
+  override val DefaultStartingStrength =
+    SpawnerStr(2 + StrengthReductionPerAction.value * 3)
+  override val DefaultTurnsPerStrength = SpawnerStr(5)
+  override val kind = WObjKind.Heavy
   override val warpGiven = visibility
 
   override def withNewHp(hp: HP)(self: Spawner) = self.copy(hp = hp)

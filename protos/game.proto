@@ -195,6 +195,7 @@ message WObject { // {{{
     U_ROCKET_FRIGATE = 11;
     U_GUNSHIP = 12;
     U_FORTRESS = 13;
+    B_VP_TOWER = 14;
   }
 
   /* Trait properties {{{ */
@@ -213,6 +214,7 @@ message WObject { // {{{
       required uint32 visibility = 2;
       required uint32 max_hp = 3;
       required WObjKind kind = 4;
+      required bool is_respawnable = 5;
     }
 
     required Stats stats = 1;
@@ -371,6 +373,7 @@ message Event { // {{{
   optional ObjDestroyedEvt obj_destroyed = 15;
   optional HPChangeEvt hp_change = 16;
   optional LevelChangeEvt level_change = 17;
+  optional OwnerChangeEvt owner_change = 18;
 
   optional JoinEvt join = 1000;
   optional LeaveEvt leave = 1001;
@@ -479,5 +482,10 @@ message TurnEndedChangeEvt {
 
 message ObjDestroyedEvt {
   required WObjID obj_id = 1;
+}
+
+message OwnerChangeEvt {
+  required WObjID obj_id = 1;
+  required OwnerID new_owner_id = 2;
 }
 
