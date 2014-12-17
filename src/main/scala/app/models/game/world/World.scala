@@ -159,7 +159,7 @@ case class World private (
     visibilityMap.isVisible(owner, v)
   def isValidForWarp(owner: Owner, v: Vect2): Boolean = warpZoneMap.isVisible(owner, v)
 
-  def objectsIn(vects: Vector[Vect2]): WorldObjs = objects.filter(vects)
+  def objectsPartlyIn(vects: Vector[Vect2]): WorldObjs = objects.filterPartial(vects)
 
   def reactTo[A <: OwnedObj](obj: A): WObject.WorldObjOptUpdate[A] = {
     @tailrec def react(
@@ -201,7 +201,7 @@ object World {
       case evt: VisibilityChangeEvt if evt.team === team => evt.visible
     }.flatten
     evtWorld.flatMap { newWorld =>
-      val newVisibleObjs = newWorld.objectsIn(newVisiblePoints)
+      val newVisibleObjs = newWorld.objectsPartlyIn(newVisiblePoints)
       val newVisibleObjEvents = newVisibleObjs.map(ObjVisibleEvt(team, newWorld, _))
       Evented(newWorld, newVisibleObjEvents.toVector)
     }

@@ -23,7 +23,7 @@ with SpecialActionCompanion[Extractor] {
 
   override def warpWOReactionImpl(world: World, owner: Player, position: Vect2) = {
     val b = bounds(position)
-    val objects = world.objects.filter(_.bounds === b)
+    val objects = world.objects.objectsIn(b)
     val isAsteroid = objects.exists(_.isInstanceOf[Asteroid])
     if (! isAsteroid || objects.size =/= 1)
       Left(s"Warping in: expected $b to only have asteroid, but there were $objects")
