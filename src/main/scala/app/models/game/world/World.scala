@@ -200,10 +200,10 @@ object World {
     val newVisiblePoints = evtWorld.events.collect {
       case evt: VisibilityChangeEvt if evt.team === team => evt.visible
     }.flatten
-    evtWorld.flatMap { newWorld =>
-      val newVisibleObjs = newWorld.objectsPartlyIn(newVisiblePoints)
-      val newVisibleObjEvents = newVisibleObjs.map(ObjVisibleEvt(team, newWorld, _))
-      Evented(newWorld, newVisibleObjEvents.toVector)
+    evtWorld.flatMap { world =>
+      val newVisibleObjs = world.objectsPartlyIn(newVisiblePoints)
+      val newVisibleObjEvents = newVisibleObjs.map(ObjVisibleEvt(team, world, _))
+      Evented(world, newVisibleObjEvents.toVector)
     }
   }
 
