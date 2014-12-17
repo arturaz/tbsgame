@@ -150,7 +150,7 @@ trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
             // Respawn
             { respawnable =>
               val newOwner = respawnable.ownerAfterRespawn(owner)
-              respawnable.respawn(world, newOwner).flatMap(newWorld.updated(obj, _))
+              respawnable.respawn(world, newOwner)
             }
           ),
           // Not dead, just update
