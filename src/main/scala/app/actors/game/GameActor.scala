@@ -265,10 +265,19 @@ class GameActor private (
     requester: ActorRef, human: Human, f: TurnBasedGame => TurnBasedGame.Result
   ): Unit = {
     log.debug("Updating game by a request from {}", requester)
+
+    def objectivesEvt(game: Game) =
+      ObjectivesUpdatedEvt(human.team, game.remainingObjectives(human.team))
+
     f(game).right.map { evented =>
-      val remainingObjectives = evented.value.game.remainingObjectives(human.team)
-      val objectivesEvt = ObjectivesUpdatedEvt(human.team, remainingObjectives)
-      (evented :+ objectivesEvt).flatMap(nextReadyTeam)
+      val firstEvt = objectivesEvt(evented.value.game)
+      val newEvented = (evented :+ firstEvt).flatMap(nextReadyTeam)
+      // After nextReadyTeam it might be our turn again, so see if the objectives has
+      // changed and notify about it if they did
+      newEvented.value.fold(_ => newEvented, newGame => {
+        val secondEvt = objectivesEvt(newGame.game)
+        if (firstEvt == secondEvt) newEvented else newEvented :+ secondEvt
+      })
     }.fold(err => {
       log.error(err)
       requester ! Out.Error(err)
