@@ -6,6 +6,7 @@ import app.models.game.world._
 
 object VPTower extends BuildingCompanion[VPTower] with GivingActionsCompanion[VPTower]
 with RespawnsOnDestructionCompanion[VPTower, VPTower#OwnerType] with SizedWObjectCompanion
+with GivingVictoryPointsCompanion[VPTower]
 {
   override val maxHp = HP(450)
   override val visibility = RectDistance(5)
@@ -13,17 +14,19 @@ with RespawnsOnDestructionCompanion[VPTower, VPTower#OwnerType] with SizedWObjec
   override val actionsGiven = Actions(1)
   override val kind = WObjKind.Medium
   override val size = Vect2(2, 2)
+  override val vpsGiven = VPS(1)
 
   override def withNewHp(hp: HP)(self: VPTower) = self.copy(hp = hp)
   override val hpAfterRespawn = maxHp
   override def withNewOwner(owner: Team)(self: VPTower) = self.copy(owner = owner)
-
 }
 
 case class VPTower(
   position: Vect2, owner: Team,
   id: WObject.Id=WObject.newId, hp: HP=VPTower.maxHp
-) extends TeamBuilding with GivingActions with RespawnsOnDestruction with SizedWObject {
+) extends TeamBuilding with GivingActions with RespawnsOnDestruction with SizedWObject
+with GivingVictoryPoints
+{
   override type OwnerType = Team
   override type Self = VPTower
   override type Companion = VPTower.type

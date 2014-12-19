@@ -15,6 +15,9 @@ trait GivingVictoryPointsStats extends OwnedObjStats {
   val vpsGiven: VPS
 }
 
+trait GivingVictoryPointsCompanion[Self <: GivingVictoryPoints]
+extends GivingVictoryPointsOps[Self] with GivingVictoryPointsStats
+
 trait GivingVictoryPoints extends OwnedObj {
   type Self <: GivingVictoryPoints
   type Companion <: GivingVictoryPointsStats with GivingVictoryPointsOps[Self]
