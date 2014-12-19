@@ -146,10 +146,6 @@ case class ResourceChangeEvt(
   )
 }
 
-case class VPSChangeEvt(team: Team, newValue: VPS) extends VisibleEvent {
-  override def visibleBy(owner: Owner) = owner.team == team
-}
-
 case class ActionsChangeEvt(
   human: Human, actions: Actions
 ) extends VisibleEvent {
@@ -161,3 +157,11 @@ case class TurnEndedChangeEvt(
 ) extends VisibleEvent {
   override def visibleBy(owner: Owner) = human.isFriendOf(owner)
 }
+
+case class ObjectivesUpdatedEvt(
+  team: Team, objectives: RemainingObjectives
+) extends VisibleEvent {
+  override def visibleBy(owner: Owner) = owner.team === team
+}
+
+case class GameWonEvt(team: Team) extends AlwaysVisibleEvent

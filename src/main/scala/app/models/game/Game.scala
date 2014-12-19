@@ -13,6 +13,7 @@ import monocle.syntax._
 import utils.data.NonEmptyVector
 
 import scala.reflect.ClassTag
+import scalaz.\/
 
 object Game {
   private[this] def lenser = Lenser[Game]
@@ -22,9 +23,11 @@ object Game {
   type ResultT[A] = Either[String, Evented[A]]
   type Result = ResultT[Game]
   private type States = Map[Human, GameHumanState]
+  type ObjectivesMap = Map[Team, Objectives]
 
   def apply(
-    world: World, startingHuman: Human, startingResources: Resources
+    world: World, startingHuman: Human, startingResources: Resources,
+    objectives: ObjectivesMap
   ): Either[String, Game] = {
     val humans = world.humans + startingHuman
     humans.foldLeft(Evented(world).right[String]) {
@@ -32,7 +35,7 @@ object Game {
       case (Right(eWorld), human) =>
         eWorld.map(_.addResources(human, startingResources)).extractFlatten
     }.right.map { evtWorld =>
-      apply(evtWorld.value, startingStates(world, humans))
+      apply(evtWorld.value, startingStates(world, humans), objectives)
     }
   }
 
@@ -88,15 +91,13 @@ object Game {
   }
 }
 
-trait GameLike[A] {
+trait GameLike[+A] {
   def isJoined(human: Human): Boolean
   def join(human: Human, startingResources: Resources): Game.ResultT[A]
   def leave(human: Human): Game.ResultT[A]
-
   def warp(
     human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
   ): Game.ResultT[A]
-
   def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]): Game.ResultT[A]
   def attack(human: Human, id: WObject.Id, targetId: WObject.Id): Game.ResultT[A]
   def moveAttack(
@@ -107,8 +108,8 @@ trait GameLike[A] {
 }
 
 case class Game private (
-  world: World, states: Game.States
-) extends GameLike[Game] with TurnBased[Game] {
+  world: World, states: Game.States, objectives: Game.ObjectivesMap
+) extends GameLike[Game] {
   import app.models.game.Game.Withs._
 
   private[this] def fromWorld(w: Evented[World]) = w.map(updated)
@@ -137,8 +138,13 @@ case class Game private (
   def teamTurnStarted(team: Team)(implicit log: LoggingAdapter) =
     world.teamTurnStarted(team) |> fromWorld |>
     recalculateHumanStatesOnTeamTurnStart(team)
-  def teamTurnFinished(team: Team)(implicit log: LoggingAdapter) =
-    world.teamTurnFinished(team) |> fromWorld
+  def teamTurnFinished(team: Team)(implicit log: LoggingAdapter)
+  : Evented[Winner \/ Game] =
+    (world.teamTurnFinished(team) |> fromWorld).flatMap { game =>
+      val remaining = game.remainingObjectives(team)
+      if (remaining.someCompleted) Evented(Winner(team).leftZ, GameWonEvt(team))
+      else Evented(game.rightZ)
+    }
 
   def winner: Option[Team] = {
     world.objects.collect {
@@ -247,6 +253,9 @@ case class Game private (
 
   def visibleBy(owner: Owner) =
     copy(world = world.visibleBy(owner), states = states.filterKeys(_.isFriendOf(owner)))
+
+  def remainingObjectives(team: Team) =
+    objectives.getOrElse(team, Objectives.empty).remaining(this, team)
 
   private def updated(world: World): Game = copy(world = world)
   private def updated(states: States): Game = copy(states = states)

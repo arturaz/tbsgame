@@ -7,14 +7,17 @@ import app.models.game.world._
 import implicits._
 import utils.data.NonEmptyVector
 
+import scalaz.{\/-, -\/, \/}
+
 object TurnBasedGame {
   type Result = Game.ResultT[TurnBasedGame]
   type StartedGame = Either[String, Evented[TurnBasedGame]]
 
   def apply(
-    world: World, startingHuman: Human, startingResources: Resources
+    world: World, startingHuman: Human, startingResources: Resources,
+    objectives: Game.ObjectivesMap
   )(implicit log: LoggingAdapter): StartedGame = {
-    val game = Game(world, startingHuman, startingResources)
+    val game = Game(world, startingHuman, startingResources, objectives)
     game.right.flatMap(apply)
   }
 
@@ -37,7 +40,8 @@ object TurnBasedGame {
 }
 
 case class TurnBasedGame private (
-  game: Game, currentTeam: Team, readyTeams: Vector[Team], actedTeams: Vector[Team]
+  game: Game,
+  currentTeam: Team, readyTeams: Vector[Team], actedTeams: Vector[Team]
 ) extends GameLike[TurnBasedGame] {
   def canAct(human: Human) = human.team === currentTeam
 
@@ -75,24 +79,27 @@ case class TurnBasedGame private (
 
   override def endTurn(human: Human) = humanDo(human)(game.endTurn)
 
-  def nextTeamTurn(implicit log: LoggingAdapter): Evented[TurnBasedGame] = {
+  def nextTeamTurn(implicit log: LoggingAdapter): Evented[Winner \/ TurnBasedGame] = {
     log.debug("current team finishing: {}", currentTeam)
-    game.teamTurnFinished(currentTeam).flatMap { g =>
-      val newActedTeams = actedTeams :+ currentTeam
-      log.debug("new acted teams: {}", newActedTeams)
-      if (readyTeams.isEmpty) {
-        log.debug("no more ready teams!")
-        g.gameTurnFinished.flatMap(
-          TurnBasedGame.newGameTurn(_, newActedTeams)
-        )
-      }
-      else {
-        val newCurrentTeam = readyTeams.head
-        log.debug("new current team: {}", newCurrentTeam)
-        g.teamTurnStarted(newCurrentTeam).map(
-          TurnBasedGame(_, newCurrentTeam, readyTeams.tail, newActedTeams)
-        )
-      }
+    game.teamTurnFinished(currentTeam).flatMap {
+      case left @ -\/(winner) =>
+        log.debug("we have a winner: {}", winner)
+        Evented(left)
+      case \/-(g) =>
+        val newActedTeams = actedTeams :+ currentTeam
+        log.debug("new acted teams: {}", newActedTeams)
+        if (readyTeams.isEmpty) {
+          log.debug("no more ready teams!")
+          g.gameTurnFinished.flatMap(TurnBasedGame.newGameTurn(_, newActedTeams)).
+            map(_.rightZ)
+        }
+        else {
+          val newCurrentTeam = readyTeams.head
+          log.debug("new current team: {}", newCurrentTeam)
+          g.teamTurnStarted(newCurrentTeam).map(
+            TurnBasedGame(_, newCurrentTeam, readyTeams.tail, newActedTeams).rightZ
+          )
+        }
     }
   }
 

@@ -97,6 +97,7 @@ message MInit {
   repeated InitPlayer other_players = 8;
   repeated InitWObjectStats wobject_stats = 9;
   repeated AttackMultiplier attack_multipliers = 10;
+  required Objectives objectives = 11;
 }
 
 enum WObjKind {
@@ -178,6 +179,12 @@ message InitWObjectStats {
   required WObject.Stats stats = 1;
   // Not set if a player cannot warp this in.
   optional MWarp.HumanWarpable warpable = 2;
+}
+
+message Objectives {
+  optional uint32 gather_resources_left = 1;
+  optional uint32 collect_vps_left = 2;
+  optional uint32 destroy_all_critical_objects_left = 3;
 }
 
 message WObject { // {{{
@@ -374,9 +381,11 @@ message Event { // {{{
   optional HPChangeEvt hp_change = 16;
   optional LevelChangeEvt level_change = 17;
   optional OwnerChangeEvt owner_change = 18;
+  optional ObjectivesUpdateEvt objectives_update = 19;
 
   optional JoinEvt join = 1000;
   optional LeaveEvt leave = 1001;
+  optional GameWonEvt game_won = 1002;
 } // }}}
 
 message JoinEvt {
@@ -489,3 +498,10 @@ message OwnerChangeEvt {
   required OwnerID new_owner_id = 2;
 }
 
+message ObjectivesUpdateEvt {
+  required Objectives new_objectives = 1;
+}
+
+message GameWonEvt {
+  required TeamID team_id = 1;
+}

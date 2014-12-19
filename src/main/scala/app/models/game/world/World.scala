@@ -20,7 +20,7 @@ case class World private (
   bounds: Bounds, objects: WorldObjs,
   resourcesMap: Map[Player, Resources], vpsMap: Map[Team, VPS],
   warpZoneMap: WarpZoneMap, visibilityMap: VisibilityMap
-) extends TurnBased[World] {
+) {
   import app.models.game.world.World._
 
   override def toString = s"World($bounds, objects: ${objects.size})"
@@ -128,13 +128,8 @@ case class World private (
 
   def vps(owner: Owner) = vpsMap.getOrElse(owner.team, VPS(0))
 
-  def addVps(owner: Owner, count: VPS): Evented[World] = {
-    val newVal = vps(owner) + count
-    Evented(
-      updatedVps(vpsMap updated (owner.team, newVal)),
-      VPSChangeEvt(owner.team, newVal)
-    )
-  }
+  def addVps(owner: Owner, count: VPS): World =
+    updatedVps(vpsMap updated (owner.team, vps(owner) + count))
 
   def canWarp(b: Bounds) = bounds.contains(b) && ! objects.exists(_.bounds.intersects(b))
 

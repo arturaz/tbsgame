@@ -173,6 +173,15 @@ object ProtobufCoding {
 
     def convert(t: (Player, Option[HumanState])): Game.InitPlayer = convert(t._1, t._2)
 
+    implicit def convert(objectives: RemainingObjectives): Game.Objectives =
+      Game.Objectives.newBuilder().mapVal { b =>
+        objectives.gatherResources.fold2(b, b.setGatherResourcesLeft(_))
+      }.mapVal { b =>
+        objectives.collectVps.fold2(b, b.setCollectVpsLeft(_))
+      }.mapVal { b =>
+        objectives.destroyAllCriticalObjects.fold2(b, b.setDestroyAllCriticalObjectsLeft(_))
+      }.build()
+
     implicit def convert(team: Team): Game.Team =
       Game.Team.newBuilder().setId(team.id).build()
 
@@ -377,6 +386,27 @@ object ProtobufCoding {
       Game.MMovement.Paths.newBuilder().
         addAllPath(data.paths.flatMap(path => convert(path)).asJava).build()
 
+//    implicit def convertObjectives(init: GameActor.Out.Init): Game.Objectives =
+//      Game.Objectives.newBuilder().
+//        mapVal { b =>
+//          init.objectives.gatherResources.fold2(b, o => b.setGatherResourcesLeft(
+//            valWithMax(o.remaining(init.game, init.selfTeam).value, o.resources.value)
+//          ))
+//        }.
+//        mapVal { b =>
+//          init.objectives.collectVps.fold2(b, o => b.setCollectVpsLeft(
+//            valWithMax(o.remaining(init.game, init.selfTeam).value, o.vps.value)
+//          ))
+//        }.
+//        mapVal { b =>
+//          init.objectives.destroyAllCriticalObjects.fold2(
+//            b, o => b.setDestroyAllCriticalObjectsLeft(
+//              valWithMax(o.remaining(init.game, init.selfTeam).value, o..value)
+//            )
+//          )
+//        }.
+//        build()
+
     /* Events */
 
     implicit def convert(evt: TurnStartedEvt): Game.TurnStartedEvt =
@@ -454,6 +484,12 @@ object ProtobufCoding {
       Game.OwnerChangeEvt.newBuilder().setObjId(evt.newObj.id).
         setNewOwnerId(evt.newObj.owner.id).build()
 
+    implicit def convert(evt: ObjectivesUpdatedEvt): Game.ObjectivesUpdateEvt =
+      Game.ObjectivesUpdateEvt.newBuilder().setNewObjectives(evt.objectives).build
+
+    implicit def convert(evt: GameWonEvt): Game.GameWonEvt =
+      Game.GameWonEvt.newBuilder().setTeamId(evt.team.id).build
+
     implicit def convert(evt: JoinEvt): Game.JoinEvt =
       Game.JoinEvt.newBuilder().setPlayer(convert(evt.human, Some(evt.state))).build()
 
@@ -482,7 +518,8 @@ object ProtobufCoding {
         case evt: TurnEndedChangeEvt => b.setTurnEndedChange(evt)
         case evt: ObjDestroyedEvt => b.setObjDestroyed(evt)
         case evt: OwnerChangeEvt => b.setOwnerChange(evt)
-        case evt: VPSChangeEvt => b // TODO: set the event
+        case evt: ObjectivesUpdatedEvt => b.setObjectivesUpdate(evt)
+        case evt: GameWonEvt => b.setGameWon(evt)
       } }.build()
 
     /* Messages */
@@ -515,6 +552,7 @@ object ProtobufCoding {
         addAllAttackMultipliers(msg.attackMultipliers.map { case (from, to) =>
           attackMultiplier(from, to)
         }.asJava).
+        setObjectives(msg.objectives).
         build()
 
     implicit def convert(out: GameActor.ClientOut): Game.FromServer =

@@ -16,9 +16,10 @@ import utils.data.NonEmptyVector
 
 import scala.annotation.tailrec
 import scala.language.existentials
+import scalaz.{\/-, -\/, \/}
 
 object GameActor {
-  val StartingResources = Resources(25)
+  val StartingResources = Resources(30)
   val HumanTeam = Team()
   val AiTeam = Team()
 
@@ -52,7 +53,8 @@ object GameActor {
       warpZonePoints: Iterable[Vect2], visiblePoints: Iterable[Vect2],
       selfTeam: Team, otherTeams: Iterable[Team],
       self: HumanState, others: Iterable[(Player, Option[HumanState])],
-      wObjectStats: Iterable[Init.Stats], attackMultipliers: Set[(WObjKind, WObjKind)]
+      wObjectStats: Iterable[Init.Stats], attackMultipliers: Set[(WObjKind, WObjKind)],
+      objectives: RemainingObjectives
     ) extends ClientOut
     case class Events(events: Vector[FinalEvent]) extends ClientOut
     case class Error(error: String) extends ClientOut
@@ -100,7 +102,8 @@ object GameActor {
             Stats(Spawner), Stats(Wasp), Stats(RayShip), Stats(Fortress)
           )
         },
-        for (from <- WObjKind.All; to <- WObjKind.All) yield from -> to
+        for (from <- WObjKind.All; to <- WObjKind.All) yield from -> to,
+        game.remainingObjectives(human.team)
       )
     }
   }
@@ -126,11 +129,20 @@ object GameActor {
     ref ! Out.Events(viewedEvents)
   }
 
-  @tailrec private def nextReadyTeam(
-    game: Evented[TurnBasedGame]
-  )(implicit log: LoggingAdapter): Evented[TurnBasedGame] = {
-    if (game.value.currentTeamFinished) nextReadyTeam(game.flatMap(_.nextTeamTurn))
-    else game
+  private def nextReadyTeam(
+    game: TurnBasedGame
+  )(implicit log: LoggingAdapter): Evented[Winner \/ TurnBasedGame] = {
+    @tailrec def rec(
+      gameOrWinner: Evented[Winner \/ TurnBasedGame]
+    ): Evented[Winner \/ TurnBasedGame] = {
+      if (gameOrWinner.value.fold(_ => true, ! _.currentTeamFinished)) gameOrWinner
+      else rec(gameOrWinner.flatMap {
+        case left @ -\/(winner) => Evented(left)
+        case \/-(game) => game.nextTeamTurn
+      })
+    }
+
+    rec(Evented(game.rightZ))
   }
 
   def props(startingUser: User, startingHumanRef: ActorRef) = Props(new GameActor(
@@ -158,8 +170,19 @@ class GameActor private (
       spawners = 2, endDistance = TileDistance(35)
     )
     log.debug("World initialized to {}", world)
+    val objectives = Map(
+      AiTeam -> Objectives(
+        destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
+      ),
+      HumanTeam -> Objectives(
+        Some(Objective.GatherResources(world, Resources(100), Percentage(0.1))),
+        Some(Objective.CollectVPs(VPS(30))),
+        Some(Objective.DestroyAllCriticalObjects)
+      )
+    )
+    log.debug("Objectives initialized to {}", objectives)
     TurnBasedGame(
-      world, startingHuman, GameActor.StartingResources
+      world, startingHuman, GameActor.StartingResources, objectives
     ).fold(
       err => throw new IllegalStateException(s"Cannot initialize game: $err"),
       evented => {
@@ -169,9 +192,10 @@ class GameActor private (
         init(startingHuman, startingHumanRef, evented.value.game)
         events(startingHuman, startingHumanRef, evented.events)
         // And then get to the state where next ready team can act
-        val turnStartedGame = nextReadyTeam(evented)
+        val turnStartedGame = evented.flatMap(nextReadyTeam)
         events(startingHuman, startingHumanRef, turnStartedGame.events)
-        turnStartedGame.value
+        // TODO: what to do if the game is won from the beggining?
+        turnStartedGame.value.right_!
       }
     )
   }
@@ -193,7 +217,7 @@ class GameActor private (
         doInit(game)
       }
       else update(
-        ref,
+        ref, human,
         _.join(human, GameActor.StartingResources).right.map { evtTbg =>
           doInit(evtTbg.value)
           evtTbg
@@ -201,7 +225,7 @@ class GameActor private (
       )
     case In.Leave(human) =>
       if (clients.contains(human)) {
-        update(sender(), _.leave(human).right.map { evtTbg =>
+        update(sender(), human, _.leave(human).right.map { evtTbg =>
           clients -= human
           evtTbg
         })
@@ -210,17 +234,17 @@ class GameActor private (
         sender ! Out.Error(s"No human $human is joined.")
       }
     case In.Warp(human, position, warpable) =>
-      update(sender(), _.warp(human, position, warpable))
+      update(sender(), human, _.warp(human, position, warpable))
     case In.Move(human, id, path) =>
-      update(sender(), _.move(human, id, path))
+      update(sender(), human, _.move(human, id, path))
     case In.Attack(human, id, target) =>
-      update(sender(), _.attack(human, id, target))
+      update(sender(), human, _.attack(human, id, target))
     case In.MoveAttack(human, id, path, target) =>
-      update(sender(), _.moveAttack(human, id, path, target))
+      update(sender(), human, _.moveAttack(human, id, path, target))
     case In.Special(human, id) =>
-      update(sender(), _.special(human, id))
+      update(sender(), human, _.special(human, id))
     case In.EndTurn(human) =>
-      update(sender(), _.endTurn(human))
+      update(sender(), human, _.endTurn(human))
     case In.GetMovement(human, id) =>
       game.game.world.find {
         case o: MovableWObject if o.id == id => o
@@ -238,15 +262,25 @@ class GameActor private (
   }
 
   private[this] def update(
-    requester: ActorRef, f: TurnBasedGame => TurnBasedGame.Result
+    requester: ActorRef, human: Human, f: TurnBasedGame => TurnBasedGame.Result
   ): Unit = {
     log.debug("Updating game by a request from {}", requester)
-    f(game).right.map(nextReadyTeam).fold(err => {
+    f(game).right.map { evented =>
+      val remainingObjectives = evented.value.game.remainingObjectives(human.team)
+      val objectivesEvt = ObjectivesUpdatedEvt(human.team, remainingObjectives)
+      (evented :+ objectivesEvt).flatMap(nextReadyTeam)
+    }.fold(err => {
       log.error(err)
       requester ! Out.Error(err)
     }, evented => {
-      game = evented.value
       dispatchEvents(evented.events)
+      evented.value.fold(
+        winner => {
+          log.info("Game is finished, won by {}", winner)
+          context.stop(self)
+        },
+        g => game = g
+      )
     })
   }
 
