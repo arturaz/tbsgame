@@ -1,6 +1,6 @@
 package app.models.game.world.units
 
-import app.models.game.Player
+import app.models.game.{Population, Player}
 import app.models.game.world._
 
 object Wasp extends WUnitCompanion[Wasp] with FighterCompanion[Wasp] {
@@ -12,6 +12,7 @@ object Wasp extends WUnitCompanion[Wasp] with FighterCompanion[Wasp] {
   override val visibility = RectDistance(4)
   override val warpTime = WarpTime(0)
   override val cost = Resources(10)
+  override val populationCost = Population(2)
   override val kind = WObjKind.Medium
 
   override def warp(owner: Player, position: Vect2) = Wasp(position, owner)

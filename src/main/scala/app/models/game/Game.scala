@@ -88,6 +88,25 @@ object Game {
       human: Human, resourcesNeeded: Resources, world: World
     )(f: Evented[World] => Game.Result): Game.Result =
       world.subResources(human, resourcesNeeded).right.flatMap(f)
+
+    def withPopulation(
+      human: Human, populationNeeded: Population, world: World
+    )(f: Evented[World] => Game.Result): Game.Result = {
+      val populationLeft = world.populationLeftFor(human)
+      if (populationLeft >= populationNeeded)
+        f(Evented(world, PopulationChangeEvt(human, populationLeft - populationNeeded)))
+      else
+        s"Needed $populationNeeded, but $human only had $populationLeft!".left
+    }
+
+    def withWarpable(
+      human: Human, warpable: WarpableStats, world: World
+    )(f: Evented[World] => Game.Result): Game.Result = {
+      withResources(human, warpable.cost, world) { evtWorld =>
+      withPopulation(human, warpable.populationCost, evtWorld.value) { evtWorld2 =>
+        f(evtWorld.events ++: evtWorld2)
+      } }
+    }
   }
 }
 
@@ -187,7 +206,7 @@ case class Game private (
   ): Game.Result =
     withState(human) { state =>
     withActions(human, Warpable.ActionsNeeded, state) { state =>
-    withResources(human, warpable.cost, world) { evtWorld =>
+    withWarpable(human, warpable, world) { evtWorld =>
     withWarpZone(human, position) {
       evtWorld.map { warpable.warpW(_, human, position).right.map { _.map {
         updated(_, human -> state)

@@ -1,5 +1,6 @@
 package app.models.game.world.buildings
 
+import app.models.game.Population
 import app.models.game.world._
 
 trait BuildingOps[Self <: Building] extends OwnedObjOps[Self]
@@ -24,6 +25,7 @@ trait BotBuilding extends Building with BotObj
 trait WBuildingOps[Self <: WBuilding] extends BuildingOps[Self] with WarpableOps[Self]
 trait WBuildingStats extends BuildingStats with WarpableStats {
   override val group = WarpableGroup.Building
+  override val populationCost = Population(0)
 }
 trait WBuildingCompanion[Self <: WBuilding] extends WBuildingOps[Self] with WBuildingStats
   with BuildingCompanion[Self] with WarpableCompanion[Self]

@@ -11,6 +11,15 @@ object Actions {
   }
 }
 
+case class Population(value: Int) extends AnyVal with IntValueClass[Population] {
+  override def self(v: Int) = Population(v)
+}
+object Population {
+  implicit object Numeric extends IntValueClass.Numeric[Population] {
+    override def fromInt(x: Int) = Population(x)
+  }
+}
+
 case class Percentage(value: Double) extends AnyVal with DoubleValueClass[Percentage] {
   def self(v: Double) = Percentage(v)
 }

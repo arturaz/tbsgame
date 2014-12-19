@@ -1,6 +1,6 @@
 package app.models.game.world.units
 
-import app.models.game.Player
+import app.models.game.{Population, Player}
 import app.models.game.world._
 
 /**
@@ -10,6 +10,7 @@ object Scout extends WUnitCompanion[Scout] {
   override val maxHp = HP(70)
   override val warpTime = WarpTime(0)
   override val cost = Resources(5)
+  override val populationCost = Population(1)
   override val movement = TileDistance(16)
   override val visibility = RectDistance(7)
   override val kind = WObjKind.Light

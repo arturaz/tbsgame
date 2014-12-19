@@ -1,6 +1,6 @@
 package app.models.game.world.units
 
-import app.models.game.Player
+import app.models.game.{Population, Player}
 import app.models.game.world._
 
 object RocketFrigate extends WUnitCompanion[RocketFrigate]
@@ -12,6 +12,7 @@ with FighterCompanion[RocketFrigate] {
   override val movement = TileDistance(6)
   override val visibility = RectDistance(2)
   override val cost = Resources(6)
+  override val populationCost = Population(2)
   override val warpTime = WarpTime(0)
   override val kind = WObjKind.Light
 

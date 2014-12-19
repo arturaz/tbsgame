@@ -4,7 +4,7 @@ import akka.event.LoggingAdapter
 import app.models.game.events.{WarpStateChangeEvt, WarpEvt, Evented}
 import implicits._
 
-import app.models.game.{Actions, Player}
+import app.models.game.{Population, Actions, Player}
 
 import scala.util.Random
 
@@ -50,6 +50,7 @@ trait WarpableStats extends OwnedObjStats {
   val InitialWarpState = WarpTime(0)
   val warpTime: WarpTime
   val cost: Resources
+  val populationCost: Population
   val group: WarpableGroup
 }
 
@@ -78,6 +79,11 @@ trait Warpable extends OwnedObj {
   override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
     super.teamTurnStartedSelf(world) |>
     selfEventedUpdate(companion.nextWarpState)
+
+  def onWarpedIn(world: World) = {
+    // Change population if we give population!
+    // Call me from warp (warp time 0) and nextWarpState
+  }
 }
 
 trait EmptySpaceWarpableOps[Self <: Warpable] { _: WarpableOps[Self] =>

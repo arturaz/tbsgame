@@ -1,7 +1,7 @@
 package app.models.game.world.units
 
 import app.models.game.world._
-import app.models.game.{Actions, Player}
+import app.models.game.{Population, Actions, Player}
 
 object Corvette extends WUnitCompanion[Corvette] 
 with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
@@ -13,6 +13,7 @@ with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
   override val visibility = RectDistance(4)
   override val warpTime = WarpTime(0)
   override val cost = Resources(6)
+  override val populationCost = Population(2)
   override val kind = WObjKind.Medium
 
   val specialMovementAdded = TileDistance(6)

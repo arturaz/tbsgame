@@ -1,6 +1,6 @@
 package app.models.game.world.units
 
-import app.models.game.Player
+import app.models.game.{Population, Player}
 import app.models.game.world._
 
 object Fortress extends WUnitCompanion[Fortress] with FighterCompanion[Fortress] {
@@ -11,6 +11,7 @@ object Fortress extends WUnitCompanion[Fortress] with FighterCompanion[Fortress]
   override val movement = TileDistance(2)
   override val cost = Resources(10)
   override val warpTime = WarpTime(0)
+  override val populationCost = Population(2)
   override val kind = WObjKind.Heavy
   override val visibility = RectDistance(5)
 

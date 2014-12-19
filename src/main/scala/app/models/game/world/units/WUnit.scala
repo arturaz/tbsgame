@@ -1,5 +1,6 @@
 package app.models.game.world.units
 
+import app.models.game.Population
 import app.models.game.world._
 
 trait WUnitOps[Self <: WUnit] extends OwnedObjOps[Self] with MovableWObjectOps[Self]

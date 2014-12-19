@@ -11,18 +11,28 @@ import app.models.game.world.props.Asteroid
 import app.models.game.world.units.{Fortress, RayShip, Wasp}
 import implicits._
 import infrastructure.PrefixedLoggingAdapter
+import monocle.{Lenser, SimpleLens}
+import utils.IntValueClass
 
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
 import scala.util.Random
 
+case class WorldPlayerState(resources: Resources) extends AnyVal
+object WorldPlayerState {
+  val empty = WorldPlayerState(Resources(0))
+  val lenser = Lenser[WorldPlayerState]
+  val resources = lenser(_.resources)
+}
+
 case class World private (
   bounds: Bounds, objects: WorldObjs,
-  resourcesMap: Map[Player, Resources], vpsMap: Map[Team, VPS],
+  playerStates: Map[Player, WorldPlayerState], vpsMap: Map[Team, VPS],
   warpZoneMap: WarpZoneMap, visibilityMap: VisibilityMap
 ) {
   import app.models.game.world.World._
 
+  val resourcesMap = playerStates.mapValues(_.resources)
   override def toString = s"World($bounds, objects: ${objects.size})"
 
   def gameTurnStarted(implicit log: LoggingAdapter) =
@@ -92,8 +102,8 @@ case class World private (
   def updated[A <: WObject](before: A)(afterFn: A => A): Evented[World] =
     updated(before, afterFn(before))
   private def updated(objects: WorldObjs): World = copy(objects = objects)
-  private def updatedRes(resources: Map[Player, Resources]): World =
-    copy(resourcesMap = resources)
+  private def updatedPlayerStates(states: Map[Player, WorldPlayerState]): World =
+    copy(playerStates = states)
   private def updatedVps(vps: Map[Team, VPS]): World = copy(vpsMap = vps)
 
   def updateAll(pf: PartialFunction[WObject, WObject]) = {
@@ -106,25 +116,41 @@ case class World private (
     }
   }
 
-  def resources(player: Player) = resourcesMap.getOrElse(player, Resources(0))
+  def state(player: Player) =
+    playerStates.getOrElse(player, WorldPlayerState.empty)
+  def resources(player: Player) = state(player).resources
 
-  def addResources(player: Player, count: Resources): Either[String, Evented[World]] = {
-    val curRes = resources(player)
-    if (count < Resources(0) && curRes < -count)
-      s"Had $curRes, wanted to subtract ${-count}!".left
+  def addPlayerState[Res <: IntValueClass[Res]](
+    player: Player, count: Res, lens: SimpleLens[WorldPlayerState, Res]
+  )(events: Res => Vector[Event]): Either[String, Evented[World]] = {
+    val curState = state(player)
+    val curS = lens.get(curState)
+    if (count.isNegative && curS < -count)
+      s"Had $curS, wanted to subtract ${-count}!".left
     else {
-      val newRes = resources(player) + count
+      val newRes = curS + count
+      val newState = lens.set(curState, newRes)
       Evented(
-        updatedRes(resourcesMap updated(player, newRes)),
-        player.asHuman.fold2(
-          Vector.empty, h => Vector(ResourceChangeEvt(h.right, newRes))
-        )
+        updatedPlayerStates(playerStates updated (player, newState)),
+        events(newRes)
       ).right
     }
   }
 
+  def addResources(player: Player, count: Resources): Either[String, Evented[World]] =
+    addPlayerState(player, count, WorldPlayerState.resources) { newRes =>
+      player.asHuman.fold2(Vector.empty, h => Vector(ResourceChangeEvt(h.right, newRes)))
+    }
+
   def subResources(player: Player, count: Resources): Either[String, Evented[World]] =
     addResources(player, -count)
+
+  def populationLeftFor(owner: Owner) = objects.collect {
+    case gp: GivingPopulation if gp.isWarpedIn && gp.owner.isFriendOf(owner) =>
+      gp.companion.populationGiven
+    case oo: Warpable if oo.owner === owner =>
+      -oo.companion.populationCost
+  }.sum
 
   def vps(owner: Owner) = vpsMap.getOrElse(owner.team, VPS(0))
 
@@ -139,7 +165,7 @@ case class World private (
 
   def visibleBy(owner: Owner): World = copy(
     objects = objects.filter(o => isVisiblePartial(owner, o.bounds)),
-    resourcesMap = resourcesMap.filter { case (player, _) => owner.isFriendOf(player) },
+    playerStates = playerStates.filter { case (player, _) => owner.isFriendOf(player) },
     warpZoneMap = warpZoneMap.filter(owner),
     visibilityMap = visibilityMap.filter(owner)
   )
@@ -185,7 +211,7 @@ case class World private (
 
   lazy val owners = objects.collect { case fo: OwnedObj => fo.owner }.toSet
   lazy val teams = owners.map(_.team)
-  lazy val players = owners.collect { case p: Player => p }.toSet ++ resourcesMap.keySet
+  lazy val players = owners.collect { case p: Player => p }.toSet ++ playerStates.keySet
   lazy val humans = players.collect { case h: Human => h }.toSet
   lazy val bots = players.collect { case b: Bot => b }.toSet
 }

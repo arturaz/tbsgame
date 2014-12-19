@@ -28,6 +28,8 @@ trait IntValueClass[A <: IntValueClass[A]] extends Any with Ordered[A] {
 
   def isZero = value === 0
   def isNotZero = ! isZero
+  def isPositive = value > 0
+  def isNegative = value < 0
 
   def min(v: A) = self(value min v.value)
   def max(v: A) = self(value max v.value)
