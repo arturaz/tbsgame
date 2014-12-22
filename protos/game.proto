@@ -168,6 +168,7 @@ message PlayerState { // {{{
   required uint32 resources = 1;
   required uint32 actions = 2;
   required bool turn_ended = 3;
+  required uint32 population = 4;
 } // }}}
 
 message InitPlayer { // {{{
@@ -382,6 +383,7 @@ message Event { // {{{
   optional LevelChangeEvt level_change = 17;
   optional OwnerChangeEvt owner_change = 18;
   optional ObjectivesUpdateEvt objectives_update = 19;
+  optional PopulationChangeEvt population_change = 20;
 
   optional JoinEvt join = 1000;
   optional LeaveEvt leave = 1001;
@@ -504,4 +506,9 @@ message ObjectivesUpdateEvt {
 
 message GameWonEvt {
   required TeamID team_id = 1;
+}
+
+message PopulationChangeEvt {
+  required PlayerID player_id = 1;
+  required uint32 new_population = 2;
 }

@@ -164,7 +164,7 @@ object ProtobufCoding {
 
     implicit def convert(state: HumanState): Game.PlayerState =
       Game.PlayerState.newBuilder().
-        setActions(state.gameState.actions).
+        setActions(state.gameState.actions).setPopulation(state.population).
         setResources(state.resources).setTurnEnded(state.gameState.turnEnded).build()
 
     def convert(player: Player, state: Option[HumanState]): Game.InitPlayer =
@@ -490,8 +490,12 @@ object ProtobufCoding {
     implicit def convert(evt: GameWonEvt): Game.GameWonEvt =
       Game.GameWonEvt.newBuilder().setTeamId(evt.team.id).build
 
+    implicit def convert(evt: PopulationChangeEvt): Game.PopulationChangeEvt =
+      Game.PopulationChangeEvt.newBuilder().setPlayerId(evt.player.id).
+        setNewPopulation(evt.population).build
+
     implicit def convert(evt: JoinEvt): Game.JoinEvt =
-      Game.JoinEvt.newBuilder().setPlayer(convert(evt.human, Some(evt.state))).build()
+      Game.JoinEvt.newBuilder().setPlayer(convert(evt.human, evt.state)).build()
 
     implicit def convert(evt: LeaveEvt): Game.LeaveEvt =
       Game.LeaveEvt.newBuilder().setPlayerId(evt.human.id).build()
@@ -520,6 +524,7 @@ object ProtobufCoding {
         case evt: OwnerChangeEvt => b.setOwnerChange(evt)
         case evt: ObjectivesUpdatedEvt => b.setObjectivesUpdate(evt)
         case evt: GameWonEvt => b.setGameWon(evt)
+        case evt: PopulationChangeEvt => b.setPopulationChange(evt)
       } }.build()
 
     /* Messages */

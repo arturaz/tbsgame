@@ -14,4 +14,6 @@ with GivingPopulationStats
 trait GivingPopulation extends OwnedObj {
   type Self <: GivingPopulation
   type Companion <: GivingPopulationOps[Self] with GivingPopulationStats
+
+  def populationGiven = if (isWarpedIn) companion.populationGiven else Population(0)
 }

@@ -1,7 +1,7 @@
 package app.models.game.world
 
 import akka.event.LoggingAdapter
-import app.models.game.events.{WarpStateChangeEvt, WarpEvt, Evented}
+import app.models.game.events.{PopulationChangeEvt, WarpStateChangeEvt, WarpEvt, Evented}
 import implicits._
 
 import app.models.game.{Population, Actions, Player}
@@ -79,11 +79,6 @@ trait Warpable extends OwnedObj {
   override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
     super.teamTurnStartedSelf(world) |>
     selfEventedUpdate(companion.nextWarpState)
-
-  def onWarpedIn(world: World) = {
-    // Change population if we give population!
-    // Call me from warp (warp time 0) and nextWarpState
-  }
 }
 
 trait EmptySpaceWarpableOps[Self <: Warpable] { _: WarpableOps[Self] =>

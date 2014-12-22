@@ -18,7 +18,7 @@ import scala.annotation.tailrec
 import scala.reflect.ClassTag
 import scala.util.Random
 
-case class WorldPlayerState(resources: Resources) extends AnyVal
+case class WorldPlayerState(resources: Resources)
 object WorldPlayerState {
   val empty = WorldPlayerState(Resources(0))
   val lenser = Lenser[WorldPlayerState]
@@ -58,44 +58,64 @@ case class World private (
     total
   }
 
-  private[this] def changeWithMapUpdates(obj: WObject)(
-    fo: (WorldObjs, WObject) => WorldObjs,
-    fwz: (WarpZoneMap, OwnedObj) => Evented[WarpZoneMap],
-    fvis: (VisibilityMap, OwnedObj) => Evented[VisibilityMap]
+  private[this] def changeWithMapUpdates[A, MapUpdateData](
+    aToMapUpdateData: A => Option[MapUpdateData]
+  )(a: A)(
+    recalculatePopulationsFor: A => TraversableOnce[Owner],
+    updateWorldObjects: (WorldObjs, A) => WorldObjs,
+    updateWarpZone: (WarpZoneMap, MapUpdateData) => Evented[WarpZoneMap],
+    updateVisibilityMap: (VisibilityMap, MapUpdateData) => Evented[VisibilityMap]
   ): Evented[World] = {
-    val newWorld = copy(objects = fo(objects, obj))
-    obj.asOwnedObj.fold2(
-      Evented(newWorld),
-      oo => for {
-        visibilityMap <- fvis(visibilityMap, oo)
-        warpZoneMap <- fwz(warpZoneMap, oo)
-      } yield newWorld.copy(
+    val updatedWorld = copy(objects = updateWorldObjects(objects, a))
+    val evtWithUpdatedMaps = aToMapUpdateData(a).fold2(
+      Evented(updatedWorld),
+      b => for {
+        visibilityMap <- updateVisibilityMap(visibilityMap, b)
+        warpZoneMap <- updateWarpZone(warpZoneMap, b)
+      } yield updatedWorld.copy(
         warpZoneMap = warpZoneMap,
         visibilityMap = visibilityMap
       )
     )
+    recalculatePopulationsFor(a).foldLeft(evtWithUpdatedMaps) { case (fEvtWorld, owner) =>
+      fEvtWorld.flatMap { world => Evented(
+        world,
+        (owner match {
+          case t: Team => world.playerStates.keys.filter(_.team === t).toVector
+          case p: Player => Vector(p)
+        }).flatMap { player =>
+          val populationBefore = this.populationLeftFor(player)
+          val populationNow = world.populationLeftFor(player)
+          if (populationBefore === populationNow) Vector.empty
+          else Vector(PopulationChangeEvt(player, populationNow))
+        }
+      ) }
+    }
   }
+  private[this] val changeWithMapUpdatesSingle =
+    changeWithMapUpdates((obj: WObject) => obj.asOwnedObj) _
 
-  def add(obj: WObject): Evented[World] = {
-    changeWithMapUpdates(obj)(_ + _, _ + _, _ + _)
-  }
+  private[this] def objToOwner(obj: WObject) = obj.cast[OwnedObj].map(_.owner)
+
+  def add(obj: WObject): Evented[World] =
+    changeWithMapUpdatesSingle(obj)(objToOwner, _ + _, _ + _, _ + _)
   def remove(obj: WObject): Evented[World] =
-    changeWithMapUpdates(obj)(_ - _, _ - _, _ - _)
+    changeWithMapUpdatesSingle(obj)(objToOwner, _ - _, _ - _, _ - _)
   def removeEvt(obj: WObject): Evented[World] =
     Evented(this, ObjDestroyedEvt(this, obj)).flatMap(_.remove(obj))
 
   def updated[A <: WObject](before: A, after: A): Evented[World] = {
-    val newWorld = copy(objects = objects update_! (before, after))
-    (before.asOwnedObj, after.asOwnedObj) match {
-      case (Some(bOO), Some(aOO)) =>
-        for {
-          visibilityMap <- visibilityMap.updated(bOO, aOO)
-          warpZoneMap <- warpZoneMap.updated(bOO, aOO)
-        } yield newWorld.copy(
-          warpZoneMap = warpZoneMap, visibilityMap = visibilityMap
-        )
-      case _ => Evented(newWorld)
-    }
+    changeWithMapUpdates[(A, A), (OwnedObj, OwnedObj)] {
+      case (before, after) => (before.asOwnedObj, after.asOwnedObj) match {
+        case (Some(bOO), Some(aOO)) => Some((bOO, aOO))
+        case _ => None
+      }
+    }(before, after)(
+      { case (before, after) => objToOwner(before).toSet ++ objToOwner(after).toSet },
+      { case (objs, (before, after)) => objs update_! (before, after) },
+      { case (warpZoneMap, (bOO, aOO)) => warpZoneMap updated (bOO, aOO) },
+      { case (visibilityMap, (bOO, aOO)) => visibilityMap updated (bOO, aOO) }
+    )
   }
   def updated[A <: WObject](before: A, after: Option[A]): Evented[World] =
     after.fold(remove(before))(a => updated(before, a))
@@ -146,8 +166,8 @@ case class World private (
     addResources(player, -count)
 
   def populationLeftFor(owner: Owner) = objects.collect {
-    case gp: GivingPopulation if gp.isWarpedIn && gp.owner.isFriendOf(owner) =>
-      gp.companion.populationGiven
+    case gp: GivingPopulation if gp.owner.isFriendOf(owner) =>
+      gp.populationGiven
     case oo: Warpable if oo.owner === owner =>
       -oo.companion.populationCost
   }.sum

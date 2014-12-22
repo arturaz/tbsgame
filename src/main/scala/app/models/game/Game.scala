@@ -185,7 +185,10 @@ case class Game private (
   override def join(human: Human, startingResources: Resources) = {
     def evt(newState: GameHumanState) = Evented(
       updated(world, human -> newState),
-      JoinEvt(human, HumanState(startingResources, newState))
+      JoinEvt(
+        human,
+        Some(HumanState(startingResources, world.populationLeftFor(human), newState))
+      )
     )
 
     states.get(human).fold2(

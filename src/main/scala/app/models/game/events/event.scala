@@ -29,9 +29,15 @@ sealed trait BoundedEvent extends VisibleEvent {
   override def visibleBy(owner: Owner) = world.isVisiblePartial(owner, bounds)
 }
 
-case class HumanState(resources: Resources, gameState: GameHumanState)
+case class HumanState(
+  resources: Resources, population: Population, gameState: GameHumanState
+)
 
-case class JoinEvt(human: Human, state: HumanState) extends AlwaysVisibleEvent
+case class JoinEvt(human: Human, state: Option[HumanState]) extends Event {
+  override def asViewedBy(owner: Owner) =
+    if (owner.isFriendOf(human)) Seq(this)
+    else Seq(copy(state = None))
+}
 case class LeaveEvt(human: Human) extends AlwaysVisibleEvent
 case class TurnStartedEvt(team: Team) extends AlwaysVisibleEvent
 case class TurnEndedEvt(team: Team) extends AlwaysVisibleEvent
@@ -153,9 +159,9 @@ case class ActionsChangeEvt(
 }
 
 case class PopulationChangeEvt(
-  human: Human, population: Population
+  player: Player, population: Population
 ) extends VisibleEvent {
-  override def visibleBy(owner: Owner) = human.isFriendOf(owner)
+  override def visibleBy(owner: Owner) = owner.isFriendOf(player)
 }
 
 case class TurnEndedChangeEvt(

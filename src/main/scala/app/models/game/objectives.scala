@@ -7,10 +7,12 @@ import utils.IntValueClass
 
 sealed trait Objective {
   type Remaining <: IntValueClass[Remaining]
+  def remainingZero: Remaining
 
-  def remaining(game: Game, team: Team): Remaining
+  def remaining(game: Game, team: Team) = remainingImpl(game, team) max remainingZero
+  protected def remainingImpl(game: Game, team: Team): Remaining
 
-  def isCompleted(remaining: Remaining): Boolean
+  def isCompleted(remaining: Remaining): Boolean = remaining.isZero
   def isCompleted(game: Game, team: Team): Boolean = remaining(game, team) |> isCompleted
 }
 
@@ -28,18 +30,20 @@ object Objective {
   }
   case class GatherResources(resources: Resources) extends Objective {
     type Remaining = Resources
+    def remainingZero = Resources(0)
 
-    def remaining(game: Game, team: Team) =
+    def remainingImpl(game: Game, team: Team) =
       resources -
       game.world.resourcesMap.filterKeys(_.team === team).map(_._2).sum
 
-    override def isCompleted(remaining: Remaining) = remaining <= Resources(0)
+    override def isCompleted(remaining: Remaining) = remaining.isZero
   }
 
   case class CollectVPs(vps: VPS) extends Objective {
     type Remaining = VPS
+    def remainingZero = VPS(0)
 
-    def remaining(game: Game, team: Team) =
+    def remainingImpl(game: Game, team: Team) =
       vps -
       game.world.vpsMap.filterKeys(_ === team).map(_._2).sum
 
@@ -48,8 +52,9 @@ object Objective {
 
   case object DestroyAllCriticalObjects extends Objective {
     type Remaining = ObjectCount
+    def remainingZero = ObjectCount(0)
 
-    def remaining(game: Game, team: Team) =
+    def remainingImpl(game: Game, team: Team) =
       ObjectCount(game.world.objects.count {
         case oo: OwnedObj if oo.companion.isCritical && oo.owner.isEnemyOf(team) => true
         case _ => false

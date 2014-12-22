@@ -79,7 +79,7 @@ object GameActor {
         toRight(s"can't get game state for $human in $states").right
       resources <- resourceMap.get(human).
         toRight(s"can't get game state for $human in $resourceMap").right
-    } yield HumanState(resources, gameState)
+    } yield HumanState(resources, visibleGame.world.populationLeftFor(p), gameState)
 
     stateFor(human).right.map { selfState =>
       Out.Init(
