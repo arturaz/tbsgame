@@ -2,10 +2,12 @@ package utils.network
 
 import java.nio.ByteOrder
 
+import akka.event.LoggingAdapter
 import akka.util.ByteString
+import utils.Hex
 import utils.network.IntFramedPipeline.Frame
 
-class IntFramedPipeline(implicit byteOrder: ByteOrder)
+class IntFramedPipeline(implicit byteOrder: ByteOrder, log: LoggingAdapter)
 extends Pipeline[ByteString, Vector[Frame], Frame, ByteString] {
   import IntFramedPipeline._
 
@@ -13,7 +15,8 @@ extends Pipeline[ByteString, Vector[Frame], Frame, ByteString] {
 
   def fromClient(data: ByteString): Vector[Frame] = {
     buffer ++= data
-//    Log.debug(s"Received ${data.size} bytes ($data).")
+//    log.debug(s"Received ${data.size} bytes.")
+//    log.debug(s"Data: ${Hex.bytesToHex(data)}")
     val (newBuf, frames) = process(buffer)
     buffer = newBuf
     frames
@@ -24,7 +27,8 @@ extends Pipeline[ByteString, Vector[Frame], Frame, ByteString] {
     bb.putInt(data.data.size)
     bb ++= data.data
     val result = bb.result()
-//    Log.debug(s"Encoded frame of size ${data.data.size} ($data) to $result")
+//    log.debug(s"Encoded frame of size ${data.data.size} bytes.")
+//    log.debug(s"Data: ${Hex.bytesToHex(result)}")
     result
   }
 

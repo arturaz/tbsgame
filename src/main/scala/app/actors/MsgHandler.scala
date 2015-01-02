@@ -3,7 +3,7 @@ package app.actors
 import java.nio.ByteOrder
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import akka.event.LoggingReceive
+import akka.event.{LoggingAdapter, LoggingReceive}
 import akka.io.Tcp.{ConnectionClosed, Received, Write}
 import akka.util.ByteString
 import app.actors.NetClient.Msgs.{FromClient, FromServer}
@@ -14,7 +14,7 @@ import utils.network.{CodedFramePipeline, IntFramedPipeline, Pipeline}
  */
 class MsgHandler(
   connection: ActorRef, netClientProps: ActorRef => Props
-)(implicit byteOrder: ByteOrder) extends Actor with ActorLogging {
+)(implicit byteOrder: ByteOrder, log: LoggingAdapter) extends Actor with ActorLogging {
   private[this] val netClient = context.actorOf(netClientProps(self), "net-client")
   context.watch(netClient)
 
@@ -29,7 +29,7 @@ class MsgHandler(
   }
 }
 
-class MsgHandlerPipeline(implicit byteOrder: ByteOrder)
+class MsgHandlerPipeline(implicit byteOrder: ByteOrder, log: LoggingAdapter)
 extends Pipeline[ByteString, Vector[FromClient], FromServer, ByteString] {
   private[this] val intFramed = new IntFramedPipeline()
   private[this] val coded = new CodedFramePipeline(

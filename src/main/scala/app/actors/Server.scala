@@ -25,6 +25,7 @@ class Server(
 
     case Connected(remote, local) =>
       log.info(s"Client connected from $remote.")
+      implicit val logger = log
       val connection = sender()
       val msgHandler = context.actorOf(Props(new MsgHandler(
         connection,
