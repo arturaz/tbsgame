@@ -176,7 +176,7 @@ class GameActor private (
       ),
       HumanTeam -> Objectives(
         Some(Objective.GatherResources(world, Resources(100), Percentage(0.1))),
-        Some(Objective.CollectVPs(VPS(30))),
+        Some(Objective.CollectVPs(VPS(10))),
         Some(Objective.DestroyAllCriticalObjects)
       )
     )
