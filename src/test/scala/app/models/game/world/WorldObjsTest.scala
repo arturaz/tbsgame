@@ -53,20 +53,20 @@ class WorldObjsTest extends AppTest {
   "removing" - {
     "should fail when removing an object which does not exist" in {
       forAll { (objs: WorldObjs, wo: WObject) =>
-        objs.remove(wo).isLeft should === (true)
+        objs.remove(wo.id).isLeft should === (true)
       }
     }
 
     "should become an empty object after removing everything" in {
       forAll { (objs: WorldObjs) =>
-        val actual = objs.foldLeft(objs) { case (fObjs, obj) => fObjs - obj }
+        val actual = objs.foldLeft(objs) { case (fObjs, obj) => fObjs - obj.id }
         actual should === (WorldObjs.empty)
       }
     }
 
     "returns the same object after adding and removing same X objects" in {
       forAll { (initialObjs: WorldObjs, toBeRemoved: Seq[WObject]) =>
-        val objs = initialObjs ++ toBeRemoved -- toBeRemoved
+        val objs = initialObjs ++ toBeRemoved -- toBeRemoved.map(_.id)
         objs should === (initialObjs)
       }
     }

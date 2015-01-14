@@ -57,11 +57,11 @@ case class WorldObjs private (
 
   override def toString() = s"WorldObjs(objects: $objectsMap, positions: $positionsMap)"
 
-  private[this] def doManyEither
-  (objs: TraversableOnce[WObject])(f: (WorldObjs, WObject) => String \/ WorldObjs)
+  private[this] def doManyEither[A]
+  (as: TraversableOnce[A])(f: (WorldObjs, A) => String \/ WorldObjs)
   : String \/ WorldObjs =
-    objs.foldLeft(this.rightZ[String]) {
-      case (\/-(wo), obj) => f(wo, obj)
+    as.foldLeft(this.rightZ[String]) {
+      case (\/-(wo), a) => f(wo, a)
       case (left @ -\/(err), _) => left
     }
 
@@ -82,21 +82,23 @@ case class WorldObjs private (
   def add_!(objs: TraversableOnce[WObject]): WorldObjs = add(objs).right_!
   def ++(objs: TraversableOnce[WObject]): WorldObjs = add_!(objs)
 
-  def remove(obj: WObject): String \/ WorldObjs = {
-    if (objectsMap.contains(obj.id)) copy(
-      objectsMap = objectsMap - obj.id,
-      positionsMap = positionsMap |> removePositions(obj.id, obj.bounds.points)
-    ).rightZ
-    else s"$obj is not in $this".leftZ
+  def remove(objId: WObject.Id): String \/ WorldObjs = {
+    objectsMap.get(objId).fold2(
+      s"$objId is not in $this".leftZ,
+      obj => copy(
+        objectsMap = objectsMap - obj.id,
+        positionsMap = positionsMap |> removePositions(obj.id, obj.bounds.points)
+      ).rightZ
+    )
   }
-  def remove(objs: TraversableOnce[WObject]): String \/ WorldObjs =
+  def remove(objs: TraversableOnce[WObject.Id]): String \/ WorldObjs =
     doManyEither(objs)(_ remove _)
 
-  def remove_!(obj: WObject): WorldObjs = remove(obj).right_!
-  def -(obj: WObject): WorldObjs = remove_!(obj)
+  def remove_!(obj: WObject.Id): WorldObjs = remove(obj).right_!
+  def -(obj: WObject.Id): WorldObjs = remove_!(obj)
 
-  def remove_!(objs: TraversableOnce[WObject]): WorldObjs = remove(objs).right_!
-  def --(objs: TraversableOnce[WObject]): WorldObjs = remove_!(objs)
+  def remove_!(objs: TraversableOnce[WObject.Id]): WorldObjs = remove(objs).right_!
+  def --(objs: TraversableOnce[WObject.Id]): WorldObjs = remove_!(objs)
 
   def update[A <: WObject](before: A, after: A): String \/ WorldObjs = {
     if (before.id != after.id)
@@ -136,7 +138,7 @@ case class WorldObjs private (
   override def filter(predicate: WObject => Boolean): WorldObjs = {
     objectsMap.valuesIterator.foldLeft(this) { case (fWorldObjs, obj) =>
       if (predicate(obj)) fWorldObjs
-      else fWorldObjs remove_! obj
+      else fWorldObjs remove_! obj.id
     }
   }
   override def filterNot(p: (WObject) => Boolean) = filter(obj => ! p(obj))

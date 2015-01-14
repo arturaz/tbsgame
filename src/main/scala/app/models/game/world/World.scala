@@ -100,7 +100,7 @@ case class World private (
   def add(obj: WObject): Evented[World] =
     changeWithMapUpdatesSingle(obj)(objToOwner, _ + _, _ + _, _ + _)
   def remove(obj: WObject): Evented[World] =
-    changeWithMapUpdatesSingle(obj)(objToOwner, _ - _, _ - _, _ - _)
+    changeWithMapUpdatesSingle(obj)(objToOwner, _ - _.id, _ - _, _ - _)
   def removeEvt(obj: WObject): Evented[World] =
     Evented(this, ObjDestroyedEvt(this, obj)).flatMap(_.remove(obj))
 
