@@ -1,6 +1,7 @@
 package app.models.game.world
 
 import implicits._
+import utils.IntValueClass
 
 case class Bounds(x: Range.Inclusive, y: Range.Inclusive) {
   require(
@@ -46,8 +47,12 @@ case class Bounds(x: Range.Inclusive, y: Range.Inclusive) {
     x.start <= bounds.x.start && bounds.x.end <= x.end &&
     y.start <= bounds.y.start && bounds.y.end <= y.end
 
-  def withinTileDistance(point: Vect2, distance: TileDistance) =
-    perimeter.exists(point.tileDistance(_) <= distance)
+  def withinDistance[A <: Ordered[A]](distance: A, f: Vect2 => A): Boolean =
+    perimeter.exists(f(_) <= distance)
+  def withinDistance(point: Vect2, distance: TileDistance): Boolean =
+    withinDistance(distance, point.tileDistance(_))
+  def withinDistance(point: Vect2, distance: RadialDistance): Boolean =
+    withinDistance(distance, point.radialDistance(_))
   def tileDistance(point: Vect2) = point.tileDistance(this)
 
   def intersects(bounds: Bounds) = ! (

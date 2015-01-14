@@ -2,11 +2,11 @@ package utils
 
 import implicits._
 
-object DoubleValueClass {
-  trait Numeric[A <: DoubleValueClass[A]] extends scala.Numeric[A] {
+object FloatValueClass {
+  trait Numeric[A <: FloatValueClass[A]] extends scala.Numeric[A] {
     override def plus(x: A, y: A) = x + y
-    override def toDouble(x: A) = x.value
-    override def toFloat(x: A) = x.value.toFloat
+    override def toFloat(x: A) = x.value
+    override def toDouble(x: A) = x.value.toDouble
     override def toInt(x: A) = x.value.toInt
     override def negate(x: A) = -x
     override def toLong(x: A) = x.value.toLong
@@ -16,9 +16,9 @@ object DoubleValueClass {
   }
 }
 
-trait DoubleValueClass[A <: DoubleValueClass[_]] extends Any with Ordered[A] {
-  def value: Double
-  def self(v: Double): A
+trait FloatValueClass[A <: FloatValueClass[_]] extends Any with Ordered[A] {
+  def value: Float
+  def self(v: Float): A
 
   def +(v: A) = self(value + v.value)
   def -(v: A) = self(value - v.value)

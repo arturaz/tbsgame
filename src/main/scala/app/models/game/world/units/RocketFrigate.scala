@@ -8,7 +8,7 @@ with FighterCompanion[RocketFrigate] {
   override val maxHp = HP(70)
   override val attack = Atk(85)
   override val attacks = Attacks(1)
-  override val attackRange = TileDistance(8)
+  override val attackRange = RadialDistance.Eight
   override val movement = TileDistance(6)
   override val visibility = RectDistance(2)
   override val cost = Resources(6)

@@ -14,7 +14,7 @@ import app.models.game.world.units._
 import app.models.game._
 import implicits._
 import netmsg.{Management, Base, Game, Messages}
-import utils.IntValueClass
+import utils.{FloatValueClass, DoubleValueClass, IntValueClass}
 import utils.data.NonEmptyVector
 import collection.JavaConverters._
 
@@ -132,6 +132,8 @@ object ProtobufCoding {
         setMostSignificant(id.getMostSignificantBits).build()
 
     implicit def convert(v: IntValueClass[_]): Int = v.value
+    implicit def convert(v: DoubleValueClass[_]): Double = v.value
+    implicit def convert(v: FloatValueClass[_]): Float = v.value
 
     implicit def convert(range: Range.Inclusive): Base.Range =
       Base.Range.newBuilder().setStart(range.start).setEnd(range.end).build()

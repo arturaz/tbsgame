@@ -15,6 +15,7 @@ case class Vect2(x: Int, y: Int) {
   def left = Vect2(x - 1, y)
   def right = Vect2(x + 1, y)
 
+  def radialDistance(v: Vect2) = RadialDistance(distance(v).toFloat)
   def distance(v: Vect2) = math.sqrt(sqrDistance(v))
   def sqrDistance(v: Vect2) = math.pow(x - v.x, 2) + math.pow(y - v.y, 2)
 

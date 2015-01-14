@@ -7,7 +7,7 @@ object Fortress extends WUnitCompanion[Fortress] with FighterCompanion[Fortress]
   override val maxHp = HP(185)
   override val attack = Atk(25)
   override val attacks = Attacks(2)
-  override val attackRange = TileDistance(3)
+  override val attackRange = RadialDistance.Three
   override val movement = TileDistance(2)
   override val cost = Resources(10)
   override val warpTime = WarpTime(0)

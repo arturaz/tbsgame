@@ -24132,9 +24132,9 @@ public final class Game {
         netmsg.Base.Range getAttack();
         netmsg.Base.RangeOrBuilder getAttackOrBuilder();
         
-        // required uint32 attack_range = 2;
+        // required float attack_range = 2;
         boolean hasAttackRange();
-        int getAttackRange();
+        float getAttackRange();
         
         // required uint32 attacks = 3;
         boolean hasAttacks();
@@ -24182,13 +24182,13 @@ public final class Game {
           return attack_;
         }
         
-        // required uint32 attack_range = 2;
+        // required float attack_range = 2;
         public static final int ATTACK_RANGE_FIELD_NUMBER = 2;
-        private int attackRange_;
+        private float attackRange_;
         public boolean hasAttackRange() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
-        public int getAttackRange() {
+        public float getAttackRange() {
           return attackRange_;
         }
         
@@ -24204,7 +24204,7 @@ public final class Game {
         
         private void initFields() {
           attack_ = netmsg.Base.Range.getDefaultInstance();
-          attackRange_ = 0;
+          attackRange_ = 0F;
           attacks_ = 0;
         }
         private byte memoizedIsInitialized = -1;
@@ -24239,7 +24239,7 @@ public final class Game {
             output.writeMessage(1, attack_);
           }
           if (((bitField0_ & 0x00000002) == 0x00000002)) {
-            output.writeUInt32(2, attackRange_);
+            output.writeFloat(2, attackRange_);
           }
           if (((bitField0_ & 0x00000004) == 0x00000004)) {
             output.writeUInt32(3, attacks_);
@@ -24259,7 +24259,7 @@ public final class Game {
           }
           if (((bitField0_ & 0x00000002) == 0x00000002)) {
             size += com.google.protobuf.CodedOutputStream
-              .computeUInt32Size(2, attackRange_);
+              .computeFloatSize(2, attackRange_);
           }
           if (((bitField0_ & 0x00000004) == 0x00000004)) {
             size += com.google.protobuf.CodedOutputStream
@@ -24396,7 +24396,7 @@ public final class Game {
               attackBuilder_.clear();
             }
             bitField0_ = (bitField0_ & ~0x00000001);
-            attackRange_ = 0;
+            attackRange_ = 0F;
             bitField0_ = (bitField0_ & ~0x00000002);
             attacks_ = 0;
             bitField0_ = (bitField0_ & ~0x00000004);
@@ -24535,9 +24535,9 @@ public final class Game {
                   setAttack(subBuilder.buildPartial());
                   break;
                 }
-                case 16: {
+                case 21: {
                   bitField0_ |= 0x00000002;
-                  attackRange_ = input.readUInt32();
+                  attackRange_ = input.readFloat();
                   break;
                 }
                 case 24: {
@@ -24641,15 +24641,15 @@ public final class Game {
             return attackBuilder_;
           }
           
-          // required uint32 attack_range = 2;
-          private int attackRange_ ;
+          // required float attack_range = 2;
+          private float attackRange_ ;
           public boolean hasAttackRange() {
             return ((bitField0_ & 0x00000002) == 0x00000002);
           }
-          public int getAttackRange() {
+          public float getAttackRange() {
             return attackRange_;
           }
-          public Builder setAttackRange(int value) {
+          public Builder setAttackRange(float value) {
             bitField0_ |= 0x00000002;
             attackRange_ = value;
             onChanged();
@@ -24657,7 +24657,7 @@ public final class Game {
           }
           public Builder clearAttackRange() {
             bitField0_ = (bitField0_ & ~0x00000002);
-            attackRange_ = 0;
+            attackRange_ = 0F;
             onChanged();
             return this;
           }
@@ -50297,7 +50297,7 @@ public final class Game {
       "ter\022*\n\005stats\030\001 \002(\0132\033.game.WObject.Fighte" +
       "r.Stats\022\023\n\013attacksLeft\030\002 \002(\r\022\r\n\005level\030\003 ",
       "\002(\r\032K\n\005Stats\022\033\n\006attack\030\001 \002(\0132\013.base.Rang" +
-      "e\022\024\n\014attack_range\030\002 \002(\r\022\017\n\007attacks\030\003 \002(\r" +
+      "e\022\024\n\014attack_range\030\002 \002(\002\022\017\n\007attacks\030\003 \002(\r" +
       "\032\207\001\n\022MoveAttackActioned\0225\n\005stats\030\001 \002(\0132&" +
       ".game.WObject.MoveAttackActioned.Stats\022\031" +
       "\n\021moved_or_attacked\030\002 \002(\010\032\037\n\005Stats\022\026\n\016ac" +

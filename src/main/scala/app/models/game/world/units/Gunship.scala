@@ -7,7 +7,7 @@ object Gunship extends WUnitCompanion[Gunship] with FighterCompanion[Gunship] {
   override val maxHp = HP(80)
   override val attack = Atk(55)
   override val attacks = Attacks(3)
-  override val attackRange = TileDistance(3)
+  override val attackRange = RadialDistance.Three
   override val cost = Resources(6)
   override val populationCost = Population(2)
   override val warpTime = WarpTime(0)

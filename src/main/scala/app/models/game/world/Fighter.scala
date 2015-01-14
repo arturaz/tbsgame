@@ -44,7 +44,7 @@ trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
   }
   def randomAttack: Atk = Atk(attackDamageRange.random)
 
-  val attackRange: TileDistance
+  val attackRange: RadialDistance
   val attacks: Attacks
   val critical: Chance = Chance(0.1)
   val criticalMultiplier: Double = 2
@@ -92,7 +92,7 @@ trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
   def hasAttacksLeft = attacksLeft.isNotZero
 
   def canReachAttack(obj: OwnedObj) =
-    obj.bounds.withinTileDistance(position, companion.attackRange)
+    obj.bounds.withinDistance(position, companion.attackRange)
 
   def cantAttackReason(obj: OwnedObj, world: World): Option[String] = {
     if (noAttacksLeft) Some(s"$self has already used all its attacks!")

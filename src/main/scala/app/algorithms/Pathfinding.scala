@@ -75,12 +75,12 @@ object Pathfinding {
   /* Finds objects which can be attacked with moving. */
   private def attackSearch[A](
     /* Only objects that don't move or are 1x1 sized can use this method. */
-    origin: Vect2, movementRange: TileDistance, attackRange: TileDistance,
+    origin: Vect2, movementRange: TileDistance, attackRange: RadialDistance,
     targets: Iterable[A], worldBounds: Bounds, obstacles: WorldObjs,
     resultsNeeded: Int=Int.MaxValue
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = {
     def attackableTargets(from: Vect2): Iterable[A] = targets.filter { target =>
-      aToBounds(target).withinTileDistance(from, attackRange)
+      aToBounds(target).withinDistance(from, attackRange)
     }
     def attackableResults(from: Vect2, currentNode: Node): Map[A, SearchRes[A]] =
       attackableTargets(from).map { target =>
