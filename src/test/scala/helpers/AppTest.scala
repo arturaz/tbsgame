@@ -52,4 +52,12 @@ with TypeCheckedTripleEquals
   } yield SizedTestWObject(position, size)
   implicit val arbWObject: Arbitrary[WObject] =
     Arbitrary(Gen.oneOf(wObjectGen, sizedWObjectGen))
+
+  val offsetGen = {
+    val offset = Gen.chooseNum(-1, 1)
+    val offsetWOZero = Gen.oneOf(-1, 1)
+    offset.flatMap { x =>
+      (if (x == 0) offsetWOZero else offset).map { y => Vect2(x, y) }
+    }
+  }
 }

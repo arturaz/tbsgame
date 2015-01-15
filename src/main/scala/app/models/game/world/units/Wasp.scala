@@ -8,7 +8,7 @@ object Wasp extends WUnitCompanion[Wasp] with FighterCompanion[Wasp] {
   override val attack = Atk(56)
   override val attacks = Attacks(2)
   override val attackRange = RadialDistance.Three
-  override val movement = TileDistance(3)
+  override val movement = Movement.fromTiles(3)
   override val visibility = RectDistance(4)
   override val warpTime = WarpTime(0)
   override val cost = Resources(10)
@@ -18,7 +18,7 @@ object Wasp extends WUnitCompanion[Wasp] with FighterCompanion[Wasp] {
   override def warp(owner: Player, position: Vect2) = Wasp(position, owner)
   override def setWarpState(newState: WarpTime)(self: Wasp) =
     self.copy(warpState = newState)
-  override def setMoveValues(position: Vect2, movementLeft: TileDistance)(self: Wasp) =
+  override def setMoveValues(position: Vect2, movementLeft: Movement)(self: Wasp) =
     self.copy(position = position, movementLeft = movementLeft)
   override def withMovedOrAttacked(value: Boolean)(self: Wasp) =
     self.copy(movedOrAttacked = value)
@@ -31,7 +31,7 @@ case class Wasp(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=Wasp.maxHp, xp: XP=Wasp.InitialXP,
   attacksLeft: Attacks=Wasp.InitialAttacks,
-  movementLeft: TileDistance=Wasp.movement, warpState: WarpTime=Wasp.InitialWarpState,
+  movementLeft: Movement=Wasp.movement, warpState: WarpTime=Wasp.InitialWarpState,
   movedOrAttacked: Boolean=Wasp.InitialMovedOrAttacked
 ) extends WUnit with Fighter {
   type Self = Wasp

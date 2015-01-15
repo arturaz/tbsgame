@@ -9,15 +9,15 @@ with FighterCompanion[RocketFrigate] {
   override val attack = Atk(85)
   override val attacks = Attacks(1)
   override val attackRange = RadialDistance.Eight
-  override val movement = TileDistance(6)
+  override val movement = Movement.fromTiles(6)
   override val visibility = RectDistance(2)
   override val cost = Resources(6)
-  override val populationCost = Population(2)
+  override val populationCost = Population(3)
   override val warpTime = WarpTime(0)
   override val kind = WObjKind.Light
 
   override protected def setMoveValues(
-    position: Vect2, movementLeft: TileDistance
+    position: Vect2, movementLeft: Movement
   )(self: RocketFrigate) = self.copy(position = position, movementLeft = movementLeft)
   override def setWarpState(newState: WarpTime)(self: RocketFrigate) =
     self.copy(warpState = newState)
@@ -35,7 +35,7 @@ case class RocketFrigate(
   id: WObject.Id=WObject.newId, hp: HP=RocketFrigate.maxHp,
   xp: XP=RocketFrigate.InitialXP,
   attacksLeft: Attacks=RocketFrigate.InitialAttacks,
-  movementLeft: TileDistance=RocketFrigate.movement,
+  movementLeft: Movement=RocketFrigate.movement,
   warpState: WarpTime=RocketFrigate.InitialWarpState,
   movedOrAttacked: Boolean=RocketFrigate.InitialMovedOrAttacked
 ) extends WUnit with Fighter {

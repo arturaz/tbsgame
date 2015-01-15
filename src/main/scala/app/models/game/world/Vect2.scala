@@ -15,6 +15,11 @@ case class Vect2(x: Int, y: Int) {
   def left = Vect2(x - 1, y)
   def right = Vect2(x + 1, y)
 
+  def isNextTo(v: Vect2) = {
+    if (x == v.x && y == v.y) false
+    else math.abs(x - v.x) <= 1 && math.abs(y - v.y) <= 1
+  }
+
   def radialDistance(v: Vect2) = RadialDistance(distance(v).toFloat)
   def distance(v: Vect2) = math.sqrt(sqrDistance(v))
   def sqrDistance(v: Vect2) = math.pow(x - v.x, 2) + math.pow(y - v.y, 2)
@@ -22,6 +27,9 @@ case class Vect2(x: Int, y: Int) {
   def tileDistance(v: Vect2): TileDistance =
     TileDistance(math.abs(x - v.x) + math.abs(y - v.y))
   def tileDistance(b: Bounds): TileDistance = b.perimeter.map(tileDistance).min
+
+  def movementDistance(v: Vect2): Movement =
+    Movement.fromAbsolute((distance(v) * Movement.Multiplier).toInt)
 
   def toBounds = Bounds(this, Vect2.one)
 }

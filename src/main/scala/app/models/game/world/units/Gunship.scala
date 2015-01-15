@@ -13,7 +13,7 @@ object Gunship extends WUnitCompanion[Gunship] with FighterCompanion[Gunship] {
   override val warpTime = WarpTime(0)
   override val kind = WObjKind.Heavy
   override val visibility = RectDistance(3)
-  override val movement = TileDistance(6)
+  override val movement = Movement.fromTiles(6)
 
   override protected def withMovedOrAttacked(value: Boolean)(self: Gunship) =
     self.copy(movedOrAttacked = value)
@@ -22,7 +22,7 @@ object Gunship extends WUnitCompanion[Gunship] with FighterCompanion[Gunship] {
   override protected def withAttacksLeft(value: Attacks)(self: Gunship) =
     self.copy(attacksLeft = value)
   override protected def setMoveValues(
-    position: Vect2, movementLeft: TileDistance
+    position: Vect2, movementLeft: Movement
   )(self: Gunship) = self.copy(position = position, movementLeft = movementLeft)
   override def setWarpState(newState: WarpTime)(self: Gunship) =
     self.copy(warpState = newState)
@@ -33,7 +33,7 @@ case class Gunship(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=Gunship.maxHp, xp: XP=Gunship.InitialXP,
   attacksLeft: Attacks=Gunship.InitialAttacks,
-  movementLeft: TileDistance=Gunship.movement,
+  movementLeft: Movement=Gunship.movement,
   warpState: WarpTime=Gunship.InitialWarpState,
   movedOrAttacked: Boolean=Gunship.InitialMovedOrAttacked
 ) extends WUnit with Fighter {

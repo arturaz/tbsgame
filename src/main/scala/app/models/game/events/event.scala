@@ -79,7 +79,7 @@ case class ObjDestroyedEvt(world: World, obj: WObject) extends BoundedEvent {
 }
 
 case class MoveEvt(
-  world: World, oldObj: MovableWObject, to: Vect2, movesLeft: TileDistance
+  world: World, oldObj: MovableWObject, to: Vect2, movesLeft: Movement
 ) extends Event {
   override def asViewedBy(owner: Owner) =
     if (world.isVisibleFor(owner, oldObj.position)) Iterable(this)

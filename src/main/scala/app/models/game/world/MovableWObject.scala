@@ -9,9 +9,9 @@ import utils.data.NonEmptyVector
 trait MovableWObjectOps[Self <: MovableWObject]
 extends WObjectOps with MoveAttackActionedOps[Self]
 { _: MovableWObjectStats =>
-  protected def setMoveValues(position: Vect2, movementLeft: TileDistance)(self: Self): Self
+  protected def setMoveValues(position: Vect2, movementLeft: Movement)(self: Self): Self
 
-  def setMoveValues(world: World, self: Self, newMovement: TileDistance): Evented[Self] = {
+  def setMoveValues(world: World, self: Self, newMovement: Movement): Evented[Self] = {
     val newSelf = self |> setMoveValues(self.position, newMovement)
     Evented(
       newSelf,
@@ -28,7 +28,7 @@ extends WObjectOps with MoveAttackActionedOps[Self]
       newSelf <- withMovedOrAttackedEvt(true)(world, self)
       newSelf <- Evented(
         newSelf |>
-        setMoveValues(target, newSelf.movementLeft - self.position.tileDistance(target))
+        setMoveValues(target, newSelf.movementLeft - self.position.movementDistance(target))
       )
       newSelf <- Evented(newSelf, MoveEvt(world, self, target, newSelf.movementLeft))
     } yield newSelf
@@ -36,7 +36,7 @@ extends WObjectOps with MoveAttackActionedOps[Self]
 }
 
 trait MovableWObjectStats extends WObjectStats with MoveAttackActionedStats {
-  val movement: TileDistance
+  val movement: Movement
 }
 
 trait MovableWObjectCompanion[Self <: MovableWObject]
@@ -48,8 +48,7 @@ with Mobility[Mobility.Movable.type] { traitSelf =>
   type Self >: traitSelf.type <: MovableWObject
   type Companion <: MovableWObjectOps[Self] with MovableWObjectStats
 
-  val movementLeft: TileDistance
-  def movementZone = movementLeft.reachable(position)
+  val movementLeft: Movement
 
   override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
     super.teamTurnStartedSelf(world) |>
