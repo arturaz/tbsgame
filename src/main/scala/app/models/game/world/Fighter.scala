@@ -126,7 +126,7 @@ trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
           )(world, newSelf)
           newSelf <- companion.withNewHPEvt(
             if (self.level == newSelf.level) newSelf.hp
-            else newSelf.hp max newSelf.maxHp
+            else (newSelf.hp + newSelf.maxHp - self.maxHp) min newSelf.maxHp
           )(world, newSelf)
         } yield newSelf,
         newObj
