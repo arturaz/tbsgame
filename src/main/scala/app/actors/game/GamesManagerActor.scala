@@ -1,12 +1,12 @@
 package app.actors.game
 
 import akka.actor.SupervisorStrategy.Stop
-import akka.actor.{Terminated, OneForOneStrategy, Actor, ActorRef}
+import akka.actor._
 import akka.event.LoggingReceive
 import app.models.User
 import implicits._
 
-class GamesManagerActor extends Actor {
+class GamesManagerActor extends Actor with ActorLogging {
   private[this] var user2game = Map.empty[User, ActorRef]
   private[this] var game2user = Map.empty[ActorRef, User]
 
@@ -19,6 +19,7 @@ class GamesManagerActor extends Actor {
       user2game.get(user).fold2(createGame(user, sender()), _.tell(msg, sender()))
     case Terminated(ref) =>
       game2user.get(ref).foreach { user =>
+        log.info("Game {} terminated for user {}", ref, user)
         game2user -= ref
         user2game -= user
       }
@@ -29,6 +30,7 @@ class GamesManagerActor extends Actor {
     context.watch(game)
     user2game += user -> game
     game2user += game -> user
+    log.info("Game {} created for user {}", game, user)
     game
   }
 }
