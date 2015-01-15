@@ -5,11 +5,11 @@ import app.models.game.{Population, Actions, Player}
 
 object Corvette extends WUnitCompanion[Corvette] 
 with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
-  override val maxHp = HP(70)
-  override val attack = Atk(62)
+  override val maxHp = HP(120)
+  override val attack = Atk(70)
   override val attacks = Attacks(2)
-  override val attackRange = RadialDistance.Five
-  override val movement = Movement.fromTiles(6)
+  override val attackRange = RadialDistance.Four
+  override val movement = Movement.fromTiles(15)
   override val visibility = RectDistance(4)
   override val warpTime = WarpTime(0)
   override val cost = Resources(6)

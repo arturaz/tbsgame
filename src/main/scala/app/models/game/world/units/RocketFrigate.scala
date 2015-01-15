@@ -5,14 +5,14 @@ import app.models.game.world._
 
 object RocketFrigate extends WUnitCompanion[RocketFrigate]
 with FighterCompanion[RocketFrigate] {
-  override val maxHp = HP(70)
-  override val attack = Atk(85)
+  override val maxHp = HP(30)
+  override val attack = Atk(160)
   override val attacks = Attacks(1)
   override val attackRange = RadialDistance.Eight
   override val movement = Movement.fromTiles(6)
   override val visibility = RectDistance(2)
   override val cost = Resources(6)
-  override val populationCost = Population(3)
+  override val populationCost = Population(4)
   override val warpTime = WarpTime(0)
   override val kind = WObjKind.Light
 
