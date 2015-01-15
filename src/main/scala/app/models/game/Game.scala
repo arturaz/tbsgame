@@ -92,11 +92,13 @@ object Game {
     def withPopulation(
       human: Human, populationNeeded: Population, world: World
     )(f: Evented[World] => Game.Result): Game.Result = {
-      val populationLeft = world.populationLeftFor(human)
-      if (populationLeft >= populationNeeded)
-        f(Evented(world, PopulationChangeEvt(human, populationLeft - populationNeeded)))
+      val population = world.populationFor(human)
+      if (population.left >= populationNeeded) f(Evented(
+        world,
+        PopulationChangeEvt(human, population.withValue(_ + populationNeeded))
+      ))
       else
-        s"Needed $populationNeeded, but $human only had $populationLeft!".left
+        s"Needed $populationNeeded, but $human only had $population!".left
     }
 
     def withWarpable(
@@ -187,7 +189,7 @@ case class Game private (
       updated(world, human -> newState),
       JoinEvt(
         human,
-        Some(HumanState(startingResources, world.populationLeftFor(human), newState))
+        Some(HumanState(startingResources, world.populationFor(human), newState))
       )
     )
 

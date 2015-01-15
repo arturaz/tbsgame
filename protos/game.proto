@@ -168,7 +168,7 @@ message PlayerState { // {{{
   required uint32 resources = 1;
   required uint32 actions = 2;
   required bool turn_ended = 3;
-  required uint32 population = 4;
+  required base.ValWithMax population = 4;
 } // }}}
 
 message InitPlayer { // {{{
@@ -510,5 +510,5 @@ message GameWonEvt {
 
 message PopulationChangeEvt {
   required PlayerID player_id = 1;
-  required uint32 new_population = 2;
+  required base.ValWithMax new_population = 2;
 }

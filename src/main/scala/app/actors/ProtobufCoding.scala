@@ -14,7 +14,7 @@ import app.models.game.world.units._
 import app.models.game._
 import implicits._
 import netmsg.{Management, Base, Game, Messages}
-import utils.{FloatValueClass, DoubleValueClass, IntValueClass}
+import utils.{ValWithMax, FloatValueClass, DoubleValueClass, IntValueClass}
 import utils.data.NonEmptyVector
 import collection.JavaConverters._
 
@@ -123,6 +123,9 @@ object ProtobufCoding {
 
     def valWithMax(current: Int, maximum: Int): Base.ValWithMax =
       Base.ValWithMax.newBuilder().setCurrent(current).setMaximum(maximum).build()
+
+    implicit def convert[A <: IntValueClass[A]](vwm: ValWithMax[A]): Base.ValWithMax =
+      Base.ValWithMax.newBuilder().setCurrent(vwm.value).setMaximum(vwm.max).build()
 
     /* Data */
 

@@ -79,7 +79,7 @@ object GameActor {
         toRight(s"can't get game state for $human in $states").right
       resources <- resourceMap.get(human).
         toRight(s"can't get game state for $human in $resourceMap").right
-    } yield HumanState(resources, visibleGame.world.populationLeftFor(p), gameState)
+    } yield HumanState(resources, visibleGame.world.populationFor(p), gameState)
 
     stateFor(human).right.map { selfState =>
       Out.Init(
@@ -175,7 +175,7 @@ class GameActor private (
         destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
       ),
       HumanTeam -> Objectives(
-        Some(Objective.GatherResources(world, Resources(100), Percentage(0.1))),
+        Some(Objective.GatherResources(world, Resources(200), Percentage(0.15))),
         Some(Objective.CollectVPs(VPS(10))),
         Some(Objective.DestroyAllCriticalObjects)
       )

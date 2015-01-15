@@ -12,7 +12,7 @@ import app.models.game.world.units.{Fortress, RayShip, Wasp}
 import implicits._
 import infrastructure.PrefixedLoggingAdapter
 import monocle.{Lenser, SimpleLens}
-import utils.IntValueClass
+import utils.{ValWithMax, IntValueClass}
 
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
@@ -84,8 +84,8 @@ case class World private (
           case t: Team => world.playerStates.keys.filter(_.team === t).toVector
           case p: Player => Vector(p)
         }).flatMap { player =>
-          val populationBefore = this.populationLeftFor(player)
-          val populationNow = world.populationLeftFor(player)
+          val populationBefore = this.populationFor(player)
+          val populationNow = world.populationFor(player)
           if (populationBefore === populationNow) Vector.empty
           else Vector(PopulationChangeEvt(player, populationNow))
         }
@@ -165,12 +165,16 @@ case class World private (
   def subResources(player: Player, count: Resources): Either[String, Evented[World]] =
     addResources(player, -count)
 
-  def populationLeftFor(owner: Owner) = objects.collect {
-    case gp: GivingPopulation if gp.owner.isFriendOf(owner) =>
-      gp.populationGiven
-    case oo: Warpable if oo.owner === owner =>
-      -oo.companion.populationCost
-  }.sum
+  def populationFor(owner: Owner): ValWithMax[Population] = objects.foldLeft(
+    ValWithMax(Population(0), Population(0))
+  ) {
+    case (state, gp: GivingPopulation) if gp.owner.isFriendOf(owner) =>
+      state.withMax(_ + gp.populationGiven)
+    case (state, oo: Warpable) if oo.owner === owner =>
+      state.withValue(_ + oo.companion.populationCost)
+    case (state, _) =>
+      state
+  }
 
   def vps(owner: Owner) = vpsMap.getOrElse(owner.team, VPS(0))
 

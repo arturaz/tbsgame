@@ -3,6 +3,7 @@ package app.models.game.events
 import app.models.game._
 import app.models.game.world._
 import implicits._
+import utils.ValWithMax
 
 /* Event that cannot be viewed anymore. */
 sealed trait FinalEvent
@@ -30,7 +31,7 @@ sealed trait BoundedEvent extends VisibleEvent {
 }
 
 case class HumanState(
-  resources: Resources, population: Population, gameState: GameHumanState
+  resources: Resources, population: ValWithMax[Population], gameState: GameHumanState
 )
 
 case class JoinEvt(human: Human, state: Option[HumanState]) extends Event {
@@ -159,7 +160,7 @@ case class ActionsChangeEvt(
 }
 
 case class PopulationChangeEvt(
-  player: Player, population: Population
+  player: Player, population: ValWithMax[Population]
 ) extends VisibleEvent {
   override def visibleBy(owner: Owner) = owner.isFriendOf(player)
 }
