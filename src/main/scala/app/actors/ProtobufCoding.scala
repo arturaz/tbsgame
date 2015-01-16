@@ -220,9 +220,17 @@ object ProtobufCoding {
     implicit def convert(obj: GivingActions): Game.WObject.GivingActions =
       Game.WObject.GivingActions.newBuilder().setStats(obj.companion).build()
 
+    implicit def convert(obj: GivingPopulationStats): Game.WObject.GivingPopulation.Stats =
+      Game.WObject.GivingPopulation.Stats.newBuilder().
+        setPopulationGiven(obj.populationGiven.value).build()
+
+    implicit def convert(obj: GivingPopulation): Game.WObject.GivingPopulation =
+      Game.WObject.GivingPopulation.newBuilder().setStats(obj.companion).build()
+
     implicit def convert(obj: WarpableStats): Game.WObject.Warpable.Stats =
       Game.WObject.Warpable.Stats.newBuilder().setCost(obj.cost).
-        setWarpTime(obj.warpTime).setGroup(obj.group).build()
+        setWarpTime(obj.warpTime).setPopulationCost(obj.populationCost).
+        setGroup(obj.group).build()
 
     implicit def convert(obj: Warpable): Game.WObject.Warpable =
       Game.WObject.Warpable.newBuilder().setStats(obj.companion).
@@ -286,6 +294,7 @@ object ProtobufCoding {
         mapVal { b => obj.cast[SizedWObject].fold2(b, o => b.setSizedObj(o)) }.
         mapVal { b => obj.cast[OwnedObj].fold2(b, o => b.setOwnedObj(o)) }.
         mapVal { b => obj.cast[GivingActions].fold2(b, o => b.setGivingActions(o)) }.
+        mapVal { b => obj.cast[GivingPopulation].fold2(b, o => b.setGivingPopulation(o)) }.
         mapVal { b => obj.cast[Warpable].fold2(b, o => b.setWarpable(o)) }.
         mapVal { b => obj.cast[SpecialAction].fold2(b, o => b.setSpecialAction(o)) }.
         mapVal { b => obj.cast[Fighter].fold2(b, o => b.setFighter(o)) }.
@@ -318,6 +327,7 @@ object ProtobufCoding {
         mapVal { b => obj.cast[SizedWObjectStats].fold2(b, o => b.setSizedObj(o)) }.
         mapVal { b => obj.cast[OwnedObjStats].fold2(b, o => b.setOwnedObj(o)) }.
         mapVal { b => obj.cast[GivingActionsStats].fold2(b, o => b.setGivingActions(o)) }.
+        mapVal { b => obj.cast[GivingPopulationStats].fold2(b, o => b.setGivingPopulation(o)) }.
         mapVal { b => obj.cast[WarpableStats].fold2(b, o => b.setWarpable(o)) }.
         mapVal { b => obj.cast[SpecialActionStats].fold2(b, o => b.setSpecialAction(o)) }.
         mapVal { b => obj.cast[FighterStats].fold2(b, o => b.setFighter(o)) }.

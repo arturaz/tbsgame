@@ -247,7 +247,8 @@ message WObject { // {{{
     message Stats {
       required uint32 warp_time = 1;
       required uint32 cost = 2;
-      required Group group = 3;
+      required uint32 population_cost = 3;
+      required Group group = 4;
     }
 
     required Stats stats = 1;
@@ -290,6 +291,14 @@ message WObject { // {{{
 
     required Stats stats = 1;
     required uint32 movement = 2;
+  }
+
+  message GivingPopulation {
+    message Stats {
+      required uint32 population_given = 1;
+    }
+
+    required Stats stats = 1;
   }
 
   /* End of Trait properties }}} */
@@ -335,6 +344,7 @@ message WObject { // {{{
   optional Fighter fighter = 1005;
   optional MoveAttackActioned move_attack_actioned = 1006;
   optional Movable movable = 1007;
+  optional GivingPopulation giving_population = 1008;
 
   /* Concrete implementation properties */
   optional Asteroid asteroid = 2000;
@@ -353,6 +363,7 @@ message WObject { // {{{
     optional Fighter.Stats fighter = 1005;
     optional MoveAttackActioned.Stats move_attack_actioned = 1006;
     optional Movable.Stats movable = 1007;
+    optional GivingPopulation.Stats giving_population = 1008;
 
     /* Concrete implementation properties */
     optional Extractor.Stats extractor = 2001;
