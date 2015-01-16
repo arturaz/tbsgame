@@ -18,6 +18,10 @@ libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.3.6"
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.1.0"
 
+libraryDependencies += "com.typesafe.slick" %% "slick" % "2.1.0"
+
+libraryDependencies += "com.github.t3hnar" %% "scala-bcrypt" % "2.4"
+
 val monocleLibVer = "0.5.1"
 
 libraryDependencies += "com.chuusai" %% "shapeless" % "2.0.0"

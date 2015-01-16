@@ -1,6 +1,10 @@
+import java.io.ByteArrayOutputStream
+import java.nio.{ByteOrder, ByteBuffer}
+import java.util.UUID
+
 import akka.event.LoggingAdapter
 import infrastructure.PrefixedLoggingAdapter
-import utils.CompositeOrdering
+import utils.{Base36, CompositeOrdering}
 
 import scala.reflect.ClassTag
 import scala.util.Random
@@ -96,9 +100,33 @@ package object implicits {
     @inline def tap(f: A => Unit) = { f(a); a }
     @inline def cast[B : ClassTag]: Option[B] =
       a match { case b: B => Some(b); case _ => None }
+
+    @inline def some: Option[A] = Some(a)
   }
 
   implicit class LoggingAdapterExts(val log: LoggingAdapter) extends AnyVal {
     @inline def prefixed(prefix: String) = new PrefixedLoggingAdapter(prefix, log)
+  }
+
+  implicit class UUIDExts(val uuid: UUID) extends AnyVal {
+    @inline def shortStr = s"${Base36.encode(uuid.getLeastSignificantBits)}-${
+      Base36.encode(uuid.getMostSignificantBits)}"
+
+    def toByteArray: Array[Byte] = {
+      val bytes = new Array[Byte](16)
+      val bb = ByteBuffer.wrap(bytes)
+      bb.order(ByteOrder.BIG_ENDIAN)
+      bb.putLong(uuid.getMostSignificantBits)
+      bb.putLong(uuid.getLeastSignificantBits)
+      bb.array()
+    }
+  }
+
+  def parseUUID(arr: Array[Byte]): String \/ UUID = {
+    if (arr.size != 16) s"Expected array size 16, but was ${arr.size}".leftZ
+    else {
+      val bb = ByteBuffer.wrap(arr)
+      new UUID(bb.getLong, bb.getLong).rightZ
+    }
   }
 }

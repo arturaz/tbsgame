@@ -1,6 +1,7 @@
 package utils
 
 import java.util.UUID
+import implicits._
 
 /**
  * Created by arturas on 2014-10-26.
@@ -8,8 +9,5 @@ import java.util.UUID
 trait IdObj extends Any {
   def id: UUID
   protected def prefix: String
-  override def toString = s"$prefix[${
-    strPart(id.getLeastSignificantBits)}-${strPart(id.getMostSignificantBits)
-  }}]"
-  private[this] def strPart(l: Long) = Base36.encode(l)
+  override def toString = s"$prefix[${id.shortStr}}]"
 }

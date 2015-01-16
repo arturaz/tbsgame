@@ -6,27 +6,67 @@ import "game.proto";
 option java_package = "netmsg";
 
 message FromClient {
-  optional Login login = 1;
-  optional JoinGame join_game = 2;
+  optional AutoRegister auto_register = 1;
+  optional CheckNameAvailability check_name_availability = 2;
+  optional ChangeCredentials change_credentials = 3;
+  optional Login login = 4;
+  optional JoinGame join_game = 5;
 }
 
-message Login {
+message FromServer {
+  optional AutoRegisterResponse auto_register = 1;
+  optional CheckNameAvailabilityResponse check_name_availability = 2;
+  optional ChangeCredentialsResponse change_credentials = 3;
+  optional LoginResponse login = 4;
+  optional GameJoined game_joined = 5;
+}
+
+
+message Credentials {
   required string name = 1;
   required string password = 2;
 }
 
-message JoinGame {}
 
-message FromServer {
-  optional LoginResponse login = 1;
-  optional GameJoined game_joined = 2;
+/* Generate credentials and return them. */
+message AutoRegister {}
+message AutoRegisterResponse {
+  // Generated credentials.
+  required Credentials credentials = 1;
 }
 
+
+/* Check if the name is available */
+message CheckNameAvailability {
+  required string name = 1;
+}
+message CheckNameAvailabilityResponse {
+  /* Might be that the current name in client isn't one that was checked. */
+  required string name = 1;
+  required bool available = 2;
+}
+
+
+/* Change username/password */
+message ChangeCredentials {
+  required Credentials credentials = 1;
+}
+message ChangeCredentialsResponse {
+  /* Name might get taken. */
+  required bool success = 1;
+}
+
+
+message Login {
+  required Credentials credentials = 1;
+}
 message LoginResponse {
   // not set if credentials are wrong.
   optional base.UUID id = 1;
 }
 
+
+message JoinGame {}
 message GameJoined {
   required game.Player player = 1;
 }

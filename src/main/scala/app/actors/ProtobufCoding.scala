@@ -4,6 +4,7 @@ import java.util.UUID
 
 import akka.util.ByteString
 import app.actors.NetClient.GameInMsg
+import app.actors.NetClient.Management.Credentials
 import app.actors.game.GameActor
 import app.algorithms.Pathfinding.Path
 import app.models.game.events._
@@ -86,7 +87,9 @@ object ProtobufCoding {
       import app.actors.NetClient.Management.In._
 
       if (m.hasLogin)
-        m.getLogin.mapVal(m => Login(m.getName, m.getPassword)).right
+        m.getLogin.mapVal(m => Login(Credentials(
+          m.getCredentials.getName, m.getCredentials.getPassword
+        ))).right
       else if (m.hasJoinGame)
         m.getJoinGame.mapVal(_ => JoinGame).right
       else
