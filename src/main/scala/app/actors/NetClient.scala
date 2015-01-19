@@ -11,7 +11,6 @@ import app.models.game.Human
 import app.persistence.tables.Tables
 import implicits._
 import app.persistence.DBDriver._
-import com.github.t3hnar.bcrypt._
 
 import scala.util.Try
 
@@ -20,6 +19,8 @@ object NetClient {
 
   object Management {
     case class PlainPassword(value: String) extends AnyVal {
+      import com.github.t3hnar.bcrypt._
+
       def encrypted = value.bcrypt
     }
     case class Credentials(name: String, password: PlainPassword)
@@ -91,8 +92,8 @@ class NetClient(
 
   private[this] def notLoggedIn: Receive = {
     def logIn(user: User): Unit = {
-      LoggedIn(user.id).out()
       context.become(loggedIn(user))
+      LoggedIn(user.id).out()
     }
 
     LoggingReceive(({

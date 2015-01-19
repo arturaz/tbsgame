@@ -6,9 +6,10 @@ import java.nio.ByteOrder
 import akka.actor.{Props, Actor, ActorLogging, ActorRef}
 import akka.io.Tcp._
 import akka.io.{IO, Tcp}
+import app.persistence.DBDriver
 
 class Server(
-  port: Int, gamesManager: ActorRef
+  port: Int, gamesManager: ActorRef, db: DBDriver.Database
 )(implicit byteOrder: ByteOrder) extends Actor with ActorLogging {
   import context.system
 
@@ -29,7 +30,7 @@ class Server(
       val connection = sender()
       val msgHandler = context.actorOf(Props(new MsgHandler(
         connection,
-        handlerRef => Props(new NetClient(handlerRef, gamesManager))
+        handlerRef => Props(new NetClient(handlerRef, gamesManager, db))
       )), s"${remote.getHostString}-${remote.getPort}")
       connection ! Register(msgHandler)
   }
