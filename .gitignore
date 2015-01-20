@@ -3,3 +3,6 @@
 /project/project/target
 /.idea
 *.iml
+
+# game database
+app.db*

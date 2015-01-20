@@ -1043,27 +1043,22 @@ public final class Management {
   public interface FromServerOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // optional .management.AutoRegisterResponse auto_register = 1;
-    boolean hasAutoRegister();
-    netmsg.Management.AutoRegisterResponse getAutoRegister();
-    netmsg.Management.AutoRegisterResponseOrBuilder getAutoRegisterOrBuilder();
-    
-    // optional .management.CheckNameAvailabilityResponse check_name_availability = 2;
+    // optional .management.CheckNameAvailabilityResponse check_name_availability = 1;
     boolean hasCheckNameAvailability();
     netmsg.Management.CheckNameAvailabilityResponse getCheckNameAvailability();
     netmsg.Management.CheckNameAvailabilityResponseOrBuilder getCheckNameAvailabilityOrBuilder();
     
-    // optional .management.ChangeCredentialsResponse change_credentials = 3;
+    // optional .management.ChangeCredentialsResponse change_credentials = 2;
     boolean hasChangeCredentials();
     netmsg.Management.ChangeCredentialsResponse getChangeCredentials();
     netmsg.Management.ChangeCredentialsResponseOrBuilder getChangeCredentialsOrBuilder();
     
-    // optional .management.LoginResponse login = 4;
+    // optional .management.LoginResponse login = 3;
     boolean hasLogin();
     netmsg.Management.LoginResponse getLogin();
     netmsg.Management.LoginResponseOrBuilder getLoginOrBuilder();
     
-    // optional .management.GameJoined game_joined = 5;
+    // optional .management.GameJoined game_joined = 4;
     boolean hasGameJoined();
     netmsg.Management.GameJoined getGameJoined();
     netmsg.Management.GameJoinedOrBuilder getGameJoinedOrBuilder();
@@ -1097,24 +1092,11 @@ public final class Management {
     }
     
     private int bitField0_;
-    // optional .management.AutoRegisterResponse auto_register = 1;
-    public static final int AUTO_REGISTER_FIELD_NUMBER = 1;
-    private netmsg.Management.AutoRegisterResponse autoRegister_;
-    public boolean hasAutoRegister() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public netmsg.Management.AutoRegisterResponse getAutoRegister() {
-      return autoRegister_;
-    }
-    public netmsg.Management.AutoRegisterResponseOrBuilder getAutoRegisterOrBuilder() {
-      return autoRegister_;
-    }
-    
-    // optional .management.CheckNameAvailabilityResponse check_name_availability = 2;
-    public static final int CHECK_NAME_AVAILABILITY_FIELD_NUMBER = 2;
+    // optional .management.CheckNameAvailabilityResponse check_name_availability = 1;
+    public static final int CHECK_NAME_AVAILABILITY_FIELD_NUMBER = 1;
     private netmsg.Management.CheckNameAvailabilityResponse checkNameAvailability_;
     public boolean hasCheckNameAvailability() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     public netmsg.Management.CheckNameAvailabilityResponse getCheckNameAvailability() {
       return checkNameAvailability_;
@@ -1123,11 +1105,11 @@ public final class Management {
       return checkNameAvailability_;
     }
     
-    // optional .management.ChangeCredentialsResponse change_credentials = 3;
-    public static final int CHANGE_CREDENTIALS_FIELD_NUMBER = 3;
+    // optional .management.ChangeCredentialsResponse change_credentials = 2;
+    public static final int CHANGE_CREDENTIALS_FIELD_NUMBER = 2;
     private netmsg.Management.ChangeCredentialsResponse changeCredentials_;
     public boolean hasChangeCredentials() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     public netmsg.Management.ChangeCredentialsResponse getChangeCredentials() {
       return changeCredentials_;
@@ -1136,11 +1118,11 @@ public final class Management {
       return changeCredentials_;
     }
     
-    // optional .management.LoginResponse login = 4;
-    public static final int LOGIN_FIELD_NUMBER = 4;
+    // optional .management.LoginResponse login = 3;
+    public static final int LOGIN_FIELD_NUMBER = 3;
     private netmsg.Management.LoginResponse login_;
     public boolean hasLogin() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
+      return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     public netmsg.Management.LoginResponse getLogin() {
       return login_;
@@ -1149,11 +1131,11 @@ public final class Management {
       return login_;
     }
     
-    // optional .management.GameJoined game_joined = 5;
-    public static final int GAME_JOINED_FIELD_NUMBER = 5;
+    // optional .management.GameJoined game_joined = 4;
+    public static final int GAME_JOINED_FIELD_NUMBER = 4;
     private netmsg.Management.GameJoined gameJoined_;
     public boolean hasGameJoined() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     public netmsg.Management.GameJoined getGameJoined() {
       return gameJoined_;
@@ -1163,7 +1145,6 @@ public final class Management {
     }
     
     private void initFields() {
-      autoRegister_ = netmsg.Management.AutoRegisterResponse.getDefaultInstance();
       checkNameAvailability_ = netmsg.Management.CheckNameAvailabilityResponse.getDefaultInstance();
       changeCredentials_ = netmsg.Management.ChangeCredentialsResponse.getDefaultInstance();
       login_ = netmsg.Management.LoginResponse.getDefaultInstance();
@@ -1174,20 +1155,8 @@ public final class Management {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
       
-      if (hasAutoRegister()) {
-        if (!getAutoRegister().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
       if (hasCheckNameAvailability()) {
         if (!getCheckNameAvailability().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
-      if (hasChangeCredentials()) {
-        if (!getChangeCredentials().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -1212,19 +1181,16 @@ public final class Management {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, autoRegister_);
+        output.writeMessage(1, checkNameAvailability_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeMessage(2, checkNameAvailability_);
+        output.writeMessage(2, changeCredentials_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeMessage(3, changeCredentials_);
+        output.writeMessage(3, login_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeMessage(4, login_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeMessage(5, gameJoined_);
+        output.writeMessage(4, gameJoined_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1237,23 +1203,19 @@ public final class Management {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, autoRegister_);
+          .computeMessageSize(1, checkNameAvailability_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, checkNameAvailability_);
+          .computeMessageSize(2, changeCredentials_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, changeCredentials_);
+          .computeMessageSize(3, login_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, login_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, gameJoined_);
+          .computeMessageSize(4, gameJoined_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1371,7 +1333,6 @@ public final class Management {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getAutoRegisterFieldBuilder();
           getCheckNameAvailabilityFieldBuilder();
           getChangeCredentialsFieldBuilder();
           getLoginFieldBuilder();
@@ -1384,36 +1345,30 @@ public final class Management {
       
       public Builder clear() {
         super.clear();
-        if (autoRegisterBuilder_ == null) {
-          autoRegister_ = netmsg.Management.AutoRegisterResponse.getDefaultInstance();
-        } else {
-          autoRegisterBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
         if (checkNameAvailabilityBuilder_ == null) {
           checkNameAvailability_ = netmsg.Management.CheckNameAvailabilityResponse.getDefaultInstance();
         } else {
           checkNameAvailabilityBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000001);
         if (changeCredentialsBuilder_ == null) {
           changeCredentials_ = netmsg.Management.ChangeCredentialsResponse.getDefaultInstance();
         } else {
           changeCredentialsBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         if (loginBuilder_ == null) {
           login_ = netmsg.Management.LoginResponse.getDefaultInstance();
         } else {
           loginBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000004);
         if (gameJoinedBuilder_ == null) {
           gameJoined_ = netmsg.Management.GameJoined.getDefaultInstance();
         } else {
           gameJoinedBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
       
@@ -1455,37 +1410,29 @@ public final class Management {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        if (autoRegisterBuilder_ == null) {
-          result.autoRegister_ = autoRegister_;
-        } else {
-          result.autoRegister_ = autoRegisterBuilder_.build();
-        }
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         if (checkNameAvailabilityBuilder_ == null) {
           result.checkNameAvailability_ = checkNameAvailability_;
         } else {
           result.checkNameAvailability_ = checkNameAvailabilityBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
         }
         if (changeCredentialsBuilder_ == null) {
           result.changeCredentials_ = changeCredentials_;
         } else {
           result.changeCredentials_ = changeCredentialsBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
         }
         if (loginBuilder_ == null) {
           result.login_ = login_;
         } else {
           result.login_ = loginBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
         }
         if (gameJoinedBuilder_ == null) {
           result.gameJoined_ = gameJoined_;
@@ -1508,9 +1455,6 @@ public final class Management {
       
       public Builder mergeFrom(netmsg.Management.FromServer other) {
         if (other == netmsg.Management.FromServer.getDefaultInstance()) return this;
-        if (other.hasAutoRegister()) {
-          mergeAutoRegister(other.getAutoRegister());
-        }
         if (other.hasCheckNameAvailability()) {
           mergeCheckNameAvailability(other.getCheckNameAvailability());
         }
@@ -1528,20 +1472,8 @@ public final class Management {
       }
       
       public final boolean isInitialized() {
-        if (hasAutoRegister()) {
-          if (!getAutoRegister().isInitialized()) {
-            
-            return false;
-          }
-        }
         if (hasCheckNameAvailability()) {
           if (!getCheckNameAvailability().isInitialized()) {
-            
-            return false;
-          }
-        }
-        if (hasChangeCredentials()) {
-          if (!getChangeCredentials().isInitialized()) {
             
             return false;
           }
@@ -1585,15 +1517,6 @@ public final class Management {
               break;
             }
             case 10: {
-              netmsg.Management.AutoRegisterResponse.Builder subBuilder = netmsg.Management.AutoRegisterResponse.newBuilder();
-              if (hasAutoRegister()) {
-                subBuilder.mergeFrom(getAutoRegister());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setAutoRegister(subBuilder.buildPartial());
-              break;
-            }
-            case 18: {
               netmsg.Management.CheckNameAvailabilityResponse.Builder subBuilder = netmsg.Management.CheckNameAvailabilityResponse.newBuilder();
               if (hasCheckNameAvailability()) {
                 subBuilder.mergeFrom(getCheckNameAvailability());
@@ -1602,7 +1525,7 @@ public final class Management {
               setCheckNameAvailability(subBuilder.buildPartial());
               break;
             }
-            case 26: {
+            case 18: {
               netmsg.Management.ChangeCredentialsResponse.Builder subBuilder = netmsg.Management.ChangeCredentialsResponse.newBuilder();
               if (hasChangeCredentials()) {
                 subBuilder.mergeFrom(getChangeCredentials());
@@ -1611,7 +1534,7 @@ public final class Management {
               setChangeCredentials(subBuilder.buildPartial());
               break;
             }
-            case 34: {
+            case 26: {
               netmsg.Management.LoginResponse.Builder subBuilder = netmsg.Management.LoginResponse.newBuilder();
               if (hasLogin()) {
                 subBuilder.mergeFrom(getLogin());
@@ -1620,7 +1543,7 @@ public final class Management {
               setLogin(subBuilder.buildPartial());
               break;
             }
-            case 42: {
+            case 34: {
               netmsg.Management.GameJoined.Builder subBuilder = netmsg.Management.GameJoined.newBuilder();
               if (hasGameJoined()) {
                 subBuilder.mergeFrom(getGameJoined());
@@ -1635,102 +1558,12 @@ public final class Management {
       
       private int bitField0_;
       
-      // optional .management.AutoRegisterResponse auto_register = 1;
-      private netmsg.Management.AutoRegisterResponse autoRegister_ = netmsg.Management.AutoRegisterResponse.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Management.AutoRegisterResponse, netmsg.Management.AutoRegisterResponse.Builder, netmsg.Management.AutoRegisterResponseOrBuilder> autoRegisterBuilder_;
-      public boolean hasAutoRegister() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      public netmsg.Management.AutoRegisterResponse getAutoRegister() {
-        if (autoRegisterBuilder_ == null) {
-          return autoRegister_;
-        } else {
-          return autoRegisterBuilder_.getMessage();
-        }
-      }
-      public Builder setAutoRegister(netmsg.Management.AutoRegisterResponse value) {
-        if (autoRegisterBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          autoRegister_ = value;
-          onChanged();
-        } else {
-          autoRegisterBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      public Builder setAutoRegister(
-          netmsg.Management.AutoRegisterResponse.Builder builderForValue) {
-        if (autoRegisterBuilder_ == null) {
-          autoRegister_ = builderForValue.build();
-          onChanged();
-        } else {
-          autoRegisterBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      public Builder mergeAutoRegister(netmsg.Management.AutoRegisterResponse value) {
-        if (autoRegisterBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              autoRegister_ != netmsg.Management.AutoRegisterResponse.getDefaultInstance()) {
-            autoRegister_ =
-              netmsg.Management.AutoRegisterResponse.newBuilder(autoRegister_).mergeFrom(value).buildPartial();
-          } else {
-            autoRegister_ = value;
-          }
-          onChanged();
-        } else {
-          autoRegisterBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      public Builder clearAutoRegister() {
-        if (autoRegisterBuilder_ == null) {
-          autoRegister_ = netmsg.Management.AutoRegisterResponse.getDefaultInstance();
-          onChanged();
-        } else {
-          autoRegisterBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-      public netmsg.Management.AutoRegisterResponse.Builder getAutoRegisterBuilder() {
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return getAutoRegisterFieldBuilder().getBuilder();
-      }
-      public netmsg.Management.AutoRegisterResponseOrBuilder getAutoRegisterOrBuilder() {
-        if (autoRegisterBuilder_ != null) {
-          return autoRegisterBuilder_.getMessageOrBuilder();
-        } else {
-          return autoRegister_;
-        }
-      }
-      private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Management.AutoRegisterResponse, netmsg.Management.AutoRegisterResponse.Builder, netmsg.Management.AutoRegisterResponseOrBuilder> 
-          getAutoRegisterFieldBuilder() {
-        if (autoRegisterBuilder_ == null) {
-          autoRegisterBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Management.AutoRegisterResponse, netmsg.Management.AutoRegisterResponse.Builder, netmsg.Management.AutoRegisterResponseOrBuilder>(
-                  autoRegister_,
-                  getParentForChildren(),
-                  isClean());
-          autoRegister_ = null;
-        }
-        return autoRegisterBuilder_;
-      }
-      
-      // optional .management.CheckNameAvailabilityResponse check_name_availability = 2;
+      // optional .management.CheckNameAvailabilityResponse check_name_availability = 1;
       private netmsg.Management.CheckNameAvailabilityResponse checkNameAvailability_ = netmsg.Management.CheckNameAvailabilityResponse.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Management.CheckNameAvailabilityResponse, netmsg.Management.CheckNameAvailabilityResponse.Builder, netmsg.Management.CheckNameAvailabilityResponseOrBuilder> checkNameAvailabilityBuilder_;
       public boolean hasCheckNameAvailability() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public netmsg.Management.CheckNameAvailabilityResponse getCheckNameAvailability() {
         if (checkNameAvailabilityBuilder_ == null) {
@@ -1749,7 +1582,7 @@ public final class Management {
         } else {
           checkNameAvailabilityBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000001;
         return this;
       }
       public Builder setCheckNameAvailability(
@@ -1760,12 +1593,12 @@ public final class Management {
         } else {
           checkNameAvailabilityBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000001;
         return this;
       }
       public Builder mergeCheckNameAvailability(netmsg.Management.CheckNameAvailabilityResponse value) {
         if (checkNameAvailabilityBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
               checkNameAvailability_ != netmsg.Management.CheckNameAvailabilityResponse.getDefaultInstance()) {
             checkNameAvailability_ =
               netmsg.Management.CheckNameAvailabilityResponse.newBuilder(checkNameAvailability_).mergeFrom(value).buildPartial();
@@ -1776,7 +1609,7 @@ public final class Management {
         } else {
           checkNameAvailabilityBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000001;
         return this;
       }
       public Builder clearCheckNameAvailability() {
@@ -1786,11 +1619,11 @@ public final class Management {
         } else {
           checkNameAvailabilityBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
       public netmsg.Management.CheckNameAvailabilityResponse.Builder getCheckNameAvailabilityBuilder() {
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000001;
         onChanged();
         return getCheckNameAvailabilityFieldBuilder().getBuilder();
       }
@@ -1815,12 +1648,12 @@ public final class Management {
         return checkNameAvailabilityBuilder_;
       }
       
-      // optional .management.ChangeCredentialsResponse change_credentials = 3;
+      // optional .management.ChangeCredentialsResponse change_credentials = 2;
       private netmsg.Management.ChangeCredentialsResponse changeCredentials_ = netmsg.Management.ChangeCredentialsResponse.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Management.ChangeCredentialsResponse, netmsg.Management.ChangeCredentialsResponse.Builder, netmsg.Management.ChangeCredentialsResponseOrBuilder> changeCredentialsBuilder_;
       public boolean hasChangeCredentials() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public netmsg.Management.ChangeCredentialsResponse getChangeCredentials() {
         if (changeCredentialsBuilder_ == null) {
@@ -1839,7 +1672,7 @@ public final class Management {
         } else {
           changeCredentialsBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         return this;
       }
       public Builder setChangeCredentials(
@@ -1850,12 +1683,12 @@ public final class Management {
         } else {
           changeCredentialsBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         return this;
       }
       public Builder mergeChangeCredentials(netmsg.Management.ChangeCredentialsResponse value) {
         if (changeCredentialsBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
               changeCredentials_ != netmsg.Management.ChangeCredentialsResponse.getDefaultInstance()) {
             changeCredentials_ =
               netmsg.Management.ChangeCredentialsResponse.newBuilder(changeCredentials_).mergeFrom(value).buildPartial();
@@ -1866,7 +1699,7 @@ public final class Management {
         } else {
           changeCredentialsBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         return this;
       }
       public Builder clearChangeCredentials() {
@@ -1876,11 +1709,11 @@ public final class Management {
         } else {
           changeCredentialsBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       public netmsg.Management.ChangeCredentialsResponse.Builder getChangeCredentialsBuilder() {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         onChanged();
         return getChangeCredentialsFieldBuilder().getBuilder();
       }
@@ -1905,12 +1738,12 @@ public final class Management {
         return changeCredentialsBuilder_;
       }
       
-      // optional .management.LoginResponse login = 4;
+      // optional .management.LoginResponse login = 3;
       private netmsg.Management.LoginResponse login_ = netmsg.Management.LoginResponse.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Management.LoginResponse, netmsg.Management.LoginResponse.Builder, netmsg.Management.LoginResponseOrBuilder> loginBuilder_;
       public boolean hasLogin() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public netmsg.Management.LoginResponse getLogin() {
         if (loginBuilder_ == null) {
@@ -1929,7 +1762,7 @@ public final class Management {
         } else {
           loginBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000004;
         return this;
       }
       public Builder setLogin(
@@ -1940,12 +1773,12 @@ public final class Management {
         } else {
           loginBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000004;
         return this;
       }
       public Builder mergeLogin(netmsg.Management.LoginResponse value) {
         if (loginBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
               login_ != netmsg.Management.LoginResponse.getDefaultInstance()) {
             login_ =
               netmsg.Management.LoginResponse.newBuilder(login_).mergeFrom(value).buildPartial();
@@ -1956,7 +1789,7 @@ public final class Management {
         } else {
           loginBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000004;
         return this;
       }
       public Builder clearLogin() {
@@ -1966,11 +1799,11 @@ public final class Management {
         } else {
           loginBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       public netmsg.Management.LoginResponse.Builder getLoginBuilder() {
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000004;
         onChanged();
         return getLoginFieldBuilder().getBuilder();
       }
@@ -1995,12 +1828,12 @@ public final class Management {
         return loginBuilder_;
       }
       
-      // optional .management.GameJoined game_joined = 5;
+      // optional .management.GameJoined game_joined = 4;
       private netmsg.Management.GameJoined gameJoined_ = netmsg.Management.GameJoined.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Management.GameJoined, netmsg.Management.GameJoined.Builder, netmsg.Management.GameJoinedOrBuilder> gameJoinedBuilder_;
       public boolean hasGameJoined() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       public netmsg.Management.GameJoined getGameJoined() {
         if (gameJoinedBuilder_ == null) {
@@ -2019,7 +1852,7 @@ public final class Management {
         } else {
           gameJoinedBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000008;
         return this;
       }
       public Builder setGameJoined(
@@ -2030,12 +1863,12 @@ public final class Management {
         } else {
           gameJoinedBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000008;
         return this;
       }
       public Builder mergeGameJoined(netmsg.Management.GameJoined value) {
         if (gameJoinedBuilder_ == null) {
-          if (((bitField0_ & 0x00000010) == 0x00000010) &&
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
               gameJoined_ != netmsg.Management.GameJoined.getDefaultInstance()) {
             gameJoined_ =
               netmsg.Management.GameJoined.newBuilder(gameJoined_).mergeFrom(value).buildPartial();
@@ -2046,7 +1879,7 @@ public final class Management {
         } else {
           gameJoinedBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000008;
         return this;
       }
       public Builder clearGameJoined() {
@@ -2056,11 +1889,11 @@ public final class Management {
         } else {
           gameJoinedBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
       public netmsg.Management.GameJoined.Builder getGameJoinedBuilder() {
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000008;
         onChanged();
         return getGameJoinedFieldBuilder().getBuilder();
       }
@@ -2103,9 +1936,13 @@ public final class Management {
     boolean hasName();
     String getName();
     
-    // required string password = 2;
+    // optional string password = 2;
     boolean hasPassword();
     String getPassword();
+    
+    // optional string session_token = 3;
+    boolean hasSessionToken();
+    String getSessionToken();
   }
   public static final class Credentials extends
       com.google.protobuf.GeneratedMessage
@@ -2168,7 +2005,7 @@ public final class Management {
       }
     }
     
-    // required string password = 2;
+    // optional string password = 2;
     public static final int PASSWORD_FIELD_NUMBER = 2;
     private java.lang.Object password_;
     public boolean hasPassword() {
@@ -2200,9 +2037,42 @@ public final class Management {
       }
     }
     
+    // optional string session_token = 3;
+    public static final int SESSION_TOKEN_FIELD_NUMBER = 3;
+    private java.lang.Object sessionToken_;
+    public boolean hasSessionToken() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public String getSessionToken() {
+      java.lang.Object ref = sessionToken_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          sessionToken_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getSessionTokenBytes() {
+      java.lang.Object ref = sessionToken_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        sessionToken_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
     private void initFields() {
       name_ = "";
       password_ = "";
+      sessionToken_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2210,10 +2080,6 @@ public final class Management {
       if (isInitialized != -1) return isInitialized == 1;
       
       if (!hasName()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasPassword()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -2229,6 +2095,9 @@ public final class Management {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBytes(2, getPasswordBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, getSessionTokenBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -2246,6 +2115,10 @@ public final class Management {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, getPasswordBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getSessionTokenBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2375,6 +2248,8 @@ public final class Management {
         bitField0_ = (bitField0_ & ~0x00000001);
         password_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        sessionToken_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
@@ -2421,6 +2296,10 @@ public final class Management {
           to_bitField0_ |= 0x00000002;
         }
         result.password_ = password_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.sessionToken_ = sessionToken_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2443,16 +2322,15 @@ public final class Management {
         if (other.hasPassword()) {
           setPassword(other.getPassword());
         }
+        if (other.hasSessionToken()) {
+          setSessionToken(other.getSessionToken());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
       
       public final boolean isInitialized() {
         if (!hasName()) {
-          
-          return false;
-        }
-        if (!hasPassword()) {
           
           return false;
         }
@@ -2490,6 +2368,11 @@ public final class Management {
             case 18: {
               bitField0_ |= 0x00000002;
               password_ = input.readBytes();
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              sessionToken_ = input.readBytes();
               break;
             }
           }
@@ -2534,7 +2417,7 @@ public final class Management {
         onChanged();
       }
       
-      // required string password = 2;
+      // optional string password = 2;
       private java.lang.Object password_ = "";
       public boolean hasPassword() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
@@ -2567,6 +2450,42 @@ public final class Management {
       void setPassword(com.google.protobuf.ByteString value) {
         bitField0_ |= 0x00000002;
         password_ = value;
+        onChanged();
+      }
+      
+      // optional string session_token = 3;
+      private java.lang.Object sessionToken_ = "";
+      public boolean hasSessionToken() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public String getSessionToken() {
+        java.lang.Object ref = sessionToken_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          sessionToken_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setSessionToken(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        sessionToken_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearSessionToken() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        sessionToken_ = getDefaultInstance().getSessionToken();
+        onChanged();
+        return this;
+      }
+      void setSessionToken(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000004;
+        sessionToken_ = value;
         onChanged();
       }
       
@@ -2855,446 +2774,6 @@ public final class Management {
     }
     
     // @@protoc_insertion_point(class_scope:management.AutoRegister)
-  }
-  
-  public interface AutoRegisterResponseOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // required .management.Credentials credentials = 1;
-    boolean hasCredentials();
-    netmsg.Management.Credentials getCredentials();
-    netmsg.Management.CredentialsOrBuilder getCredentialsOrBuilder();
-  }
-  public static final class AutoRegisterResponse extends
-      com.google.protobuf.GeneratedMessage
-      implements AutoRegisterResponseOrBuilder {
-    // Use AutoRegisterResponse.newBuilder() to construct.
-    private AutoRegisterResponse(Builder builder) {
-      super(builder);
-    }
-    private AutoRegisterResponse(boolean noInit) {}
-    
-    private static final AutoRegisterResponse defaultInstance;
-    public static AutoRegisterResponse getDefaultInstance() {
-      return defaultInstance;
-    }
-    
-    public AutoRegisterResponse getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-    
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return netmsg.Management.internal_static_management_AutoRegisterResponse_descriptor;
-    }
-    
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return netmsg.Management.internal_static_management_AutoRegisterResponse_fieldAccessorTable;
-    }
-    
-    private int bitField0_;
-    // required .management.Credentials credentials = 1;
-    public static final int CREDENTIALS_FIELD_NUMBER = 1;
-    private netmsg.Management.Credentials credentials_;
-    public boolean hasCredentials() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public netmsg.Management.Credentials getCredentials() {
-      return credentials_;
-    }
-    public netmsg.Management.CredentialsOrBuilder getCredentialsOrBuilder() {
-      return credentials_;
-    }
-    
-    private void initFields() {
-      credentials_ = netmsg.Management.Credentials.getDefaultInstance();
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
-      if (!hasCredentials()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!getCredentials().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-    
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, credentials_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-    
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, credentials_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-    
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-    
-    public static netmsg.Management.AutoRegisterResponse parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static netmsg.Management.AutoRegisterResponse parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static netmsg.Management.AutoRegisterResponse parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static netmsg.Management.AutoRegisterResponse parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static netmsg.Management.AutoRegisterResponse parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static netmsg.Management.AutoRegisterResponse parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    public static netmsg.Management.AutoRegisterResponse parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static netmsg.Management.AutoRegisterResponse parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static netmsg.Management.AutoRegisterResponse parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static netmsg.Management.AutoRegisterResponse parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(netmsg.Management.AutoRegisterResponse prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-    
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements netmsg.Management.AutoRegisterResponseOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return netmsg.Management.internal_static_management_AutoRegisterResponse_descriptor;
-      }
-      
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return netmsg.Management.internal_static_management_AutoRegisterResponse_fieldAccessorTable;
-      }
-      
-      // Construct using netmsg.Management.AutoRegisterResponse.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-      
-      private Builder(BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getCredentialsFieldBuilder();
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-      
-      public Builder clear() {
-        super.clear();
-        if (credentialsBuilder_ == null) {
-          credentials_ = netmsg.Management.Credentials.getDefaultInstance();
-        } else {
-          credentialsBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-      
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-      
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return netmsg.Management.AutoRegisterResponse.getDescriptor();
-      }
-      
-      public netmsg.Management.AutoRegisterResponse getDefaultInstanceForType() {
-        return netmsg.Management.AutoRegisterResponse.getDefaultInstance();
-      }
-      
-      public netmsg.Management.AutoRegisterResponse build() {
-        netmsg.Management.AutoRegisterResponse result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-      
-      private netmsg.Management.AutoRegisterResponse buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        netmsg.Management.AutoRegisterResponse result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
-      public netmsg.Management.AutoRegisterResponse buildPartial() {
-        netmsg.Management.AutoRegisterResponse result = new netmsg.Management.AutoRegisterResponse(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        if (credentialsBuilder_ == null) {
-          result.credentials_ = credentials_;
-        } else {
-          result.credentials_ = credentialsBuilder_.build();
-        }
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-      
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof netmsg.Management.AutoRegisterResponse) {
-          return mergeFrom((netmsg.Management.AutoRegisterResponse)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-      
-      public Builder mergeFrom(netmsg.Management.AutoRegisterResponse other) {
-        if (other == netmsg.Management.AutoRegisterResponse.getDefaultInstance()) return this;
-        if (other.hasCredentials()) {
-          mergeCredentials(other.getCredentials());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-      
-      public final boolean isInitialized() {
-        if (!hasCredentials()) {
-          
-          return false;
-        }
-        if (!getCredentials().isInitialized()) {
-          
-          return false;
-        }
-        return true;
-      }
-      
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              netmsg.Management.Credentials.Builder subBuilder = netmsg.Management.Credentials.newBuilder();
-              if (hasCredentials()) {
-                subBuilder.mergeFrom(getCredentials());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setCredentials(subBuilder.buildPartial());
-              break;
-            }
-          }
-        }
-      }
-      
-      private int bitField0_;
-      
-      // required .management.Credentials credentials = 1;
-      private netmsg.Management.Credentials credentials_ = netmsg.Management.Credentials.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Management.Credentials, netmsg.Management.Credentials.Builder, netmsg.Management.CredentialsOrBuilder> credentialsBuilder_;
-      public boolean hasCredentials() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      public netmsg.Management.Credentials getCredentials() {
-        if (credentialsBuilder_ == null) {
-          return credentials_;
-        } else {
-          return credentialsBuilder_.getMessage();
-        }
-      }
-      public Builder setCredentials(netmsg.Management.Credentials value) {
-        if (credentialsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          credentials_ = value;
-          onChanged();
-        } else {
-          credentialsBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      public Builder setCredentials(
-          netmsg.Management.Credentials.Builder builderForValue) {
-        if (credentialsBuilder_ == null) {
-          credentials_ = builderForValue.build();
-          onChanged();
-        } else {
-          credentialsBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      public Builder mergeCredentials(netmsg.Management.Credentials value) {
-        if (credentialsBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              credentials_ != netmsg.Management.Credentials.getDefaultInstance()) {
-            credentials_ =
-              netmsg.Management.Credentials.newBuilder(credentials_).mergeFrom(value).buildPartial();
-          } else {
-            credentials_ = value;
-          }
-          onChanged();
-        } else {
-          credentialsBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      public Builder clearCredentials() {
-        if (credentialsBuilder_ == null) {
-          credentials_ = netmsg.Management.Credentials.getDefaultInstance();
-          onChanged();
-        } else {
-          credentialsBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-      public netmsg.Management.Credentials.Builder getCredentialsBuilder() {
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return getCredentialsFieldBuilder().getBuilder();
-      }
-      public netmsg.Management.CredentialsOrBuilder getCredentialsOrBuilder() {
-        if (credentialsBuilder_ != null) {
-          return credentialsBuilder_.getMessageOrBuilder();
-        } else {
-          return credentials_;
-        }
-      }
-      private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Management.Credentials, netmsg.Management.Credentials.Builder, netmsg.Management.CredentialsOrBuilder> 
-          getCredentialsFieldBuilder() {
-        if (credentialsBuilder_ == null) {
-          credentialsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Management.Credentials, netmsg.Management.Credentials.Builder, netmsg.Management.CredentialsOrBuilder>(
-                  credentials_,
-                  getParentForChildren(),
-                  isClean());
-          credentials_ = null;
-        }
-        return credentialsBuilder_;
-      }
-      
-      // @@protoc_insertion_point(builder_scope:management.AutoRegisterResponse)
-    }
-    
-    static {
-      defaultInstance = new AutoRegisterResponse(true);
-      defaultInstance.initFields();
-    }
-    
-    // @@protoc_insertion_point(class_scope:management.AutoRegisterResponse)
   }
   
   public interface CheckNameAvailabilityOrBuilder
@@ -3683,7 +3162,11 @@ public final class Management {
   public interface CheckNameAvailabilityResponseOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required bool available = 1;
+    // required string name = 1;
+    boolean hasName();
+    String getName();
+    
+    // required bool available = 2;
     boolean hasAvailable();
     boolean getAvailable();
   }
@@ -3716,17 +3199,50 @@ public final class Management {
     }
     
     private int bitField0_;
-    // required bool available = 1;
-    public static final int AVAILABLE_FIELD_NUMBER = 1;
+    // required string name = 1;
+    public static final int NAME_FIELD_NUMBER = 1;
+    private java.lang.Object name_;
+    public boolean hasName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          name_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // required bool available = 2;
+    public static final int AVAILABLE_FIELD_NUMBER = 2;
     private boolean available_;
     public boolean hasAvailable() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
+      return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     public boolean getAvailable() {
       return available_;
     }
     
     private void initFields() {
+      name_ = "";
       available_ = false;
     }
     private byte memoizedIsInitialized = -1;
@@ -3734,6 +3250,10 @@ public final class Management {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
       
+      if (!hasName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       if (!hasAvailable()) {
         memoizedIsInitialized = 0;
         return false;
@@ -3746,7 +3266,10 @@ public final class Management {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBool(1, available_);
+        output.writeBytes(1, getNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBool(2, available_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -3759,7 +3282,11 @@ public final class Management {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(1, available_);
+          .computeBytesSize(1, getNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, available_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3885,8 +3412,10 @@ public final class Management {
       
       public Builder clear() {
         super.clear();
-        available_ = false;
+        name_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
+        available_ = false;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
@@ -3928,6 +3457,10 @@ public final class Management {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
+        result.name_ = name_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
         result.available_ = available_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -3945,6 +3478,9 @@ public final class Management {
       
       public Builder mergeFrom(netmsg.Management.CheckNameAvailabilityResponse other) {
         if (other == netmsg.Management.CheckNameAvailabilityResponse.getDefaultInstance()) return this;
+        if (other.hasName()) {
+          setName(other.getName());
+        }
         if (other.hasAvailable()) {
           setAvailable(other.getAvailable());
         }
@@ -3953,6 +3489,10 @@ public final class Management {
       }
       
       public final boolean isInitialized() {
+        if (!hasName()) {
+          
+          return false;
+        }
         if (!hasAvailable()) {
           
           return false;
@@ -3983,8 +3523,13 @@ public final class Management {
               }
               break;
             }
-            case 8: {
+            case 10: {
               bitField0_ |= 0x00000001;
+              name_ = input.readBytes();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
               available_ = input.readBool();
               break;
             }
@@ -3994,22 +3539,58 @@ public final class Management {
       
       private int bitField0_;
       
-      // required bool available = 1;
+      // required string name = 1;
+      private java.lang.Object name_ = "";
+      public boolean hasName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getName() {
+        java.lang.Object ref = name_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      void setName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        name_ = value;
+        onChanged();
+      }
+      
+      // required bool available = 2;
       private boolean available_ ;
       public boolean hasAvailable() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public boolean getAvailable() {
         return available_;
       }
       public Builder setAvailable(boolean value) {
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
         available_ = value;
         onChanged();
         return this;
       }
       public Builder clearAvailable() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
         available_ = false;
         onChanged();
         return this;
@@ -4029,10 +3610,13 @@ public final class Management {
   public interface ChangeCredentialsOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required .management.Credentials credentials = 1;
-    boolean hasCredentials();
-    netmsg.Management.Credentials getCredentials();
-    netmsg.Management.CredentialsOrBuilder getCredentialsOrBuilder();
+    // required string username = 1;
+    boolean hasUsername();
+    String getUsername();
+    
+    // required string password = 2;
+    boolean hasPassword();
+    String getPassword();
   }
   public static final class ChangeCredentials extends
       com.google.protobuf.GeneratedMessage
@@ -4063,32 +3647,84 @@ public final class Management {
     }
     
     private int bitField0_;
-    // required .management.Credentials credentials = 1;
-    public static final int CREDENTIALS_FIELD_NUMBER = 1;
-    private netmsg.Management.Credentials credentials_;
-    public boolean hasCredentials() {
+    // required string username = 1;
+    public static final int USERNAME_FIELD_NUMBER = 1;
+    private java.lang.Object username_;
+    public boolean hasUsername() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Management.Credentials getCredentials() {
-      return credentials_;
+    public String getUsername() {
+      java.lang.Object ref = username_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          username_ = s;
+        }
+        return s;
+      }
     }
-    public netmsg.Management.CredentialsOrBuilder getCredentialsOrBuilder() {
-      return credentials_;
+    private com.google.protobuf.ByteString getUsernameBytes() {
+      java.lang.Object ref = username_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        username_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // required string password = 2;
+    public static final int PASSWORD_FIELD_NUMBER = 2;
+    private java.lang.Object password_;
+    public boolean hasPassword() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public String getPassword() {
+      java.lang.Object ref = password_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          password_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getPasswordBytes() {
+      java.lang.Object ref = password_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        password_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
     
     private void initFields() {
-      credentials_ = netmsg.Management.Credentials.getDefaultInstance();
+      username_ = "";
+      password_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
       
-      if (!hasCredentials()) {
+      if (!hasUsername()) {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!getCredentials().isInitialized()) {
+      if (!hasPassword()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -4100,7 +3736,10 @@ public final class Management {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, credentials_);
+        output.writeBytes(1, getUsernameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getPasswordBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -4113,7 +3752,11 @@ public final class Management {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, credentials_);
+          .computeBytesSize(1, getUsernameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getPasswordBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4231,7 +3874,6 @@ public final class Management {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getCredentialsFieldBuilder();
         }
       }
       private static Builder create() {
@@ -4240,12 +3882,10 @@ public final class Management {
       
       public Builder clear() {
         super.clear();
-        if (credentialsBuilder_ == null) {
-          credentials_ = netmsg.Management.Credentials.getDefaultInstance();
-        } else {
-          credentialsBuilder_.clear();
-        }
+        username_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
+        password_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
@@ -4287,11 +3927,11 @@ public final class Management {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        if (credentialsBuilder_ == null) {
-          result.credentials_ = credentials_;
-        } else {
-          result.credentials_ = credentialsBuilder_.build();
+        result.username_ = username_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
         }
+        result.password_ = password_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4308,19 +3948,22 @@ public final class Management {
       
       public Builder mergeFrom(netmsg.Management.ChangeCredentials other) {
         if (other == netmsg.Management.ChangeCredentials.getDefaultInstance()) return this;
-        if (other.hasCredentials()) {
-          mergeCredentials(other.getCredentials());
+        if (other.hasUsername()) {
+          setUsername(other.getUsername());
+        }
+        if (other.hasPassword()) {
+          setPassword(other.getPassword());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
       
       public final boolean isInitialized() {
-        if (!hasCredentials()) {
+        if (!hasUsername()) {
           
           return false;
         }
-        if (!getCredentials().isInitialized()) {
+        if (!hasPassword()) {
           
           return false;
         }
@@ -4351,12 +3994,13 @@ public final class Management {
               break;
             }
             case 10: {
-              netmsg.Management.Credentials.Builder subBuilder = netmsg.Management.Credentials.newBuilder();
-              if (hasCredentials()) {
-                subBuilder.mergeFrom(getCredentials());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setCredentials(subBuilder.buildPartial());
+              bitField0_ |= 0x00000001;
+              username_ = input.readBytes();
+              break;
+            }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              password_ = input.readBytes();
               break;
             }
           }
@@ -4365,94 +4009,76 @@ public final class Management {
       
       private int bitField0_;
       
-      // required .management.Credentials credentials = 1;
-      private netmsg.Management.Credentials credentials_ = netmsg.Management.Credentials.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Management.Credentials, netmsg.Management.Credentials.Builder, netmsg.Management.CredentialsOrBuilder> credentialsBuilder_;
-      public boolean hasCredentials() {
+      // required string username = 1;
+      private java.lang.Object username_ = "";
+      public boolean hasUsername() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Management.Credentials getCredentials() {
-        if (credentialsBuilder_ == null) {
-          return credentials_;
+      public String getUsername() {
+        java.lang.Object ref = username_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          username_ = s;
+          return s;
         } else {
-          return credentialsBuilder_.getMessage();
+          return (String) ref;
         }
       }
-      public Builder setCredentials(netmsg.Management.Credentials value) {
-        if (credentialsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          credentials_ = value;
-          onChanged();
-        } else {
-          credentialsBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      public Builder setCredentials(
-          netmsg.Management.Credentials.Builder builderForValue) {
-        if (credentialsBuilder_ == null) {
-          credentials_ = builderForValue.build();
-          onChanged();
-        } else {
-          credentialsBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      public Builder mergeCredentials(netmsg.Management.Credentials value) {
-        if (credentialsBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              credentials_ != netmsg.Management.Credentials.getDefaultInstance()) {
-            credentials_ =
-              netmsg.Management.Credentials.newBuilder(credentials_).mergeFrom(value).buildPartial();
-          } else {
-            credentials_ = value;
-          }
-          onChanged();
-        } else {
-          credentialsBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      public Builder clearCredentials() {
-        if (credentialsBuilder_ == null) {
-          credentials_ = netmsg.Management.Credentials.getDefaultInstance();
-          onChanged();
-        } else {
-          credentialsBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-      public netmsg.Management.Credentials.Builder getCredentialsBuilder() {
-        bitField0_ |= 0x00000001;
+      public Builder setUsername(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        username_ = value;
         onChanged();
-        return getCredentialsFieldBuilder().getBuilder();
+        return this;
       }
-      public netmsg.Management.CredentialsOrBuilder getCredentialsOrBuilder() {
-        if (credentialsBuilder_ != null) {
-          return credentialsBuilder_.getMessageOrBuilder();
+      public Builder clearUsername() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        username_ = getDefaultInstance().getUsername();
+        onChanged();
+        return this;
+      }
+      void setUsername(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        username_ = value;
+        onChanged();
+      }
+      
+      // required string password = 2;
+      private java.lang.Object password_ = "";
+      public boolean hasPassword() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public String getPassword() {
+        java.lang.Object ref = password_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          password_ = s;
+          return s;
         } else {
-          return credentials_;
+          return (String) ref;
         }
       }
-      private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Management.Credentials, netmsg.Management.Credentials.Builder, netmsg.Management.CredentialsOrBuilder> 
-          getCredentialsFieldBuilder() {
-        if (credentialsBuilder_ == null) {
-          credentialsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Management.Credentials, netmsg.Management.Credentials.Builder, netmsg.Management.CredentialsOrBuilder>(
-                  credentials_,
-                  getParentForChildren(),
-                  isClean());
-          credentials_ = null;
-        }
-        return credentialsBuilder_;
+      public Builder setPassword(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        password_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearPassword() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        password_ = getDefaultInstance().getPassword();
+        onChanged();
+        return this;
+      }
+      void setPassword(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000002;
+        password_ = value;
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:management.ChangeCredentials)
@@ -4469,9 +4095,9 @@ public final class Management {
   public interface ChangeCredentialsResponseOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // required bool success = 1;
-    boolean hasSuccess();
-    boolean getSuccess();
+    // optional string new_session_token = 1;
+    boolean hasNewSessionToken();
+    String getNewSessionToken();
   }
   public static final class ChangeCredentialsResponse extends
       com.google.protobuf.GeneratedMessage
@@ -4502,28 +4128,46 @@ public final class Management {
     }
     
     private int bitField0_;
-    // required bool success = 1;
-    public static final int SUCCESS_FIELD_NUMBER = 1;
-    private boolean success_;
-    public boolean hasSuccess() {
+    // optional string new_session_token = 1;
+    public static final int NEW_SESSION_TOKEN_FIELD_NUMBER = 1;
+    private java.lang.Object newSessionToken_;
+    public boolean hasNewSessionToken() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public boolean getSuccess() {
-      return success_;
+    public String getNewSessionToken() {
+      java.lang.Object ref = newSessionToken_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          newSessionToken_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getNewSessionTokenBytes() {
+      java.lang.Object ref = newSessionToken_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        newSessionToken_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
     
     private void initFields() {
-      success_ = false;
+      newSessionToken_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
       
-      if (!hasSuccess()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -4532,7 +4176,7 @@ public final class Management {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBool(1, success_);
+        output.writeBytes(1, getNewSessionTokenBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -4545,7 +4189,7 @@ public final class Management {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(1, success_);
+          .computeBytesSize(1, getNewSessionTokenBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4671,7 +4315,7 @@ public final class Management {
       
       public Builder clear() {
         super.clear();
-        success_ = false;
+        newSessionToken_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
@@ -4714,7 +4358,7 @@ public final class Management {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.success_ = success_;
+        result.newSessionToken_ = newSessionToken_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4731,18 +4375,14 @@ public final class Management {
       
       public Builder mergeFrom(netmsg.Management.ChangeCredentialsResponse other) {
         if (other == netmsg.Management.ChangeCredentialsResponse.getDefaultInstance()) return this;
-        if (other.hasSuccess()) {
-          setSuccess(other.getSuccess());
+        if (other.hasNewSessionToken()) {
+          setNewSessionToken(other.getNewSessionToken());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
       
       public final boolean isInitialized() {
-        if (!hasSuccess()) {
-          
-          return false;
-        }
         return true;
       }
       
@@ -4769,9 +4409,9 @@ public final class Management {
               }
               break;
             }
-            case 8: {
+            case 10: {
               bitField0_ |= 0x00000001;
-              success_ = input.readBool();
+              newSessionToken_ = input.readBytes();
               break;
             }
           }
@@ -4780,25 +4420,40 @@ public final class Management {
       
       private int bitField0_;
       
-      // required bool success = 1;
-      private boolean success_ ;
-      public boolean hasSuccess() {
+      // optional string new_session_token = 1;
+      private java.lang.Object newSessionToken_ = "";
+      public boolean hasNewSessionToken() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public boolean getSuccess() {
-        return success_;
+      public String getNewSessionToken() {
+        java.lang.Object ref = newSessionToken_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          newSessionToken_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setSuccess(boolean value) {
-        bitField0_ |= 0x00000001;
-        success_ = value;
+      public Builder setNewSessionToken(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        newSessionToken_ = value;
         onChanged();
         return this;
       }
-      public Builder clearSuccess() {
+      public Builder clearNewSessionToken() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        success_ = false;
+        newSessionToken_ = getDefaultInstance().getNewSessionToken();
         onChanged();
         return this;
+      }
+      void setNewSessionToken(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        newSessionToken_ = value;
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:management.ChangeCredentialsResponse)
@@ -5255,10 +4910,10 @@ public final class Management {
   public interface LoginResponseOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // optional .base.UUID id = 1;
-    boolean hasId();
-    netmsg.Base.UUID getId();
-    netmsg.Base.UUIDOrBuilder getIdOrBuilder();
+    // optional .management.LoginResponse.Data data = 1;
+    boolean hasData();
+    netmsg.Management.LoginResponse.Data getData();
+    netmsg.Management.LoginResponse.DataOrBuilder getDataOrBuilder();
   }
   public static final class LoginResponse extends
       com.google.protobuf.GeneratedMessage
@@ -5288,30 +4943,739 @@ public final class Management {
       return netmsg.Management.internal_static_management_LoginResponse_fieldAccessorTable;
     }
     
+    public interface DataOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+      
+      // required .base.UUID id = 1;
+      boolean hasId();
+      netmsg.Base.UUID getId();
+      netmsg.Base.UUIDOrBuilder getIdOrBuilder();
+      
+      // required string username = 2;
+      boolean hasUsername();
+      String getUsername();
+      
+      // required string session_token = 3;
+      boolean hasSessionToken();
+      String getSessionToken();
+      
+      // required bool autogenerated = 4;
+      boolean hasAutogenerated();
+      boolean getAutogenerated();
+    }
+    public static final class Data extends
+        com.google.protobuf.GeneratedMessage
+        implements DataOrBuilder {
+      // Use Data.newBuilder() to construct.
+      private Data(Builder builder) {
+        super(builder);
+      }
+      private Data(boolean noInit) {}
+      
+      private static final Data defaultInstance;
+      public static Data getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public Data getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return netmsg.Management.internal_static_management_LoginResponse_Data_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return netmsg.Management.internal_static_management_LoginResponse_Data_fieldAccessorTable;
+      }
+      
+      private int bitField0_;
+      // required .base.UUID id = 1;
+      public static final int ID_FIELD_NUMBER = 1;
+      private netmsg.Base.UUID id_;
+      public boolean hasId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public netmsg.Base.UUID getId() {
+        return id_;
+      }
+      public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+        return id_;
+      }
+      
+      // required string username = 2;
+      public static final int USERNAME_FIELD_NUMBER = 2;
+      private java.lang.Object username_;
+      public boolean hasUsername() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public String getUsername() {
+        java.lang.Object ref = username_;
+        if (ref instanceof String) {
+          return (String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+            username_ = s;
+          }
+          return s;
+        }
+      }
+      private com.google.protobuf.ByteString getUsernameBytes() {
+        java.lang.Object ref = username_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+          username_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      
+      // required string session_token = 3;
+      public static final int SESSION_TOKEN_FIELD_NUMBER = 3;
+      private java.lang.Object sessionToken_;
+      public boolean hasSessionToken() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public String getSessionToken() {
+        java.lang.Object ref = sessionToken_;
+        if (ref instanceof String) {
+          return (String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+            sessionToken_ = s;
+          }
+          return s;
+        }
+      }
+      private com.google.protobuf.ByteString getSessionTokenBytes() {
+        java.lang.Object ref = sessionToken_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+          sessionToken_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      
+      // required bool autogenerated = 4;
+      public static final int AUTOGENERATED_FIELD_NUMBER = 4;
+      private boolean autogenerated_;
+      public boolean hasAutogenerated() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public boolean getAutogenerated() {
+        return autogenerated_;
+      }
+      
+      private void initFields() {
+        id_ = netmsg.Base.UUID.getDefaultInstance();
+        username_ = "";
+        sessionToken_ = "";
+        autogenerated_ = false;
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+        
+        if (!hasId()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasUsername()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasSessionToken()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasAutogenerated()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!getId().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeMessage(1, id_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeBytes(2, getUsernameBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeBytes(3, getSessionTokenBytes());
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          output.writeBool(4, autogenerated_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(1, id_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(2, getUsernameBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(3, getSessionTokenBytes());
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(4, autogenerated_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+      
+      public static netmsg.Management.LoginResponse.Data parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static netmsg.Management.LoginResponse.Data parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static netmsg.Management.LoginResponse.Data parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static netmsg.Management.LoginResponse.Data parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static netmsg.Management.LoginResponse.Data parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static netmsg.Management.LoginResponse.Data parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static netmsg.Management.LoginResponse.Data parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        Builder builder = newBuilder();
+        if (builder.mergeDelimitedFrom(input)) {
+          return builder.buildParsed();
+        } else {
+          return null;
+        }
+      }
+      public static netmsg.Management.LoginResponse.Data parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        Builder builder = newBuilder();
+        if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+          return builder.buildParsed();
+        } else {
+          return null;
+        }
+      }
+      public static netmsg.Management.LoginResponse.Data parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static netmsg.Management.LoginResponse.Data parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(netmsg.Management.LoginResponse.Data prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements netmsg.Management.LoginResponse.DataOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return netmsg.Management.internal_static_management_LoginResponse_Data_descriptor;
+        }
+        
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return netmsg.Management.internal_static_management_LoginResponse_Data_fieldAccessorTable;
+        }
+        
+        // Construct using netmsg.Management.LoginResponse.Data.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+        
+        private Builder(BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getIdFieldBuilder();
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+        
+        public Builder clear() {
+          super.clear();
+          if (idBuilder_ == null) {
+            id_ = netmsg.Base.UUID.getDefaultInstance();
+          } else {
+            idBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000001);
+          username_ = "";
+          bitField0_ = (bitField0_ & ~0x00000002);
+          sessionToken_ = "";
+          bitField0_ = (bitField0_ & ~0x00000004);
+          autogenerated_ = false;
+          bitField0_ = (bitField0_ & ~0x00000008);
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return netmsg.Management.LoginResponse.Data.getDescriptor();
+        }
+        
+        public netmsg.Management.LoginResponse.Data getDefaultInstanceForType() {
+          return netmsg.Management.LoginResponse.Data.getDefaultInstance();
+        }
+        
+        public netmsg.Management.LoginResponse.Data build() {
+          netmsg.Management.LoginResponse.Data result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+        
+        private netmsg.Management.LoginResponse.Data buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          netmsg.Management.LoginResponse.Data result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return result;
+        }
+        
+        public netmsg.Management.LoginResponse.Data buildPartial() {
+          netmsg.Management.LoginResponse.Data result = new netmsg.Management.LoginResponse.Data(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          if (idBuilder_ == null) {
+            result.id_ = id_;
+          } else {
+            result.id_ = idBuilder_.build();
+          }
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.username_ = username_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.sessionToken_ = sessionToken_;
+          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+            to_bitField0_ |= 0x00000008;
+          }
+          result.autogenerated_ = autogenerated_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof netmsg.Management.LoginResponse.Data) {
+            return mergeFrom((netmsg.Management.LoginResponse.Data)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(netmsg.Management.LoginResponse.Data other) {
+          if (other == netmsg.Management.LoginResponse.Data.getDefaultInstance()) return this;
+          if (other.hasId()) {
+            mergeId(other.getId());
+          }
+          if (other.hasUsername()) {
+            setUsername(other.getUsername());
+          }
+          if (other.hasSessionToken()) {
+            setSessionToken(other.getSessionToken());
+          }
+          if (other.hasAutogenerated()) {
+            setAutogenerated(other.getAutogenerated());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public final boolean isInitialized() {
+          if (!hasId()) {
+            
+            return false;
+          }
+          if (!hasUsername()) {
+            
+            return false;
+          }
+          if (!hasSessionToken()) {
+            
+            return false;
+          }
+          if (!hasAutogenerated()) {
+            
+            return false;
+          }
+          if (!getId().isInitialized()) {
+            
+            return false;
+          }
+          return true;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  onChanged();
+                  return this;
+                }
+                break;
+              }
+              case 10: {
+                netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
+                if (hasId()) {
+                  subBuilder.mergeFrom(getId());
+                }
+                input.readMessage(subBuilder, extensionRegistry);
+                setId(subBuilder.buildPartial());
+                break;
+              }
+              case 18: {
+                bitField0_ |= 0x00000002;
+                username_ = input.readBytes();
+                break;
+              }
+              case 26: {
+                bitField0_ |= 0x00000004;
+                sessionToken_ = input.readBytes();
+                break;
+              }
+              case 32: {
+                bitField0_ |= 0x00000008;
+                autogenerated_ = input.readBool();
+                break;
+              }
+            }
+          }
+        }
+        
+        private int bitField0_;
+        
+        // required .base.UUID id = 1;
+        private netmsg.Base.UUID id_ = netmsg.Base.UUID.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> idBuilder_;
+        public boolean hasId() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        public netmsg.Base.UUID getId() {
+          if (idBuilder_ == null) {
+            return id_;
+          } else {
+            return idBuilder_.getMessage();
+          }
+        }
+        public Builder setId(netmsg.Base.UUID value) {
+          if (idBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            id_ = value;
+            onChanged();
+          } else {
+            idBuilder_.setMessage(value);
+          }
+          bitField0_ |= 0x00000001;
+          return this;
+        }
+        public Builder setId(
+            netmsg.Base.UUID.Builder builderForValue) {
+          if (idBuilder_ == null) {
+            id_ = builderForValue.build();
+            onChanged();
+          } else {
+            idBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000001;
+          return this;
+        }
+        public Builder mergeId(netmsg.Base.UUID value) {
+          if (idBuilder_ == null) {
+            if (((bitField0_ & 0x00000001) == 0x00000001) &&
+                id_ != netmsg.Base.UUID.getDefaultInstance()) {
+              id_ =
+                netmsg.Base.UUID.newBuilder(id_).mergeFrom(value).buildPartial();
+            } else {
+              id_ = value;
+            }
+            onChanged();
+          } else {
+            idBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000001;
+          return this;
+        }
+        public Builder clearId() {
+          if (idBuilder_ == null) {
+            id_ = netmsg.Base.UUID.getDefaultInstance();
+            onChanged();
+          } else {
+            idBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000001);
+          return this;
+        }
+        public netmsg.Base.UUID.Builder getIdBuilder() {
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return getIdFieldBuilder().getBuilder();
+        }
+        public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
+          if (idBuilder_ != null) {
+            return idBuilder_.getMessageOrBuilder();
+          } else {
+            return id_;
+          }
+        }
+        private com.google.protobuf.SingleFieldBuilder<
+            netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
+            getIdFieldBuilder() {
+          if (idBuilder_ == null) {
+            idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
+                    id_,
+                    getParentForChildren(),
+                    isClean());
+            id_ = null;
+          }
+          return idBuilder_;
+        }
+        
+        // required string username = 2;
+        private java.lang.Object username_ = "";
+        public boolean hasUsername() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        public String getUsername() {
+          java.lang.Object ref = username_;
+          if (!(ref instanceof String)) {
+            String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+            username_ = s;
+            return s;
+          } else {
+            return (String) ref;
+          }
+        }
+        public Builder setUsername(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          username_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearUsername() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          username_ = getDefaultInstance().getUsername();
+          onChanged();
+          return this;
+        }
+        void setUsername(com.google.protobuf.ByteString value) {
+          bitField0_ |= 0x00000002;
+          username_ = value;
+          onChanged();
+        }
+        
+        // required string session_token = 3;
+        private java.lang.Object sessionToken_ = "";
+        public boolean hasSessionToken() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        public String getSessionToken() {
+          java.lang.Object ref = sessionToken_;
+          if (!(ref instanceof String)) {
+            String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+            sessionToken_ = s;
+            return s;
+          } else {
+            return (String) ref;
+          }
+        }
+        public Builder setSessionToken(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+          sessionToken_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearSessionToken() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          sessionToken_ = getDefaultInstance().getSessionToken();
+          onChanged();
+          return this;
+        }
+        void setSessionToken(com.google.protobuf.ByteString value) {
+          bitField0_ |= 0x00000004;
+          sessionToken_ = value;
+          onChanged();
+        }
+        
+        // required bool autogenerated = 4;
+        private boolean autogenerated_ ;
+        public boolean hasAutogenerated() {
+          return ((bitField0_ & 0x00000008) == 0x00000008);
+        }
+        public boolean getAutogenerated() {
+          return autogenerated_;
+        }
+        public Builder setAutogenerated(boolean value) {
+          bitField0_ |= 0x00000008;
+          autogenerated_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearAutogenerated() {
+          bitField0_ = (bitField0_ & ~0x00000008);
+          autogenerated_ = false;
+          onChanged();
+          return this;
+        }
+        
+        // @@protoc_insertion_point(builder_scope:management.LoginResponse.Data)
+      }
+      
+      static {
+        defaultInstance = new Data(true);
+        defaultInstance.initFields();
+      }
+      
+      // @@protoc_insertion_point(class_scope:management.LoginResponse.Data)
+    }
+    
     private int bitField0_;
-    // optional .base.UUID id = 1;
-    public static final int ID_FIELD_NUMBER = 1;
-    private netmsg.Base.UUID id_;
-    public boolean hasId() {
+    // optional .management.LoginResponse.Data data = 1;
+    public static final int DATA_FIELD_NUMBER = 1;
+    private netmsg.Management.LoginResponse.Data data_;
+    public boolean hasData() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public netmsg.Base.UUID getId() {
-      return id_;
+    public netmsg.Management.LoginResponse.Data getData() {
+      return data_;
     }
-    public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
-      return id_;
+    public netmsg.Management.LoginResponse.DataOrBuilder getDataOrBuilder() {
+      return data_;
     }
     
     private void initFields() {
-      id_ = netmsg.Base.UUID.getDefaultInstance();
+      data_ = netmsg.Management.LoginResponse.Data.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
       
-      if (hasId()) {
-        if (!getId().isInitialized()) {
+      if (hasData()) {
+        if (!getData().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -5324,7 +5688,7 @@ public final class Management {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, id_);
+        output.writeMessage(1, data_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -5337,7 +5701,7 @@ public final class Management {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, id_);
+          .computeMessageSize(1, data_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -5455,7 +5819,7 @@ public final class Management {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getIdFieldBuilder();
+          getDataFieldBuilder();
         }
       }
       private static Builder create() {
@@ -5464,10 +5828,10 @@ public final class Management {
       
       public Builder clear() {
         super.clear();
-        if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+        if (dataBuilder_ == null) {
+          data_ = netmsg.Management.LoginResponse.Data.getDefaultInstance();
         } else {
-          idBuilder_.clear();
+          dataBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
@@ -5511,10 +5875,10 @@ public final class Management {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        if (idBuilder_ == null) {
-          result.id_ = id_;
+        if (dataBuilder_ == null) {
+          result.data_ = data_;
         } else {
-          result.id_ = idBuilder_.build();
+          result.data_ = dataBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -5532,16 +5896,16 @@ public final class Management {
       
       public Builder mergeFrom(netmsg.Management.LoginResponse other) {
         if (other == netmsg.Management.LoginResponse.getDefaultInstance()) return this;
-        if (other.hasId()) {
-          mergeId(other.getId());
+        if (other.hasData()) {
+          mergeData(other.getData());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
       
       public final boolean isInitialized() {
-        if (hasId()) {
-          if (!getId().isInitialized()) {
+        if (hasData()) {
+          if (!getData().isInitialized()) {
             
             return false;
           }
@@ -5573,12 +5937,12 @@ public final class Management {
               break;
             }
             case 10: {
-              netmsg.Base.UUID.Builder subBuilder = netmsg.Base.UUID.newBuilder();
-              if (hasId()) {
-                subBuilder.mergeFrom(getId());
+              netmsg.Management.LoginResponse.Data.Builder subBuilder = netmsg.Management.LoginResponse.Data.newBuilder();
+              if (hasData()) {
+                subBuilder.mergeFrom(getData());
               }
               input.readMessage(subBuilder, extensionRegistry);
-              setId(subBuilder.buildPartial());
+              setData(subBuilder.buildPartial());
               break;
             }
           }
@@ -5587,94 +5951,94 @@ public final class Management {
       
       private int bitField0_;
       
-      // optional .base.UUID id = 1;
-      private netmsg.Base.UUID id_ = netmsg.Base.UUID.getDefaultInstance();
+      // optional .management.LoginResponse.Data data = 1;
+      private netmsg.Management.LoginResponse.Data data_ = netmsg.Management.LoginResponse.Data.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> idBuilder_;
-      public boolean hasId() {
+          netmsg.Management.LoginResponse.Data, netmsg.Management.LoginResponse.Data.Builder, netmsg.Management.LoginResponse.DataOrBuilder> dataBuilder_;
+      public boolean hasData() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public netmsg.Base.UUID getId() {
-        if (idBuilder_ == null) {
-          return id_;
+      public netmsg.Management.LoginResponse.Data getData() {
+        if (dataBuilder_ == null) {
+          return data_;
         } else {
-          return idBuilder_.getMessage();
+          return dataBuilder_.getMessage();
         }
       }
-      public Builder setId(netmsg.Base.UUID value) {
-        if (idBuilder_ == null) {
+      public Builder setData(netmsg.Management.LoginResponse.Data value) {
+        if (dataBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          id_ = value;
+          data_ = value;
           onChanged();
         } else {
-          idBuilder_.setMessage(value);
+          dataBuilder_.setMessage(value);
         }
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder setId(
-          netmsg.Base.UUID.Builder builderForValue) {
-        if (idBuilder_ == null) {
-          id_ = builderForValue.build();
+      public Builder setData(
+          netmsg.Management.LoginResponse.Data.Builder builderForValue) {
+        if (dataBuilder_ == null) {
+          data_ = builderForValue.build();
           onChanged();
         } else {
-          idBuilder_.setMessage(builderForValue.build());
+          dataBuilder_.setMessage(builderForValue.build());
         }
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder mergeId(netmsg.Base.UUID value) {
-        if (idBuilder_ == null) {
+      public Builder mergeData(netmsg.Management.LoginResponse.Data value) {
+        if (dataBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              id_ != netmsg.Base.UUID.getDefaultInstance()) {
-            id_ =
-              netmsg.Base.UUID.newBuilder(id_).mergeFrom(value).buildPartial();
+              data_ != netmsg.Management.LoginResponse.Data.getDefaultInstance()) {
+            data_ =
+              netmsg.Management.LoginResponse.Data.newBuilder(data_).mergeFrom(value).buildPartial();
           } else {
-            id_ = value;
+            data_ = value;
           }
           onChanged();
         } else {
-          idBuilder_.mergeFrom(value);
+          dataBuilder_.mergeFrom(value);
         }
         bitField0_ |= 0x00000001;
         return this;
       }
-      public Builder clearId() {
-        if (idBuilder_ == null) {
-          id_ = netmsg.Base.UUID.getDefaultInstance();
+      public Builder clearData() {
+        if (dataBuilder_ == null) {
+          data_ = netmsg.Management.LoginResponse.Data.getDefaultInstance();
           onChanged();
         } else {
-          idBuilder_.clear();
+          dataBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      public netmsg.Base.UUID.Builder getIdBuilder() {
+      public netmsg.Management.LoginResponse.Data.Builder getDataBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
-        return getIdFieldBuilder().getBuilder();
+        return getDataFieldBuilder().getBuilder();
       }
-      public netmsg.Base.UUIDOrBuilder getIdOrBuilder() {
-        if (idBuilder_ != null) {
-          return idBuilder_.getMessageOrBuilder();
+      public netmsg.Management.LoginResponse.DataOrBuilder getDataOrBuilder() {
+        if (dataBuilder_ != null) {
+          return dataBuilder_.getMessageOrBuilder();
         } else {
-          return id_;
+          return data_;
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder> 
-          getIdFieldBuilder() {
-        if (idBuilder_ == null) {
-          idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              netmsg.Base.UUID, netmsg.Base.UUID.Builder, netmsg.Base.UUIDOrBuilder>(
-                  id_,
+          netmsg.Management.LoginResponse.Data, netmsg.Management.LoginResponse.Data.Builder, netmsg.Management.LoginResponse.DataOrBuilder> 
+          getDataFieldBuilder() {
+        if (dataBuilder_ == null) {
+          dataBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Management.LoginResponse.Data, netmsg.Management.LoginResponse.Data.Builder, netmsg.Management.LoginResponse.DataOrBuilder>(
+                  data_,
                   getParentForChildren(),
                   isClean());
-          id_ = null;
+          data_ = null;
         }
-        return idBuilder_;
+        return dataBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:management.LoginResponse)
@@ -6425,11 +6789,6 @@ public final class Management {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_management_AutoRegister_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_management_AutoRegisterResponse_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_management_AutoRegisterResponse_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_management_CheckNameAvailability_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -6460,6 +6819,11 @@ public final class Management {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_management_LoginResponse_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_management_LoginResponse_Data_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_management_LoginResponse_Data_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_management_JoinGame_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -6486,27 +6850,27 @@ public final class Management {
       "dentials\030\003 \001(\0132\035.management.ChangeCreden" +
       "tials\022 \n\005login\030\004 \001(\0132\021.management.Login\022" +
       "\'\n\tjoin_game\030\005 \001(\0132\024.management.JoinGame" +
-      "\"\253\002\n\nFromServer\0227\n\rauto_register\030\001 \001(\0132 " +
-      ".management.AutoRegisterResponse\022J\n\027chec",
-      "k_name_availability\030\002 \001(\0132).management.C" +
-      "heckNameAvailabilityResponse\022A\n\022change_c" +
-      "redentials\030\003 \001(\0132%.management.ChangeCred" +
-      "entialsResponse\022(\n\005login\030\004 \001(\0132\031.managem" +
-      "ent.LoginResponse\022+\n\013game_joined\030\005 \001(\0132\026" +
-      ".management.GameJoined\"-\n\013Credentials\022\014\n" +
-      "\004name\030\001 \002(\t\022\020\n\010password\030\002 \002(\t\"\016\n\014AutoReg" +
-      "ister\"D\n\024AutoRegisterResponse\022,\n\013credent" +
-      "ials\030\001 \002(\0132\027.management.Credentials\"%\n\025C" +
-      "heckNameAvailability\022\014\n\004name\030\001 \002(\t\"2\n\035Ch",
-      "eckNameAvailabilityResponse\022\021\n\tavailable" +
-      "\030\001 \002(\010\"A\n\021ChangeCredentials\022,\n\013credentia" +
-      "ls\030\001 \002(\0132\027.management.Credentials\",\n\031Cha" +
-      "ngeCredentialsResponse\022\017\n\007success\030\001 \002(\010\"" +
-      "5\n\005Login\022,\n\013credentials\030\001 \002(\0132\027.manageme" +
-      "nt.Credentials\"\'\n\rLoginResponse\022\026\n\002id\030\001 " +
-      "\001(\0132\n.base.UUID\"\n\n\010JoinGame\"*\n\nGameJoine" +
-      "d\022\034\n\006player\030\001 \002(\0132\014.game.PlayerB\010\n\006netms" +
-      "g"
+      "\"\362\001\n\nFromServer\022J\n\027check_name_availabili" +
+      "ty\030\001 \001(\0132).management.CheckNameAvailabil",
+      "ityResponse\022A\n\022change_credentials\030\002 \001(\0132" +
+      "%.management.ChangeCredentialsResponse\022(" +
+      "\n\005login\030\003 \001(\0132\031.management.LoginResponse" +
+      "\022+\n\013game_joined\030\004 \001(\0132\026.management.GameJ" +
+      "oined\"D\n\013Credentials\022\014\n\004name\030\001 \002(\t\022\020\n\010pa" +
+      "ssword\030\002 \001(\t\022\025\n\rsession_token\030\003 \001(\t\"\016\n\014A" +
+      "utoRegister\"%\n\025CheckNameAvailability\022\014\n\004" +
+      "name\030\001 \002(\t\"@\n\035CheckNameAvailabilityRespo" +
+      "nse\022\014\n\004name\030\001 \002(\t\022\021\n\tavailable\030\002 \002(\010\"7\n\021" +
+      "ChangeCredentials\022\020\n\010username\030\001 \002(\t\022\020\n\010p",
+      "assword\030\002 \002(\t\"6\n\031ChangeCredentialsRespon" +
+      "se\022\031\n\021new_session_token\030\001 \001(\t\"5\n\005Login\022," +
+      "\n\013credentials\030\001 \002(\0132\027.management.Credent" +
+      "ials\"\235\001\n\rLoginResponse\022,\n\004data\030\001 \001(\0132\036.m" +
+      "anagement.LoginResponse.Data\032^\n\004Data\022\026\n\002" +
+      "id\030\001 \002(\0132\n.base.UUID\022\020\n\010username\030\002 \002(\t\022\025" +
+      "\n\rsession_token\030\003 \002(\t\022\025\n\rautogenerated\030\004" +
+      " \002(\010\"\n\n\010JoinGame\"*\n\nGameJoined\022\034\n\006player" +
+      "\030\001 \002(\0132\014.game.PlayerB\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -6526,7 +6890,7 @@ public final class Management {
           internal_static_management_FromServer_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_FromServer_descriptor,
-              new java.lang.String[] { "AutoRegister", "CheckNameAvailability", "ChangeCredentials", "Login", "GameJoined", },
+              new java.lang.String[] { "CheckNameAvailability", "ChangeCredentials", "Login", "GameJoined", },
               netmsg.Management.FromServer.class,
               netmsg.Management.FromServer.Builder.class);
           internal_static_management_Credentials_descriptor =
@@ -6534,7 +6898,7 @@ public final class Management {
           internal_static_management_Credentials_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_Credentials_descriptor,
-              new java.lang.String[] { "Name", "Password", },
+              new java.lang.String[] { "Name", "Password", "SessionToken", },
               netmsg.Management.Credentials.class,
               netmsg.Management.Credentials.Builder.class);
           internal_static_management_AutoRegister_descriptor =
@@ -6545,16 +6909,8 @@ public final class Management {
               new java.lang.String[] { },
               netmsg.Management.AutoRegister.class,
               netmsg.Management.AutoRegister.Builder.class);
-          internal_static_management_AutoRegisterResponse_descriptor =
-            getDescriptor().getMessageTypes().get(4);
-          internal_static_management_AutoRegisterResponse_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_management_AutoRegisterResponse_descriptor,
-              new java.lang.String[] { "Credentials", },
-              netmsg.Management.AutoRegisterResponse.class,
-              netmsg.Management.AutoRegisterResponse.Builder.class);
           internal_static_management_CheckNameAvailability_descriptor =
-            getDescriptor().getMessageTypes().get(5);
+            getDescriptor().getMessageTypes().get(4);
           internal_static_management_CheckNameAvailability_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_CheckNameAvailability_descriptor,
@@ -6562,31 +6918,31 @@ public final class Management {
               netmsg.Management.CheckNameAvailability.class,
               netmsg.Management.CheckNameAvailability.Builder.class);
           internal_static_management_CheckNameAvailabilityResponse_descriptor =
-            getDescriptor().getMessageTypes().get(6);
+            getDescriptor().getMessageTypes().get(5);
           internal_static_management_CheckNameAvailabilityResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_CheckNameAvailabilityResponse_descriptor,
-              new java.lang.String[] { "Available", },
+              new java.lang.String[] { "Name", "Available", },
               netmsg.Management.CheckNameAvailabilityResponse.class,
               netmsg.Management.CheckNameAvailabilityResponse.Builder.class);
           internal_static_management_ChangeCredentials_descriptor =
-            getDescriptor().getMessageTypes().get(7);
+            getDescriptor().getMessageTypes().get(6);
           internal_static_management_ChangeCredentials_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_ChangeCredentials_descriptor,
-              new java.lang.String[] { "Credentials", },
+              new java.lang.String[] { "Username", "Password", },
               netmsg.Management.ChangeCredentials.class,
               netmsg.Management.ChangeCredentials.Builder.class);
           internal_static_management_ChangeCredentialsResponse_descriptor =
-            getDescriptor().getMessageTypes().get(8);
+            getDescriptor().getMessageTypes().get(7);
           internal_static_management_ChangeCredentialsResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_ChangeCredentialsResponse_descriptor,
-              new java.lang.String[] { "Success", },
+              new java.lang.String[] { "NewSessionToken", },
               netmsg.Management.ChangeCredentialsResponse.class,
               netmsg.Management.ChangeCredentialsResponse.Builder.class);
           internal_static_management_Login_descriptor =
-            getDescriptor().getMessageTypes().get(9);
+            getDescriptor().getMessageTypes().get(8);
           internal_static_management_Login_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_Login_descriptor,
@@ -6594,15 +6950,23 @@ public final class Management {
               netmsg.Management.Login.class,
               netmsg.Management.Login.Builder.class);
           internal_static_management_LoginResponse_descriptor =
-            getDescriptor().getMessageTypes().get(10);
+            getDescriptor().getMessageTypes().get(9);
           internal_static_management_LoginResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_LoginResponse_descriptor,
-              new java.lang.String[] { "Id", },
+              new java.lang.String[] { "Data", },
               netmsg.Management.LoginResponse.class,
               netmsg.Management.LoginResponse.Builder.class);
+          internal_static_management_LoginResponse_Data_descriptor =
+            internal_static_management_LoginResponse_descriptor.getNestedTypes().get(0);
+          internal_static_management_LoginResponse_Data_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_management_LoginResponse_Data_descriptor,
+              new java.lang.String[] { "Id", "Username", "SessionToken", "Autogenerated", },
+              netmsg.Management.LoginResponse.Data.class,
+              netmsg.Management.LoginResponse.Data.Builder.class);
           internal_static_management_JoinGame_descriptor =
-            getDescriptor().getMessageTypes().get(11);
+            getDescriptor().getMessageTypes().get(10);
           internal_static_management_JoinGame_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_JoinGame_descriptor,
@@ -6610,7 +6974,7 @@ public final class Management {
               netmsg.Management.JoinGame.class,
               netmsg.Management.JoinGame.Builder.class);
           internal_static_management_GameJoined_descriptor =
-            getDescriptor().getMessageTypes().get(12);
+            getDescriptor().getMessageTypes().get(11);
           internal_static_management_GameJoined_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_GameJoined_descriptor,

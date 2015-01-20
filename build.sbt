@@ -18,7 +18,12 @@ libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.3.6"
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.1.0"
 
-libraryDependencies += "com.typesafe.slick" %% "slick" % "2.1.0"
+libraryDependencies ++= Seq(
+  "org.flywaydb" % "flyway-core" % "3.1",
+  "com.zaxxer" % "HikariCP-java6" % "2.2.5",
+  "org.xerial" % "sqlite-jdbc" % "3.8.7",
+  "com.typesafe.slick" %% "slick" % "2.1.0"
+)
 
 libraryDependencies += "com.github.t3hnar" %% "scala-bcrypt" % "2.4"
 
