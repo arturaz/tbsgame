@@ -8,14 +8,14 @@ option java_package = "netmsg";
 message FromClient {
   optional AutoRegister auto_register = 1;
   optional CheckNameAvailability check_name_availability = 2;
-  optional ChangeCredentials change_credentials = 3;
+  optional Register register = 3;
   optional Login login = 4;
   optional JoinGame join_game = 5;
 }
 
 message FromServer {
   optional CheckNameAvailabilityResponse check_name_availability = 1;
-  optional ChangeCredentialsResponse change_credentials = 2;
+  optional RegisterResponse register = 2;
   optional LoginResponse login = 3;
   optional GameJoined game_joined = 4;
 }
@@ -43,12 +43,13 @@ message CheckNameAvailabilityResponse {
 }
 
 
-/* Change username/password */
-message ChangeCredentials {
+/* Create a permanent account. */
+message Register {
   required string username = 1;
   required string password = 2;
+  required string email = 3;
 }
-message ChangeCredentialsResponse {
+message RegisterResponse {
   /* new session token on success */
   optional string new_session_token = 1;
 }

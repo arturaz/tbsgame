@@ -96,9 +96,9 @@ object ProtobufCoding {
         AutoRegister.right
       else if (m.hasCheckNameAvailability)
         CheckNameAvailability(m.getCheckNameAvailability.getName).right
-      else if (m.hasChangeCredentials)
-        m.getChangeCredentials.mapVal { cc =>
-          ChangeCredentials(cc.getUsername, PlainPassword(cc.getPassword))
+      else if (m.hasRegister)
+        m.getRegister.mapVal { reg =>
+          Register(reg.getUsername, PlainPassword(reg.getPassword), reg.getEmail)
         }.right
       else if (m.hasLogin)
         m.getLogin.getCredentials.mapVal(c => Login(c)).right
@@ -605,9 +605,9 @@ object ProtobufCoding {
         setAvailable(out.available).setName(out.name).build()
 
     implicit def convert(
-      out: NetClient.Management.Out.ChangeCredentialsResponse
-    ): Management.ChangeCredentialsResponse =
-      Management.ChangeCredentialsResponse.newBuilder().mapVal { b =>
+      out: NetClient.Management.Out.RegisterResponse
+    ): Management.RegisterResponse =
+      Management.RegisterResponse.newBuilder().mapVal { b =>
         out.newToken.fold2(b, token => b.setNewSessionToken(token.value))
       }.build()
 
@@ -632,8 +632,8 @@ object ProtobufCoding {
       Management.FromServer.newBuilder().mapVal { b => out match {
         case msg: NetClient.Management.Out.CheckNameAvailabilityResponse =>
           b.setCheckNameAvailability(msg)
-        case msg: NetClient.Management.Out.ChangeCredentialsResponse =>
-          b.setChangeCredentials(msg)
+        case msg: NetClient.Management.Out.RegisterResponse =>
+          b.setRegister(msg)
         case msg: NetClient.Management.Out.LoginResponse => b.setLogin(msg)
         case msg: NetClient.Management.Out.GameJoined => b.setGameJoined(msg)
       } }.build()
