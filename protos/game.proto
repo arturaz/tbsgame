@@ -462,7 +462,7 @@ message MovementChangeEvt {
 
 message HPChangeEvt {
   required WObjID obj_id = 1;
-  required uint32 new_hp = 2;
+  required base.ValWithMax new_hp = 2;
 }
 
 message LevelChangeEvt {

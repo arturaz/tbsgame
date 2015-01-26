@@ -1,11 +1,9 @@
 package app.models.game.world
 
 import akka.event.LoggingAdapter
-import app.models.game.{Player, Attack}
-import app.models.game.events.{LevelChangeEvt, AttacksChangedEvt, AttackEvt, Evented}
+import app.models.game.events.{AttackEvt, AttacksChangedEvt, Evented, LevelChangeEvt}
+import app.models.game.{Attack, Player}
 import implicits._
-
-import scala.util.Random
 
 trait FighterOps[Self <: Fighter] extends OwnedObjOps[Self]
 with MoveAttackActionedOps[Self] {
@@ -78,7 +76,7 @@ trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
   lazy val level = companion.level(xp)
   lazy val attackMultiplier = companion.LevelMultiplierTable(level)
   val xp: XP
-  def maxHp = companion.maxHpAt(level)
+  override def maxHp = companion.maxHpAt(level)
 
   override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
     super.teamTurnStartedSelf(world) |> resetAttack

@@ -44458,9 +44458,10 @@ public final class Game {
     netmsg.Game.WObjID getObjId();
     netmsg.Game.WObjIDOrBuilder getObjIdOrBuilder();
     
-    // required uint32 new_hp = 2;
+    // required .base.ValWithMax new_hp = 2;
     boolean hasNewHp();
-    int getNewHp();
+    netmsg.Base.ValWithMax getNewHp();
+    netmsg.Base.ValWithMaxOrBuilder getNewHpOrBuilder();
   }
   public static final class HPChangeEvt extends
       com.google.protobuf.GeneratedMessage
@@ -44504,19 +44505,22 @@ public final class Game {
       return objId_;
     }
     
-    // required uint32 new_hp = 2;
+    // required .base.ValWithMax new_hp = 2;
     public static final int NEW_HP_FIELD_NUMBER = 2;
-    private int newHp_;
+    private netmsg.Base.ValWithMax newHp_;
     public boolean hasNewHp() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
-    public int getNewHp() {
+    public netmsg.Base.ValWithMax getNewHp() {
+      return newHp_;
+    }
+    public netmsg.Base.ValWithMaxOrBuilder getNewHpOrBuilder() {
       return newHp_;
     }
     
     private void initFields() {
       objId_ = netmsg.Game.WObjID.getDefaultInstance();
-      newHp_ = 0;
+      newHp_ = netmsg.Base.ValWithMax.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -44535,6 +44539,10 @@ public final class Game {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (!getNewHp().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -44546,7 +44554,7 @@ public final class Game {
         output.writeMessage(1, objId_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeUInt32(2, newHp_);
+        output.writeMessage(2, newHp_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -44563,7 +44571,7 @@ public final class Game {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(2, newHp_);
+          .computeMessageSize(2, newHp_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -44682,6 +44690,7 @@ public final class Game {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getObjIdFieldBuilder();
+          getNewHpFieldBuilder();
         }
       }
       private static Builder create() {
@@ -44696,7 +44705,11 @@ public final class Game {
           objIdBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
-        newHp_ = 0;
+        if (newHpBuilder_ == null) {
+          newHp_ = netmsg.Base.ValWithMax.getDefaultInstance();
+        } else {
+          newHpBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
@@ -44747,7 +44760,11 @@ public final class Game {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.newHp_ = newHp_;
+        if (newHpBuilder_ == null) {
+          result.newHp_ = newHp_;
+        } else {
+          result.newHp_ = newHpBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -44768,7 +44785,7 @@ public final class Game {
           mergeObjId(other.getObjId());
         }
         if (other.hasNewHp()) {
-          setNewHp(other.getNewHp());
+          mergeNewHp(other.getNewHp());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -44784,6 +44801,10 @@ public final class Game {
           return false;
         }
         if (!getObjId().isInitialized()) {
+          
+          return false;
+        }
+        if (!getNewHp().isInitialized()) {
           
           return false;
         }
@@ -44822,9 +44843,13 @@ public final class Game {
               setObjId(subBuilder.buildPartial());
               break;
             }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              newHp_ = input.readUInt32();
+            case 18: {
+              netmsg.Base.ValWithMax.Builder subBuilder = netmsg.Base.ValWithMax.newBuilder();
+              if (hasNewHp()) {
+                subBuilder.mergeFrom(getNewHp());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setNewHp(subBuilder.buildPartial());
               break;
             }
           }
@@ -44923,25 +44948,94 @@ public final class Game {
         return objIdBuilder_;
       }
       
-      // required uint32 new_hp = 2;
-      private int newHp_ ;
+      // required .base.ValWithMax new_hp = 2;
+      private netmsg.Base.ValWithMax newHp_ = netmsg.Base.ValWithMax.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Base.ValWithMax, netmsg.Base.ValWithMax.Builder, netmsg.Base.ValWithMaxOrBuilder> newHpBuilder_;
       public boolean hasNewHp() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      public int getNewHp() {
-        return newHp_;
+      public netmsg.Base.ValWithMax getNewHp() {
+        if (newHpBuilder_ == null) {
+          return newHp_;
+        } else {
+          return newHpBuilder_.getMessage();
+        }
       }
-      public Builder setNewHp(int value) {
+      public Builder setNewHp(netmsg.Base.ValWithMax value) {
+        if (newHpBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          newHp_ = value;
+          onChanged();
+        } else {
+          newHpBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000002;
-        newHp_ = value;
-        onChanged();
+        return this;
+      }
+      public Builder setNewHp(
+          netmsg.Base.ValWithMax.Builder builderForValue) {
+        if (newHpBuilder_ == null) {
+          newHp_ = builderForValue.build();
+          onChanged();
+        } else {
+          newHpBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder mergeNewHp(netmsg.Base.ValWithMax value) {
+        if (newHpBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              newHp_ != netmsg.Base.ValWithMax.getDefaultInstance()) {
+            newHp_ =
+              netmsg.Base.ValWithMax.newBuilder(newHp_).mergeFrom(value).buildPartial();
+          } else {
+            newHp_ = value;
+          }
+          onChanged();
+        } else {
+          newHpBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
         return this;
       }
       public Builder clearNewHp() {
+        if (newHpBuilder_ == null) {
+          newHp_ = netmsg.Base.ValWithMax.getDefaultInstance();
+          onChanged();
+        } else {
+          newHpBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000002);
-        newHp_ = 0;
-        onChanged();
         return this;
+      }
+      public netmsg.Base.ValWithMax.Builder getNewHpBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getNewHpFieldBuilder().getBuilder();
+      }
+      public netmsg.Base.ValWithMaxOrBuilder getNewHpOrBuilder() {
+        if (newHpBuilder_ != null) {
+          return newHpBuilder_.getMessageOrBuilder();
+        } else {
+          return newHp_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Base.ValWithMax, netmsg.Base.ValWithMax.Builder, netmsg.Base.ValWithMaxOrBuilder> 
+          getNewHpFieldBuilder() {
+        if (newHpBuilder_ == null) {
+          newHpBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Base.ValWithMax, netmsg.Base.ValWithMax.Builder, netmsg.Base.ValWithMaxOrBuilder>(
+                  newHp_,
+                  getParentForChildren(),
+                  isClean());
+          newHp_ = null;
+        }
+        return newHpBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:game.HPChangeEvt)
@@ -51743,33 +51837,33 @@ public final class Game {
       "\034\n\006attack\030\004 \002(\0132\014.game.Attack\"3\n\006Attack\022" +
       "\025\n\rattacker_roll\030\001 \002(\r\022\022\n\nsuccessful\030\002 \002" +
       "(\010\"G\n\021MovementChangeEvt\022\034\n\006obj_id\030\001 \002(\0132" +
-      "\014.game.WObjID\022\024\n\014new_movement\030\002 \002(\r\";\n\013H" +
+      "\014.game.WObjID\022\024\n\014new_movement\030\002 \002(\r\"M\n\013H" +
       "PChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID",
-      "\022\016\n\006new_hp\030\002 \002(\r\"A\n\016LevelChangeEvt\022\034\n\006ob" +
-      "j_id\030\001 \002(\0132\014.game.WObjID\022\021\n\tnew_level\030\002 " +
-      "\002(\r\"S\n\030MovedOrAttackedChangeEvt\022\034\n\006obj_i" +
-      "d\030\001 \002(\0132\014.game.WObjID\022\031\n\021moved_or_attack" +
-      "ed\030\002 \002(\010\"k\n\021ResourceChangeEvt\022\034\n\006obj_id\030" +
-      "\001 \001(\0132\014.game.WObjID\022!\n\tplayer_id\030\002 \001(\0132\016" +
-      ".game.PlayerID\022\025\n\rnew_resources\030\003 \002(\r\"J\n" +
-      "\020ActionsChangeEvt\022!\n\tplayer_id\030\001 \002(\0132\016.g" +
-      "ame.PlayerID\022\023\n\013new_actions\030\002 \002(\r\"J\n\022War" +
-      "pStateChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.W",
-      "ObjID\022\026\n\016new_warp_state\030\002 \002(\r\"F\n\020Attacks" +
+      "\022 \n\006new_hp\030\002 \002(\0132\020.base.ValWithMax\"A\n\016Le" +
+      "velChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObj" +
+      "ID\022\021\n\tnew_level\030\002 \002(\r\"S\n\030MovedOrAttacked" +
       "ChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022" +
-      "\024\n\014attacks_left\030\002 \002(\r\"O\n\022TurnEndedChange" +
-      "Evt\022!\n\tplayer_id\030\001 \002(\0132\016.game.PlayerID\022\026" +
-      "\n\016new_turn_ended\030\002 \002(\010\"/\n\017ObjDestroyedEv" +
-      "t\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\"S\n\016Owner" +
-      "ChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022" +
-      "#\n\014new_owner_id\030\002 \002(\0132\r.game.OwnerID\"?\n\023" +
-      "ObjectivesUpdateEvt\022(\n\016new_objectives\030\001 " +
-      "\002(\0132\020.game.Objectives\"+\n\nGameWonEvt\022\035\n\007t",
-      "eam_id\030\001 \002(\0132\014.game.TeamID\"b\n\023Population" +
-      "ChangeEvt\022!\n\tplayer_id\030\001 \002(\0132\016.game.Play" +
-      "erID\022(\n\016new_population\030\002 \002(\0132\020.base.ValW" +
-      "ithMax*,\n\010WObjKind\022\t\n\005LIGHT\020\001\022\n\n\006MEDIUM\020" +
-      "\002\022\t\n\005HEAVY\020\003B\010\n\006netmsg"
+      "\031\n\021moved_or_attacked\030\002 \002(\010\"k\n\021ResourceCh" +
+      "angeEvt\022\034\n\006obj_id\030\001 \001(\0132\014.game.WObjID\022!\n" +
+      "\tplayer_id\030\002 \001(\0132\016.game.PlayerID\022\025\n\rnew_" +
+      "resources\030\003 \002(\r\"J\n\020ActionsChangeEvt\022!\n\tp" +
+      "layer_id\030\001 \002(\0132\016.game.PlayerID\022\023\n\013new_ac" +
+      "tions\030\002 \002(\r\"J\n\022WarpStateChangeEvt\022\034\n\006obj",
+      "_id\030\001 \002(\0132\014.game.WObjID\022\026\n\016new_warp_stat" +
+      "e\030\002 \002(\r\"F\n\020AttacksChangeEvt\022\034\n\006obj_id\030\001 " +
+      "\002(\0132\014.game.WObjID\022\024\n\014attacks_left\030\002 \002(\r\"" +
+      "O\n\022TurnEndedChangeEvt\022!\n\tplayer_id\030\001 \002(\013" +
+      "2\016.game.PlayerID\022\026\n\016new_turn_ended\030\002 \002(\010" +
+      "\"/\n\017ObjDestroyedEvt\022\034\n\006obj_id\030\001 \002(\0132\014.ga" +
+      "me.WObjID\"S\n\016OwnerChangeEvt\022\034\n\006obj_id\030\001 " +
+      "\002(\0132\014.game.WObjID\022#\n\014new_owner_id\030\002 \002(\0132" +
+      "\r.game.OwnerID\"?\n\023ObjectivesUpdateEvt\022(\n" +
+      "\016new_objectives\030\001 \002(\0132\020.game.Objectives\"",
+      "+\n\nGameWonEvt\022\035\n\007team_id\030\001 \002(\0132\014.game.Te" +
+      "amID\"b\n\023PopulationChangeEvt\022!\n\tplayer_id" +
+      "\030\001 \002(\0132\016.game.PlayerID\022(\n\016new_population" +
+      "\030\002 \002(\0132\020.base.ValWithMax*,\n\010WObjKind\022\t\n\005" +
+      "LIGHT\020\001\022\n\n\006MEDIUM\020\002\022\t\n\005HEAVY\020\003B\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

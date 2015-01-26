@@ -489,7 +489,8 @@ object ProtobufCoding {
 
     implicit def convert(evt: HPChangeEvt): Game.HPChangeEvt =
       Game.HPChangeEvt.newBuilder().
-        setObjId(evt.newObj.id).setNewHp(evt.newObj.hp).build()
+        setObjId(evt.newObj.id).
+        setNewHp(valWithMax(evt.newObj.hp.value, evt.newObj.maxHp.value)).build()
 
     implicit def convert(evt: LevelChangeEvt): Game.LevelChangeEvt =
       Game.LevelChangeEvt.newBuilder().

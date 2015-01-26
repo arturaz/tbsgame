@@ -36,6 +36,7 @@ trait OwnedObj extends WObject {
 
   val hp: HP
   val owner: Owner
+  def maxHp = companion.maxHp
   def isWarpingIn = false
   def isWarpedIn = ! isWarpingIn
   def isEnemy(o: OwnedObj) = owner.team =/= o.owner.team
