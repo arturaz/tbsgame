@@ -5,7 +5,7 @@ import app.models.game.world._
 
 object Gunship extends WUnitCompanion[Gunship] with FighterCompanion[Gunship] {
   override val maxHp = HP(90)
-  override val attack = Atk(70)
+  override val attack = Atk(95)
   override val attacks = Attacks(4)
   override val attackRange = RadialDistance.Three
   override val cost = Resources(6)

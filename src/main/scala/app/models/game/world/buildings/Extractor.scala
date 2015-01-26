@@ -4,7 +4,7 @@ import akka.event.LoggingAdapter
 import app.models.game.events.{Evented, ResourceChangeEvt}
 import app.models.game.world._
 import app.models.game.world.props.Asteroid
-import app.models.game.{Actions, Player}
+import app.models.game.{Population, Actions, Player}
 import implicits._
 import monocle.syntax._
 
@@ -13,8 +13,9 @@ with SpecialActionCompanion[Extractor] {
   override val maxHp = HP(115)
   override val warpTime = WarpTime(1)
   override val cost = Resources(10)
+  override val populationCost = Population(1)
   /* How much resources does turn start extract? */
-  val turnStartExtracts = Resources(2)
+  val turnStartExtracts = Resources(3)
   /* How much resources does special action extract? */
   val specialExtracts = Resources(8)
   val specialCollapseResources = cost
