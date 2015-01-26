@@ -1,12 +1,11 @@
 package app.algorithms
 
 import app.models.game.world._
+import implicits._
 import utils.data.NonEmptyVector
 
 import scala.annotation.tailrec
-import scala.collection.immutable.Queue
 import scala.collection.mutable
-import implicits._
 
 object Pathfinding {
   case class SearchRes[+A](value: A, path: Path) {
@@ -63,7 +62,7 @@ object Pathfinding {
     position: Vect2, distance: Movement, cameFrom: Option[Node]
   ) {
     def path = Path(pathPoints)
-    protected def pathPoints: Vector[Vect2] =
+    private def pathPoints: Vector[Vect2] =
       cameFrom.fold(Vector.empty[Vect2])(_.pathPoints) ++: Vector(position)
   }
 
@@ -81,7 +80,7 @@ object Pathfinding {
         if (existing.isEmpty) nodes += node.position -> node
       }
     )
-    nodes.values.map(_.path).toVector
+    nodes.values.filter(_.cameFrom.isDefined).map(_.path).toVector
   }
 
   /* Finds objects which can be attacked with fewest moves. */
