@@ -1,5 +1,6 @@
 package app.algorithms.behaviour_trees
 
+import akka.event.LoggingAdapter
 import app.algorithms.behaviour_trees.BehaviourTree.NodeResult
 
 object BehaviourTree {
@@ -30,11 +31,11 @@ trait BehaviourTree[State] {
   type BT = BehaviourTree[State]
   type Run = (NodeResult, State)
 
-  def run(state: State): Run
+  def run(state: State)(implicit log: LoggingAdapter): Run
 }
 
 trait CompositeNode[State] extends BehaviourTree[State] {
-  val children: Vector[BehaviourTree[State]]
+  val children: Seq[BehaviourTree[State]]
 }
 
 trait DecoratorNode[State] extends BehaviourTree[State] {
@@ -42,3 +43,9 @@ trait DecoratorNode[State] extends BehaviourTree[State] {
 }
 
 trait LeafNode[State] extends BehaviourTree[State]
+
+case class RootNode[State](
+  child: BehaviourTree[State]
+) extends BehaviourTree[State] {
+  def run(state: State)(implicit log: LoggingAdapter) = child.run(state)
+}
