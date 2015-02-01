@@ -7,7 +7,7 @@ import implicits._
 import utils.data.NonEmptyVector
 
 trait MovableWObjectOps[Self <: MovableWObject]
-extends WObjectOps with MoveAttackActionedOps[Self]
+extends OwnedObjOps[Self]
 { _: MovableWObjectStats =>
   protected def setMoveValues(position: Vect2, movementLeft: Movement)(self: Self): Self
 
@@ -25,17 +25,16 @@ extends WObjectOps with MoveAttackActionedOps[Self]
 
   def moveTo(world: World, target: Vect2)(self: Self): Evented[Self] = {
     for {
-      newSelf <- withMovedOrAttackedEvt(true)(world, self)
       newSelf <- Evented(
-        newSelf |>
-        setMoveValues(target, newSelf.movementLeft - self.position.movementDistance(target))
+        self |>
+        setMoveValues(target, self.movementLeft - self.position.movementDistance(target))
       )
       newSelf <- Evented(newSelf, MoveEvt(world, self, target, newSelf.movementLeft))
     } yield newSelf
   }
 }
 
-trait MovableWObjectStats extends WObjectStats with MoveAttackActionedStats {
+trait MovableWObjectStats extends OwnedObjStats {
   val movement: Movement
 }
 
@@ -43,19 +42,16 @@ trait MovableWObjectCompanion[Self <: MovableWObject]
 extends MovableWObjectOps[Self] with MovableWObjectStats
 
 /* Objects that can move. All such objects have 1x1 size. */
-trait MovableWObject extends WObject with MoveAttackActioned
-with Mobility[Mobility.Movable.type] { traitSelf =>
+trait MovableWObject extends OwnedObj with Mobility[Mobility.Movable.type]
+{ traitSelf =>
   type Self >: traitSelf.type <: MovableWObject
   type Companion <: MovableWObjectOps[Self] with MovableWObjectStats
 
   val movementLeft: Movement
 
-  override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
-    super.teamTurnStartedSelf(world) |>
-    selfEventedUpdate(companion.resetMovementLeft) |>
-    selfEventedUpdate(
-      companion.withMovedOrAttackedEvt(companion.InitialMovedOrAttacked)
-    )
+  override def teamTurnFinishedSelf(world: World)(implicit log: LoggingAdapter) =
+    super.teamTurnFinishedSelf(world) |>
+    selfEventedUpdate(companion.resetMovementLeft)
 
   def moveTo(
     world: World, path: Path
@@ -99,6 +95,6 @@ with Mobility[Mobility.Movable.type] { traitSelf =>
     }
   }
 
-
-  def hasAttack(current: WObject.WorldObjOptUpdate[Self]) = current.events.exists(_.isInstanceOf[AttackEvt[_]])
+  def hasAttack(current: WObject.WorldObjOptUpdate[Self]) =
+    current.events.exists(_.isInstanceOf[AttackEvt[_]])
 }

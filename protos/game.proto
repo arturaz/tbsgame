@@ -275,15 +275,6 @@ message WObject { // {{{
     required uint32 level = 3;
   }
 
-  message MoveAttackActioned {
-    message Stats {
-      required uint32 actions_needed = 1;
-    }
-
-    required Stats stats = 1;
-    required bool moved_or_attacked = 2;
-  }
-  
   message Movable {
     message Stats {
       required uint32 movement_range = 1;
@@ -342,7 +333,6 @@ message WObject { // {{{
   optional Warpable warpable = 1003;
   optional SpecialAction special_action = 1004;
   optional Fighter fighter = 1005;
-  optional MoveAttackActioned move_attack_actioned = 1006;
   optional Movable movable = 1007;
   optional GivingPopulation giving_population = 1008;
 
@@ -361,7 +351,6 @@ message WObject { // {{{
     optional Warpable.Stats warpable = 1003;
     optional SpecialAction.Stats special_action = 1004;
     optional Fighter.Stats fighter = 1005;
-    optional MoveAttackActioned.Stats move_attack_actioned = 1006;
     optional Movable.Stats movable = 1007;
     optional GivingPopulation.Stats giving_population = 1008;
 
@@ -382,7 +371,6 @@ message Event { // {{{
   optional MoveEvt move = 6;
   optional AttackEvt attack = 7;
   optional MovementChangeEvt movement_change = 8;
-  optional MovedOrAttackedChangeEvt moved_or_attacked_change = 9;
   optional ResourceChangeEvt resource_change = 10;
   optional ActionsChangeEvt actions_change = 11;
   optional WarpStateChangeEvt warp_change = 12;
@@ -468,11 +456,6 @@ message HPChangeEvt {
 message LevelChangeEvt {
   required WObjID obj_id = 1;
   required uint32 new_level = 2;
-}
-
-message MovedOrAttackedChangeEvt {
-  required WObjID obj_id = 1;
-  required bool moved_or_attacked = 2;
 }
 
 message ResourceChangeEvt {

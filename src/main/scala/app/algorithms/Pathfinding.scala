@@ -33,6 +33,11 @@ object Pathfinding {
       Path(rec(vects, Vector.empty, Movement.zero))
     }
 
+    /* First step only */
+    def head = Path(vects.take(2))
+    /* Rest of the path if path is longer than 1 step. */
+    def tail = if (vects.size > 2) Some(Path(vects.drop(1))) else None
+
     lazy val movementNeeded = {
       if (vects.size <= 1) Movement.zero
       else vects.sliding(2).map { case Vector(a, b) => a.movementDistance(b)}.sum

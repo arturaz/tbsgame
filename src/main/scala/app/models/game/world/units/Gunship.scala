@@ -15,8 +15,6 @@ object Gunship extends WUnitCompanion[Gunship] with FighterCompanion[Gunship] {
   override val visibility = RectDistance(3)
   override val movement = Movement.fromTiles(6)
 
-  override protected def withMovedOrAttacked(value: Boolean)(self: Gunship) =
-    self.copy(movedOrAttacked = value)
   override def withNewHp(hp: HP)(self: Gunship) = self.copy(hp = hp)
   override def withNewXP(xp: XP)(self: Gunship) = self.copy(xp = xp)
   override protected def withAttacksLeft(value: Attacks)(self: Gunship) =
@@ -34,8 +32,7 @@ case class Gunship(
   id: WObject.Id=WObject.newId, hp: HP=Gunship.maxHp, xp: XP=Gunship.InitialXP,
   attacksLeft: Attacks=Gunship.InitialAttacks,
   movementLeft: Movement=Gunship.movement,
-  warpState: WarpTime=Gunship.InitialWarpState,
-  movedOrAttacked: Boolean=Gunship.InitialMovedOrAttacked
+  warpState: WarpTime=Gunship.InitialWarpState
 ) extends WUnit with Fighter {
   override type Self = Gunship
   override type Companion = Gunship.type

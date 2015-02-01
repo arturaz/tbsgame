@@ -138,12 +138,6 @@ case class MovementChangeEvt(
   def bounds = changedObj.bounds
 }
 
-case class MovedOrAttackedChangeEvt(
-  world: World, changedObj: MoveAttackActioned
-) extends BoundedEvent {
-  def bounds = changedObj.bounds
-}
-
 case class ResourceChangeEvt(
   obj: Either[(World, WObject), Human], newValue: Resources
 ) extends VisibleEvent {

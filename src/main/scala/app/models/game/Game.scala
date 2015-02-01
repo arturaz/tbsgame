@@ -70,15 +70,6 @@ object Game {
       }
     }
 
-    def withMoveAttackAction[A <: MoveAttackActioned](
-      human: Human, state: GameHumanState
-    )(f: (A, GameHumanState) => Game.Result)(obj: A): Game.Result =
-      withActions(
-        human,
-        if (obj.movedOrAttacked) Actions(0) else obj.companion.moveAttackActionsNeeded,
-        state
-      )(f(obj, _))
-
     def withSpecialAction[A <: SpecialAction](
       human: Human, state: GameHumanState
     )(f: A => GameHumanState => Game.Result)(obj: A): Game.Result =
@@ -221,27 +212,23 @@ case class Game private (
   override def move(
     human: Human, id: WObject.Id, to: NonEmptyVector[Vect2]
   ): Game.Result =
-    withState(human) { state =>
-    withMoveObj(human, id) {
-    withMoveAttackAction(human, state) { (obj, state) =>
+    withMoveObj(human, id) { obj =>
     withVisibility(human, to.v.last) {
       obj.moveTo(world, to).right.map { _.map { case (w, _) =>
-        updated(w, human -> state)
+        updated(w)
       } }
-    } } } }
+    } }
 
   override def attack(
     human: Human, id: WObject.Id, targetId: WObject.Id
   ): Game.Result =
-    withState(human) { state =>
-    withAttackObj(human, id) {
-    withMoveAttackAction(human, state) { (obj, state) =>
+    withAttackObj(human, id) { obj =>
     withTargetObj(human, targetId) { targetObj =>
     withVisibility(human, targetObj) {
       obj.attackW(targetObj, world).right.map { _.map { world =>
-        updated(world, human -> state)
+        updated(world)
       } }
-    } } } } }
+    } } }
 
   override def moveAttack(
     human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id
@@ -281,9 +268,9 @@ case class Game private (
   def remainingObjectives(team: Team) =
     objectives.getOrElse(team, Objectives.empty).remaining(this, team)
 
-  private def updated(world: World): Game = copy(world = world)
-  private def updated(states: States): Game = copy(states = states)
-  private[this] def updated(world: World, human: (Human, GameHumanState)): Game =
+  def updated(world: World): Game = copy(world = world)
+  def updated(states: States): Game = copy(states = states)
+  def updated(world: World, human: (Human, GameHumanState)): Game =
     copy(world = world, states = states + human)
 
   private[this] def withState(human: Human)(f: GameHumanState => Game.Result) =

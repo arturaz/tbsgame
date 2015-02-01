@@ -5,8 +5,7 @@ import app.models.game.events.{AttackEvt, AttacksChangedEvt, Evented, LevelChang
 import app.models.game.{Attack, Player}
 import implicits._
 
-trait FighterOps[Self <: Fighter] extends OwnedObjOps[Self]
-with MoveAttackActionedOps[Self] {
+trait FighterOps[Self <: Fighter] extends OwnedObjOps[Self] {
   protected def withAttacksLeft(value: Attacks)(self: Self): Self
   def withAttacksLeftEvt(value: Attacks)(world: World, self: Self): Evented[Self] = {
     val newSelf = self |> withAttacksLeft(value)
@@ -31,7 +30,7 @@ with MoveAttackActionedOps[Self] {
     Atk((f.companion.randomAttack.value * f.attackMultiplier).round.toInt)
 }
 
-trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
+trait FighterStats extends OwnedObjStats {
   val attack: Atk
   val attackSpread = AtkSpread(0.3)
   // lazy because attackSpread might be overriden
@@ -68,7 +67,7 @@ trait FighterStats extends OwnedObjStats with MoveAttackActionedStats {
 
 trait FighterCompanion[Self <: Fighter] extends FighterOps[Self] with FighterStats
 
-trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
+trait Fighter extends OwnedObj { traitSelf =>
   type Self >: traitSelf.type  <: Fighter
   type Companion <: FighterOps[Self] with FighterStats
 
@@ -78,13 +77,12 @@ trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
   val xp: XP
   override def maxHp = companion.maxHpAt(level)
 
-  override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
-    super.teamTurnStartedSelf(world) |> resetAttack
+  override def teamTurnFinishedSelf(world: World)(implicit log: LoggingAdapter) =
+    super.teamTurnFinishedSelf(world) |> resetAttack
 
   protected def resetAttack(data: Evented[(World, Self)]) =
     data |>
-    selfEventedUpdate(companion.withAttacksLeftEvt(companion.attacks)) |>
-    selfEventedUpdate(companion.withMovedOrAttackedEvt(companion.InitialMovedOrAttacked))
+    selfEventedUpdate(companion.withAttacksLeftEvt(companion.attacks))
 
   def noAttacksLeft = attacksLeft.isZero
   def hasAttacksLeft = attacksLeft.isNotZero
@@ -118,7 +116,6 @@ trait Fighter extends OwnedObj with MoveAttackActioned { traitSelf =>
           newSelf <- companion.withAttacksLeftEvt(
             self.attacksLeft - Attacks(1)
           )(world, self)
-          newSelf <- companion.withMovedOrAttackedEvt(true)(world, newSelf)
           newSelf <- companion.withNewXPEvt(
             newSelf.xp + XP(newObj.map(_ => 0).getOrElse(1))
           )(world, newSelf)

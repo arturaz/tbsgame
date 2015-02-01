@@ -21,8 +21,6 @@ with FighterCompanion[RocketFrigate] {
   )(self: RocketFrigate) = self.copy(position = position, movementLeft = movementLeft)
   override def setWarpState(newState: WarpTime)(self: RocketFrigate) =
     self.copy(warpState = newState)
-  override protected def withMovedOrAttacked(value: Boolean)(self: RocketFrigate) =
-    self.copy(movedOrAttacked = value)
   override protected def withAttacksLeft(value: Attacks)(self: RocketFrigate) =
     self.copy(attacksLeft = value)
   override def withNewHp(hp: HP)(self: RocketFrigate) = self.copy(hp = hp)
@@ -36,8 +34,7 @@ case class RocketFrigate(
   xp: XP=RocketFrigate.InitialXP,
   attacksLeft: Attacks=RocketFrigate.InitialAttacks,
   movementLeft: Movement=RocketFrigate.movement,
-  warpState: WarpTime=RocketFrigate.InitialWarpState,
-  movedOrAttacked: Boolean=RocketFrigate.InitialMovedOrAttacked
+  warpState: WarpTime=RocketFrigate.InitialWarpState
 ) extends WUnit with Fighter {
   override type Self = RocketFrigate
   override type Companion = RocketFrigate.type

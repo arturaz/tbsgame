@@ -3,12 +3,11 @@ package app.models.game.ai
 import akka.event.LoggingAdapter
 import app.algorithms.Pathfinding.SearchRes
 import app.algorithms.{Combat, Pathfinding}
-import app.models.game.{Attack, Owner}
+import app.models.game.Owner
 import app.models.game.events.Evented
 import app.models.game.world._
 import app.models.game.world.units.WUnit
 import implicits._
-import infrastructure.PrefixedLoggingAdapter
 
 import scala.util.Random
 

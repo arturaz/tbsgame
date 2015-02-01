@@ -20,8 +20,6 @@ object Fortress extends WUnitCompanion[Fortress] with FighterCompanion[Fortress]
   )(self: Fortress) = self.copy(position = position, movementLeft = movementLeft)
   override def setWarpState(newState: WarpTime)(self: Fortress) =
     self.copy(warpState = newState)
-  override protected def withMovedOrAttacked(value: Boolean)(self: Fortress) =
-    self.copy(movedOrAttacked = value)
   override def withNewHp(hp: HP)(self: Fortress) = self.copy(hp = hp)
   override def withNewXP(xp: XP)(self: Fortress) = self.copy(xp = xp)
   override protected def withAttacksLeft(value: Attacks)(self: Fortress) =
@@ -34,8 +32,7 @@ case class Fortress(
   id: WObject.Id=WObject.newId, hp: HP=Fortress.maxHp, xp: XP=Fortress.InitialXP,
   attacksLeft: Attacks=Fortress.InitialAttacks,
   movementLeft: Movement=Fortress.movement,
-  warpState: WarpTime=Fortress.InitialWarpState,
-  movedOrAttacked: Boolean=Fortress.InitialMovedOrAttacked
+  warpState: WarpTime=Fortress.InitialWarpState
 ) extends WUnit with Fighter {
   override type Self = Fortress
   override type Companion = Fortress.type

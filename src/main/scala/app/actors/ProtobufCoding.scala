@@ -269,15 +269,6 @@ object ProtobufCoding {
         setStats(obj.companion).setAttacksLeft(obj.attacksLeft).setLevel(obj.level).
         build()
 
-    implicit def convert(obj: MoveAttackActionedStats)
-    : Game.WObject.MoveAttackActioned.Stats =
-      Game.WObject.MoveAttackActioned.Stats.newBuilder().
-        setActionsNeeded(obj.moveAttackActionsNeeded).build()
-
-    implicit def convert(obj: MoveAttackActioned): Game.WObject.MoveAttackActioned =
-      Game.WObject.MoveAttackActioned.newBuilder().setStats(obj.companion).
-        setMovedOrAttacked(obj.movedOrAttacked).build()
-
     implicit def convert(obj: MovableWObjectStats): Game.WObject.Movable.Stats =
       Game.WObject.Movable.Stats.newBuilder().setMovementRange(obj.movement).build()
 
@@ -313,9 +304,6 @@ object ProtobufCoding {
         mapVal { b => obj.cast[Warpable].fold2(b, o => b.setWarpable(o)) }.
         mapVal { b => obj.cast[SpecialAction].fold2(b, o => b.setSpecialAction(o)) }.
         mapVal { b => obj.cast[Fighter].fold2(b, o => b.setFighter(o)) }.
-        mapVal { b =>
-          obj.cast[MoveAttackActioned].fold2(b, o => b.setMoveAttackActioned(o))
-        }.
         mapVal { b => obj.cast[MovableWObject].fold2(b, o => b.setMovable(o)) }.
         mapVal { b =>
           import netmsg.Game.WObject.Kind._
@@ -346,9 +334,6 @@ object ProtobufCoding {
         mapVal { b => obj.cast[WarpableStats].fold2(b, o => b.setWarpable(o)) }.
         mapVal { b => obj.cast[SpecialActionStats].fold2(b, o => b.setSpecialAction(o)) }.
         mapVal { b => obj.cast[FighterStats].fold2(b, o => b.setFighter(o)) }.
-        mapVal { b =>
-          obj.cast[MoveAttackActionedStats].fold2(b, o => b.setMoveAttackActioned(o))
-        }.
         mapVal { b => obj.cast[MovableWObjectStats].fold2(b, o => b.setMovable(o)) }.
         mapVal { b =>
           import netmsg.Game.WObject.Kind._
@@ -474,13 +459,9 @@ object ProtobufCoding {
       Game.MovementChangeEvt.newBuilder().setObjId(evt.changedObj.id).
         setNewMovement(evt.changedObj.movementLeft).build()
 
-    implicit def convert(evt: MovedOrAttackedChangeEvt): Game.MovedOrAttackedChangeEvt =
-      Game.MovedOrAttackedChangeEvt.newBuilder().setObjId(evt.changedObj.id).
-        setMovedOrAttacked(evt.changedObj.movedOrAttacked).build()
-
     implicit def convert(evt: ResourceChangeEvt): Game.ResourceChangeEvt =
       Game.ResourceChangeEvt.newBuilder().mapVal { b => evt.obj.fold(
-      { case (_, obj) => b.setObjId(obj.id) }, human => b.setPlayerId(human.id)
+        { case (_, obj) => b.setObjId(obj.id) }, human => b.setPlayerId(human.id)
       )}.setNewResources(evt.newValue.value).build()
 
     implicit def convert(evt: ActionsChangeEvt): Game.ActionsChangeEvt =
@@ -541,7 +522,6 @@ object ProtobufCoding {
         case evt: MoveEvt => b.setMove(evt)
         case evt: AttackEvt[_] => b.setAttack(evt)
         case evt: MovementChangeEvt => b.setMovementChange(evt)
-        case evt: MovedOrAttackedChangeEvt => b.setMovedOrAttackedChange(evt)
         case evt: ResourceChangeEvt => b.setResourceChange(evt)
         case evt: ActionsChangeEvt => b.setActionsChange(evt)
         case evt: HPChangeEvt => b.setHpChange(evt)

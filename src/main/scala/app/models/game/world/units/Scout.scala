@@ -15,8 +15,6 @@ object Scout extends WUnitCompanion[Scout] {
   override val visibility = RectDistance(8)
   override val kind = WObjKind.Light
 
-  override protected def withMovedOrAttacked(value: Boolean)(self: Scout) =
-    self.copy(movedOrAttacked = value)
   override protected def setMoveValues(
     position: Vect2, movementLeft: Movement
   )(self: Scout) = self.copy(position = position, movementLeft = movementLeft)
@@ -30,8 +28,7 @@ case class Scout(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=Scout.maxHp,
   movementLeft: Movement=Scout.movement,
-  warpState: WarpTime=Scout.InitialWarpState,
-  movedOrAttacked: Boolean=Scout.InitialMovedOrAttacked
+  warpState: WarpTime=Scout.InitialWarpState
 ) extends WUnit {
   type Self = Scout
   type Companion = Scout.type

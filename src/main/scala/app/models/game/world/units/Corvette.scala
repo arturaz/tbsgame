@@ -24,8 +24,6 @@ with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
     self.copy(warpState = newState)
   override def setMoveValues(position: Vect2, movementLeft: Movement)(self: Corvette) =
     self.copy(position = position, movementLeft = movementLeft)
-  override def withMovedOrAttacked(value: Boolean)(self: Corvette) =
-    self.copy(movedOrAttacked = value)
   override def withNewHp(hp: HP)(self: Corvette) = self.copy(hp = hp)
   override def withNewXP(xp: XP)(self: Corvette) = self.copy(xp = xp)
   override def withAttacksLeft(value: Attacks)(self: Corvette) =
@@ -37,8 +35,7 @@ case class Corvette(
   id: WObject.Id=WObject.newId, hp: HP=Corvette.maxHp, xp: XP=Corvette.InitialXP,
   attacksLeft: Attacks=Corvette.InitialAttacks,
   movementLeft: Movement=Corvette.movement,
-  warpState: WarpTime=Corvette.InitialWarpState,
-  movedOrAttacked: Boolean=Corvette.InitialMovedOrAttacked
+  warpState: WarpTime=Corvette.InitialWarpState
 ) extends WUnit with Fighter with SpecialAction {
   type Self = Corvette
   type Companion = Corvette.type
