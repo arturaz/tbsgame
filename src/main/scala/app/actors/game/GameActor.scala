@@ -163,10 +163,10 @@ class GameActor private (
   private[this] var clients = Map(startingHuman -> startingHumanRef)
 
   private[this] var game = {
-    val singleAi = Bot(AiTeam)
+//    val singleAi = Bot(AiTeam)
     val spawnerAi = Bot(AiTeam)
     val world = World.create(
-      HumanTeam, singleAi, spawnerAi,
+      HumanTeam, spawnerAi, spawnerAi,
       spawners = 2, endDistance = TileDistance(35)
     )
     log.debug("World initialized to {}", world)
@@ -175,9 +175,9 @@ class GameActor private (
         destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
       ),
       HumanTeam -> Objectives(
-        Some(Objective.GatherResources(world, Resources(200), Percentage(0.15))),
-        Some(Objective.CollectVPs(VPS(10))),
-        Some(Objective.DestroyAllCriticalObjects)
+//        Some(Objective.GatherResources(world, Resources(200), Percentage(0.15))),
+//        Some(Objective.CollectVPs(VPS(10))),
+        destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
       )
     )
     log.debug("Objectives initialized to {}", objectives)

@@ -1,14 +1,13 @@
-import java.io.ByteArrayOutputStream
-import java.nio.{ByteOrder, ByteBuffer}
+import java.nio.{ByteBuffer, ByteOrder}
 import java.util.UUID
 
 import akka.event.LoggingAdapter
 import infrastructure.PrefixedLoggingAdapter
-import utils.{Base36, CompositeOrdering}
+import utils.{IntValueClass, Base36, CompositeOrdering}
 
 import scala.reflect.ClassTag
-import scala.util.Random
-import scalaz.{\/-, -\/, \/}
+import scala.util.{Random, Try}
+import scalaz.{-\/, \/, \/-}
 
 /**
  * Created by arturas on 2014-09-11.
@@ -16,6 +15,18 @@ import scalaz.{\/-, -\/, \/}
 package object implicits {
   implicit class OptionExts[A](val o: Option[A]) extends AnyVal {
     @inline def fold2[B](ifEmpty: => B, ifSome: A => B) = o.fold(ifEmpty)(ifSome)
+  }
+
+  implicit class TryExts[A](val t: Try[A]) extends AnyVal {
+    @inline def fold[B](ifError: Throwable => B, ifSuccess: A => B) = t match {
+      case util.Success(v) => ifSuccess(v)
+      case util.Failure(e) => ifError(e)
+    }
+  }
+
+  implicit class StringExts(val s: String) extends AnyVal {
+    @inline def parseInt: Try[Int] = Try(s.toInt)
+    @inline def parseDouble: Try[Double] = Try(s.toDouble)
   }
 
   class LeftSideException(msg: String) extends IllegalStateException(msg)
@@ -39,6 +50,8 @@ package object implicits {
 
   implicit class RandomExts(val r: Random) extends AnyVal {
     def int(from: Int, to: Int) = from + r.nextInt(to - from)
+    def range[A <: IntValueClass[A]](from: A, to: A): A =
+      from.self(int(from.value, to.value))
     def double(from: Double, to: Double) = (to - from) * r.nextDouble() + from
     def chance(chance: Double) = r.nextDouble() <= chance
   }

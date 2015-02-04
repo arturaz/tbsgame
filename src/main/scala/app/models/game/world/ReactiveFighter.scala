@@ -71,7 +71,7 @@ trait ReactiveFighter extends Fighter { traitSelf =>
 
   /* Needed to be able to react to other player actions. */
   override def teamTurnFinishedSelf(world: World)(implicit log: LoggingAdapter) =
-    super.teamTurnFinishedSelf(world) |> resetAttack |> {
+    super.teamTurnFinishedSelf(world) |> {
       (w: WObject.WorldObjUpdate[Self]) =>
         companion.attackReachableWhileHasAttacks(w)(log.prefixed("react|"))
     }

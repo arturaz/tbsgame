@@ -45,7 +45,7 @@ trait FighterStats extends OwnedObjStats {
   val attacks: Attacks
   val critical: Chance = Chance(0.1)
   val criticalMultiplier: Double = 2
-  @inline def InitialAttacks = attacks
+  def InitialAttacks = attacks
 
   val LevelMultiplierTable = Map(
     Level(1) -> 1.15, Level(2) -> 1.45, Level(3) -> 2.0
@@ -78,9 +78,12 @@ trait Fighter extends OwnedObj { traitSelf =>
   override def maxHp = companion.maxHpAt(level)
 
   override def teamTurnFinishedSelf(world: World)(implicit log: LoggingAdapter) =
-    super.teamTurnFinishedSelf(world) |> resetAttack
+    super.teamTurnFinishedSelf(world) |> resetAttackIfWarpedIn
 
-  protected def resetAttack(data: Evented[(World, Self)]) =
+  private[this] def resetAttackIfWarpedIn(data: Evented[(World, Self)]) =
+    if (isWarpedIn) resetAttack(data) else data
+
+  private[this] def resetAttack(data: Evented[(World, Self)]) =
     data |>
     selfEventedUpdate(companion.withAttacksLeftEvt(companion.attacks))
 

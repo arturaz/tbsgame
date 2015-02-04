@@ -16,8 +16,9 @@ with SpecialActionCompanion[LaserTower]
   override val cost = Resources(12)
   override val attackRange = RadialDistance(7.5f)
   override val visibility = RectDistance(7)
-    override val kind = WObjKind.Heavy
+  override val kind = WObjKind.Heavy
   override val specialActionsNeeded = Actions(2)
+  override def InitialAttacks = Attacks(0)
 
   override def warp(owner: Player, position: Vect2) =
     LaserTower(position, owner)

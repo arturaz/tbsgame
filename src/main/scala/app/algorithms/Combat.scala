@@ -53,7 +53,7 @@ object Combat {
   }
 
   /* Tries to move attack, but does not fail if cannot. */
-  def moveAttackLoose[A <: MovableFighter](
+  def moveAttackLoose[A <: MovableFighter { type Self = A }](
     world: World, unit: A, target: SearchRes[OwnedObj]
   ): RawResult[A] = moveAttack(world, unit, target, strict = false).fold(
     err => throw new Exception(s"[search res=$target]: $err]"), identity

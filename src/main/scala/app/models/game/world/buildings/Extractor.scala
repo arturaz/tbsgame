@@ -15,9 +15,9 @@ with SpecialActionCompanion[Extractor] {
   override val cost = Resources(10)
   override val populationCost = Population(1)
   /* How much resources does turn start extract? */
-  val turnStartExtracts = Resources(3)
+  val turnStartExtracts = Resources(1)
   /* How much resources does special action extract? */
-  val specialExtracts = Resources(8)
+  val specialExtracts = Resources(3)
   val specialCollapseResources = cost
   override val specialActionsNeeded = Actions(1)
   override val kind = WObjKind.Medium

@@ -6,6 +6,11 @@ import akka.event.LoggingReceive
 import app.models.User
 import implicits._
 
+object GamesManagerActor {
+  val Teams = 1
+  val PlayersPerTeam = 2
+}
+
 class GamesManagerActor extends Actor with ActorLogging {
   private[this] var user2game = Map.empty[User, ActorRef]
   private[this] var game2user = Map.empty[ActorRef, User]

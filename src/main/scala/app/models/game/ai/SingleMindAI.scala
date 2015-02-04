@@ -115,7 +115,8 @@ object SingleMindAI {
   }
 
   def findAndMoveAttackTarget(
-    world: World, targets: Iterable[OwnedObj], unit: WUnit with Fighter
+    world: World, targets: Iterable[OwnedObj],
+    unit: WUnit with Fighter
   )(implicit log: LoggingAdapter) = findTarget(world, targets, unit).map { target =>
     log.debug("found target for {}: {}", unit, target)
     Combat.moveAttack(world, unit, target)

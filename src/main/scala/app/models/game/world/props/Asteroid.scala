@@ -9,6 +9,7 @@ object Asteroid extends PropCompanion {
   val resources = lenser(_.resources)
 }
 
+/* Asteroid can be mined for resources */
 case class Asteroid(
   position: Vect2, resources: Resources,
   id: WObject.Id=WObject.newId

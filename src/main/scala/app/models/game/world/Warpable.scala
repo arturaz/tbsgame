@@ -1,12 +1,9 @@
 package app.models.game.world
 
 import akka.event.LoggingAdapter
-import app.models.game.events.{PopulationChangeEvt, WarpStateChangeEvt, WarpEvt, Evented}
+import app.models.game.events.{Evented, WarpEvt, WarpStateChangeEvt}
+import app.models.game.{Actions, Player, Population}
 import implicits._
-
-import app.models.game.{Population, Actions, Player}
-
-import scala.util.Random
 
 trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
   /* Create Warpable at given position. */
@@ -72,9 +69,9 @@ trait Warpable extends OwnedObj {
 
   val warpState: WarpTime
   override def isWarpingIn = warpState < companion.warpTime
-  override def destroyReward = Some(Resources(
-    (companion.cost.value * Random.double(0.1, 1f / 3)).round.toInt
-  ))
+//  override def destroyReward = Some(Resources(
+//    (companion.cost.value * Random.double(0.1, 1f / 3)).round.toInt
+//  ))
 
   override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
     super.teamTurnStartedSelf(world) |>
