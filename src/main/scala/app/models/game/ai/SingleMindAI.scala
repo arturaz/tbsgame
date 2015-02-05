@@ -6,7 +6,7 @@ import app.algorithms.{Combat, Pathfinding}
 import app.models.game.Owner
 import app.models.game.events.Evented
 import app.models.game.world._
-import app.models.game.world.units.WUnit
+import app.models.game.world.units.WFighterUnit
 import implicits._
 
 import scala.util.Random
@@ -60,7 +60,7 @@ object SingleMindAI {
   def act(world: World, owner: Owner)(implicit log: LoggingAdapter)
   : Combat.RawWorldResult = {
     val units = world.objects.
-      collect { case o: WUnit with Fighter if owner === o.owner => o }
+      collect { case o: WFighterUnit if owner === o.owner => o }
     units.foldLeft(Evented(world)) { case (curWorld, unit) =>
       act(curWorld, unit).fold(
         err => {
@@ -72,13 +72,14 @@ object SingleMindAI {
     }
   }
 
-  def act(
-    world: Evented[World], unit: WUnit with Fighter
-  )(implicit log: LoggingAdapter): Combat.WorldResult =
+  def act[A <: WFighterUnit](
+    world: Evented[World], unit: A
+  )(implicit log: LoggingAdapter, ev: A#Self =:= A): Combat.WorldResult =
     act(world.value, unit).right.map { world.events ++: _ }
 
-  def act(world: World, unit: WUnit with Fighter)(implicit log: LoggingAdapter)
-  : Combat.WorldResult = {
+  def act[A <: WFighterUnit](
+    world: World, unit: A
+  )(implicit log: LoggingAdapter, ev: A#Self =:= A): Combat.WorldResult = {
     whileHasAttacksLeft(world, unit)((world, unit) => {
       val visibleTargets =
         world.objects.view.
@@ -90,8 +91,8 @@ object SingleMindAI {
     })
   }
 
-  def findTarget(
-    world: World, targets: Iterable[OwnedObj], unit: WUnit with Fighter
+  def findTarget[A <: WFighterUnit](
+    world: World, targets: Iterable[OwnedObj], unit: A
   )(implicit log: LoggingAdapter): Option[SearchRes[OwnedObj]] = {
     if (targets.isEmpty) return None
 
@@ -114,15 +115,16 @@ object SingleMindAI {
     }
   }
 
-  def findAndMoveAttackTarget(
+  def findAndMoveAttackTarget[A <: WFighterUnit](
     world: World, targets: Iterable[OwnedObj],
-    unit: WUnit with Fighter
-  )(implicit log: LoggingAdapter) = findTarget(world, targets, unit).map { target =>
-    log.debug("found target for {}: {}", unit, target)
-    Combat.moveAttack(world, unit, target)
-  }
+    unit: A
+  )(implicit log: LoggingAdapter, ev: A#Self =:= A) =
+    findTarget(world, targets, unit).map { target =>
+      log.debug("found target for {}: {}", unit, target)
+      Combat.moveAttack(world, unit, target)
+    }
 
-  def whileHasAttacksLeft[A <: WUnit with Fighter](world: World, unit: A)(
+  def whileHasAttacksLeft[A <: WFighterUnit](world: World, unit: A)(
     doAct: (World, A) => Option[Combat.Result[A]],
     onNoTarget: (Evented[World], A) => Combat.WorldResult =
       (newWorld: Evented[World], _: A) => newWorld.right[String]

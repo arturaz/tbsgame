@@ -3,7 +3,7 @@ package app.models.game.world.units
 import app.models.game.{Population, Player}
 import app.models.game.world._
 
-object Wasp extends WUnitCompanion[Wasp] with FighterCompanion[Wasp] {
+object Wasp extends WFighterUnitCompanion[Wasp] {
   override val maxHp = HP(80)
   override val attack = Atk(56)
   override val attacks = Attacks(2)
@@ -30,7 +30,7 @@ case class Wasp(
   id: WObject.Id=WObject.newId, hp: HP=Wasp.maxHp, xp: XP=Wasp.InitialXP,
   attacksLeft: Attacks=Wasp.InitialAttacks,
   movementLeft: Movement=Wasp.movement, warpState: WarpTime=Wasp.InitialWarpState
-) extends WUnit with Fighter {
+) extends WFighterUnit {
   type Self = Wasp
   type Companion = Wasp.type
   def self = this

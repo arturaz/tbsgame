@@ -3,7 +3,8 @@ package app.models.game.world.units
 import app.models.game.{Population, Player}
 import app.models.game.world._
 
-object Fortress extends WUnitCompanion[Fortress] with FighterCompanion[Fortress] {
+object Fortress extends WFighterUnitCompanion[Fortress]
+{
   override val maxHp = HP(185)
   override val attack = Atk(25)
   override val attacks = Attacks(2)
@@ -33,7 +34,7 @@ case class Fortress(
   attacksLeft: Attacks=Fortress.InitialAttacks,
   movementLeft: Movement=Fortress.movement,
   warpState: WarpTime=Fortress.InitialWarpState
-) extends WUnit with Fighter {
+) extends WFighterUnit {
   override type Self = Fortress
   override type Companion = Fortress.type
   override def self = this

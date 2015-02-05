@@ -3,8 +3,9 @@ package app.models.game.world.units
 import app.models.game.world._
 import app.models.game.{Population, Actions, Player}
 
-object Corvette extends WUnitCompanion[Corvette] 
-with FighterCompanion[Corvette] with SpecialActionCompanion[Corvette] {
+object Corvette extends WFighterUnitCompanion[Corvette]
+with SpecialActionCompanion[Corvette]
+{
   override val maxHp = HP(120)
   override val attack = Atk(70)
   override val attacks = Attacks(2)
@@ -36,7 +37,7 @@ case class Corvette(
   attacksLeft: Attacks=Corvette.InitialAttacks,
   movementLeft: Movement=Corvette.movement,
   warpState: WarpTime=Corvette.InitialWarpState
-) extends WUnit with Fighter with SpecialAction {
+) extends WFighterUnit with SpecialAction {
   type Self = Corvette
   type Companion = Corvette.type
   override def self = this

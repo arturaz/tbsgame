@@ -3,7 +3,8 @@ package app.models.game.world.units
 import app.models.game.{Population, Player}
 import app.models.game.world._
 
-object Gunship extends WUnitCompanion[Gunship] with FighterCompanion[Gunship] {
+object Gunship extends WFighterUnitCompanion[Gunship]
+{
   override val maxHp = HP(90)
   override val attack = Atk(95)
   override val attacks = Attacks(4)
@@ -33,7 +34,7 @@ case class Gunship(
   attacksLeft: Attacks=Gunship.InitialAttacks,
   movementLeft: Movement=Gunship.movement,
   warpState: WarpTime=Gunship.InitialWarpState
-) extends WUnit with Fighter {
+) extends WFighterUnit {
   override type Self = Gunship
   override type Companion = Gunship.type
   override def self = this

@@ -6,7 +6,8 @@ import app.models.game.world._
 /**
  * Created by arturas on 2014-11-04.
  */
-object RayShip extends WUnitCompanion[RayShip] with FighterCompanion[RayShip] {
+object RayShip extends WFighterUnitCompanion[RayShip]
+{
   override val maxHp = HP(80)
   override val attack = Atk(65)
   override val attacks = Attacks(1)
@@ -36,7 +37,7 @@ case class RayShip(
   attacksLeft: Attacks=RayShip.InitialAttacks,
   movementLeft: Movement=RayShip.movement,
   warpState: WarpTime=RayShip.InitialWarpState
-) extends WUnit with Fighter {
+) extends WFighterUnit {
   type Self = RayShip
   type Companion = RayShip.type
   def self = this

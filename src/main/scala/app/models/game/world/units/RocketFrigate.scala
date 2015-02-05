@@ -3,8 +3,8 @@ package app.models.game.world.units
 import app.models.game.{Population, Player}
 import app.models.game.world._
 
-object RocketFrigate extends WUnitCompanion[RocketFrigate]
-with FighterCompanion[RocketFrigate] {
+object RocketFrigate extends WFighterUnitCompanion[RocketFrigate]
+{
   override val maxHp = HP(30)
   override val attack = Atk(160)
   override val attacks = Attacks(1)
@@ -35,7 +35,7 @@ case class RocketFrigate(
   attacksLeft: Attacks=RocketFrigate.InitialAttacks,
   movementLeft: Movement=RocketFrigate.movement,
   warpState: WarpTime=RocketFrigate.InitialWarpState
-) extends WUnit with Fighter {
+) extends WFighterUnit {
   override type Self = RocketFrigate
   override type Companion = RocketFrigate.type
   override def self = this

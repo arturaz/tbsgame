@@ -19,10 +19,10 @@ object WObject {
     override protected def prefix = "WObjID"
   }
   /* A world update where a new World and Obj is returned. */
-  type WorldObjUpdate[Obj] = Evented[(World, Obj)]
+  type WorldObjUpdate[+Obj] = Evented[(World, Obj)]
   /* A world update where a new World and Optional Obj (it might have been destroyed in a
      reaction) is returned. */
-  type WorldObjOptUpdate[Obj] = WorldObjUpdate[Option[Obj]]
+  type WorldObjOptUpdate[+Obj] = WorldObjUpdate[Option[Obj]]
   @inline def newId: Id = Id(UUID.randomUUID())
 }
 

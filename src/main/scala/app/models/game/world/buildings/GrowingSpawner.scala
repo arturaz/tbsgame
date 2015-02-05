@@ -2,7 +2,7 @@ package app.models.game.world.buildings
 
 import app.models.game.Actions
 import app.models.game.world._
-import app.models.game.world.units.WUnit
+import app.models.game.world.units.WFighterUnit
 
 trait GrowingSpawnerOps[Self <: GrowingSpawner]
 extends TurnCounterOps[Self] with OwnedObjOps[Self] {
@@ -23,7 +23,7 @@ extends GrowingSpawnerOps[Self] with GrowingSpawnerStats
 trait GrowingSpawner extends TurnCounter with BotObj {
   type Self <: GrowingSpawner
   type Companion <: GrowingSpawnerOps[Self] with GrowingSpawnerStats
-  type Controlled = WUnit with Fighter
+  type Controlled = WFighterUnit
 
   def strength: SpawnerStr = startingStrength + SpawnerStr(turns) / turnsPerStrength
   def strength(actions: Actions): SpawnerStr =
