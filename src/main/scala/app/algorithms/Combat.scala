@@ -11,7 +11,7 @@ object Combat {
   type RawWorldResult = Evented[World]
   type Result[A <: MovableFighter] = ErrOpt[RawResult[A]]
   type WorldResult = ErrOpt[RawWorldResult]
-  type MovableFighter = MovableWObject with Fighter
+  type MovableFighter = Movable with Fighter
 
   def moveAttack[A <: MovableFighter](
     world: World, unit: A,

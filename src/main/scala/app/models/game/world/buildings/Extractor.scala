@@ -34,8 +34,10 @@ with SpecialActionCompanion[Extractor] {
 
   override def setWarpState(newState: WarpTime)(self: Extractor) =
     self.copy(warpState = newState)
-  override def withNewHp(hp: HP)(self: Extractor) = self.copy(hp = hp)
 
+  case class Ops(self: Extractor) extends OwnedObjOps[Extractor] {
+    override def withNewHp(hp: HP) = self.copy(hp = hp)
+  }
 }
 
 case class Extractor(

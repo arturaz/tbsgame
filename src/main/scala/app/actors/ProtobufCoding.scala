@@ -272,7 +272,7 @@ object ProtobufCoding {
     implicit def convert(obj: MovableWObjectStats): Game.WObject.Movable.Stats =
       Game.WObject.Movable.Stats.newBuilder().setMovementRange(obj.movement).build()
 
-    implicit def convert(obj: MovableWObject): Game.WObject.Movable =
+    implicit def convert(obj: Movable): Game.WObject.Movable =
       Game.WObject.Movable.newBuilder().setStats(obj.companion).
         setMovement(obj.movementLeft).build()
 
@@ -304,7 +304,7 @@ object ProtobufCoding {
         mapVal { b => obj.cast[Warpable].fold2(b, o => b.setWarpable(o)) }.
         mapVal { b => obj.cast[SpecialAction].fold2(b, o => b.setSpecialAction(o)) }.
         mapVal { b => obj.cast[Fighter].fold2(b, o => b.setFighter(o)) }.
-        mapVal { b => obj.cast[MovableWObject].fold2(b, o => b.setMovable(o)) }.
+        mapVal { b => obj.cast[Movable].fold2(b, o => b.setMovable(o)) }.
         mapVal { b =>
           import netmsg.Game.WObject.Kind._
           obj match {

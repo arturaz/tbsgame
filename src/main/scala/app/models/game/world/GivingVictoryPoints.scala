@@ -3,25 +3,24 @@ package app.models.game.world
 import akka.event.LoggingAdapter
 import implicits._
 
-trait GivingVictoryPointsOps[Self <: GivingVictoryPoints] extends OwnedObjOps[Self] {
-  def giveVP(data: WObject.WorldObjUpdate[Self]) = data.map { case (world, self) =>
-    val newWorld = world.addVps(self.owner, self.companion.vpsGiven)
-    (newWorld, self)
-  }
-}
+import scala.language.implicitConversions
 
 trait GivingVictoryPointsStats extends OwnedObjStats {
   /* Victory points given each turn */
   val vpsGiven: VPS
 }
 
-trait GivingVictoryPointsCompanion[Self <: GivingVictoryPoints]
-extends GivingVictoryPointsOps[Self] with GivingVictoryPointsStats
+object GivingVictoryPoints extends ToGivingVictoryPointsOps
 
-trait GivingVictoryPoints extends OwnedObj {
-  type Self <: GivingVictoryPoints
-  type Companion <: GivingVictoryPointsStats with GivingVictoryPointsOps[Self]
+trait GivingVictoryPointsOps[Self <: GivingVictoryPoints] extends OwnedObjOps[Self] {
+  def giveVP(world: World) = world.addVps(self.owner, self.stats.vpsGiven)
 
-  override def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
-    super.teamTurnStartedSelf(world) |> companion.giveVP
+  def teamTurnStarted(world: World) = giveVP(world)
+}
+
+trait ToGivingVictoryPointsOps {
+  implicit def toGivingVictoryPointsOps[A <: GivingVictoryPoints](a: A)
+  : GivingVictoryPointsOps[A] = (a match {
+
+  }).asInstanceOf[GivingVictoryPointsOps[A]]
 }

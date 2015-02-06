@@ -2,17 +2,11 @@ package app.models.game.world
 
 import java.util.UUID
 
-import akka.event.LoggingAdapter
 import app.models.game.events.Evented
 import utils.IdObj
-
-trait WObjectOps {
-  def bounds(position: Vect2) = Bounds(position, Vect2.one)
-}
+import implicits._
 
 trait WObjectStats
-
-trait WObjectCompanion extends WObjectOps with WObjectStats
 
 object WObject {
   case class Id(id: UUID) extends AnyVal with IdObj {
@@ -24,42 +18,57 @@ object WObject {
      reaction) is returned. */
   type WorldObjOptUpdate[+Obj] = WorldObjUpdate[Option[Obj]]
   @inline def newId: Id = Id(UUID.randomUUID())
-}
 
-/* World object */
-trait WObject {
-  type Self <: WObject
-  type Companion <: WObjectOps with WObjectStats
-  type WorldSelfUpdate = WObject.WorldObjUpdate[Self]
+  def bounds(position: Vect2) = Bounds(position, Vect2.one)
 
-  val id: WObject.Id
-  val position: Vect2
+//  final def gameTurnStarted(world: World)(implicit log: LoggingAdapter): Evented[World] =
+//    gameTurnStartedSelf(world).map(_._1)
+//
+//  def gameTurnStarted[Self <: WObject]
+//  (world: World)(obj: Self)(implicit log: LoggingAdapter): Evented[(World, Self)] =
+//    ???
+    //Evented((world, self))
 
-  def companion: Companion
-  lazy val bounds = companion.bounds(position)
-
-  def self: Self
-  def asOwnedObj: Option[OwnedObj] = None
-
-  def gameTurnStartedSelf(world: World)(implicit log: LoggingAdapter): WorldSelfUpdate =
-    Evented((world, self))
-  final def gameTurnStarted(world: World)(implicit log: LoggingAdapter): Evented[World] =
-    gameTurnStartedSelf(world).map(_._1)
-
-  def gameTurnFinishedSelf(world: World)(implicit log: LoggingAdapter): WorldSelfUpdate =
-    Evented((world, self))
-  final def gameTurnFinished(world: World)(implicit log: LoggingAdapter): Evented[World] =
-    gameTurnFinishedSelf(world).map(_._1)
-
-  protected def selfEventedUpdate
-  (f: (World, Self) => Evented[Self])(evented: WorldSelfUpdate): WorldSelfUpdate =
-    evented.flatMap { case (world, self) =>
+//  type WorldSelfUpdate = WObject.WorldObjUpdate[Self]
+//
+//  def gameTurnStartedSelf(world: World)(implicit log: LoggingAdapter): WorldSelfUpdate =
+//    Evented((world, self))
+//  final def gameTurnStarted(world: World)(implicit log: LoggingAdapter): Evented[World] =
+//    gameTurnStartedSelf(world).map(_._1)
+//
+//  def gameTurnFinishedSelf(world: World)(implicit log: LoggingAdapter): WorldSelfUpdate =
+//    Evented((world, self))
+//  final def gameTurnFinished(world: World)(implicit log: LoggingAdapter): Evented[World] =
+//    gameTurnFinishedSelf(world).map(_._1)
+//
+  def selfEventedUpdate[Self <: WObject]
+  (f: (World, Self) => Evented[Self])
+  (evented: WorldObjUpdate[Self])
+  : WorldObjUpdate[Self] = {
+    val evt = evented.flatMap { case (world, self) =>
       f(world, self).flatMap { newSelf =>
         world.updated(self, newSelf).map((_, newSelf))
       }
     }
+    evt.value._2.cast[OwnedObj].fold2(
+      evt,
+      self => World.revealObjects(self.owner.team, evt.map(_._1)).map((_, evt.value._2))
+    )
+  }
 
-  protected def selfUpdate
-  (f: Self => Self)(evented: WorldSelfUpdate): WorldSelfUpdate =
-    selfEventedUpdate((_, self) => Evented(f(self)))(evented)
+  def selfEventedUpdate[Self <: WObject]
+  (world: World, self: Self, newEvtSelf: Evented[Self]): Evented[(World, Self)] = {
+    val evt = newEvtSelf.flatMap { newSelf =>
+      world.updated(self, newSelf).map((_, newSelf))
+    }
+    evt.value._2.cast[OwnedObj].fold2(
+      evt,
+      self => World.revealObjects(self.owner.team, evt.map(_._1)).map((_, evt.value._2))
+    )
+  }
+
+//
+//  protected def selfUpdate
+//  (f: Self => Self)(evented: WorldSelfUpdate): WorldSelfUpdate =
+//    selfEventedUpdate((_, self) => Evented(f(self)))(evented)
 }

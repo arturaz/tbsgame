@@ -72,7 +72,7 @@ object Pathfinding {
   }
 
   def movement(
-    origin: MovableWObject, worldBounds: Bounds, obstacles: WorldObjs
+    origin: Movable, worldBounds: Bounds, obstacles: WorldObjs
   ): Vector[Path] = {
     val oNode = originNode(origin.position)
     var nodes = Map.empty[Vect2, Node]
@@ -90,7 +90,7 @@ object Pathfinding {
 
   /* Finds objects which can be attacked with fewest moves. */
   def attackSearch[A](
-    origin: MovableWObject with Fighter, targets: Iterable[A],
+    origin: Movable with Fighter, targets: Iterable[A],
     worldBounds: Bounds, obstacles: WorldObjs
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = attackSearch(
     origin.position, origin.movementLeft, origin.companion.attackRange,
@@ -205,7 +205,7 @@ object Pathfinding {
   }
 
   def aStar(
-    unit: MovableWObject, target: Bounds, worldBounds: Bounds,
+    unit: Movable, target: Bounds, worldBounds: Bounds,
     obstacles: WorldObjs
   ): Option[Path] = {
     val start = unit.position

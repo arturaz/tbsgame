@@ -15,7 +15,7 @@ trait WUnitCompanion[Self <: WUnit] extends WUnitOps[Self] with WUnitStats
 with EmptySpaceWarpableCompanion[Self]
 
 /* World unit */
-trait WUnit extends PlayerObj with MovableWObject with Warpable { thiz =>
+trait WUnit extends PlayerObj with Movable with Warpable { thiz =>
   type Self >: thiz.type <: WUnit
   type Companion <: WUnitOps[Self] with WUnitStats
 }

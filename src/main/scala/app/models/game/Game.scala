@@ -48,7 +48,7 @@ object Game {
     human -> startingState(world, human)
   }.toMap
 
-  def canMove(human: Human, obj: MovableWObject) = obj.owner === human
+  def canMove(human: Human, obj: Movable) = obj.owner === human
   def canAttack(human: Human, obj: Fighter) = human.isFriendOf(obj.owner)
   def canSpecial(human: Human, obj: SpecialAction) = obj.owner === human
 
@@ -257,7 +257,7 @@ case class Game private (
       ).right
     }
 
-  def movementFor(obj: MovableWObject): Vector[Path] =
+  def movementFor(obj: Movable): Vector[Path] =
     Pathfinding.movement(
       obj, world.bounds, world.objects
     ).filter(_.vects.forall(world.visibilityMap.isVisible(obj.owner, _)))
@@ -316,7 +316,7 @@ case class Game private (
   }
 
   private[this] def withMoveObj(human: Human, id: WObject.Id)(
-    f: ObjFn[OwnedObj with MovableWObject]
+    f: ObjFn[OwnedObj with Movable]
   ): Game.Result = withCheckedObj(id, f) { obj =>
     (!Game.canMove(human, obj)).opt(s"$human can't move $obj")
   }

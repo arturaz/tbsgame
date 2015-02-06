@@ -1,20 +1,11 @@
 package app.models.game.world
 
 import akka.event.LoggingAdapter
-import app.models.game._
-import app.models.game.events.{HPChangeEvt, Evented}
+import app.models.game.events.{Evented, HPChangeEvt}
+import app.models.game.world.buildings.Extractor
 import implicits._
 
-trait OwnedObjOps[Self <: OwnedObj] extends WObjectOps {
-  def withNewHp(hp: HP)(self: Self): Self
-  def withNewHPEvt(hp: HP)(world: World, self: Self): Evented[Self] = {
-    val newSelf = self |> withNewHp(hp)
-    Evented(
-      newSelf,
-      if (self.hp == newSelf.hp) Vector.empty else Vector(HPChangeEvt(world, newSelf))
-    )
-  }
-}
+import scala.language.implicitConversions
 
 trait OwnedObjStats extends WObjectStats {
   val maxHp: HP
@@ -26,52 +17,50 @@ trait OwnedObjStats extends WObjectStats {
   val kind: WObjKind
 }
 
-trait OwnedObjCompanion[Self <: OwnedObj]
-extends OwnedObjOps[Self] with OwnedObjStats
+object OwnedObj extends ToOwnedObjOps {
+  def teamTurnStarted
+  (obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
+  : Evented[(OwnedObj, World)] = {
+    import GivingVictoryPoints.toGivingVictoryPointsOps
+    val empty = Evented((world, obj))
 
-/* Object that belongs to some faction and not just a world prop */
-trait OwnedObj extends WObject {
-  type Self <: OwnedObj
-  type Companion <: OwnedObjOps[Self] with OwnedObjStats
+    for {
+      (world, obj) <- empty
+      (world, obj) <-
+        obj.cast[GivingVictoryPoints].fold2(empty, x => (x.teamTurnStarted(world), x))
+    } yield (obj, world)
+  }
 
-  val hp: HP
-  val owner: Owner
-  def maxHp = companion.maxHp
-  def isWarpingIn = false
-  def isWarpedIn = ! isWarpingIn
-  def isEnemy(o: OwnedObj) = owner.team =/= o.owner.team
-  def isFriend(o: OwnedObj) = ! isEnemy(o)
-  override def asOwnedObj = Some(this)
-  def destroyReward = Option.empty[Resources]
+  def teamTurnFinished
+  (obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
+  : Evented[(OwnedObj, World)] = {
+    import app.models.game.world.Movable.toMovableOps
+    val empty = Evented((world, obj))
 
-  lazy val visibility = companion.visibility.extend(bounds)
-  def sees(obj: WObject) = visibility.intersects(obj.bounds)
-
-  lazy val warpZone =
-    if (companion.warpGiven.isNotZero) Some(companion.warpGiven.extend(bounds))
-    else None
-
-  def takeDamage(damage: HP): Option[Self] =
-    if (hp <= damage) None else Some(self |> companion.withNewHp(hp - damage))
-
-  def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter): WorldSelfUpdate =
-    Evented((world, self))
-  final def teamTurnStarted(world: World)(implicit log: LoggingAdapter): Evented[World] =
-    teamTurnStartedSelf(world).map(_._1)
-
-  def teamTurnFinishedSelf(world: World)(implicit log: LoggingAdapter): WorldSelfUpdate =
-    Evented((world, self))
-  final def teamTurnFinished(world: World)(implicit log: LoggingAdapter): Evented[World] =
-    teamTurnFinishedSelf(world).map(_._1)
-
-  override protected def selfEventedUpdate(
-    f: (World, Self) => Evented[Self]
-  )(evented: WorldSelfUpdate) = evented |> super.selfEventedUpdate(f) |> { evt =>
-    World.revealObjects(self.owner.team, evt.map(_._1)).map((_, evt.value._2))
+    for {
+      (world, obj) <- empty
+      (world, obj) <- obj.cast[Movable].fold2(empty, x => x.teamTurnFinishedSelf(world))
+    } yield (obj, world)
   }
 }
 
-trait TeamObj extends OwnedObj { val owner: Team }
-trait PlayerObj extends OwnedObj { val owner: Player }
-trait HumanObj extends PlayerObj { val owner: Human }
-trait BotObj extends PlayerObj { val owner: Bot }
+trait OwnedObjOps[Self <: OwnedObj] {
+  def self: Self
+  def withNewHp(hp: HP): Self
+  def withNewHPEvt(hp: HP)(world: World): Evented[Self] = {
+    val newSelf = withNewHp(hp)
+    Evented(
+      newSelf,
+      if (self.hp == newSelf.hp) Vector.empty else Vector(HPChangeEvt(world, newSelf))
+    )
+  }
+
+  def takeDamage(damage: HP): Option[Self] =
+    if (self.hp <= damage) None else Some(withNewHp(self.hp - damage))
+}
+
+trait ToOwnedObjOps {
+  implicit def toOwnedObjOps[A <: OwnedObj](a: A): OwnedObjOps[A] = (a match {
+    case o: Extractor => Extractor.Ops(o)
+  }).asInstanceOf[OwnedObjOps[A]]
+}

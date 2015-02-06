@@ -11,7 +11,7 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] extends FighterOps[Self] {
   def shouldReact(self: ReactiveFighter): Boolean =
     self.isWarpedIn && self.attacksLeft.isNotZero
   def shouldReact(self: ReactiveFighter, target: OwnedObj): Boolean =
-    shouldReact(self) && self.isEnemy(target) && target.isInstanceOf[MovableWObject]
+    shouldReact(self) && self.isEnemy(target) && target.isInstanceOf[Movable]
 
   def attackReachable(
     data: WObject.WorldObjUpdate[Self]

@@ -247,7 +247,7 @@ class GameActor private (
       update(sender(), human, _.endTurn(human))
     case In.GetMovement(human, id) =>
       game.game.world.find {
-        case o: MovableWObject if o.id == id => o
+        case o: Movable if o.id == id => o
       }.toRight(s"Can't find movable world object with $id").right.map { obj =>
         (obj, game.game.movementFor(obj))
       }.fold(
