@@ -2,8 +2,6 @@ package app.models.game.events
 
 import implicits._
 
-import scalaz.\/
-
 object Evented {
   def fromTuple[A](t: (A, Events)): Evented[A] = Evented(t._1, t._2)
   def apply[A](value: A, event: Event): Evented[A] = apply(value, Vector(event))

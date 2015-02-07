@@ -10,9 +10,14 @@ trait GivingVictoryPointsStats extends OwnedObjStats {
   val vpsGiven: VPS
 }
 
+trait GivingVictoryPointsImpl extends OwnedObjImpl {
+  val stats: GivingVictoryPointsStats
+}
+
 object GivingVictoryPoints extends ToGivingVictoryPointsOps
 
-trait GivingVictoryPointsOps[Self <: GivingVictoryPoints] extends OwnedObjOps[Self] {
+trait GivingVictoryPointsOps[Self <: GivingVictoryPoints] {
+  def self: Self
   def giveVP(world: World) = world.addVps(self.owner, self.stats.vpsGiven)
 
   def teamTurnStarted(world: World) = giveVP(world)

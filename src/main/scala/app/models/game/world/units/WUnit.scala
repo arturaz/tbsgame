@@ -6,7 +6,7 @@ trait WUnitOps[Self <: WUnit] extends OwnedObjOps[Self] with MovableWObjectOps[S
 with WarpableOps[Self] with EmptySpaceWarpableOps[Self]
 { _: WUnitStats => }
 
-trait WUnitStats extends OwnedObjStats with MovableWObjectStats
+trait WUnitStats extends OwnedObjStats with MovableStats
 with WarpableStats {
   override val group = WarpableGroup.Unit
 }

@@ -1,6 +1,7 @@
 package app.models.game.world
 
 import akka.event.LoggingAdapter
+import app.models.game.Owner
 import app.models.game.events.{Evented, HPChangeEvt}
 import app.models.game.world.buildings.Extractor
 import implicits._
@@ -17,30 +18,43 @@ trait OwnedObjStats extends WObjectStats {
   val kind: WObjKind
 }
 
+trait OwnedObjImpl extends WObjectImpl {
+  val stats: OwnedObjStats
+  val hp: HP
+  val owner: Owner
+
+  def maxHp = stats.maxHp
+  def isWarpingIn = false
+  def isWarpedIn = ! isWarpingIn
+  def isEnemy(o: OwnedObj) = owner.team =/= o.owner.team
+  def isFriend(o: OwnedObj) = ! isEnemy(o)
+  def destroyReward = Option.empty[Resources]
+
+  lazy val visibility = stats.visibility.extend(bounds)
+  def sees(obj: WObject) = visibility.intersects(obj.bounds)
+
+  lazy val warpZone =
+    if (stats.warpGiven.isNotZero) Some(stats.warpGiven.extend(bounds))
+    else None
+}
+
 object OwnedObj extends ToOwnedObjOps {
   def teamTurnStarted
   (obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
-  : Evented[(OwnedObj, World)] = {
+  : Evented[(World, OwnedObj)] = {
     import GivingVictoryPoints.toGivingVictoryPointsOps
-    val empty = Evented((world, obj))
 
-    for {
-      (world, obj) <- empty
-      (world, obj) <-
-        obj.cast[GivingVictoryPoints].fold2(empty, x => (x.teamTurnStarted(world), x))
-    } yield (obj, world)
+    Evented((world, obj)) |>
+      WObject.ifIs[GivingVictoryPoints].raw((w, o) => (o.teamTurnStarted(w), o))
   }
 
   def teamTurnFinished
   (obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
-  : Evented[(OwnedObj, World)] = {
+  : Evented[(World, OwnedObj)] = {
     import app.models.game.world.Movable.toMovableOps
-    val empty = Evented((world, obj))
 
-    for {
-      (world, obj) <- empty
-      (world, obj) <- obj.cast[Movable].fold2(empty, x => x.teamTurnFinishedSelf(world))
-    } yield (obj, world)
+    Evented((world, obj)) |>
+      WObject.ifIs[Movable].evt((w, o) => o.teamTurnFinishedSelf(w))
   }
 }
 

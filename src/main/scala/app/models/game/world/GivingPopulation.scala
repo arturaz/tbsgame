@@ -5,3 +5,9 @@ import app.models.game.Population
 trait GivingPopulationStats extends OwnedObjStats {
   val populationGiven: Population
 }
+
+trait GivingPopulationImpl extends OwnedObjImpl {
+  val stats: GivingPopulationStats
+
+  def populationGiven = if (isWarpedIn) stats.populationGiven else Population(0)
+}

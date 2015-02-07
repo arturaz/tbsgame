@@ -1,24 +1,41 @@
 package app.models.game.world
 
 import akka.event.LoggingAdapter
-import implicits._
+import utils.IntValueClass
 
-trait TurnCounterOps[Self <: TurnCounter] extends WObjectOps {
-  def withTurns(turns: Int)(self: Self): Self
-  def incTurns(self: Self) = withTurns(self.turns + 1)(self)
+import scala.language.implicitConversions
+
+case class Turns(value: Int) extends IntValueClass[Turns] {
+  def self(v: Int) = Turns(v)
+}
+object Turns {
+  object TurnsNumeric extends IntValueClass.Numeric[Turns] {
+    def fromInt(x: Int) = Turns(x)
+  }
 }
 
 trait TurnCounterStats extends WObjectStats
 
-trait TurnCounterCompanion[Self <: TurnCounter]
-extends TurnCounterOps[Self] with TurnCounterStats
-
-trait TurnCounter extends WObject {
-  type Self <: TurnCounter
-  type Companion <: TurnCounterOps[Self] with TurnCounterStats
+trait TurnCounterImpl extends WObjectImpl {
   val turns: Int
-
-  override def gameTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
-    super.gameTurnStartedSelf(world) |>
-    selfUpdate(companion.incTurns)
 }
+
+trait TurnCounterOps[+Self <: TurnCounter] {
+  def self: Self
+  def withTurns(turns: Int): Self
+  def incTurns = withTurns(self.turns + 1)
+
+  def gameTurnStarted(world: World)(implicit log: LoggingAdapter) = {
+    val newSelf = incTurns
+    world.updated(self, newSelf).map((_, newSelf))
+  }
+}
+
+trait ToTurnCounterOps {
+  implicit def toTurnCounterOps[A <: TurnCounter](a: A): TurnCounterOps[A] =
+    (a match {
+
+    }).asInstanceOf[TurnCounterOps[A]]
+}
+
+object TurnCounter extends ToTurnCounterOps

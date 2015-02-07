@@ -4,22 +4,31 @@ import app.models.game.Actions
 import app.models.game.events.Evented
 import implicits._
 
-trait SpecialActionOps[Self <: SpecialAction] extends OwnedObjOps[Self]
+import scala.language.implicitConversions
 
 trait SpecialActionStats extends OwnedObjStats {
   val specialActionsNeeded: Actions
 }
 
-trait SpecialActionCompanion[Self <: SpecialAction] extends SpecialActionOps[Self]
-with SpecialActionStats
+trait SpecialActionImpl extends OwnedObjImpl {
+  val stats: SpecialActionStats
+}
 
-trait SpecialAction extends OwnedObj {
-  type Self <: SpecialAction
-  type Companion <: SpecialActionOps[Self] with SpecialActionStats
+trait SpecialActionOps[Self <: SpecialAction] {
+  def self: Self
 
   def special(world: World): Either[String, Evented[World]] =
-    if (isWarpedIn) specialImpl(world)
+    if (self.isWarpedIn) specialImpl(world)
     else s"Can't do special for $self while warping in!".left
 
   protected def specialImpl(world: World): Either[String, Evented[World]]
 }
+
+trait ToSpecialActionOps {
+  implicit def toSpecialActionOps[A <: SpecialAction]
+  (a: A): SpecialActionOps[A] = (a match {
+
+  }).asInstanceOf[SpecialActionOps[A]]
+}
+
+object SpecialAction extends ToSpecialActionOps

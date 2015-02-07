@@ -2,11 +2,22 @@ package app.models.game.world
 
 import java.util.UUID
 
+import akka.event.LoggingAdapter
 import app.models.game.events.Evented
 import utils.IdObj
 import implicits._
 
+import scala.reflect.ClassTag
+
 trait WObjectStats
+
+trait WObjectImpl {
+  val id: WObject.Id
+  val position: Vect2
+  val stats: WObjectStats
+
+  lazy val bounds = WObject.bounds(position)
+}
 
 object WObject {
   case class Id(id: UUID) extends AnyVal with IdObj {
@@ -21,26 +32,21 @@ object WObject {
 
   def bounds(position: Vect2) = Bounds(position, Vect2.one)
 
-//  final def gameTurnStarted(world: World)(implicit log: LoggingAdapter): Evented[World] =
-//    gameTurnStartedSelf(world).map(_._1)
-//
-//  def gameTurnStarted[Self <: WObject]
-//  (world: World)(obj: Self)(implicit log: LoggingAdapter): Evented[(World, Self)] =
-//    ???
-    //Evented((world, self))
+  final def gameTurnStarted
+  (world: World, obj: WObject)(implicit log: LoggingAdapter)
+  : Evented[(World, WObject)] = {
+    import TurnCounter.toTurnCounterOps
 
-//  type WorldSelfUpdate = WObject.WorldObjUpdate[Self]
-//
-//  def gameTurnStartedSelf(world: World)(implicit log: LoggingAdapter): WorldSelfUpdate =
-//    Evented((world, self))
-//  final def gameTurnStarted(world: World)(implicit log: LoggingAdapter): Evented[World] =
-//    gameTurnStartedSelf(world).map(_._1)
-//
-//  def gameTurnFinishedSelf(world: World)(implicit log: LoggingAdapter): WorldSelfUpdate =
-//    Evented((world, self))
-//  final def gameTurnFinished(world: World)(implicit log: LoggingAdapter): Evented[World] =
-//    gameTurnFinishedSelf(world).map(_._1)
-//
+    Evented((world, obj)) |>
+      ifIs[TurnCounter].evt((w, o) => o.gameTurnStarted(w))
+  }
+
+  final def gameTurnFinished
+  (world: World, obj: WObject)(implicit log: LoggingAdapter)
+  : Evented[(World, WObject)] = {
+    Evented((world, obj))
+  }
+
   def selfEventedUpdate[Self <: WObject]
   (f: (World, Self) => Evented[Self])
   (evented: WorldObjUpdate[Self])
@@ -71,4 +77,19 @@ object WObject {
 //  protected def selfUpdate
 //  (f: Self => Self)(evented: WorldSelfUpdate): WorldSelfUpdate =
 //    selfEventedUpdate((_, self) => Evented(f(self)))(evented)
+
+  class IfIs[To : ClassTag]() {
+    def evt[A <: WObject]
+    (f: (World, To) => Evented[(World, A)])
+    (evt: Evented[(World, A)]) =
+      evt.flatMap { case orig @ (w, o) =>
+        o.cast[To].fold2(Evented(orig), f(w, _))
+      }
+
+    def raw[A <: WObject]
+    (f: (World, To) => (World, A))(evt: Evented[(World, A)]) =
+      this.evt[A]((w, o) => Evented(f(w, o)))(evt)
+  }
+
+  def ifIs[To : ClassTag] = new IfIs[To]
 }

@@ -8,8 +8,13 @@ import utils.data.NonEmptyVector
 
 import scala.language.implicitConversions
 
-trait MovableWObjectStats extends OwnedObjStats {
+trait MovableStats extends OwnedObjStats {
   val movement: Movement
+}
+
+trait MovableImpl extends OwnedObjImpl with Mobility[Mobility.Movable.type] {
+  val movementLeft: Movement
+  val stats: MovableStats
 }
 
 trait ToMovableOps {
