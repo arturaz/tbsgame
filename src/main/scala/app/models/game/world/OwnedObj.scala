@@ -54,11 +54,12 @@ object OwnedObj extends ToOwnedObjOps {
     import app.models.game.world.Movable.toMovableOps
 
     Evented((world, obj)) |>
-      WObject.ifIs[Movable].evt((w, o) => o.teamTurnFinishedSelf(w))
+      WObject.ifIs[Movable].evt((w, o) => o.teamTurnFinished(w)) |>
+      WObject.ifIs[Fighter].evt((w, o) => o.teamTurnFinished(w))
   }
 }
 
-trait OwnedObjOps[Self <: OwnedObj] {
+trait OwnedObjOps[+Self <: OwnedObj] {
   def self: Self
   def withNewHp(hp: HP): Self
   def withNewHPEvt(hp: HP)(world: World): Evented[Self] = {

@@ -9,12 +9,9 @@ import implicits._
 
 import scala.reflect.ClassTag
 
-trait WObjectStats
-
 trait WObjectImpl {
   val id: WObject.Id
   val position: Vect2
-  val stats: WObjectStats
 
   lazy val bounds = WObject.bounds(position)
 }
@@ -45,21 +42,6 @@ object WObject {
   (world: World, obj: WObject)(implicit log: LoggingAdapter)
   : Evented[(World, WObject)] = {
     Evented((world, obj))
-  }
-
-  def selfEventedUpdate[Self <: WObject]
-  (f: (World, Self) => Evented[Self])
-  (evented: WorldObjUpdate[Self])
-  : WorldObjUpdate[Self] = {
-    val evt = evented.flatMap { case (world, self) =>
-      f(world, self).flatMap { newSelf =>
-        world.updated(self, newSelf).map((_, newSelf))
-      }
-    }
-    evt.value._2.cast[OwnedObj].fold2(
-      evt,
-      self => World.revealObjects(self.owner.team, evt.map(_._1)).map((_, evt.value._2))
-    )
   }
 
   def selfEventedUpdate[Self <: WObject]
