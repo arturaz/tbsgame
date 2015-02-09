@@ -6,7 +6,6 @@ import app.algorithms.behaviour_trees.leaves.{AttackTarget, FindVisibleTarget, M
 import app.models.game.Game
 import app.models.game.events.Evented
 import app.models.game.world.{Fighter, OwnedObj}
-import app.models.game.world.units.WUnit
 import monocle.Lenser
 
 object AI {
@@ -32,7 +31,7 @@ object AI {
 
     type State = Blackboard
     case class Blackboard(
-      unit: Option[WUnit with Fighter],
+      unit: Option[FUnit],
       game: Evented[Game],
       attackTarget: Option[SearchRes[OwnedObj]]
     )

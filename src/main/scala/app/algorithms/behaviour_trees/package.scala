@@ -1,7 +1,6 @@
 package app.algorithms
 
-import app.models.game.world.Fighter
-import app.models.game.world.units.WUnit
+import app.models.game.world.{WUnit, Fighter}
 
 /**
  * Created by arturas on 15.2.1.

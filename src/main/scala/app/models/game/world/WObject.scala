@@ -4,36 +4,37 @@ import java.util.UUID
 
 import akka.event.LoggingAdapter
 import app.models.game.events.Evented
-import utils.IdObj
 import implicits._
 
 import scala.reflect.ClassTag
+
+trait WObjectStats {
+  val size = Vect2.one
+  def bounds(position: Vect2) = Bounds(position, size)
+}
 
 trait WObjectImpl {
   val id: WObject.Id
   val position: Vect2
 
-  lazy val bounds = WObject.bounds(position)
+  type Stats <: WObjectStats
+  val stats: Stats
+
+  // Needs to be lazy, because stats might get overriden
+  def bounds = stats.bounds(position)
 }
 
-object WObject {
-  case class Id(id: UUID) extends AnyVal with IdObj {
-    override protected def prefix = "WObjID"
-  }
+trait WObjectCompanion {
   /* A world update where a new World and Obj is returned. */
   type WorldObjUpdate[+Obj] = Evented[(World, Obj)]
   /* A world update where a new World and Optional Obj (it might have been destroyed in a
      reaction) is returned. */
   type WorldObjOptUpdate[+Obj] = WorldObjUpdate[Option[Obj]]
-  @inline def newId: Id = Id(UUID.randomUUID())
-
-  def bounds(position: Vect2) = Bounds(position, Vect2.one)
+  @inline def newId = WObject.Id(UUID.randomUUID())
 
   final def gameTurnStarted
   (world: World, obj: WObject)(implicit log: LoggingAdapter)
   : Evented[(World, WObject)] = {
-    import TurnCounter.toTurnCounterOps
-
     Evented((world, obj)) |>
       ifIs[TurnCounter].evt((w, o) => o.gameTurnStarted(w))
   }
@@ -55,23 +56,27 @@ object WObject {
     )
   }
 
-//
-//  protected def selfUpdate
-//  (f: Self => Self)(evented: WorldSelfUpdate): WorldSelfUpdate =
-//    selfEventedUpdate((_, self) => Evented(f(self)))(evented)
-
-  class IfIs[To : ClassTag]() {
-    def evt[A <: WObject]
-    (f: (World, To) => Evented[(World, A)])
+  class IfIs[To <: WObject : ClassTag]() {
+    def evt[A >: To]
+    (f: (World, To) => Evented[(World, To)])
     (evt: Evented[(World, A)]) =
       evt.flatMap { case orig @ (w, o) =>
         o.cast[To].fold2(Evented(orig), f(w, _))
       }
 
-    def raw[A <: WObject]
-    (f: (World, To) => (World, A))(evt: Evented[(World, A)]) =
+    def evtWorld[A >: To]
+    (f: (World, To) => Evented[World])
+    (evt: Evented[(World, A)]) =
+      this.evt[A]((w, o) => f(w, o).map((_, o)))(evt)
+
+    def raw[A >: To]
+    (f: (World, To) => (World, To))(evt: Evented[(World, A)]) =
       this.evt[A]((w, o) => Evented(f(w, o)))(evt)
+
+    def rawWorld[A >: To]
+    (f: (World, To) => World)(evt: Evented[(World, A)]) =
+      this.raw[A]((w, o) => (f(w, o), o))(evt)
   }
 
-  def ifIs[To : ClassTag] = new IfIs[To]
+  def ifIs[To <: WObject : ClassTag] = new IfIs[To]
 }

@@ -50,7 +50,7 @@ with GameUpdate[S]
         Some(unit)
       ),
       update => {
-        val newUnitOpt = update.value._2.map(_.asInstanceOf[FUnit])
+        val newUnitOpt = update.value._2
         (NodeResult.success, updateGameOpt(state, update), newUnitOpt)
       }
     )

@@ -1,9 +1,8 @@
 package app.models.game.world
 
 import app.models.game.Owner
-import app.models.game.events.{OwnerChangeEvt, Evented}
-
-import implicits._
+import app.models.game.events.{Evented, OwnerChangeEvt}
+import app.models.game.world.buildings.VPTowerOps
 
 import scala.language.implicitConversions
 
@@ -12,17 +11,18 @@ trait RespawnsOnDestructionStats extends OwnedObjStats {
 }
 
 trait RespawnsOnDestructionImpl extends OwnedObjImpl {
-  val stats: RespawnsOnDestructionStats
+  type OwnerType <: Owner
+  type Stats <:RespawnsOnDestructionStats
 
-  def ownerAfterRespawn(attacker: Owner): Owner
+  def ownerAfterRespawn(attacker: Owner): OwnerType
 }
 
-trait RespawnsOnDestructionOps[+Self <: RespawnsOnDestruction] {
-  def self: Self
+trait RespawnsOnDestructionOps[Self <: RespawnsOnDestruction] extends OwnedObjOps[Self] {
+  type OwnerType = Self#OwnerType
 
-  protected def withNewOwner(owner: Owner): Self
+  protected def withNewOwner(owner: OwnerType): Self
 
-  def withNewOwnerEvt(world: World, owner: Owner) = {
+  def withNewOwnerEvt(world: World, owner: OwnerType) = {
     val newObj = withNewOwner(owner)
     Evented(
       newObj,
@@ -31,14 +31,14 @@ trait RespawnsOnDestructionOps[+Self <: RespawnsOnDestruction] {
     )
   }
 
-  def respawnSelf(world: World, newOwner: Owner): Evented[Self] = {
+  def respawnSelf(world: World, newOwner: OwnerType): Evented[Self] = {
     for {
       self <- self.withNewOwnerEvt(world, newOwner)
       self <- self.withNewHPEvt(self.stats.hpAfterRespawn)(world)
     } yield self
   }
 
-  def respawn(world: World, newOwner: Owner): Evented[World] = {
+  def respawn(world: World, newOwner: OwnerType): Evented[World] = {
     World.revealObjects(
       newOwner.team,
       respawnSelf(world, newOwner).flatMap(world.updated(self, _))
@@ -49,8 +49,6 @@ trait RespawnsOnDestructionOps[+Self <: RespawnsOnDestruction] {
 trait ToRespawnsOnDesctructionOps {
   implicit def toRespawnsOnDestructionOps[A <: RespawnsOnDestruction](a: A)
   : RespawnsOnDestructionOps[A] = (a match {
-
+    case o: VPTower => VPTowerOps(o)
   }).asInstanceOf[RespawnsOnDestructionOps[A]]
 }
-
-object RespawnsOnDestruction extends ToRespawnsOnDesctructionOps

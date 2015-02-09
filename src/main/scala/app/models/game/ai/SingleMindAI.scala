@@ -2,11 +2,11 @@ package app.models.game.ai
 
 import akka.event.LoggingAdapter
 import app.algorithms.Pathfinding.SearchRes
+import app.algorithms.behaviour_trees.FUnit
 import app.algorithms.{Combat, Pathfinding}
 import app.models.game.Owner
 import app.models.game.events.Evented
 import app.models.game.world._
-import app.models.game.world.units.WFighterUnit
 import implicits._
 
 import scala.util.Random
@@ -25,7 +25,7 @@ object SingleMindAI {
     /* Fighters must be dealt with first */
     fOrd(_.isInstanceOf[Fighter]).reverse orElse
     /* Attack ones where most damage can be done. */
-    fOrd(o => self.companion.kind.multiplierAt(o.companion.kind)).reverse orElse
+    fOrd(o => self.stats.kind.multiplierAt(o.stats.kind)).reverse orElse
     /* Attack ones with least HP first. */
     fOrd(_.hp) orElse
     /* Warping in objects must be dealt with first */
@@ -35,7 +35,7 @@ object SingleMindAI {
     }.reverse orElse
     /* Attack ones with biggest damage output first. */
     fOrd {
-      case f: Fighter => f.companion.attack.value
+      case f: Fighter => f.stats.attack.value
       case _ => 0
     }.reverse
 
@@ -60,7 +60,7 @@ object SingleMindAI {
   def act(world: World, owner: Owner)(implicit log: LoggingAdapter)
   : Combat.RawWorldResult = {
     val units = world.objects.
-      collect { case o: WFighterUnit if owner === o.owner => o }
+      collect { case o: FUnit if owner === o.owner => o }
     units.foldLeft(Evented(world)) { case (curWorld, unit) =>
       act(curWorld, unit).fold(
         err => {
@@ -72,14 +72,14 @@ object SingleMindAI {
     }
   }
 
-  def act[A <: WFighterUnit](
+  def act[A <: FUnit](
     world: Evented[World], unit: A
-  )(implicit log: LoggingAdapter, ev: A#Self =:= A): Combat.WorldResult =
+  )(implicit log: LoggingAdapter): Combat.WorldResult =
     act(world.value, unit).right.map { world.events ++: _ }
 
-  def act[A <: WFighterUnit](
+  def act[A <: FUnit](
     world: World, unit: A
-  )(implicit log: LoggingAdapter, ev: A#Self =:= A): Combat.WorldResult = {
+  )(implicit log: LoggingAdapter): Combat.WorldResult = {
     whileHasAttacksLeft(world, unit)((world, unit) => {
       val visibleTargets =
         world.objects.view.
@@ -91,7 +91,7 @@ object SingleMindAI {
     })
   }
 
-  def findTarget[A <: WFighterUnit](
+  def findTarget[A <: FUnit](
     world: World, targets: Iterable[OwnedObj], unit: A
   )(implicit log: LoggingAdapter): Option[SearchRes[OwnedObj]] = {
     if (targets.isEmpty) return None
@@ -115,16 +115,16 @@ object SingleMindAI {
     }
   }
 
-  def findAndMoveAttackTarget[A <: WFighterUnit](
+  def findAndMoveAttackTarget[A <: FUnit](
     world: World, targets: Iterable[OwnedObj],
     unit: A
-  )(implicit log: LoggingAdapter, ev: A#Self =:= A) =
+  )(implicit log: LoggingAdapter) =
     findTarget(world, targets, unit).map { target =>
       log.debug("found target for {}: {}", unit, target)
       Combat.moveAttack(world, unit, target)
     }
 
-  def whileHasAttacksLeft[A <: WFighterUnit](world: World, unit: A)(
+  def whileHasAttacksLeft[A <: FUnit](world: World, unit: A)(
     doAct: (World, A) => Option[Combat.Result[A]],
     onNoTarget: (Evented[World], A) => Combat.WorldResult =
       (newWorld: Evented[World], _: A) => newWorld.right[String]

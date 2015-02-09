@@ -1,7 +1,6 @@
 package app.models.game.world
 
-import akka.event.LoggingAdapter
-import implicits._
+import app.models.game.world.buildings.VPTowerOps
 
 import scala.language.implicitConversions
 
@@ -11,13 +10,10 @@ trait GivingVictoryPointsStats extends OwnedObjStats {
 }
 
 trait GivingVictoryPointsImpl extends OwnedObjImpl {
-  val stats: GivingVictoryPointsStats
+  type Stats <: GivingVictoryPointsStats
 }
 
-object GivingVictoryPoints extends ToGivingVictoryPointsOps
-
-trait GivingVictoryPointsOps[Self <: GivingVictoryPoints] {
-  def self: Self
+trait GivingVictoryPointsOps[Self <: GivingVictoryPoints] extends OwnedObjOps[Self] {
   def giveVP(world: World) = world.addVps(self.owner, self.stats.vpsGiven)
 
   def teamTurnStarted(world: World) = giveVP(world)
@@ -26,6 +22,6 @@ trait GivingVictoryPointsOps[Self <: GivingVictoryPoints] {
 trait ToGivingVictoryPointsOps {
   implicit def toGivingVictoryPointsOps[A <: GivingVictoryPoints](a: A)
   : GivingVictoryPointsOps[A] = (a match {
-
+    case o: VPTower => VPTowerOps(o)
   }).asInstanceOf[GivingVictoryPointsOps[A]]
 }

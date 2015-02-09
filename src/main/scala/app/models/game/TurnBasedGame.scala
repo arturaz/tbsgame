@@ -62,7 +62,8 @@ case class TurnBasedGame private (
     update(game.leave(human))
 
   override def warp(
-    human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
+    human: Human, position: Vect2,
+    warpable: WarpableCompanion.Some
   ) = humanDo(human)(game.warp(_, position, warpable))
 
   override def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]) =

@@ -3,13 +3,12 @@ package app.models.game.world.buildings
 import akka.event.LoggingAdapter
 import app.models.game.events.{Evented, ResourceChangeEvt}
 import app.models.game.world._
-import app.models.game.world.props.Asteroid
-import app.models.game.{Population, Actions, Player}
+import app.models.game.{Actions, Player, Population}
 import implicits._
-import monocle.syntax._
 
-object Extractor extends WBuildingCompanion[Extractor]
-with SpecialActionCompanion[Extractor] {
+object ExtractorStats extends WBuildingStats with SpecialActionStats
+with WarpableCompanion[Extractor]
+{
   override val maxHp = HP(115)
   override val warpTime = WarpTime(1)
   override val cost = Resources(10)
@@ -31,45 +30,37 @@ with SpecialActionCompanion[Extractor] {
     else
       Right(Extractor(position, owner))
   }
-
-  override def setWarpState(newState: WarpTime)(self: Extractor) =
-    self.copy(warpState = newState)
-
-  case class Ops(self: Extractor) extends OwnedObjOps[Extractor] {
-    override def withNewHp(hp: HP) = self.copy(hp = hp)
-  }
 }
 
-case class Extractor(
-  position: Vect2, owner: Player,
-  id: WObject.Id=WObject.newId, hp: HP=Extractor.maxHp,
-  warpState: WarpTime=Extractor.InitialWarpState
-) extends PlayerBuilding with WBuilding with SpecialAction {
-  type Self = Extractor
-  def self = this
-  override def companion = Extractor
-  override type Companion = Extractor.type
+case class ExtractorOps(self: Extractor) extends OwnedObjOps[Extractor]
+with WarpableOps[Extractor] {
+  override def withNewHp(hp: HP) = self.copy(hp = hp)
+  override def setWarpState(newState: WarpTime) = self.copy(warpState = newState)
+}
 
-  override def teamTurnStartedSelf(w: World)(implicit log: LoggingAdapter) = {
-    super.teamTurnStartedSelf(w).mapVal { upd => upd.flatMap {
-    case orig @ (world, self) =>
-      findAsteroid(world).fold(
-        err => {
-          log.error(s"Can't find asteroid when team turn started for $this: $err")
-          Evented(orig)
-        },
-        asteroid => {
-          if (asteroid.resources.isZero) Evented(orig)
-          else turnStartExtractResources(world)(asteroid).fold(
-            err => {
-              log.error(s"Error while extracting resources on turn start for $this: $err")
-              upd
-            },
-            _.map((_, self))
-          )
-        }
-      )
-    } }
+trait ExtractorImpl {
+_: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
+  type Stats <:ExtractorStats.type
+
+  def teamTurnStarted(world: World)(implicit log: LoggingAdapter): Evented[World] = {
+    def orig = Evented(world)
+
+    findAsteroid(world).fold(
+      err => {
+        log.error(s"Can't find asteroid when team turn started for $this: $err")
+        orig
+      },
+      asteroid => {
+        if (asteroid.resources.isZero) orig
+        else turnStartExtractResources(world)(asteroid).fold(
+          err => {
+            log.error(s"Error while extracting resources on turn start for $this: $err")
+            orig
+          },
+          identity
+        )
+      }
+    )
   }
 
   private[this] def findAsteroid(world: World): Either[String, Asteroid] = {
@@ -87,22 +78,22 @@ case class Extractor(
     else {
       val res = asteroid.resources min howMuch
 
-      val newSelf = asteroid |-> Asteroid.resources modify (_ - res)
+      val newAsteroid = asteroid.copy(resources = asteroid.resources - res)
       (
-        world.updated(asteroid, newSelf) :+
-        ResourceChangeEvt((world, asteroid).left, newSelf.resources)
+        world.updated(asteroid, newAsteroid) :+
+        ResourceChangeEvt((world, asteroid).left, newAsteroid.resources)
       ).map(_.addResources(owner, howMuch)).extractFlatten
     }
   }
 
   private[this] def turnStartExtractResources(world: World) =
-    extractResources(world, companion.turnStartExtracts) _
+    extractResources(world, stats.turnStartExtracts) _
 
   override def specialImpl(world: World) = {
-    val extracts = companion.specialExtracts
+    val extracts = stats.specialExtracts
     findAsteroid(world).right.flatMap { asteroid =>
       if (asteroid.resources.isZero) (for {
-        world <- world.addResources(owner, companion.specialCollapseResources).right.get
+        world <- world.addResources(owner, stats.specialCollapseResources).right.get
         world <- world.removeEvt(this)
         world <- world.removeEvt(asteroid)
       } yield world).right

@@ -73,7 +73,7 @@ object Game {
     def withSpecialAction[A <: SpecialAction](
       human: Human, state: GameHumanState
     )(f: A => GameHumanState => Game.Result)(obj: A): Game.Result =
-      withActions(human, obj.companion.specialActionsNeeded, state)(f(obj))
+      withActions(human, obj.stats.specialActionsNeeded, state)(f(obj))
 
     def withResources(
       human: Human, resourcesNeeded: Resources, world: World
@@ -108,7 +108,7 @@ trait GameLike[+A] {
   def join(human: Human, startingResources: Resources): Game.ResultT[A]
   def leave(human: Human): Game.ResultT[A]
   def warp(
-    human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
+    human: Human, position: Vect2, warpable: WarpableCompanion.Some
   ): Game.ResultT[A]
   def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]): Game.ResultT[A]
   def attack(human: Human, id: WObject.Id, targetId: WObject.Id): Game.ResultT[A]
@@ -160,7 +160,7 @@ case class Game private (
 
   def winner: Option[Team] = {
     world.objects.collect {
-      case obj: OwnedObj if obj.companion.isCritical => obj.owner.team
+      case obj: OwnedObj if obj.stats.isCritical => obj.owner.team
     } match {
       case s if s.size === 1 => Some(s.head)
       case _ => None
@@ -198,7 +198,7 @@ case class Game private (
   }
 
   override def warp(
-    human: Human, position: Vect2, warpable: WarpableCompanion[_ <: Warpable]
+    human: Human, position: Vect2, warpable: WarpableCompanion.Some
   ): Game.Result =
     withState(human) { state =>
     withActions(human, Warpable.ActionsNeeded, state) { state =>

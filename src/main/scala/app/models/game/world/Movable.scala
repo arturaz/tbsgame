@@ -3,6 +3,7 @@ package app.models.game.world
 import akka.event.LoggingAdapter
 import app.algorithms.Pathfinding.Path
 import app.models.game.events._
+import app.models.game.world.units._
 import implicits._
 import utils.data.NonEmptyVector
 
@@ -13,19 +14,24 @@ trait MovableStats extends OwnedObjStats {
 }
 
 trait MovableImpl extends OwnedObjImpl with Mobility[Mobility.Movable.type] {
+  type Stats <: MovableStats
+
   val movementLeft: Movement
-  val stats: MovableStats
 }
 
 trait ToMovableOps {
   implicit def toMovableOps[A <: Movable](a: A): MovableOps[A] = (a match {
-
+    case o: Corvette => CorvetteOps(o)
+    case o: Fortress => FortressOps(o)
+    case o: Gunship => GunshipOps(o)
+    case o: RayShip => RayShipOps(o)
+    case o: RocketFrigate => RocketFrigateOps(o)
+    case o: Scout => ScoutOps(o)
+    case o: Wasp => WaspOps(o)
   }).asInstanceOf[MovableOps[A]]
 }
 
-object Movable extends ToMovableOps
-
-trait MovableOps[+Self <: Movable] extends Any {
+trait MovableOps[Self <: Movable] extends OwnedObjOps[Self] {
   def self: Self
 
   def moveTo(

@@ -12,8 +12,7 @@ import implicits._
 trait NeedsFighterUnitContext[S <: FighterUnitContext[S]] {
   def withUnit
     (state: S)
-    (f: (S, FUnit) =>
-          (NodeResult, S, Option[FUnit]))
+    (f: (S, FUnit) => (NodeResult, S, Option[FUnit]))
     (implicit log: LoggingAdapter)
   = {
     state.unitLens.get(state).fold2(
@@ -57,11 +56,11 @@ trait NeedsAttackTarget[S <: AttackTargetBlackboard[S]] {
 
 trait GameUpdate[S <: GameBlackboard[S]] {
   def updateGameOpt(
-    state: S, update: WorldObjOptUpdate[FUnit#Self]
+    state: S, update: WorldObjOptUpdate[FUnit]
   ): S = updateGameWorld(state, update.map(_._1))
 
   def updateGame(
-    state: S, update: WorldObjUpdate[FUnit#Self]
+    state: S, update: WorldObjUpdate[FUnit]
   ): S = updateGameWorld(state, update.map(_._1))
 
   def updateGameWorld(

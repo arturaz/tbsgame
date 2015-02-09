@@ -16,11 +16,9 @@ object Combat {
   def moveAttack[A <: MovableFighter](
     world: World, unit: A,
     target: SearchRes[OwnedObj], strict: Boolean=true
-  )(implicit ev: A#Self =:= A): Result[A] = {
+  ): Result[A] = {
     moveAndThen(world, unit, target.path, strict) { case (newWorld, movedUnit) =>
-      movedUnit.attackWS(target.value, newWorld).right.map(_.map {
-        case (w, u) => (w, u.asInstanceOf[A])
-      })
+      movedUnit.attackWS(target.value, newWorld)
     }
   }
 
@@ -29,16 +27,14 @@ object Combat {
     movePath: Path, strict: Boolean=true
   )(
     andThen: (World, A) => ErrOpt[Evented[(World, A)]]
-  )(implicit ev: A#Self =:= A): Result[A] = {
+  ): Result[A] = {
     val moveTarget =
       if (!strict && unit.movementLeft < movePath.movementNeeded)
         movePath.limit(unit.movementLeft)
       else
         movePath
 
-    unit.moveTo(world, moveTarget).right.map(_.map {
-      case (w, opt) => (w, opt.map(_.asInstanceOf[A]))
-    }).right.flatMap { movedEvtWorldSelf =>
+    unit.moveTo(world, moveTarget).right.flatMap { movedEvtWorldSelf =>
       movedEvtWorldSelf.value match {
         case (newWorld, Some(movedUnit)) => andThen(newWorld, movedUnit).fold(
           err => if (! strict) movedEvtWorldSelf.right else err.left,
@@ -53,9 +49,9 @@ object Combat {
   }
 
   /* Tries to move attack, but does not fail if cannot. */
-  def moveAttackLoose[A <: MovableFighter { type Self = A }](
+  def moveAttackLoose[A <: MovableFighter](
     world: World, unit: A, target: SearchRes[OwnedObj]
-  )(implicit ev: A#Self =:= A): RawResult[A] =
+  ): RawResult[A] =
     moveAttack(world, unit, target, strict = false).fold(
       err => throw new Exception(s"[search res=$target]: $err]"), identity
     )

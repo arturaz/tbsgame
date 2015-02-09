@@ -1,7 +1,6 @@
 package app.models.game
 
-import app.models.game.world.props.Asteroid
-import app.models.game.world.{World, OwnedObj, VPS, Resources}
+import app.models.game.world._
 import implicits._
 import utils.IntValueClass
 
@@ -56,7 +55,7 @@ object Objective {
 
     def remainingImpl(game: Game, team: Team) =
       ObjectCount(game.world.objects.count {
-        case oo: OwnedObj if oo.companion.isCritical && oo.owner.isEnemyOf(team) => true
+        case oo: OwnedObj if oo.stats.isCritical && oo.owner.isEnemyOf(team) => true
         case _ => false
       })
 

@@ -9,7 +9,6 @@ import app.models.game._
 import app.models.game.events._
 import app.models.game.world._
 import app.models.game.world.buildings._
-import app.models.game.world.props.Asteroid
 import app.models.game.world.units._
 import implicits._
 import utils.data.NonEmptyVector
@@ -92,14 +91,15 @@ object GameActor {
         }, {
           import Out.Init.Stats
           Vector(
-            Stats(Asteroid), Stats(WarpGate), Stats(Extractor),
-            Stats(WarpLinker, showInWarpables = true),
-            Stats(LaserTower, showInWarpables = true),
-            Stats(Corvette, showInWarpables = true),
-            Stats(RocketFrigate, showInWarpables = true),
-            Stats(Gunship, showInWarpables = true),
-            Stats(Scout, showInWarpables = true),
-            Stats(Spawner), Stats(Wasp), Stats(RayShip), Stats(Fortress)
+            Stats(AsteroidStats), Stats(WarpGateStats), Stats(ExtractorStats),
+            Stats(WarpLinkerStats, showInWarpables = true),
+            Stats(LaserTowerStats, showInWarpables = true),
+            Stats(CorvetteStats, showInWarpables = true),
+            Stats(RocketFrigateStats, showInWarpables = true),
+            Stats(GunshipStats, showInWarpables = true),
+            Stats(ScoutStats, showInWarpables = true),
+            Stats(SpawnerStats), Stats(WaspStats), Stats(RayShipStats),
+            Stats(FortressStats)
           )
         },
         for (from <- WObjKind.All; to <- WObjKind.All) yield from -> to,

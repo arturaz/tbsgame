@@ -3,7 +3,8 @@ package app.models.game.world
 import akka.event.LoggingAdapter
 import app.models.game.Owner
 import app.models.game.events.{Evented, HPChangeEvt}
-import app.models.game.world.buildings.Extractor
+import app.models.game.world.buildings._
+import app.models.game.world.units._
 import implicits._
 
 import scala.language.implicitConversions
@@ -19,7 +20,7 @@ trait OwnedObjStats extends WObjectStats {
 }
 
 trait OwnedObjImpl extends WObjectImpl {
-  val stats: OwnedObjStats
+  type Stats <: OwnedObjStats
   val hp: HP
   val owner: Owner
 
@@ -38,30 +39,28 @@ trait OwnedObjImpl extends WObjectImpl {
     else None
 }
 
-object OwnedObj extends ToOwnedObjOps {
+trait OwnedObjCompanion extends ToOwnedObjOps {
   def teamTurnStarted
   (obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
   : Evented[(World, OwnedObj)] = {
-    import GivingVictoryPoints.toGivingVictoryPointsOps
-
     Evented((world, obj)) |>
-      WObject.ifIs[GivingVictoryPoints].raw((w, o) => (o.teamTurnStarted(w), o))
+      WObject.ifIs[GivingVictoryPoints].rawWorld((w, o) => o.teamTurnStarted(w)) |>
+      WObject.ifIs[Extractor].evtWorld((w, o) => o.teamTurnStarted(w))
   }
 
   def teamTurnFinished
   (obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
   : Evented[(World, OwnedObj)] = {
-    import app.models.game.world.Movable.toMovableOps
-
     Evented((world, obj)) |>
       WObject.ifIs[Movable].evt((w, o) => o.teamTurnFinished(w)) |>
-      WObject.ifIs[Fighter].evt((w, o) => o.teamTurnFinished(w))
+      WObject.ifIs[Fighter].evt((w, o) => o.teamTurnFinished(w)) |>
+      WObject.ifIs[ReactiveFighter].evt((w, o) => o.teamTurnFinished(w))
   }
 }
 
 trait OwnedObjOps[+Self <: OwnedObj] {
   def self: Self
-  def withNewHp(hp: HP): Self
+  protected def withNewHp(hp: HP): Self
   def withNewHPEvt(hp: HP)(world: World): Evented[Self] = {
     val newSelf = withNewHp(hp)
     Evented(
@@ -76,6 +75,23 @@ trait OwnedObjOps[+Self <: OwnedObj] {
 
 trait ToOwnedObjOps {
   implicit def toOwnedObjOps[A <: OwnedObj](a: A): OwnedObjOps[A] = (a match {
-    case o: Extractor => Extractor.Ops(o)
+    /* Buildings */
+
+    case o: Extractor => ExtractorOps(o)
+    case o: LaserTower => LaserTowerOps(o)
+    case o: Spawner => SpawnerOps(o)
+    case o: VPTower => VPTowerOps(o)
+    case o: WarpGate => WarpGateOps(o)
+    case o: WarpLinker => WarpLinkerOps(o)
+
+    /* Units */
+
+    case o: Corvette => CorvetteOps(o)
+    case o: Fortress => FortressOps(o)
+    case o: Gunship => GunshipOps(o)
+    case o: RayShip => RayShipOps(o)
+    case o: RocketFrigate => RocketFrigateOps(o)
+    case o: Scout => ScoutOps(o)
+    case o: Wasp => WaspOps(o)
   }).asInstanceOf[OwnedObjOps[A]]
 }

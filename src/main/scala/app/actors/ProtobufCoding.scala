@@ -10,7 +10,6 @@ import app.algorithms.Pathfinding.Path
 import app.models.game.events._
 import app.models.game.world._
 import app.models.game.world.buildings._
-import app.models.game.world.props.Asteroid
 import app.models.game.world.units._
 import app.models.game._
 import implicits._
@@ -34,14 +33,14 @@ object ProtobufCoding {
 
     implicit def parseWarpable(
       w: Game.MWarp.HumanWarpable
-    ): WarpableCompanion[_ <: Warpable] = w match {
-      case Game.MWarp.HumanWarpable.B_EXTRACTOR => Extractor
-      case Game.MWarp.HumanWarpable.B_WARP_LINKER => WarpLinker
-      case Game.MWarp.HumanWarpable.B_LASER_TOWER => LaserTower
-      case Game.MWarp.HumanWarpable.U_CORVETTE => Corvette
-      case Game.MWarp.HumanWarpable.U_SCOUT => Scout
-      case Game.MWarp.HumanWarpable.U_ROCKET_FRIGATE => RocketFrigate
-      case Game.MWarp.HumanWarpable.U_GUNSHIP => Gunship
+    ): WarpableCompanion.Some = w match {
+      case Game.MWarp.HumanWarpable.B_EXTRACTOR => ExtractorStats
+      case Game.MWarp.HumanWarpable.B_WARP_LINKER => WarpLinkerStats
+      case Game.MWarp.HumanWarpable.B_LASER_TOWER => LaserTowerStats
+      case Game.MWarp.HumanWarpable.U_CORVETTE => CorvetteStats
+      case Game.MWarp.HumanWarpable.U_SCOUT => ScoutStats
+      case Game.MWarp.HumanWarpable.U_ROCKET_FRIGATE => RocketFrigateStats
+      case Game.MWarp.HumanWarpable.U_GUNSHIP => GunshipStats
     }
 
     def parse(pathList: java.util.List[Base.Vect2]): Vector[Vect2] =
@@ -215,7 +214,7 @@ object ProtobufCoding {
       Game.WObject.SizedObj.Stats.newBuilder().setSize(obj.size).build()
 
     implicit def convert(obj: SizedWObject): Game.WObject.SizedObj =
-      Game.WObject.SizedObj.newBuilder().setStats(obj.companion).build()
+      Game.WObject.SizedObj.newBuilder().setStats(obj.stats).build()
 
     implicit def convert(obj: OwnedObjStats): Game.WObject.OwnedObj.Stats =
       Game.WObject.OwnedObj.Stats.newBuilder().
@@ -225,7 +224,7 @@ object ProtobufCoding {
         build()
 
     implicit def convert(obj: OwnedObj): Game.WObject.OwnedObj =
-      Game.WObject.OwnedObj.newBuilder().setStats(obj.companion).
+      Game.WObject.OwnedObj.newBuilder().setStats(obj.stats).
         setHp(obj.hp).setOwnerId(obj.owner.id).build()
 
     implicit def convert(obj: GivingActionsStats): Game.WObject.GivingActions.Stats =
@@ -233,14 +232,14 @@ object ProtobufCoding {
         setActionsGiven(obj.actionsGiven.value).build()
 
     implicit def convert(obj: GivingActions): Game.WObject.GivingActions =
-      Game.WObject.GivingActions.newBuilder().setStats(obj.companion).build()
+      Game.WObject.GivingActions.newBuilder().setStats(obj.stats).build()
 
     implicit def convert(obj: GivingPopulationStats): Game.WObject.GivingPopulation.Stats =
       Game.WObject.GivingPopulation.Stats.newBuilder().
         setPopulationGiven(obj.populationGiven.value).build()
 
     implicit def convert(obj: GivingPopulation): Game.WObject.GivingPopulation =
-      Game.WObject.GivingPopulation.newBuilder().setStats(obj.companion).build()
+      Game.WObject.GivingPopulation.newBuilder().setStats(obj.stats).build()
 
     implicit def convert(obj: WarpableStats): Game.WObject.Warpable.Stats =
       Game.WObject.Warpable.Stats.newBuilder().setCost(obj.cost).
@@ -248,7 +247,7 @@ object ProtobufCoding {
         setGroup(obj.group).build()
 
     implicit def convert(obj: Warpable): Game.WObject.Warpable =
-      Game.WObject.Warpable.newBuilder().setStats(obj.companion).
+      Game.WObject.Warpable.newBuilder().setStats(obj.stats).
         setWarpState(obj.warpState).build()
 
     implicit def convert(obj: SpecialActionStats): Game.WObject.SpecialAction.Stats =
@@ -256,7 +255,7 @@ object ProtobufCoding {
         setActionsNeeded(obj.specialActionsNeeded).build()
 
     implicit def convert(obj: SpecialAction): Game.WObject.SpecialAction =
-      Game.WObject.SpecialAction.newBuilder().setStats(obj.companion).build()
+      Game.WObject.SpecialAction.newBuilder().setStats(obj.stats).build()
 
     implicit def convert(obj: FighterStats): Game.WObject.Fighter.Stats =
       Game.WObject.Fighter.Stats.newBuilder().
@@ -266,34 +265,34 @@ object ProtobufCoding {
 
     implicit def convert(obj: Fighter): Game.WObject.Fighter =
       Game.WObject.Fighter.newBuilder().
-        setStats(obj.companion).setAttacksLeft(obj.attacksLeft).setLevel(obj.level).
+        setStats(obj.stats).setAttacksLeft(obj.attacksLeft).setLevel(obj.level).
         build()
 
     implicit def convert(obj: MovableStats): Game.WObject.Movable.Stats =
       Game.WObject.Movable.Stats.newBuilder().setMovementRange(obj.movement).build()
 
     implicit def convert(obj: Movable): Game.WObject.Movable =
-      Game.WObject.Movable.newBuilder().setStats(obj.companion).
+      Game.WObject.Movable.newBuilder().setStats(obj.stats).
         setMovement(obj.movementLeft).build()
 
     implicit def convert(obj: Asteroid): Game.WObject.Asteroid =
       Game.WObject.Asteroid.newBuilder().setResources(obj.resources).build()
 
-    implicit def convert(obj: Extractor.type): Game.WObject.Extractor.Stats =
+    implicit def convert(obj: ExtractorStats.type): Game.WObject.Extractor.Stats =
       Game.WObject.Extractor.Stats.newBuilder().
         setSpecialExtracts(obj.specialExtracts).
         setTurnStartExtracts(obj.turnStartExtracts).
         setSpecialConsumeExtracts(obj.specialCollapseResources).build()
 
     implicit def convert(obj: Extractor): Game.WObject.Extractor =
-      Game.WObject.Extractor.newBuilder().setStats(obj.companion).build()
+      Game.WObject.Extractor.newBuilder().setStats(obj.stats).build()
 
-    implicit def convert(obj: Corvette.type): Game.WObject.Corvette.Stats =
+    implicit def convert(obj: CorvetteStats.type): Game.WObject.Corvette.Stats =
       Game.WObject.Corvette.Stats.newBuilder().
         setSpecialMovementAdded(obj.specialMovementAdded).build()
 
     implicit def convert(obj: Corvette): Game.WObject.Corvette =
-      Game.WObject.Corvette.newBuilder().setStats(obj.companion).build()
+      Game.WObject.Corvette.newBuilder().setStats(obj.stats).build()
 
     implicit def convert(obj: WObject): Game.WObject =
       Game.WObject.newBuilder().setId(obj.id).setPosition(obj.position).
@@ -322,6 +321,7 @@ object ProtobufCoding {
             case o: Gunship => b.setKind(U_GUNSHIP)
             case o: Fortress => b.setKind(U_FORTRESS)
             case o: VPTower => b.setKind(B_VP_TOWER)
+            case o: WObjectTestRoot => b
           }
         }.build()
 
@@ -338,19 +338,19 @@ object ProtobufCoding {
         mapVal { b =>
           import netmsg.Game.WObject.Kind._
           obj match {
-            case Asteroid => b.setKind(P_ASTEROID)
-            case WarpGate => b.setKind(B_WARP_GATE)
-            case o: Extractor.type => b.setKind(B_EXTRACTOR).setExtractor(o)
-            case WarpLinker => b.setKind(B_WARP_LINKER)
-            case Spawner => b.setKind(B_SPAWNER)
-            case LaserTower => b.setKind(B_LASER_TOWER)
-            case o: Corvette.type => b.setKind(U_CORVETTE).setCorvette(o)
-            case Wasp => b.setKind(U_WASP)
-            case Scout => b.setKind(U_SCOUT)
-            case RayShip => b.setKind(U_RAY_SHIP)
-            case RocketFrigate => b.setKind(U_ROCKET_FRIGATE)
-            case Gunship => b.setKind(U_GUNSHIP)
-            case Fortress => b.setKind(U_FORTRESS)
+            case AsteroidStats => b.setKind(P_ASTEROID)
+            case WarpGateStats => b.setKind(B_WARP_GATE)
+            case o: ExtractorStats.type => b.setKind(B_EXTRACTOR).setExtractor(o)
+            case WarpLinkerStats => b.setKind(B_WARP_LINKER)
+            case SpawnerStats => b.setKind(B_SPAWNER)
+            case LaserTowerStats => b.setKind(B_LASER_TOWER)
+            case o: CorvetteStats.type => b.setKind(U_CORVETTE).setCorvette(o)
+            case WaspStats => b.setKind(U_WASP)
+            case ScoutStats => b.setKind(U_SCOUT)
+            case RayShipStats => b.setKind(U_RAY_SHIP)
+            case RocketFrigateStats => b.setKind(U_ROCKET_FRIGATE)
+            case GunshipStats => b.setKind(U_GUNSHIP)
+            case FortressStats => b.setKind(U_FORTRESS)
           }
         }.build()
 
@@ -359,13 +359,13 @@ object ProtobufCoding {
         if (obj.showInWarpables) b.setWarpable {
           import Game.MWarp.HumanWarpable._
           obj.stats match {
-            case Extractor => B_EXTRACTOR
-            case LaserTower => B_LASER_TOWER
-            case WarpLinker => B_WARP_LINKER
-            case Corvette => U_CORVETTE
-            case Scout => U_SCOUT
-            case RocketFrigate => U_ROCKET_FRIGATE
-            case Gunship => U_GUNSHIP
+            case ExtractorStats => B_EXTRACTOR
+            case LaserTowerStats => B_LASER_TOWER
+            case WarpLinkerStats => B_WARP_LINKER
+            case CorvetteStats => U_CORVETTE
+            case ScoutStats => U_SCOUT
+            case RocketFrigateStats => U_ROCKET_FRIGATE
+            case GunshipStats => U_GUNSHIP
           }
         }
         else b

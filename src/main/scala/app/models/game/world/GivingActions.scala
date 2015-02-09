@@ -7,5 +7,5 @@ trait GivingActionsStats extends OwnedObjStats {
 }
 
 trait GivingActionsImpl extends OwnedObjImpl {
-  val stats: GivingActionsStats
+  type Stats <: GivingActionsStats
 }

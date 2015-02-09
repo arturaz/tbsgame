@@ -1,6 +1,7 @@
 package app.models.game.world
 
 import app.models.game.events.{AttackEvt, AttacksChangedEvt, Evented, LevelChangeEvt}
+import app.models.game.world.units._
 import app.models.game.{Attack, Player}
 import implicits._
 
@@ -15,7 +16,7 @@ trait FighterStats extends OwnedObjStats {
     val to = Atk((attack.value * (1 + attackSpread.value)).round.toInt)
     AtkRange(from, to)
   }
-  def randomAttack: Atk = Atk(attackDamageRange.random)
+  def randomAttack = Atk(attackDamageRange.random)
 
   val attackRange: RadialDistance
   val attacks: Attacks
@@ -42,7 +43,7 @@ trait FighterStats extends OwnedObjStats {
 }
 
 trait FighterImpl extends OwnedObjImpl {
-  val stats: FighterStats
+  type Stats <: FighterStats
 
   val attacksLeft: Attacks
   val xp: XP
@@ -176,8 +177,10 @@ trait FighterOps[Self <: Fighter] {
 
 trait ToFighterOps {
   implicit def toFighterOps[A <: Fighter](a: A): FighterOps[A] = (a match {
-
+    case o: Fortress => FortressOps(o)
+    case o: Gunship => GunshipOps(o)
+    case o: RayShip => RayShipOps(o)
+    case o: RocketFrigate => RocketFrigateOps(o)
+    case o: Wasp => WaspOps(o)
   }).asInstanceOf[FighterOps[A]]
 }
-
-object Fighter extends ToFighterOps

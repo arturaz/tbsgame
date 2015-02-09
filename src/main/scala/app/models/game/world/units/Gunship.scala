@@ -3,7 +3,7 @@ package app.models.game.world.units
 import app.models.game.{Population, Player}
 import app.models.game.world._
 
-object Gunship extends WFighterUnitCompanion[Gunship]
+object GunshipStats extends WFighterUnitStats with EmptySpaceWarpableCompanion[Gunship]
 {
   override val maxHp = HP(90)
   override val attack = Atk(95)
@@ -16,27 +16,15 @@ object Gunship extends WFighterUnitCompanion[Gunship]
   override val visibility = RectDistance(3)
   override val movement = Movement.fromTiles(6)
 
-  override def withNewHp(hp: HP)(self: Gunship) = self.copy(hp = hp)
-  override def withNewXP(xp: XP)(self: Gunship) = self.copy(xp = xp)
-  override protected def withAttacksLeft(value: Attacks)(self: Gunship) =
-    self.copy(attacksLeft = value)
-  override protected def setMoveValues(
-    position: Vect2, movementLeft: Movement
-  )(self: Gunship) = self.copy(position = position, movementLeft = movementLeft)
-  override def setWarpState(newState: WarpTime)(self: Gunship) =
-    self.copy(warpState = newState)
   override def warp(owner: Player, position: Vect2) = Gunship(position, owner)
 }
 
-case class Gunship(
-  position: Vect2, owner: Player,
-  id: WObject.Id=WObject.newId, hp: HP=Gunship.maxHp, xp: XP=Gunship.InitialXP,
-  attacksLeft: Attacks=Gunship.InitialAttacks,
-  movementLeft: Movement=Gunship.movement,
-  warpState: WarpTime=Gunship.InitialWarpState
-) extends WFighterUnit {
-  override type Self = Gunship
-  override type Companion = Gunship.type
-  override def self = this
-  override def companion = Gunship
+case class GunshipOps(self: Gunship) extends WFighterUnitOps[Gunship] {
+  override protected def withNewHp(hp: HP) = self.copy(hp = hp)
+  override protected def withNewXP(xp: XP) = self.copy(xp = xp)
+  override protected def withAttacksLeft(value: Attacks) = self.copy(attacksLeft = value)
+  override protected def setMoveValues(
+    position: Vect2, movementLeft: Movement
+  ) = self.copy(position = position, movementLeft = movementLeft)
+  override def setWarpState(newState: WarpTime) = self.copy(warpState = newState)
 }

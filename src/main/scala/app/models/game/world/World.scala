@@ -5,10 +5,9 @@ import app.models.game._
 import app.models.game.ai.GrowingSpawnerAI
 import app.models.game.events._
 import app.models.game.world.WObject.Id
-import app.models.game.world.buildings.{VPTower, Spawner, WarpGate}
+import app.models.game.world.buildings.{VPTowerStats, SpawnerStats, WarpGateStats}
 import app.models.game.world.maps.{VisibilityMap, WarpZoneMap}
-import app.models.game.world.props.Asteroid
-import app.models.game.world.units.{Fortress, RayShip, Wasp}
+import app.models.game.world.units.{FortressStats, RayShipStats, WaspStats}
 import implicits._
 import infrastructure.PrefixedLoggingAdapter
 import monocle.{Lenser, SimpleLens}
@@ -37,22 +36,30 @@ case class World private (
 
   def gameTurnStarted(implicit log: LoggingAdapter) =
     Evented(this) |>
-    gameTurnX(log.prefixed("started|"))(implicit log => _.gameTurnStarted)
+    gameTurnX(log.prefixed("started|")) {
+      implicit log => obj => world => WObject.gameTurnStarted(world, obj).map(_._1)
+    }
   def gameTurnFinished(implicit log: LoggingAdapter) =
     Evented(this) |>
-    gameTurnX(log.prefixed("finished|"))(implicit log => _.gameTurnFinished)
+    gameTurnX(log.prefixed("finished|")) {
+      implicit log => obj => world => WObject.gameTurnFinished(world, obj).map(_._1)
+    }
   def teamTurnStarted(team: Team)(implicit log: LoggingAdapter) =
     Evented(this, Vector(TurnStartedEvt(team))) |>
-    teamTurnX(team, log.prefixed("started|"))(implicit log => _.teamTurnStarted) |>
+    teamTurnX(team, log.prefixed("started|")) {
+      implicit log => obj => world => OwnedObj.teamTurnStarted(obj, world).map(_._1)
+    } |>
     runAI(team)
   def teamTurnFinished(team: Team)(implicit log: LoggingAdapter) =
     Evented(this, Vector(TurnEndedEvt(team))) |>
-    teamTurnX(team, log.prefixed("finished|"))(implicit log => _.teamTurnFinished)
+    teamTurnX(team, log.prefixed("finished|")) {
+      implicit log => obj => world => OwnedObj.teamTurnFinished(obj, world).map(_._1)
+    }
 
   def actionsFor(player: Player): Actions = {
     val actions = objects.collect {
       case obj: GivingActions if obj.owner.isFriendOf(player) =>
-        obj.companion.actionsGiven
+        obj.stats.actionsGiven
     }
     val total = actions.sum
     total
@@ -93,7 +100,7 @@ case class World private (
     }
   }
   private[this] val changeWithMapUpdatesSingle =
-    changeWithMapUpdates((obj: WObject) => obj.asOwnedObj) _
+    changeWithMapUpdates((obj: WObject) => obj.cast[OwnedObj]) _
 
   private[this] def objToOwner(obj: WObject) = obj.cast[OwnedObj].map(_.owner)
 
@@ -106,7 +113,7 @@ case class World private (
 
   def updated[A <: WObject](before: A, after: A): Evented[World] = {
     changeWithMapUpdates[(A, A), (OwnedObj, OwnedObj)] {
-      case (before, after) => (before.asOwnedObj, after.asOwnedObj) match {
+      case (before, after) => (before.cast[OwnedObj], after.cast[OwnedObj]) match {
         case (Some(bOO), Some(aOO)) => Some((bOO, aOO))
         case _ => None
       }
@@ -171,7 +178,7 @@ case class World private (
     case (state, gp: GivingPopulation) if gp.owner.isFriendOf(owner) =>
       state.withMax(_ + gp.populationGiven)
     case (state, oo: Warpable) if oo.owner === owner =>
-      state.withValue(_ + oo.companion.populationCost)
+      state.withValue(_ + oo.stats.populationCost)
     case (state, _) =>
       state
   }
@@ -302,22 +309,17 @@ object World {
     directionChangeChance: Double = 0.2,
     branchChance: Double = 0.2,
     safeDistance: TileDistance = TileDistance(10),
-    enemyResourcesAtMaxDistance: Resources = Wasp.cost * Resources(3),
-    npcChances: WeightedIS[WeightedIS[EmptySpaceWarpableCompanion[_ <: Warpable]]] =
-      IndexedSeq(
-        IndexedSeq(Wasp -> 1) -> 3,
-//        IndexedSeq(RayShip -> 1) -> 3,
-//        IndexedSeq(Fortress -> 1) -> 3,
-        IndexedSeq(Wasp -> 2, Fortress -> 1) -> 2,
-//        IndexedSeq(Wasp -> 2, RayShip -> 1) -> 2,
-        IndexedSeq(Fortress -> 2, Wasp -> 1) -> 2,
-        IndexedSeq(Fortress -> 2, RayShip -> 1) -> 1,
-//        IndexedSeq(RayShip -> 2, Wasp -> 1) -> 2,
-//        IndexedSeq(RayShip -> 2, Fortress -> 1) -> 2,
-        IndexedSeq(Wasp -> 1, RayShip -> 1, Fortress -> 1) -> 1
-      ),
+    enemyResourcesAtMaxDistance: Resources = WaspStats.cost * Resources(3),
     vpTowers: Int = 3
   )(implicit log1: LoggingAdapter) = {
+    val npcChances = IndexedSeq(
+      IndexedSeq(WaspStats -> 1) -> 3,
+      IndexedSeq(WaspStats -> 2, FortressStats -> 1) -> 2,
+      IndexedSeq(FortressStats -> 2, WaspStats -> 1) -> 2,
+      IndexedSeq(FortressStats -> 2, RayShipStats -> 1) -> 1,
+      IndexedSeq(WaspStats -> 1, RayShipStats -> 1, FortressStats -> 1) -> 1
+    )
+
     val log = new PrefixedLoggingAdapter("World#create|", log1)
     val warpGate = WarpGate(startingPoint, playersTeam)
     var objects = WorldObjs(warpGate).right_!
@@ -357,7 +359,7 @@ object World {
 
       var enemyResourcesInBounds = objects.view.
         filter(o => bounds.contains(o.position)).collect {
-          case oo: Warpable if oo.owner.team != playersTeam => oo.companion.cost
+          case oo: Warpable if oo.owner.team != playersTeam => oo.stats.cost
         }.sum
       log.debug(
         s"Blob spawn | bounds: {}, resources: ${resourcesLeft
@@ -433,7 +435,7 @@ object World {
 
       if (spawnersLeft > 0) {
         var spawnerPos = position
-        while (bTaken(Bounds(spawnerPos, Spawner.size))) spawnerPos += direction
+        while (bTaken(Bounds(spawnerPos, SpawnerStats.size))) spawnerPos += direction
         branchLog.debug(s"Spawner @ {}", spawnerPos)
         objects += Spawner(spawnerPos, spawnerOwner)
         spawnersLeft -= 1
@@ -453,7 +455,7 @@ object World {
         (vpDistance.value * Math.cos(angle)).round.toInt,
         (vpDistance.value * Math.sin(angle)).round.toInt
       ) + warpGate.bounds.center
-      if (! bTaken(Bounds(position, VPTower.size))) {
+      if (! bTaken(Bounds(position, VPTowerStats.size))) {
         objects += VPTower(position, spawnerOwner.team)
         vpTowersLeft -= 1
       }

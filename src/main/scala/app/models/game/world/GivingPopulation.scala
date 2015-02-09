@@ -7,7 +7,7 @@ trait GivingPopulationStats extends OwnedObjStats {
 }
 
 trait GivingPopulationImpl extends OwnedObjImpl {
-  val stats: GivingPopulationStats
+  type Stats <: GivingPopulationStats
 
   def populationGiven = if (isWarpedIn) stats.populationGiven else Population(0)
 }

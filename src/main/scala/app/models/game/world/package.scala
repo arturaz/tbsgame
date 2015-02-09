@@ -7,4 +7,8 @@ package object world
 extends ToOwnedObjOps
 with ToFighterOps
 with ToReactiveFighterOps
+with ToGivingVictoryPointsOps
+with ToMovableOps
 with ToRespawnsOnDesctructionOps
+with ToWarpableOps
+with ToTurnCounterOps

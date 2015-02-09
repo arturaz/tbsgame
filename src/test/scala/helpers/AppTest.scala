@@ -7,26 +7,24 @@ import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.{FreeSpec, Matchers, FunSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-object TestWObjectCompanion extends WObjectCompanion
-case class TestWObject(position: Vect2, id: WObject.Id = WObject.newId) extends WObject {
-  override type Self = TestWObject
-  override def self = this
-  override def companion = TestWObjectCompanion
-  override type Companion = TestWObjectCompanion.type
+case class TestWObject(
+  position: Vect2, id: WObject.Id = WObject.newId
+) extends WObjectTestRoot {
+  type Stats = TestWObjectStats.type
+  val stats = TestWObjectStats
 }
+case object TestWObjectStats extends WObjectStats
 
-case class SizedTestWObjectCompanion(size: Vect2) extends SizedWObjectCompanion
+case class SizedTestWObjectStats(override val size: Vect2) extends SizedWObjectStats
 
 object SizedTestWObject {
   def apply(position: Vect2, size: Vect2): SizedTestWObject =
-    apply(position, SizedTestWObjectCompanion(size))
+    apply(position, SizedTestWObjectStats(size))
 }
 case class SizedTestWObject(
-  position: Vect2, companion: SizedTestWObjectCompanion, id: WObject.Id = WObject.newId
-) extends SizedWObject {
-  type Self = SizedTestWObject
-  def self = this
-  type Companion = SizedTestWObjectCompanion
+  position: Vect2, stats: SizedTestWObjectStats, id: WObject.Id = WObject.newId
+) extends WObjectTestRoot {
+  type Stats = SizedTestWObjectStats
 }
 
 class AppTest extends FreeSpec with Matchers with GeneratorDrivenPropertyChecks

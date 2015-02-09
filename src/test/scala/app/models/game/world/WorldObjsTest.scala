@@ -1,6 +1,6 @@
 package app.models.game.world
 
-import helpers.{SizedTestWObjectCompanion, TestWObject, SizedTestWObject, AppTest}
+import helpers.{TestWObject, SizedTestWObjectStats, SizedTestWObject, AppTest}
 import org.scalacheck.{Gen, Arbitrary}
 import implicits._
 
@@ -107,7 +107,7 @@ class WorldObjsTest extends AppTest {
         arbWorldObjs.arbitrary, arbPosition.arbitrary, sizeGen
       ) { (objs, pos, size) => whenever(objs.nonEmpty) {
         val obj = objs.head
-        val newObj = SizedTestWObject(pos, SizedTestWObjectCompanion(size), obj.id)
+        val newObj = SizedTestWObject(pos, SizedTestWObjectStats(size), obj.id)
         val newObjs = objs.update_!(obj, newObj)
 
         f(ChangePoints(obj, newObj, newObjs))

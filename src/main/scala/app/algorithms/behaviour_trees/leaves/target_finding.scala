@@ -6,8 +6,7 @@ import app.algorithms.Pathfinding.SearchRes
 import app.algorithms.behaviour_trees._
 import app.algorithms.behaviour_trees.BehaviourTree.NodeResult
 import app.models.game.ai.SingleMindAI
-import app.models.game.world.units.WUnit
-import app.models.game.world.{Fighter, OwnedObj, World}
+import app.models.game.world.{WUnit, Fighter, OwnedObj, World}
 import implicits._
 
 sealed trait TargetFindMode
@@ -54,7 +53,7 @@ case class FindVisibleTarget[
   }
 
   def findTarget(
-    world: World, targets: Iterable[OwnedObj], unit: WUnit with Fighter
+    world: World, targets: Iterable[OwnedObj], unit: FUnit
   )(implicit log: LoggingAdapter): Option[SearchRes[OwnedObj]] = {
     if (targets.isEmpty) return None
 

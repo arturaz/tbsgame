@@ -4,7 +4,6 @@ import akka.event.LoggingAdapter
 import app.algorithms.Pathfinding
 import app.models.game.{Actions, Owner}
 import app.models.game.events.Evented
-import app.models.game.world.buildings.GrowingSpawner
 import app.models.game.world._
 import implicits._
 
@@ -12,22 +11,23 @@ import scala.annotation.tailrec
 import scala.util.Random
 
 object GrowingSpawnerAI {
-  type ReadyUnits = List[GrowingSpawner#Controlled]
+  type SpawnerUnit = WUnit with Fighter
+  type ReadyUnits = List[SpawnerUnit]
   type Result = Evented[World]
 
   def act(world: World, owner: Owner)(implicit log: LoggingAdapter): Result = {
     val spawners = world.objects.collect {
-      case spawner: GrowingSpawner if owner === (spawner.owner: Owner) => spawner
+      case spawner: Spawner if owner === (spawner.owner: Owner) => spawner
     }
 
     if (spawners.isEmpty)
       SingleMindAI.act(world, owner)
     else {
       val actions = world.objects.collect {
-        case ga: GivingActions if owner.team == ga.owner.team => ga.companion.actionsGiven
+        case ga: GivingActions if owner.team == ga.owner.team => ga.stats.actionsGiven
       }.sum
       val readyUnits = world.objects.collect {
-        case unit: GrowingSpawner#Controlled
+        case unit: SpawnerUnit
           if (unit.owner: Owner) === owner && (
             unit.movementLeft.isNotZero || unit.hasAttacksLeft
           ) && unit.isWarpedIn => unit
@@ -45,7 +45,7 @@ object GrowingSpawnerAI {
   }
 
   def act(
-    world: World, spawner: GrowingSpawner, actions: Actions, readyUnits: ReadyUnits
+    world: World, spawner: Spawner, actions: Actions, readyUnits: ReadyUnits
   )(implicit log: LoggingAdapter): (Result, ReadyUnits) = {
     @tailrec def work(
       actionsLeft: SpawnerStr, world: Evented[World], readyUnits: ReadyUnits
@@ -81,7 +81,7 @@ object GrowingSpawnerAI {
   }
 
   def act(
-    world: World, unit: GrowingSpawner#Controlled
+    world: World, unit: SpawnerUnit
   )(implicit log: LoggingAdapter): Result = {
     log.debug("unit {} acting", unit)
     var possibleTargets = Set.empty[OwnedObj]
@@ -98,7 +98,7 @@ object GrowingSpawnerAI {
       (evtWorld, unit) => {
         def select(s: Iterable[OwnedObj]) = s.minBy(_.bounds.tileDistance(unit.position))
         val optNewWorld = for {
-          target <- possibleTargets.filter(_.companion.isCritical) match {
+          target <- possibleTargets.filter(_.stats.isCritical) match {
             case s if s.isEmpty =>
               if (possibleTargets.isEmpty) None
               else Some(select(possibleTargets))
@@ -129,8 +129,8 @@ object GrowingSpawnerAI {
   }
 
   private[this] def spawn(
-    world: World, spawner: GrowingSpawner
-  ): Either[String, WObject.WorldObjOptUpdate[spawner.Controlled]] = {
+    world: World, spawner: Spawner
+  ): Either[String, WObject.WorldObjOptUpdate[SpawnerUnit]] = {
     val warpZones = world.objects.collect {
       case o: OwnedObj if o.owner.team == spawner.owner.team => o.warpZone
     }.collect { case Some(wz) => wz }

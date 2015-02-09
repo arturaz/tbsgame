@@ -11,24 +11,11 @@ trait SpecialActionStats extends OwnedObjStats {
 }
 
 trait SpecialActionImpl extends OwnedObjImpl {
-  val stats: SpecialActionStats
-}
-
-trait SpecialActionOps[Self <: SpecialAction] {
-  def self: Self
+  type Stats <: SpecialActionStats
 
   def special(world: World): Either[String, Evented[World]] =
-    if (self.isWarpedIn) specialImpl(world)
-    else s"Can't do special for $self while warping in!".left
+    if (isWarpedIn) specialImpl(world)
+    else s"Can't do special for $this while warping in!".left
 
   protected def specialImpl(world: World): Either[String, Evented[World]]
 }
-
-trait ToSpecialActionOps {
-  implicit def toSpecialActionOps[A <: SpecialAction]
-  (a: A): SpecialActionOps[A] = (a match {
-
-  }).asInstanceOf[SpecialActionOps[A]]
-}
-
-object SpecialAction extends ToSpecialActionOps

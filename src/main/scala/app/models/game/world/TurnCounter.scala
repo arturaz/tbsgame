@@ -1,6 +1,7 @@
 package app.models.game.world
 
 import akka.event.LoggingAdapter
+import app.models.game.world.buildings.SpawnerOps
 import utils.IntValueClass
 
 import scala.language.implicitConversions
@@ -34,8 +35,6 @@ trait TurnCounterOps[+Self <: TurnCounter] {
 trait ToTurnCounterOps {
   implicit def toTurnCounterOps[A <: TurnCounter](a: A): TurnCounterOps[A] =
     (a match {
-
+      case o: Spawner => SpawnerOps(o)
     }).asInstanceOf[TurnCounterOps[A]]
 }
-
-object TurnCounter extends ToTurnCounterOps

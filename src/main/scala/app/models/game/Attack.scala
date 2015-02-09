@@ -1,6 +1,6 @@
 package app.models.game
 
-import app.models.game.world.{Atk, Fighter, HP, OwnedObj}
+import app.models.game.world._
 import implicits._
 
 case class Attack(
@@ -17,7 +17,7 @@ case class Attack(
 
   /* None if destroyed, Some otherwise */
   def apply[A <: OwnedObj](obj: A): Option[A] =
-    if (successful) obj.takeDamage(damage).map(_.asInstanceOf[A]) else Some(obj)
+    if (successful) obj.takeDamage(damage) else Some(obj)
 
   override def toString =
     s"Atk[a: $attackerRollPure x [k: $kindMultiplier] x [c: $criticalMult] = ${
@@ -27,9 +27,9 @@ case class Attack(
 object Attack {
   def apply(fighter: Fighter, target: OwnedObj): Attack = {
     apply(
-      fighter.companion.randomAttack(fighter),
-      fighter.companion.kind.multiplierAt(target.companion.kind),
-      fighter.companion.critical.struck.opt(fighter.companion.criticalMultiplier)
+      fighter.stats.randomAttack,
+      fighter.stats.kind.multiplierAt(target.stats.kind),
+      fighter.stats.critical.struck.opt(fighter.stats.criticalMultiplier)
     )
   }
 }
