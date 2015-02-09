@@ -6,6 +6,7 @@ import app.models.game.{Actions, Owner}
 import app.models.game.events.Evented
 import app.models.game.world._
 import implicits._
+import app.models.game.world.Ops._
 
 import scala.annotation.tailrec
 import scala.util.Random

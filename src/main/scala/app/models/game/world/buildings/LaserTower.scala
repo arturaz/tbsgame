@@ -3,6 +3,7 @@ package app.models.game.world.buildings
 import app.models.game.{Actions, Player}
 import app.models.game.world._
 import implicits._
+import app.models.game.world.Ops._
 
 object LaserTowerStats extends WBuildingStats with SpecialActionStats with FighterStats
 with EmptySpaceWarpableCompanion[LaserTower]

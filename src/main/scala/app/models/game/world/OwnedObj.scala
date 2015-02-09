@@ -6,6 +6,7 @@ import app.models.game.events.{Evented, HPChangeEvt}
 import app.models.game.world.buildings._
 import app.models.game.world.units._
 import implicits._
+import app.models.game.world.Ops._
 
 import scala.language.implicitConversions
 
@@ -44,6 +45,7 @@ trait OwnedObjCompanion extends ToOwnedObjOps {
   (obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
   : Evented[(World, OwnedObj)] = {
     Evented((world, obj)) |>
+      WObject.ifIs[Warpable].evt((w, o) => o.teamTurnStarted(w)) |>
       WObject.ifIs[GivingVictoryPoints].rawWorld((w, o) => o.teamTurnStarted(w)) |>
       WObject.ifIs[Extractor].evtWorld((w, o) => o.teamTurnStarted(w))
   }
@@ -60,6 +62,7 @@ trait OwnedObjCompanion extends ToOwnedObjOps {
 
 trait OwnedObjOps[+Self <: OwnedObj] {
   def self: Self
+
   protected def withNewHp(hp: HP): Self
   def withNewHPEvt(hp: HP)(world: World): Evented[Self] = {
     val newSelf = withNewHp(hp)

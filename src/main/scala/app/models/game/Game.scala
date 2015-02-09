@@ -11,6 +11,7 @@ import implicits._
 import monocle.Lenser
 import monocle.syntax._
 import utils.data.NonEmptyVector
+import app.models.game.world.Ops._
 
 import scala.reflect.ClassTag
 import scalaz.\/

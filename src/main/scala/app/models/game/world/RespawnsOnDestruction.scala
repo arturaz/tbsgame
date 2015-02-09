@@ -5,6 +5,7 @@ import app.models.game.events.{Evented, OwnerChangeEvt}
 import app.models.game.world.buildings.VPTowerOps
 
 import scala.language.implicitConversions
+import app.models.game.world.Ops._
 
 trait RespawnsOnDestructionStats extends OwnedObjStats {
   def hpAfterRespawn: HP

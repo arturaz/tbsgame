@@ -6,6 +6,7 @@ import app.models.game.events._
 import app.models.game.world.units._
 import implicits._
 import utils.data.NonEmptyVector
+import Ops._
 
 import scala.language.implicitConversions
 
@@ -67,7 +68,7 @@ trait MovableOps[Self <: Movable] extends OwnedObjOps[Self] {
       case (world, Some(self)) => travel(
         vects.tail,
         for {
-          newSelf <- moveTo(world, vects.head)
+          newSelf <- self.moveTo(world, vects.head)
           movedWorld = world.updated(self, newSelf)
           revealedWorld <- World.revealObjects(self.owner.team, movedWorld)
           t <- revealedWorld.reactTo(newSelf)

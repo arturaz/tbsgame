@@ -2,6 +2,7 @@ package app.models.game.world.units
 
 import app.models.game.world._
 import app.models.game.{Population, Actions, Player}
+import app.models.game.world.Ops._
 
 object CorvetteStats extends WFighterUnitStats with SpecialActionStats
 with EmptySpaceWarpableCompanion[Corvette]

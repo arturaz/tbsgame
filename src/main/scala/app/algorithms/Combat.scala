@@ -3,6 +3,7 @@ package app.algorithms
 import app.algorithms.Pathfinding.{Path, SearchRes}
 import app.models.game.events.Evented
 import app.models.game.world._
+import app.models.game.world.Ops._
 import implicits._
 import utils.ErrOpt
 

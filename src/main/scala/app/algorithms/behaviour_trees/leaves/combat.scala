@@ -3,6 +3,7 @@ package app.algorithms.behaviour_trees.leaves
 import akka.event.LoggingAdapter
 import app.algorithms.behaviour_trees.BehaviourTree.NodeResult
 import app.algorithms.behaviour_trees.{FUnit, FighterUnitContext, LeafNode, AttackTargetBlackboard}
+import app.models.game.world.Ops._
 
 case class AttackTarget[S <: (
   AttackTargetBlackboard[S] with FighterUnitContext[S]

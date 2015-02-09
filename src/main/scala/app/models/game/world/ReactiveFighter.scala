@@ -8,6 +8,7 @@ import implicits._
 
 import scala.annotation.tailrec
 import scala.language.implicitConversions
+import app.models.game.world.Ops._
 
 case class Reaction[A](value: A, abortReacting: Boolean) {
   def map[B](f: A => B) = copy(value = f(value))

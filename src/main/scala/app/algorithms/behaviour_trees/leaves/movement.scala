@@ -7,6 +7,7 @@ import app.algorithms.behaviour_trees.{FUnit, FighterUnitContext, LeafNode, Atta
 import app.models.game.world.OwnedObj
 import app.models.game.world.WObject.WorldObjOptUpdate
 import implicits._
+import app.models.game.world.Ops._
 
 sealed trait MoveMode
 object MoveMode {

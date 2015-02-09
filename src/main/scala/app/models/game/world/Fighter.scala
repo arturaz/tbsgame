@@ -1,9 +1,11 @@
 package app.models.game.world
 
 import app.models.game.events.{AttackEvt, AttacksChangedEvt, Evented, LevelChangeEvt}
+import app.models.game.world.buildings.LaserTowerOps
 import app.models.game.world.units._
 import app.models.game.{Attack, Player}
 import implicits._
+import app.models.game.world.Ops._
 
 import scala.language.implicitConversions
 
@@ -177,10 +179,17 @@ trait FighterOps[Self <: Fighter] {
 
 trait ToFighterOps {
   implicit def toFighterOps[A <: Fighter](a: A): FighterOps[A] = (a match {
-    case o: Fortress => FortressOps(o)
+    /* Buildings */
+
+    case o: LaserTower => LaserTowerOps(o)
+
+    /* Units */
+
+    case o: Corvette => CorvetteOps(o)
     case o: Gunship => GunshipOps(o)
-    case o: RayShip => RayShipOps(o)
     case o: RocketFrigate => RocketFrigateOps(o)
+    case o: RayShip => RayShipOps(o)
+    case o: Fortress => FortressOps(o)
     case o: Wasp => WaspOps(o)
   }).asInstanceOf[FighterOps[A]]
 }

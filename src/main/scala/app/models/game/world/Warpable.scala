@@ -2,8 +2,8 @@ package app.models.game.world
 
 import akka.event.LoggingAdapter
 import app.models.game.events.{Evented, WarpEvt, WarpStateChangeEvt}
-import app.models.game.world.buildings.{WarpLinkerOps, ExtractorOps}
-import app.models.game.world.units.ScoutOps
+import app.models.game.world.buildings._
+import app.models.game.world.units._
 import app.models.game.{Actions, Player, Population}
 import implicits._
 
@@ -89,14 +89,26 @@ trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
       Evented(newSelf, Vector(WarpStateChangeEvt(world, newSelf)))
     }
 
-  def teamTurnStartedSelf(world: World)(implicit log: LoggingAdapter) =
+  def teamTurnStarted(world: World)(implicit log: LoggingAdapter) =
     WObject.selfEventedUpdate(world, self, nextWarpState(world))
 }
 
 trait ToWarpableOps {
   implicit def toWarpableOps[Self <: Warpable](a: Self): WarpableOps[Self] = (a match {
+    /* Buildings */
+
     case o: Extractor => ExtractorOps(o)
+    case o: LaserTower => LaserTowerOps(o)
     case o: WarpLinker => WarpLinkerOps(o)
+
+    /* Units */
+
+    case o: Corvette => CorvetteOps(o)
+    case o: Fortress => FortressOps(o)
+    case o: Gunship => GunshipOps(o)
+    case o: RayShip => RayShipOps(o)
+    case o: RocketFrigate => RocketFrigateOps(o)
     case o: Scout => ScoutOps(o)
+    case o: Wasp => WaspOps(o)
   }).asInstanceOf[WarpableOps[Self]]
 }
