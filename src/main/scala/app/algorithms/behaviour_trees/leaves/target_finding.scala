@@ -31,24 +31,23 @@ case class FindVisibleTarget[
 ) extends LeafNode[S] with NeedsFighterUnitContext[S]
 {
   def run(state: S)(implicit log: LoggingAdapter) = {
-    withUnchangedUnit(state) { (state, unit) =>
+    withUnchangedUnit(state) { unit =>
       if (unit.hasAttacksLeft) {
+        val evtGame = state.gameLens.get(state)
+        val world = evtGame.value.world
+        val visibleTargets =
+          world.objects.view.
+            collect { case o: OwnedObj => o}.
+            filter(o => o.isEnemy(unit) && unit.sees(o)).
+            toSeq
+        val target = findTarget(world, visibleTargets, unit)
 
+        target.fold2(
+          (NodeResult.Failure, state),
+          _ => (NodeResult.Success, state.attackTargetLens.set(state, target))
+        )
       }
-
-      val evtGame = state.gameLens.get(state)
-      val world = evtGame.value.world
-      val visibleTargets =
-        world.objects.view.
-          collect { case o: OwnedObj => o }.
-          filter(o => o.isEnemy(unit) && unit.sees(o)).
-          toSeq
-      val target = findTarget(world, visibleTargets, unit)
-
-      target.fold2(
-        (NodeResult.Failure, state),
-        _ => (NodeResult.Success, state.attackTargetLens.set(state, target))
-      )
+      else (NodeResult.Failure, state)
     }
   }
 

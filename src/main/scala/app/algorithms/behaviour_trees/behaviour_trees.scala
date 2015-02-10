@@ -43,9 +43,3 @@ trait DecoratorNode[State] extends BehaviourTree[State] {
 }
 
 trait LeafNode[State] extends BehaviourTree[State]
-
-case class RootNode[State](
-  child: BehaviourTree[State]
-) extends BehaviourTree[State] {
-  def run(state: State)(implicit log: LoggingAdapter) = child.run(state)
-}

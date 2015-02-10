@@ -12,7 +12,7 @@ import implicits._
 trait NeedsFighterUnitContext[S <: FighterUnitContext[S]] {
   def withUnit
     (state: S)
-    (f: (S, FUnit) => (NodeResult, S, Option[FUnit]))
+    (f: FUnit => (NodeResult, S, Option[FUnit]))
     (implicit log: LoggingAdapter)
   = {
     state.unitLens.get(state).fold2(
@@ -23,7 +23,7 @@ trait NeedsFighterUnitContext[S <: FighterUnitContext[S]] {
         state
       ),
       unit => {
-        val (res, newState, newUnitOpt) = f(state, unit)
+        val (res, newState, newUnitOpt) = f(unit)
         (res, newState.unitLens.set(newState, newUnitOpt))
       }
     )
@@ -31,11 +31,11 @@ trait NeedsFighterUnitContext[S <: FighterUnitContext[S]] {
 
   def withUnchangedUnit
     (state: S)
-    (f: (S, FUnit) => BehaviourTree[S]#Run)
+    (f: FUnit => BehaviourTree[S]#Run)
     (implicit log: LoggingAdapter)
   = {
-    withUnit(state) { (state, unit) =>
-      val (res, newState) = f(state, unit)
+    withUnit(state) { unit =>
+      val (res, newState) = f(unit)
       (res, newState, Some(unit))
     }
   }
@@ -44,12 +44,12 @@ trait NeedsFighterUnitContext[S <: FighterUnitContext[S]] {
 trait NeedsAttackTarget[S <: AttackTargetBlackboard[S]] {
   def withAttackTarget
     (state: S)
-    (f: (S, SearchRes[OwnedObj]) => BehaviourTree[S]#Run)
+    (f: SearchRes[OwnedObj] => BehaviourTree[S]#Run)
     (implicit log: LoggingAdapter)
   = {
     state.attackTargetLens.get(state).fold2(
       (NodeResult.error(s"$state did not have attack target!"), state),
-      f(state, _)
+      f
     )
   }
 }

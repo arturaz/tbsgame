@@ -28,8 +28,8 @@ with NeedsAttackTarget[S]
 with GameUpdate[S]
 {
   def run(state: S)(implicit log: LoggingAdapter) = {
-    withAttackTarget(state) { (state, target) =>
-      withUnit(state) { (state, unit) =>
+    withAttackTarget(state) { target =>
+      withUnit(state) { unit =>
         run(state, target, unit)
       }
     }

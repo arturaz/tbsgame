@@ -16,12 +16,10 @@ object AI {
   }
 
   object SingleMind extends AI {
-    val ai = RootNode[Blackboard](
-      Sequence(
-        FindVisibleTarget(),
-        MoveTowardsAttackTarget(),
-        AttackTarget()
-      )
+    val ai = Sequence[Blackboard](
+      FindVisibleTarget(),
+      MoveTowardsAttackTarget(),
+      AttackTarget()
     )
 
     val lenser = Lenser[Blackboard]

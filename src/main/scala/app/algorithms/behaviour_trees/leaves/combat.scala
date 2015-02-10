@@ -14,8 +14,8 @@ with NeedsFighterUnitContext[S]
 with GameUpdate[S]
 {
   def run(state: S)(implicit log: LoggingAdapter) = {
-    withAttackTarget(state) { (state, target) =>
-      withUnit(state) { (state, unit) =>
+    withAttackTarget(state) { target =>
+      withUnit(state) { unit =>
         val world = state.gameLens.get(state).value.world
         unit.attackWS(target.value, world).fold(
           err => (
