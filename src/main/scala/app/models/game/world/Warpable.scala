@@ -89,26 +89,27 @@ trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
       Evented(newSelf, Vector(WarpStateChangeEvt(world, newSelf)))
     }
 
-  def teamTurnStarted(world: World)(implicit log: LoggingAdapter) =
+  final def warpableTeamTurnStarted(world: World)(implicit log: LoggingAdapter) =
     WObject.selfEventedUpdate(world, self, nextWarpState(world))
 }
 
 trait ToWarpableOps {
-  implicit def toWarpableOps[Self <: Warpable](a: Self): WarpableOps[Self] = (a match {
-    /* Buildings */
+  implicit def toWarpableOps[Self <: Warpable](a: Self): WarpableOps[Self] =
+    (((a: Warpable) match {
+      /* Buildings */
 
-    case o: Extractor => ExtractorOps(o)
-    case o: LaserTower => LaserTowerOps(o)
-    case o: WarpLinker => WarpLinkerOps(o)
+      case o: Extractor => ExtractorOps(o)
+      case o: LaserTower => LaserTowerOps(o)
+      case o: WarpLinker => WarpLinkerOps(o)
 
-    /* Units */
+      /* Units */
 
-    case o: Corvette => CorvetteOps(o)
-    case o: Fortress => FortressOps(o)
-    case o: Gunship => GunshipOps(o)
-    case o: RayShip => RayShipOps(o)
-    case o: RocketFrigate => RocketFrigateOps(o)
-    case o: Scout => ScoutOps(o)
-    case o: Wasp => WaspOps(o)
-  }).asInstanceOf[WarpableOps[Self]]
+      case o: Corvette => CorvetteOps(o)
+      case o: Fortress => FortressOps(o)
+      case o: Gunship => GunshipOps(o)
+      case o: RayShip => RayShipOps(o)
+      case o: RocketFrigate => RocketFrigateOps(o)
+      case o: Scout => ScoutOps(o)
+      case o: Wasp => WaspOps(o)
+    }): WarpableOps[_]).asInstanceOf[WarpableOps[Self]]
 }

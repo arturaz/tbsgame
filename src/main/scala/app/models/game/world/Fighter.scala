@@ -1,5 +1,6 @@
 package app.models.game.world
 
+import akka.event.LoggingAdapter
 import app.models.game.events.{AttackEvt, AttacksChangedEvt, Evented, LevelChangeEvt}
 import app.models.game.world.buildings.LaserTowerOps
 import app.models.game.world.units._
@@ -81,7 +82,7 @@ trait FighterImpl extends OwnedObjImpl {
 trait FighterOps[Self <: Fighter] {
   def self: Self
 
-  def teamTurnFinished(world: World) =
+  final def fighterTeamTurnFinished(world: World)(implicit log: LoggingAdapter) =
     WObject.selfEventedUpdate(world, self, resetAttackIfWarpedIn(world))
 
   private[this] def resetAttackIfWarpedIn(world: World) =
@@ -178,7 +179,7 @@ trait FighterOps[Self <: Fighter] {
 }
 
 trait ToFighterOps {
-  implicit def toFighterOps[A <: Fighter](a: A): FighterOps[A] = (a match {
+  implicit def toFighterOps[A <: Fighter](a: A): FighterOps[A] = ((a match {
     /* Buildings */
 
     case o: LaserTower => LaserTowerOps(o)
@@ -191,5 +192,5 @@ trait ToFighterOps {
     case o: RayShip => RayShipOps(o)
     case o: Fortress => FortressOps(o)
     case o: Wasp => WaspOps(o)
-  }).asInstanceOf[FighterOps[A]]
+  }): FighterOps[_]).asInstanceOf[FighterOps[A]]
 }

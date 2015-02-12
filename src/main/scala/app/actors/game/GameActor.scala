@@ -9,6 +9,7 @@ import app.models.game._
 import app.models.game.events._
 import app.models.game.world._
 import app.models.game.world.buildings._
+import app.models.game.world.maps.GameMap
 import app.models.game.world.units._
 import implicits._
 import utils.data.NonEmptyVector
@@ -18,10 +19,6 @@ import scala.language.existentials
 import scalaz.{\/-, -\/, \/}
 
 object GameActor {
-  val StartingResources = Resources(30)
-  val HumanTeam = Team()
-  val AiTeam = Team()
-
   sealed trait In
   object In {
     case class Join(user: User) extends In
@@ -145,84 +142,93 @@ object GameActor {
     rec(Evented(game.rightZ))
   }
 
-  def props(startingUser: User, startingHumanRef: ActorRef) = Props(new GameActor(
-    Human(startingUser, HumanTeam), startingHumanRef
-  ))
+  def props(map: GameMap, aiTeam: Team, starting: Set[GameActor.StartingHuman]) =
+    Props(new GameActor(map, aiTeam, starting))
+
+  case class StartingHuman(human: Human, resources: Resources, client: ActorRef) {
+    def game = Game.StartingPlayer(human, resources)
+  }
 }
 
 class GameActor private (
-  startingHuman: Human, startingHumanRef: ActorRef
+  map: GameMap, aiTeam: Team, starting: Set[GameActor.StartingHuman]
 ) extends Actor with ActorLogging {
   import app.actors.game.GameActor._
   implicit val logging = log
 
   log.debug(
-    "initializing game actor with starting {}, {}", startingHuman, startingHumanRef
+    "initializing game actor with starting {}", starting
   )
 
-  private[this] var clients = Map(startingHuman -> startingHumanRef)
+  private[this] var clients = starting.map(data => data.human -> data.client).toMap
 
   private[this] var game = {
 //    val singleAi = Bot(AiTeam)
-    val spawnerAi = Bot(AiTeam)
-    val world = World.create(
-      HumanTeam, spawnerAi, spawnerAi,
-      spawners = 2, endDistance = TileDistance(35)
-    )
+    val spawnerAi = Bot(aiTeam)
+    val humanTeams = starting.map(_.human.team)
+    val world = map.materialize(humanTeams, Bot(aiTeam)).right_!
+//    val world = World.create(
+//      HumanTeam, spawnerAi, spawnerAi,
+//      spawners = 2, endDistance = TileDistance(35)
+//    )
     log.debug("World initialized to {}", world)
     val objectives = Map(
-      AiTeam -> Objectives(
-        destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
-      ),
-      HumanTeam -> Objectives(
-//        Some(Objective.GatherResources(world, Resources(200), Percentage(0.15))),
-//        Some(Objective.CollectVPs(VPS(10))),
+      aiTeam -> Objectives(
         destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
       )
-    )
+    ) ++ humanTeams.map { _ -> Objectives(
+//      gatherResources = Some(Objective.GatherResources(world, Resources(200), Percentage(0.15))),
+      collectVps = Some(Objective.CollectVPs(VPS(10))),
+      destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
+    ) }.toMap
     log.debug("Objectives initialized to {}", objectives)
     TurnBasedGame(
-      world, startingHuman, GameActor.StartingResources, objectives
+      world, starting.map(_.game), objectives
     ).fold(
       err => throw new IllegalStateException(s"Cannot initialize game: $err"),
       evented => {
         log.debug("Turn based game initialized to {}", evented)
-        startingHumanRef ! Joined(startingHuman, self)
-        // We need to init the game to starting state.
-        init(startingHuman, startingHumanRef, evented.value.game)
-        events(startingHuman, startingHumanRef, evented.events)
+        starting.foreach { data =>
+          data.client ! Joined(data.human, self)
+          // We need to init the game to starting state.
+          init(data.human, data.client, evented.value.game)
+          events(data.human, data.client, evented.events)
+        }
         // And then get to the state where next ready team can act
         val turnStartedGame = evented.flatMap(nextReadyTeam)
-        events(startingHuman, startingHumanRef, turnStartedGame.events)
-        // TODO: what to do if the game is won from the beggining?
+        starting.foreach { data =>
+          events(data.human, data.client, turnStartedGame.events)
+        }
+        // TODO: what to do if the game is won from the beginning?
         turnStartedGame.value.right_!
       }
     )
   }
 
   def receive = LoggingReceive {
-    case In.Join(user) =>
-      val human = Human(user.name, HumanTeam, Player.Id(user.id))
-      val ref = sender()
-      ref ! Out.Joined(human, self)
-      def doInit(tbg: TurnBasedGame): Unit = {
-        init(human, ref, tbg.game)
-        if (tbg.currentTeam === human.team)
-          events(human, ref, Vector(TurnStartedEvt(human.team)))
-        clients += human -> ref
-      }
-
-      if (game.isJoined(human)) {
-        log.info("Rejoining {} to {}", human, self)
-        doInit(game)
-      }
-      else update(
-        ref, human,
-        _.join(human, GameActor.StartingResources).right.map { evtTbg =>
-          doInit(evtTbg.value)
-          evtTbg
-        }
-      )
+// TODO: allow rejoins
+//    case In.Join(user) =>
+//      val human = Human(user.name, HumanTeam, Player.Id(user.id))
+//      val ref = sender()
+//      ref ! Out.Joined(human, self)
+//      def doInit(tbg: TurnBasedGame): Unit = {
+//        init(human, ref, tbg.game)
+//        if (tbg.currentTeam === human.team)
+//          events(human, ref, Vector(TurnStartedEvt(human.team)))
+//        clients += human -> ref
+//      }
+//
+//      if (game.isJoined(human)) {
+//        log.info("Rejoining {} to {}", human, self)
+//        doInit(game)
+//      }
+//      else update(
+//        ref, human,
+//        _.join(human, GameActor.StartingResources).right.map { evtTbg =>
+//          doInit(evtTbg.value)
+//          evtTbg
+//        }
+//      )
     case In.Leave(human) =>
       if (clients.contains(human)) {
         update(sender(), human, _.leave(human).right.map { evtTbg =>

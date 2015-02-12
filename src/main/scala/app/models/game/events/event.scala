@@ -31,7 +31,7 @@ sealed trait BoundedEvent extends VisibleEvent {
 }
 
 case class HumanState(
-  resources: Resources, population: ValWithMax[Population], gameState: GameHumanState
+  resources: Resources, population: ValWithMax[Population], gameState: GamePlayerState
 )
 
 case class JoinEvt(human: Human, state: Option[HumanState]) extends Event {
@@ -148,9 +148,9 @@ case class ResourceChangeEvt(
 }
 
 case class ActionsChangeEvt(
-  human: Human, actions: Actions
+  player: Player, actions: Actions
 ) extends VisibleEvent {
-  override def visibleBy(owner: Owner) = human.isFriendOf(owner)
+  override def visibleBy(owner: Owner) = player.isFriendOf(owner)
 }
 
 case class PopulationChangeEvt(
@@ -160,9 +160,9 @@ case class PopulationChangeEvt(
 }
 
 case class TurnEndedChangeEvt(
-  human: Human, turnEnded: Boolean
+  player: Player, turnEnded: Boolean
 ) extends VisibleEvent {
-  override def visibleBy(owner: Owner) = human.isFriendOf(owner)
+  override def visibleBy(owner: Owner) = player.isFriendOf(owner)
 }
 
 case class ObjectivesUpdatedEvt(

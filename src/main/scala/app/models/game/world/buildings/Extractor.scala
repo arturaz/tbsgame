@@ -42,7 +42,7 @@ trait ExtractorImpl {
 _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
   type Stats <:ExtractorStats.type
 
-  def teamTurnStarted(world: World)(implicit log: LoggingAdapter): Evented[World] = {
+  def extractorTeamTurnStarted(world: World)(implicit log: LoggingAdapter): Evented[World] = {
     def orig = Evented(world)
 
     findAsteroid(world).fold(

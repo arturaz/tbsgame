@@ -4,6 +4,7 @@ import akka.event.LoggingAdapter
 import app.models.game.ai.SingleMindAI
 import app.models.game.events.Evented
 import app.models.game.world.buildings.LaserTowerOps
+import app.models.game.world.units.GunshipOps
 import implicits._
 
 import scala.annotation.tailrec
@@ -56,7 +57,7 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] {
   def self: Self
 
   /* Needed to be able to react to other player actions. */
-  def teamTurnFinished(world: World)(implicit log: LoggingAdapter) =
+  final def reactiveFighterTeamTurnFinished(world: World)(implicit log: LoggingAdapter) =
     self.attackReachableWhileHasAttacks(world)(log.prefixed("react|"))
 
   def attackReachable
@@ -114,7 +115,7 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] {
 
 trait ToReactiveFighterOps {
   implicit def toReactiveFighterOps[A <: ReactiveFighter](a: A)
-  : ReactiveFighterOps[A] = (a match {
+  : ReactiveFighterOps[A] = (((a: ReactiveFighter) match {
     case o: LaserTower => LaserTowerOps(o)
-  }).asInstanceOf[ReactiveFighterOps[A]]
+  }): ReactiveFighterOps[_]).asInstanceOf[ReactiveFighterOps[A]]
 }

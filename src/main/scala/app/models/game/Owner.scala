@@ -57,6 +57,7 @@ case class Human(
   override def isHuman = true
   override def asHuman = Some(this)
   override def asBot = None
+  def user = User(id.id, name)
 }
 
 case class Bot(team: Team, id: Player.Id=Player.newId) extends Player {

@@ -22,8 +22,8 @@ with EmptySpaceWarpableCompanion[LaserTower]
   override def warp(owner: Player, position: Vect2) = LaserTower(position, owner)
 }
 
-case class LaserTowerOps(self: LaserTower) extends FighterOps[LaserTower]
-with WarpableOps[LaserTower]
+case class LaserTowerOps(self: LaserTower) extends ReactiveFighterOps[LaserTower]
+with FighterOps[LaserTower] with WarpableOps[LaserTower]
 {
   override def setWarpState(newState: WarpTime) = self.copy(warpState=newState)
   override def withAttacksLeft(value: Attacks) = self.copy(attacksLeft=value)

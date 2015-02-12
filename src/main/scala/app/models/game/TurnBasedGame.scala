@@ -14,10 +14,10 @@ object TurnBasedGame {
   type StartedGame = Either[String, Evented[TurnBasedGame]]
 
   def apply(
-    world: World, startingHuman: Human, startingResources: Resources,
+    world: World, starting: Set[Game.StartingPlayer],
     objectives: Game.ObjectivesMap
   )(implicit log: LoggingAdapter): StartedGame = {
-    val game = Game(world, startingHuman, startingResources, objectives)
+    val game = Game(world, starting, objectives)
     game.right.flatMap(apply)
   }
 

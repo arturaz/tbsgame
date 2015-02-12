@@ -16,7 +16,7 @@ trait GivingVictoryPointsImpl extends OwnedObjImpl {
 trait GivingVictoryPointsOps[Self <: GivingVictoryPoints] extends OwnedObjOps[Self] {
   def giveVP(world: World) = world.addVps(self.owner, self.stats.vpsGiven)
 
-  def teamTurnStarted(world: World) = giveVP(world)
+  final def givingVPsTeamTurnStarted(world: World) = giveVP(world)
 }
 
 trait ToGivingVictoryPointsOps {

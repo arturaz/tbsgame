@@ -21,7 +21,7 @@ trait MovableImpl extends OwnedObjImpl with Mobility[Mobility.Movable.type] {
 }
 
 trait ToMovableOps {
-  implicit def toMovableOps[A <: Movable](a: A): MovableOps[A] = (a match {
+  implicit def toMovableOps[A <: Movable](a: A): MovableOps[A] = (((a: Movable) match {
     case o: Corvette => CorvetteOps(o)
     case o: Fortress => FortressOps(o)
     case o: Gunship => GunshipOps(o)
@@ -29,7 +29,7 @@ trait ToMovableOps {
     case o: RocketFrigate => RocketFrigateOps(o)
     case o: Scout => ScoutOps(o)
     case o: Wasp => WaspOps(o)
-  }).asInstanceOf[MovableOps[A]]
+  }): MovableOps[_]).asInstanceOf[MovableOps[A]]
 }
 
 trait MovableOps[Self <: Movable] extends OwnedObjOps[Self] {
@@ -101,6 +101,6 @@ trait MovableOps[Self <: Movable] extends OwnedObjOps[Self] {
     } yield newSelf
   }
 
-  def teamTurnFinished(world: World)(implicit log: LoggingAdapter) =
+  final def movableTeamTurnFinished(world: World)(implicit log: LoggingAdapter) =
     WObject.selfEventedUpdate(world, self, resetMovementLeft(world))
 }

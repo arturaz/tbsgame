@@ -23,45 +23,43 @@ object Game {
 
   type ResultT[A] = Either[String, Evented[A]]
   type Result = ResultT[Game]
-  private type States = Map[Human, GameHumanState]
+  private type States = Map[Player, GamePlayerState]
   type ObjectivesMap = Map[Team, Objectives]
 
+  case class StartingPlayer(player: Player, resources: Resources)
+
   def apply(
-    world: World, startingHuman: Human, startingResources: Resources,
-    objectives: ObjectivesMap
+    world: World, starting: Set[StartingPlayer], objectives: ObjectivesMap
   ): Either[String, Game] = {
-    val humans = world.humans + startingHuman
-    humans.foldLeft(Evented(world).right[String]) {
+    starting.foldLeft(Evented(world).right[String]) {
       case (left: Left[_, _], _) => left
-      case (Right(eWorld), human) =>
-        eWorld.map(_.addResources(human, startingResources)).extractFlatten
+      case (Right(eWorld), data) =>
+        eWorld.map(_.addResources(data.player, data.resources)).extractFlatten
     }.right.map { evtWorld =>
-      apply(evtWorld.value, startingStates(world, humans), objectives)
+      apply(evtWorld.value, startingStates(world, starting.map(_.player)), objectives)
     }
   }
 
-  def startingState(world: World, human: Human) =
-    GameHumanState(world.actionsFor(human), turnEnded = false)
+  def startingState(world: World, player: Player) =
+    GamePlayerState(world.actionsFor(player), turnEnded = false)
 
   def startingStates(
-    world: World, humans: Iterable[Human]
-  ): States = humans.map { human =>
-    human -> startingState(world, human)
-  }.toMap
+    world: World, players: Iterable[Player]
+  ): States = players.map { player => player -> startingState(world, player) }.toMap
 
   def canMove(human: Human, obj: Movable) = obj.owner === human
   def canAttack(human: Human, obj: Fighter) = human.isFriendOf(obj.owner)
   def canSpecial(human: Human, obj: SpecialAction) = obj.owner === human
 
   private object Withs {
-    def withActions(human: Human, actionsNeeded: Actions, state: GameHumanState)(
-      f: GameHumanState => Game.Result
+    def withActions(human: Human, actionsNeeded: Actions, state: GamePlayerState)(
+      f: GamePlayerState => Game.Result
     ): Game.Result = {
       if (state.actions < actionsNeeded)
         s"Not enough actions: needed $actionsNeeded, had $state".left
       else {
         val newState =
-          state |-> GameHumanState.actions modify (_ - actionsNeeded)
+          state |-> GamePlayerState.actions modify (_ - actionsNeeded)
         val events =
           if (actionsNeeded > Actions(0))
             Vector(ActionsChangeEvt(human, newState.actions))
@@ -72,8 +70,8 @@ object Game {
     }
 
     def withSpecialAction[A <: SpecialAction](
-      human: Human, state: GameHumanState
-    )(f: A => GameHumanState => Game.Result)(obj: A): Game.Result =
+      human: Human, state: GamePlayerState
+    )(f: A => GamePlayerState => Game.Result)(obj: A): Game.Result =
       withActions(human, obj.stats.specialActionsNeeded, state)(f(obj))
 
     def withResources(
@@ -131,16 +129,16 @@ case class Game private (
   (team: Team)(g: Evented[Game]): Evented[Game] =
     g.flatMap { game =>
       val teamStates = game.states.filterKeys(_.team === team)
-      teamStates.foldLeft(Evented(game.states)) { case (e, (human, state)) =>
+      teamStates.foldLeft(Evented(game.states)) { case (e, (player, state)) =>
         val newState = state.copy(
-          actions = game.world.actionsFor(human), turnEnded = false
+          actions = game.world.actionsFor(player), turnEnded = false
         )
         if (state === newState) e
         else e.flatMap { curStates => Evented(
-          curStates + (human -> newState),
+          curStates + (player -> newState),
           Vector(
-            TurnEndedChangeEvt(human, newState.turnEnded),
-            ActionsChangeEvt(human, newState.actions)
+            TurnEndedChangeEvt(player, newState.turnEnded),
+            ActionsChangeEvt(player, newState.actions)
           )
         ) }
       }.map(game.updated)
@@ -177,7 +175,7 @@ case class Game private (
   override def isJoined(human: Human) = states.contains(human)
 
   override def join(human: Human, startingResources: Resources) = {
-    def evt(newState: GameHumanState) = Evented(
+    def evt(newState: GamePlayerState) = Evented(
       updated(world, human -> newState),
       JoinEvt(
         human,
@@ -271,10 +269,10 @@ case class Game private (
 
   def updated(world: World): Game = copy(world = world)
   def updated(states: States): Game = copy(states = states)
-  def updated(world: World, human: (Human, GameHumanState)): Game =
+  def updated(world: World, human: (Human, GamePlayerState)): Game =
     copy(world = world, states = states + human)
 
-  private[this] def withState(human: Human)(f: GameHumanState => Game.Result) =
+  private[this] def withState(human: Human)(f: GamePlayerState => Game.Result) =
     states.get(human).fold2(Left(s"No state for $human: $states"), f)
 
   private[this] def withVisibility(

@@ -466,7 +466,7 @@ object ProtobufCoding {
 
     implicit def convert(evt: ActionsChangeEvt): Game.ActionsChangeEvt =
       Game.ActionsChangeEvt.newBuilder().
-        setPlayerId(evt.human.id).setNewActions(evt.actions.value).build()
+        setPlayerId(evt.player.id).setNewActions(evt.actions.value).build()
 
     implicit def convert(evt: HPChangeEvt): Game.HPChangeEvt =
       Game.HPChangeEvt.newBuilder().
@@ -487,7 +487,7 @@ object ProtobufCoding {
 
     implicit def convert(evt: TurnEndedChangeEvt): Game.TurnEndedChangeEvt =
       Game.TurnEndedChangeEvt.newBuilder().
-        setPlayerId(evt.human.id).setNewTurnEnded(evt.turnEnded).build()
+        setPlayerId(evt.player.id).setNewTurnEnded(evt.turnEnded).build()
 
     implicit def convert(evt: ObjDestroyedEvt): Game.ObjDestroyedEvt =
       Game.ObjDestroyedEvt.newBuilder().setObjId(evt.obj.id).build()

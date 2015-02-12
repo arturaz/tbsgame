@@ -26,6 +26,7 @@ package object implicits {
 
   implicit class StringExts(val s: String) extends AnyVal {
     @inline def parseInt: Try[Int] = Try(s.toInt)
+    @inline def parseLong: Try[Long] = Try(s.toLong)
     @inline def parseDouble: Try[Double] = Try(s.toDouble)
   }
 
@@ -58,6 +59,7 @@ package object implicits {
 
   implicit class IndexedSeqExts[A](val is: IndexedSeq[A]) extends AnyVal {
     def random = if (is.isEmpty) None else Some(is(Random.nextInt(is.size)))
+    @inline def wrapped(idx: Int) = is(idx % is.size)
   }
 
   type WeightedIS[+A] = IndexedSeq[(A, Int)]

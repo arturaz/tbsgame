@@ -468,9 +468,11 @@ object World {
     }
 
     val bounds = this.bounds(objects) expandBy 5
-    new World(
-      bounds, objects, Map.empty, Map.empty,
-      WarpZoneMap(bounds, objects), VisibilityMap(bounds, objects)
-    )
+    World(bounds, objects)
   }
+
+  def apply(bounds: Bounds, objects: WorldObjs) = new World(
+    bounds, objects, Map.empty, Map.empty,
+    WarpZoneMap(bounds, objects), VisibilityMap(bounds, objects)
+  )
 }

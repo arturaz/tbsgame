@@ -18,6 +18,8 @@ libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.3.6"
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.1.0"
 
+libraryDependencies += "commons-io" % "commons-io" % "2.4"
+
 libraryDependencies ++= Seq(
   "org.flywaydb" % "flyway-core" % "3.1",
   "com.zaxxer" % "HikariCP-java6" % "2.2.5",
