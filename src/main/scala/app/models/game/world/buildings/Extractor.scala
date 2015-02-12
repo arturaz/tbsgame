@@ -9,9 +9,9 @@ import implicits._
 object ExtractorStats extends WBuildingStats with SpecialActionStats
 with WarpableCompanion[Extractor]
 {
-  override val maxHp = HP(115)
+  override val maxHp = HP(45)
   override val warpTime = WarpTime(1)
-  override val cost = Resources(10)
+  override val cost = Resources(3)
   override val populationCost = Population(1)
   /* How much resources does turn start extract? */
   val turnStartExtracts = Resources(1)

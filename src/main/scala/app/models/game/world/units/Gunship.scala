@@ -5,16 +5,16 @@ import app.models.game.world._
 
 object GunshipStats extends WFighterUnitStats with EmptySpaceWarpableCompanion[Gunship]
 {
-  override val maxHp = HP(90)
-  override val attack = Atk(95)
-  override val attacks = Attacks(4)
+  override val maxHp = HP(110)
+  override val attack = Atk(75)
+  override val attacks = Attacks(3)
   override val attackRange = RadialDistance.Three
-  override val cost = Resources(6)
+  override val cost = Resources(9)
   override val populationCost = Population(4)
   override val warpTime = WarpTime(0)
   override val kind = WObjKind.Heavy
   override val visibility = RectDistance(3)
-  override val movement = Movement.fromTiles(6)
+  override val movement = Movement.fromTiles(8)
 
   override def warp(owner: Player, position: Vect2) = Gunship(position, owner)
 }

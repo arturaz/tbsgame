@@ -8,8 +8,8 @@ object CorvetteStats extends WFighterUnitStats with SpecialActionStats
 with EmptySpaceWarpableCompanion[Corvette]
 {
   override val maxHp = HP(120)
-  override val attack = Atk(70)
-  override val attacks = Attacks(2)
+  override val attack = Atk(45)
+  override val attacks = Attacks(3)
   override val attackRange = RadialDistance.Four
   override val movement = Movement.fromTiles(12)
   override val visibility = RectDistance(4)

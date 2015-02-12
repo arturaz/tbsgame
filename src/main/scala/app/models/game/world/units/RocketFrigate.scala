@@ -7,13 +7,13 @@ object RocketFrigateStats extends WFighterUnitStats
 with EmptySpaceWarpableCompanion[RocketFrigate]
 {
   override val maxHp = HP(30)
-  override val attack = Atk(160)
+  override val attack = Atk(210)
   override val attacks = Attacks(1)
   override val attackRange = RadialDistance.Eight
-  override val movement = Movement.fromTiles(6)
+  override val movement = Movement.fromTiles(8)
   override val visibility = RectDistance(2)
-  override val cost = Resources(6)
-  override val populationCost = Population(4)
+  override val cost = Resources(8)
+  override val populationCost = Population(3)
   override val warpTime = WarpTime(0)
   override val kind = WObjKind.Light
 

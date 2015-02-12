@@ -9,7 +9,7 @@ with GivingVictoryPointsStats
 {
   override val maxHp = HP(450)
   override val visibility = RectDistance(5)
-  override val warpGiven = visibility
+  override val warpGiven = RectDistance(0)
   override val actionsGiven = Actions(1)
   override val kind = WObjKind.Medium
   override val size = Vect2(2, 2)
