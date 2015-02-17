@@ -321,6 +321,7 @@ object ProtobufCoding {
             case o: Gunship => b.setKind(U_GUNSHIP)
             case o: Fortress => b.setKind(U_FORTRESS)
             case o: VPTower => b.setKind(B_VP_TOWER)
+            case o: Rock => b.setKind(P_ROCK)
             case o: WObjectTestRoot => b
           }
         }.build()
@@ -351,6 +352,7 @@ object ProtobufCoding {
             case RocketFrigateStats => b.setKind(U_ROCKET_FRIGATE)
             case GunshipStats => b.setKind(U_GUNSHIP)
             case FortressStats => b.setKind(U_FORTRESS)
+            case RockStats => b.setKind(P_ROCK)
           }
         }.build()
 

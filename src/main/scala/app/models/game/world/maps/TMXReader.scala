@@ -115,9 +115,7 @@ object TMXReader {
     gid: Int, position: Vect2, current: GameMap
   ): String \/ GameMap = {
     gid match {
-      case 1 =>
-        //current add Rock(position)
-        current.rightZ
+      case 1 => current add Rock(position)
       case 2 | 3 | 4 => current add Asteroid(
         position, gid match {
           case 2 => resources(MaxResource)

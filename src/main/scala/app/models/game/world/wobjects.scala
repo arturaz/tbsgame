@@ -21,13 +21,13 @@ case class Asteroid(
 object AsteroidStats extends WObjectStats
 
 /* Rock is an immovable 1x1 obstacle */
-//case class Rock(
-//  position: Vect2, id: WObject.Id=WObject.newId
-//) extends Prop {
-//  type Stats = RockStats.type
-//  override val stats = RockStats
-//}
-//object RockStats extends WObjectStats
+case class Rock(
+  position: Vect2, id: WObject.Id=WObject.newId
+) extends Prop {
+  type Stats = RockStats.type
+  override val stats = RockStats
+}
+object RockStats extends WObjectStats
 
 /********************************* [ BUILDINGS ] *********************************/
 

@@ -204,6 +204,7 @@ message WObject { // {{{
     U_GUNSHIP = 12;
     U_FORTRESS = 13;
     B_VP_TOWER = 14;
+    P_ROCK = 15;
   }
 
   /* Trait properties {{{ */
