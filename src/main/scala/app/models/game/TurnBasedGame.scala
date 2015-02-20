@@ -53,32 +53,38 @@ case class TurnBasedGame private (
     if (canAct(human)) update(f(human))
     else s"$human cannot act, because current team is $currentTeam".left
 
-  override def isJoined(human: Human) = game.isJoined(human)
+  override def isJoined(human: Human)
+  (implicit log: LoggingAdapter) = game.isJoined(human)
 
-  override def join(human: Human, startingResources: Resources) =
+  override def join(human: Human, startingResources: Resources)
+  (implicit log: LoggingAdapter) =
     update(game.join(human, startingResources))
 
-  override def leave(human: Human) =
+  override def leave(human: Human)(implicit log: LoggingAdapter) =
     update(game.leave(human))
 
   override def warp(
     human: Human, position: Vect2,
     warpable: WarpableCompanion.Some
-  ) = humanDo(human)(game.warp(_, position, warpable))
+  )(implicit log: LoggingAdapter) = humanDo(human)(game.warp(_, position, warpable))
 
-  override def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]) =
+  override def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2])
+  (implicit log: LoggingAdapter) =
     humanDo(human)(game.move(_, id, path))
 
-  override def special(human: Human, id: WObject.Id) =
+  override def special(human: Human, id: WObject.Id)(implicit log: LoggingAdapter) =
     humanDo(human)(game.special(_, id))
 
-  override def attack(human: Human, id: WObject.Id, targetId: WObject.Id) =
+  override def attack(human: Human, id: WObject.Id, targetId: WObject.Id)
+  (implicit log: LoggingAdapter) =
     humanDo(human)(game.attack(_, id, targetId))
 
-  override def moveAttack(human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id) =
+  override def moveAttack(human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id)
+  (implicit log: LoggingAdapter) =
     humanDo(human)(game.moveAttack(_, id, path, targetId))
 
-  override def endTurn(human: Human) = humanDo(human)(game.endTurn)
+  override def endTurn(human: Human)(implicit log: LoggingAdapter) =
+    humanDo(human)(game.endTurn)
 
   def nextTeamTurn(implicit log: LoggingAdapter): Evented[Winner \/ TurnBasedGame] = {
     log.debug("current team finishing: {}", currentTeam)

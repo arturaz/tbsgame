@@ -8,8 +8,8 @@ object ScoutStats extends WUnitStats with EmptySpaceWarpableCompanion[Scout] {
   override val warpTime = WarpTime(0)
   override val cost = Resources(5)
   override val populationCost = Population(1)
-  override val movement = Movement.fromTiles(25)
-  override val visibility = RectDistance(8)
+  override val movement = Movement.fromTiles(20)
+  override val visibility = RectDistance(6)
   override val kind = WObjKind.Light
 
   override def warp(owner: Player, position: Vect2) = Scout(position, owner)

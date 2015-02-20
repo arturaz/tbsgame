@@ -70,15 +70,15 @@ case class World private (
   )(a: A)(
     recalculatePopulationsFor: A => TraversableOnce[Owner],
     updateWorldObjects: (WorldObjs, A) => WorldObjs,
-    updateWarpZone: (WarpZoneMap, MapUpdateData) => Evented[WarpZoneMap],
-    updateVisibilityMap: (VisibilityMap, MapUpdateData) => Evented[VisibilityMap]
+    updateWarpZone: (World, WarpZoneMap, MapUpdateData) => Evented[WarpZoneMap],
+    updateVisibilityMap: (World, VisibilityMap, MapUpdateData) => Evented[VisibilityMap]
   ): Evented[World] = {
     val updatedWorld = copy(objects = updateWorldObjects(objects, a))
     val evtWithUpdatedMaps = aToMapUpdateData(a).fold2(
       Evented(updatedWorld),
       b => for {
-        visibilityMap <- updateVisibilityMap(visibilityMap, b)
-        warpZoneMap <- updateWarpZone(warpZoneMap, b)
+        visibilityMap <- updateVisibilityMap(updatedWorld, visibilityMap, b)
+        warpZoneMap <- updateWarpZone(updatedWorld, warpZoneMap, b)
       } yield updatedWorld.copy(
         warpZoneMap = warpZoneMap,
         visibilityMap = visibilityMap
@@ -105,9 +105,19 @@ case class World private (
   private[this] def objToOwner(obj: WObject) = obj.cast[OwnedObj].map(_.owner)
 
   def add(obj: WObject): Evented[World] =
-    changeWithMapUpdatesSingle(obj)(objToOwner, _ + _, _ + _, _ + _)
+    changeWithMapUpdatesSingle(obj)(
+      objToOwner,
+      _ + _,
+      (newWorld, m, o) => m + (o, objects),
+      (newWorld, m, o) => m + (o, objects)
+    )
   def remove(obj: WObject): Evented[World] =
-    changeWithMapUpdatesSingle(obj)(objToOwner, _ - _.id, _ - _, _ - _)
+    changeWithMapUpdatesSingle(obj)(
+      objToOwner,
+      _ - _.id,
+      (newWorld, m, o) => m - (o, objects),
+      (newWorld, m, o) => m - (o, objects)
+    )
   def removeEvt(obj: WObject): Evented[World] =
     Evented(this, ObjDestroyedEvt(this, obj)).flatMap(_.remove(obj))
 
@@ -120,8 +130,12 @@ case class World private (
     }(before, after)(
       { case (before, after) => objToOwner(before).toSet ++ objToOwner(after).toSet },
       { case (objs, (before, after)) => objs update_! (before, after) },
-      { case (warpZoneMap, (bOO, aOO)) => warpZoneMap updated (bOO, aOO) },
-      { case (visibilityMap, (bOO, aOO)) => visibilityMap updated (bOO, aOO) }
+      { case (newWorld, warpZoneMap, (bOO, aOO)) =>
+        warpZoneMap updated ((objects, bOO), (newWorld.objects, aOO))
+      },
+      { case (newWorld, visibilityMap, (bOO, aOO)) =>
+        visibilityMap updated ((objects, bOO), (newWorld.objects, aOO))
+      }
     )
   }
   def updated[A <: WObject](before: A, after: Option[A]): Evented[World] =
@@ -211,8 +225,6 @@ case class World private (
     visibilityMap.isVisible(owner, v)
   def isValidForWarp(owner: Owner, v: Vect2): Boolean = warpZoneMap.isVisible(owner, v)
 
-  def objectsPartlyIn(vects: Vector[Vect2]): WorldObjs = objects.filterPartial(vects)
-
   def reactTo[A <: OwnedObj](obj: A): WObject.WorldObjOptUpdate[A] = {
     @tailrec def react(
       reactors: Iterable[ReactiveFighter], current: WObject.WorldObjOptUpdate[A]
@@ -231,15 +243,6 @@ case class World private (
     react(reactors, Evented((this, Some(obj))))
   }
 
-  def findObj(id: WObject.Id) = objects.find(_.id === id)
-  def findObjE(id: WObject.Id) = findObj(id).toRight(s"Can't find obj $id in world")
-  def findObj(position: Vect2) = objects.find(_.position === position)
-  def findObjE(position: Vect2) =
-    findObj(position).toRight(s"Can't find obj @ $position in world")
-  def find[A <: WObject](predicate: PartialFunction[WObject, A]): Option[A] =
-    objects.collectFirst(predicate)
-  def contains(id: Id): Boolean = objects.exists(_.id === id)
-
   lazy val owners = objects.collect { case fo: OwnedObj => fo.owner }.toSet
   lazy val teams = owners.map(_.team)
   lazy val players = owners.collect { case p: Player => p }.toSet ++ playerStates.keySet
@@ -253,7 +256,7 @@ object World {
       case evt: VisibilityChangeEvt if evt.team === team => evt.visible
     }.flatten
     evtWorld.flatMap { world =>
-      val newVisibleObjs = world.objectsPartlyIn(newVisiblePoints)
+      val newVisibleObjs = world.objects.filterPartial(newVisiblePoints)
       val newVisibleObjEvents = newVisibleObjs.map(ObjVisibleEvt(team, world, _))
       Evented(world, newVisibleObjEvents.toVector)
     }
@@ -328,7 +331,7 @@ object World {
     var spawnersLeft = spawners
     log.debug(s"Creating map. Branches: $branchesLeft")
 
-    def pTaken(v: Vect2): Boolean = objects.contains(v)
+    def pTaken(v: Vect2): Boolean = objects.nonEmptyAt(v)
     def bTaken(bounds: Bounds): Boolean = ! objects.isAllFree(bounds)
 
     def tryN[A](n: Int)(f: => Option[A]): Option[A] = {

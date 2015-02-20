@@ -27,15 +27,19 @@ case class Rock(
   type Stats = RockStats.type
   override val stats = RockStats
 }
-object RockStats extends WObjectStats
+object RockStats extends WObjectStats {
+  override val blocksVisibility = true
+  override val blocksWarp = true
+}
 
 /********************************* [ BUILDINGS ] *********************************/
 
 /* Main building of a player */
 case class WarpGate(
-  position: Vect2, owner: Owner,
+  position: Vect2, owner: Team,
   hp: HP=WarpGateStats.maxHp, id: WObject.Id=WObject.newId
-) extends Building with GivingActions with GivingPopulation with SizedWObject {
+) extends WarpGateImpl with TeamBuilding with GivingActions with GivingPopulation
+with SizedWObject with SpecialAction {
   type Stats = WarpGateStats.type
   override val stats = WarpGateStats
 }

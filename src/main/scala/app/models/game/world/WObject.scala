@@ -11,6 +11,9 @@ import scala.reflect.ClassTag
 
 trait WObjectStats {
   val size = Vect2.one
+  val blocksVisibility = false
+  val blocksWarp = false
+
   def bounds(position: Vect2) = Bounds(position, size)
 }
 

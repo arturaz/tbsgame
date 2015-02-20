@@ -6,9 +6,9 @@ import app.models.game.world._
 object WarpLinkerStats extends WBuildingStats with WarpableStats
 with WarpableCompanion[WarpLinker]
 with EmptySpaceWarpableCompanion[WarpLinker] {
-  override val maxHp = HP(300)
+  override val maxHp = HP(100)
   override val warpTime = WarpTime(1)
-  override val cost = Resources(8)
+  override val cost = Resources(4)
   override val visibility = RectDistance(5)
   override val warpGiven = visibility
   override val kind = WObjKind.Light

@@ -8,13 +8,13 @@ import app.models.game.world.Ops._
 object LaserTowerStats extends WBuildingStats with SpecialActionStats with FighterStats
 with EmptySpaceWarpableCompanion[LaserTower]
 {
-  override val maxHp = HP(350)
+  override val maxHp = HP(550)
   override val attack = Atk(60)
-  override val attacks = Attacks(4)
+  override val attacks = Attacks(3)
   override val warpTime = WarpTime(1)
   override val cost = Resources(12)
-  override val attackRange = RadialDistance(7.5f)
-  override val visibility = RectDistance(7)
+  override val attackRange = RadialDistance.Six
+  override val visibility = RectDistance(4)
   override val kind = WObjKind.Heavy
   override val specialActionsNeeded = Actions(2)
   override def InitialAttacks = Attacks(0)
@@ -32,7 +32,7 @@ with FighterOps[LaserTower] with WarpableOps[LaserTower]
 }
 
 trait LaserTowerImpl { _: LaserTower =>
-  protected def specialImpl(world: World) =
+  protected def specialImpl(world: World, invokedBy: Player) =
     toFighterOps(this).withAttacksLeftEvt(stats.attacks)(world)
       .flatMap { newSelf => world.updated(this, newSelf) }
       .right

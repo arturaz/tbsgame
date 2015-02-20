@@ -252,19 +252,18 @@ class GameActor private (
     case In.EndTurn(human) =>
       update(sender(), human, _.endTurn(human))
     case In.GetMovement(human, id) =>
-      game.game.world.find {
-        case o: Movable if o.id == id => o
-      }.toRight(s"Can't find movable world object with $id").right.map { obj =>
-        (obj, game.game.movementFor(obj))
-      }.fold(
-        err => sender() ! Out.Error(err),
-        { case (obj, paths) =>
-          val response =
-            if (Game.canMove(human, obj)) Out.Movement.Movable(paths)
-            else Out.Movement.Immovable(paths.map(_.vects.last))
-          sender() ! Out.Movement(id, response)
-        }
-      )
+      game.game.world.objects.getCT[Movable](id)
+        .toRight(s"Can't find movable world object with $id").right
+        .map { obj => (obj, game.game.movementFor(obj)) }
+        .fold(
+          err => sender() ! Out.Error(err),
+          { case (obj, paths) =>
+            val response =
+              if (Game.canMove(human, obj)) Out.Movement.Movable(paths)
+              else Out.Movement.Immovable(paths.map(_.vects.last))
+            sender() ! Out.Movement(id, response)
+          }
+        )
   }
 
   private[this] def update(

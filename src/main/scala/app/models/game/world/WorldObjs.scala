@@ -1,9 +1,11 @@
 package app.models.game.world
 
+import app.models.game.world.WObject.Id
 import app.models.game.world.WorldObjs.{PositionsMap, ObjectsMap}
 
 import scala.collection.generic.CanBuildFrom
 import scala.collection.{mutable, IterableLike}
+import scala.reflect.ClassTag
 import scalaz.{-\/, \/-, \/}
 import implicits._
 
@@ -144,10 +146,23 @@ case class WorldObjs private (
   override def filterNot(p: (WObject) => Boolean) = filter(obj => ! p(obj))
 
   def idsIn(pos: Vect2) = positionsMap.getOrElse(pos, Set.empty)
-  def contains(pos: Vect2) = idsIn(pos).nonEmpty
+  def nonEmptyAt(pos: Vect2) = idsIn(pos).nonEmpty
   def objectsIn(pos: Vect2): Set[WObject] = idsIn(pos).map(objectsMap.apply)
   def objectsIn(bounds: Bounds): Set[WObject] =
     bounds.points.foldLeft(Set.empty[WObject]) { case (s, v) => s ++ objectsIn(v) }
   def isAllFree(bounds: Bounds): Boolean = isAllFree(bounds.points)
-  def isAllFree(points: TraversableOnce[Vect2]): Boolean = ! points.exists(contains)
+  def isAllFree(points: TraversableOnce[Vect2]): Boolean = ! points.exists(nonEmptyAt)
+
+  @inline def get(id: WObject.Id) = objectsMap.get(id)
+  @inline def getCT[A : ClassTag](id: WObject.Id) = get(id).collect { case o: A => o }
+  def contains(id: Id): Boolean = objectsMap.contains(id)
+
+  def getE(id: WObject.Id) = get(id).toRight(s"Can't find obj $id in world")
+  @inline def get(position: Vect2) = objectsIn(position).headOption
+  @inline def getCT[A : ClassTag](position: Vect2) =
+    objectsIn(position).collectFirst { case o: A => o }
+  def getE(position: Vect2) =
+    get(position).toRight(s"Can't find obj @ $position in world")
+  def find[A <: WObject](predicate: PartialFunction[WObject, A]): Option[A] =
+    objects.collectFirst(predicate)
 }

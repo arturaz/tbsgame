@@ -11,7 +11,7 @@ with WarpableCompanion[Extractor]
 {
   override val maxHp = HP(45)
   override val warpTime = WarpTime(1)
-  override val cost = Resources(3)
+  override val cost = Resources(8)
   override val populationCost = Population(1)
   /* How much resources does turn start extract? */
   val turnStartExtracts = Resources(1)
@@ -40,7 +40,7 @@ with WarpableOps[Extractor] {
 
 trait ExtractorImpl {
 _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
-  type Stats <:ExtractorStats.type
+  type Stats <: ExtractorStats.type
 
   def extractorTeamTurnStarted(world: World)(implicit log: LoggingAdapter): Evented[World] = {
     def orig = Evented(world)
@@ -64,7 +64,7 @@ _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
   }
 
   private[this] def findAsteroid(world: World): Either[String, Asteroid] = {
-    world.find { case a: Asteroid if a.position === position => a }.fold2(
+    world.objects.getCT[Asteroid](position).fold2(
       s"Cannot find asteroid for $this!".left,
       _.right
     )
@@ -89,7 +89,7 @@ _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
   private[this] def turnStartExtractResources(world: World) =
     extractResources(world, stats.turnStartExtracts) _
 
-  override def specialImpl(world: World) = {
+  override def specialImpl(world: World, invokedBy: Player) = {
     val extracts = stats.specialExtracts
     findAsteroid(world).right.flatMap { asteroid =>
       if (asteroid.resources.isZero) (for {

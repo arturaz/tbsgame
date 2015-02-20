@@ -1,5 +1,6 @@
 package app.models.game.world
 
+import app.algorithms.LineDrawing
 import app.models.game.world.PointOwnerMap.{EvtFn, PointsFn}
 import app.models.game.{Owner, Team}
 import app.models.game.events.{Evented, PointOwnershipChangeEvt}
@@ -12,12 +13,13 @@ object PointOwnerMap {
 
   def apply[Evt <: PointOwnershipChangeEvt](
     bounds: Bounds, pointsOf: PointsFn, createEvt: EvtFn[Evt],
-    objects: TraversableOnce[WObject]
+    objects: WorldObjs, isBlockedFactory: IsBlockedFactory
   ): PointOwnerMap[Evt] = {
     objects.foldLeft(PointOwnerMap(
-      bounds, pointsOf, createEvt, Map.empty[(Vect2, Team), Int].withDefaultValue(0)
+      bounds, pointsOf, createEvt, Map.empty[(Vect2, Team), Int].withDefaultValue(0),
+      isBlockedFactory
     )) {
-      case (map, obj: OwnedObj) => (map + obj).value
+      case (map, obj: OwnedObj) => (map + (obj, objects)).value
       case (map, _) => map
     }
   }
@@ -57,12 +59,33 @@ object PointOwnerMap {
       }.
       toVector
   }
+
+  type IsBlocked = Vect2 => Boolean
+  /* Return optional blocking check predicate for object. If no predicate is returned,
+     no blocking check is done. */
+  type IsBlockedFactory = (WorldObjs, WObject) => Option[IsBlocked]
+
+  /* Checks if something in the world blocks the line from origin to target. */
+  def checkLine
+  (origin: Vect2, target: Vect2, objs: WorldObjs)(predicate: WObject => Boolean) = {
+    LineDrawing.line(origin, target).v.exists { point =>
+      point != origin && point != target && objs.objectsIn(point).exists(predicate)
+    }
+  }
+
+  def nonSizedLinearBlocking(predicate: WObject => Boolean): IsBlockedFactory =
+    (objs, obj) =>
+      if (obj.isInstanceOf[SizedWObject]) None
+      else Some(point => checkLine(obj.position, point, objs)(predicate))
+
+  val NeverBlock: IsBlocked = p => false
 }
 
 case class PointOwnerMap[Evt <: PointOwnershipChangeEvt] private (
   bounds: Bounds, pointsOf: PointsFn, createEvt: EvtFn[Evt],
   /* Default value = 0 */
-  map: PointOwnerMap.Underlying
+  map: PointOwnerMap.Underlying,
+  checkBlockage: PointOwnerMap.IsBlockedFactory
 ) {
   import app.models.game.world.PointOwnerMap._
 
@@ -91,38 +114,44 @@ case class PointOwnerMap[Evt <: PointOwnershipChangeEvt] private (
       team === owner.team && visibility =/= 0
     })
 
-  def +(obj: OwnedObj): Evented[PointOwnerMap[Evt]] =
-    this + (pointsOf(obj), obj.owner.team)
-  def +(points: TraversableOnce[Vect2], team: Team): Evented[PointOwnerMap[Evt]] =
-    Evented.fromTuple(add(points, team))
+  def createIsBlocked(objects: WorldObjs, obj: OwnedObj) =
+    checkBlockage(objects, obj).getOrElse(PointOwnerMap.NeverBlock)
+
+  def +(obj: OwnedObj, objects: WorldObjs): Evented[PointOwnerMap[Evt]] =
+    this + (createIsBlocked(objects, obj), pointsOf(obj), obj.owner.team)
+  def +(isBlocked: IsBlocked, points: TraversableOnce[Vect2], team: Team)
+  : Evented[PointOwnerMap[Evt]] =
+    Evented.fromTuple(add(isBlocked, points, team))
   private def add(
-    points: TraversableOnce[Vect2], team: Team
+    isBlocked: IsBlocked, points: TraversableOnce[Vect2], team: Team
   ): (PointOwnerMap[Evt], Vector[PointOwnershipChangeEvt]) =
-    update(points, team)(_ + 1)
+    update(isBlocked, points, team)(_ + 1)
 
-  def -(obj: OwnedObj): Evented[PointOwnerMap[Evt]] =
-    this - (pointsOf(obj), obj.owner.team)
-  def -(points: TraversableOnce[Vect2], team: Team): Evented[PointOwnerMap[Evt]] =
-    Evented.fromTuple(remove(points, team))
+  def -(obj: OwnedObj, objects: WorldObjs): Evented[PointOwnerMap[Evt]] =
+    this - (createIsBlocked(objects, obj), pointsOf(obj), obj.owner.team)
+  def -(isBlocked: IsBlocked, points: TraversableOnce[Vect2], team: Team)
+  : Evented[PointOwnerMap[Evt]] =
+    Evented.fromTuple(remove(isBlocked, points, team))
   private def remove(
-    points: TraversableOnce[Vect2], team: Team
+    isBlocked: IsBlocked, points: TraversableOnce[Vect2], team: Team
   ): (PointOwnerMap[Evt], Vector[PointOwnershipChangeEvt]) =
-    update(points, team)(_ - 1)
+    update(isBlocked, points, team)(_ - 1)
 
-  def updated(before: OwnedObj, after: OwnedObj): Evented[PointOwnerMap[Evt]] =
+  def updated(before: (WorldObjs, OwnedObj), after: (WorldObjs, OwnedObj))
+  : Evented[PointOwnerMap[Evt]] =
     updated(
-      pointsOf(before), before.owner.team,
-      pointsOf(after), after.owner.team
+      createIsBlocked(before._1, before._2), pointsOf(before._2), before._2.owner.team,
+      createIsBlocked(after._1, after._2), pointsOf(after._2), after._2.owner.team
     )
   def updated(
-    beforeTO: TraversableOnce[Vect2], beforeTeam: Team,
-    afterTO: TraversableOnce[Vect2], afterTeam: Team
+    beforeIsBlocked: IsBlocked, beforeTO: TraversableOnce[Vect2], beforeTeam: Team,
+    afterIsBlocked: IsBlocked, afterTO: TraversableOnce[Vect2], afterTeam: Team
   ): Evented[PointOwnerMap[Evt]] = {
     val (before, after) = (beforeTO.toVector, afterTO.toVector)
     if (before === after && beforeTeam === afterTeam) Evented(this)
     else {
-      val (map1, evts1) = remove(before, beforeTeam)
-      val (map2, evts2) = map1.add(after, afterTeam)
+      val (map1, evts1) = remove(beforeIsBlocked, before, beforeTeam)
+      val (map2, evts2) = map1.add(afterIsBlocked, after, afterTeam)
       Evented(map2, compact(evts1 ++ evts2, createEvt))
     }
   }
@@ -131,12 +160,12 @@ case class PointOwnerMap[Evt <: PointOwnershipChangeEvt] private (
     copy(map = m)
 
   private[this] def update(
-    points: TraversableOnce[Vect2], team: Team
+    isBlocked: IsBlocked, points: TraversableOnce[Vect2], team: Team
   )(f: Int => Int): (PointOwnerMap[Evt], Vector[Evt]) = {
     val (underlying, updateEvents) = points.foldLeft(
       (map, Vector.empty[Evt])
     ) { case (orig @ (m, events), p) =>
-      if (bounds.contains(p)) {
+      if (bounds.contains(p) && !isBlocked(p)) {
         val key = p -> team
         val current = m(key)
         val next = f(current)

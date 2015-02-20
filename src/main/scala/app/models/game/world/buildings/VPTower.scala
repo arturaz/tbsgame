@@ -13,7 +13,7 @@ with GivingVictoryPointsStats
   override val actionsGiven = Actions(1)
   override val kind = WObjKind.Medium
   override val size = Vect2(2, 2)
-  override val vpsGiven = VPS(1)
+  override val vpsGiven = VPS(0)
 
   override val hpAfterRespawn = maxHp
 }

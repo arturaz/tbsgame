@@ -54,7 +54,7 @@ object Pathfinding {
           return s"$nextP is not within world bounds ${world.bounds}!".left
         else if (! p.isNextTo(nextP))
           return s"$p is not next to $nextP!".left
-        else if (world.findObj(nextP).isDefined)
+        else if (world.objects.nonEmptyAt(nextP))
           return s"$nextP is taken in the world".left
         nextP
       }
@@ -187,7 +187,7 @@ object Pathfinding {
   }
 
   @inline private[this] def obstructed(v: Vect2, obstacles: WorldObjs) =
-    obstacles.contains(v)
+    obstacles.nonEmptyAt(v)
 
   private[this] def neighbours(
     current: Vect2, worldBounds: Bounds, obstacles: WorldObjs

@@ -49,7 +49,6 @@ object Game {
 
   def canMove(human: Human, obj: Movable) = obj.owner === human
   def canAttack(human: Human, obj: Fighter) = human.isFriendOf(obj.owner)
-  def canSpecial(human: Human, obj: SpecialAction) = obj.owner === human
 
   private object Withs {
     def withActions(human: Human, actionsNeeded: Actions, state: GamePlayerState)(
@@ -103,19 +102,22 @@ object Game {
 }
 
 trait GameLike[+A] {
-  def isJoined(human: Human): Boolean
-  def join(human: Human, startingResources: Resources): Game.ResultT[A]
-  def leave(human: Human): Game.ResultT[A]
+  def isJoined(human: Human)(implicit log: LoggingAdapter): Boolean
+  def join(human: Human, startingResources: Resources)(implicit log: LoggingAdapter)
+    : Game.ResultT[A]
+  def leave(human: Human)(implicit log: LoggingAdapter): Game.ResultT[A]
   def warp(
     human: Human, position: Vect2, warpable: WarpableCompanion.Some
-  ): Game.ResultT[A]
-  def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]): Game.ResultT[A]
-  def attack(human: Human, id: WObject.Id, targetId: WObject.Id): Game.ResultT[A]
+  )(implicit log: LoggingAdapter): Game.ResultT[A]
+  def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2])
+    (implicit log: LoggingAdapter): Game.ResultT[A]
+  def attack(human: Human, id: WObject.Id, targetId: WObject.Id)
+    (implicit log: LoggingAdapter): Game.ResultT[A]
   def moveAttack(
     human: Human, id: WObject.Id, path: NonEmptyVector[Vect2], targetId: WObject.Id
-  ): Game.ResultT[A]
-  def special(human: Human, id: WObject.Id): Game.ResultT[A]
-  def endTurn(human: Human): Game.ResultT[A]
+  )(implicit log: LoggingAdapter): Game.ResultT[A]
+  def special(human: Human, id: WObject.Id)(implicit log: LoggingAdapter): Game.ResultT[A]
+  def endTurn(human: Human)(implicit log: LoggingAdapter): Game.ResultT[A]
 }
 
 case class Game private (
@@ -172,9 +174,11 @@ case class Game private (
   /* Checks if all players have sent the turn ended flag. */
   def allPlayersTurnEnded(team: Team) = teamStates(team).forall(_._2.turnEnded)
 
-  override def isJoined(human: Human) = states.contains(human)
+  override def isJoined(human: Human)(implicit log: LoggingAdapter) =
+    states.contains(human)
 
-  override def join(human: Human, startingResources: Resources) = {
+  override def join(human: Human, startingResources: Resources)
+  (implicit log: LoggingAdapter) = {
     def evt(newState: GamePlayerState) = Evented(
       updated(world, human -> newState),
       JoinEvt(
@@ -192,13 +196,14 @@ case class Game private (
     )
   }
 
-  override def leave(human: Human) = withState(human) { state =>
-    Evented(updated(states - human), Vector(LeaveEvt(human))).right
-  }
+  override def leave(human: Human)(implicit log: LoggingAdapter) =
+    withState(human) { state =>
+      Evented(updated(states - human), Vector(LeaveEvt(human))).right
+    }
 
   override def warp(
     human: Human, position: Vect2, warpable: WarpableCompanion.Some
-  ): Game.Result =
+  )(implicit log: LoggingAdapter): Game.Result =
     withState(human) { state =>
     withActions(human, Warpable.ActionsNeeded, state) { state =>
     withWarpable(human, warpable, world) { evtWorld =>
@@ -210,7 +215,7 @@ case class Game private (
 
   override def move(
     human: Human, id: WObject.Id, to: NonEmptyVector[Vect2]
-  ): Game.Result =
+  )(implicit log: LoggingAdapter): Game.Result =
     withMoveObj(human, id) { obj =>
     withVisibility(human, to.v.last) {
       obj.moveTo(world, to).right.map { _.map { case (w, _) =>
@@ -220,7 +225,7 @@ case class Game private (
 
   override def attack(
     human: Human, id: WObject.Id, targetId: WObject.Id
-  ): Game.Result =
+  )(implicit log: LoggingAdapter): Game.Result =
     withAttackObj(human, id) { obj =>
     withTargetObj(human, targetId) { targetObj =>
     withVisibility(human, targetObj) {
@@ -231,7 +236,7 @@ case class Game private (
 
   override def moveAttack(
     human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id
-  ) = {
+  )(implicit log: LoggingAdapter) = {
     for {
       evtMovedGame <- move(human, id, path).right
       evtAttackedGame <- evtMovedGame.value.attack(human, id, targetId).right
@@ -240,14 +245,14 @@ case class Game private (
 
   override def special(
     human: Human, id: WObject.Id
-  ): Game.Result =
+  )(implicit log: LoggingAdapter): Game.Result =
     withState(human) { state =>
     withSpecialObj(human, id) {
     withSpecialAction(human, state) { obj => state =>
-      obj.special(world).right.map(_.map(world => updated(world, human -> state)))
+      obj.special(world, human).right.map(_.map(world => updated(world, human -> state)))
     } } }
 
-  override def endTurn(human: Human): Game.Result =
+  override def endTurn(human: Human)(implicit log: LoggingAdapter): Game.Result =
     withState(human) { state =>
       val turnEnded = true
       Evented(
@@ -298,43 +303,45 @@ case class Game private (
   private[this] def withObj[A <: OwnedObj : ClassTag](
     id: WObject.Id
   )(f: ObjFn[A]): Game.Result = {
-    world.find {
-      case obj: A if obj.id === id => obj
-    }.fold2(s"Cannot find object with id $id".left, f)
+    world.objects.getCT[A](id).fold2(s"Cannot find object with id $id".left, f)
   }
 
-  private[this] def withCheckedObj[A <: OwnedObj : ClassTag](
+  private[this] def withCheckedObj[A <: OwnedObj](
     id: WObject.Id, f: ObjFn[A]
-  )(checker: A => Option[String]): Game.Result = {
+  )(checker: A => Option[String])(implicit log: LoggingAdapter, ct: ClassTag[A])
+  : Game.Result = {
     withObj[A](id) { obj =>
       checker(obj).fold2(
         f(obj),
-        err => s"Obj $id does not pass the checker: $err".left
+        err => {
+          log.info(s"$obj does not pass checker of type ${ct.runtimeClass}}: $err")
+          s"Obj $id does not pass the checker: $err".left
+        }
       )
     }
   }
 
   private[this] def withMoveObj(human: Human, id: WObject.Id)(
     f: ObjFn[OwnedObj with Movable]
-  ): Game.Result = withCheckedObj(id, f) { obj =>
+  )(implicit log: LoggingAdapter): Game.Result = withCheckedObj(id, f) { obj =>
     (!Game.canMove(human, obj)).opt(s"$human can't move $obj")
   }
 
   private[this] def withAttackObj(human: Human, id: WObject.Id)(
     f: ObjFn[OwnedObj with Fighter]
-  ): Game.Result = withCheckedObj(id, f) { obj =>
+  )(implicit log: LoggingAdapter): Game.Result = withCheckedObj(id, f) { obj =>
     (!Game.canAttack(human, obj)).opt(s"$human can't attack with $obj")
   }
 
   private[this] def withSpecialObj(human: Human, id: WObject.Id)(
     f: ObjFn[OwnedObj with SpecialAction]
-  ): Game.Result = withCheckedObj(id, f) { obj =>
-    (!Game.canSpecial(human, obj)).opt(s"$human can't do special with $obj")
+  )(implicit log: LoggingAdapter): Game.Result = withCheckedObj(id, f) { obj =>
+    (!obj.canDoSpecial(human)).opt(s"$human can't do special with $obj")
   }
 
   private[this] def withTargetObj(human: Owner, id: WObject.Id)(
     f: ObjFn[OwnedObj]
-  ): Game.Result = withObj[OwnedObj](id) { obj =>
+  )(implicit log: LoggingAdapter): Game.Result = withObj[OwnedObj](id) { obj =>
     if (human.isEnemyOf(obj.owner)) f(obj)
     else s"Cannot target friendly $obj for attack!".left
   }

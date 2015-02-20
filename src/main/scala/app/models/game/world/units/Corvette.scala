@@ -10,7 +10,7 @@ with EmptySpaceWarpableCompanion[Corvette]
   override val maxHp = HP(120)
   override val attack = Atk(45)
   override val attacks = Attacks(3)
-  override val attackRange = RadialDistance.Four
+  override val attackRange = RadialDistance.Five
   override val movement = Movement.fromTiles(12)
   override val visibility = RectDistance(4)
   override val warpTime = WarpTime(0)
@@ -38,7 +38,7 @@ trait CorvetteImpl { _: Corvette =>
   type Stats = CorvetteStats.type
   override val stats = CorvetteStats
 
-  override def specialImpl(world: World) = Either.cond(
+  override def specialImpl(world: World, invokedBy: Player) = Either.cond(
     ! noAttacksLeft,
     {
       for {
