@@ -9,7 +9,7 @@ object VisibilityMap {
     bounds: Bounds, objects: WorldObjs
   ): VisibilityMap = PointOwnerMap(
     bounds, pointsOf _, VisibilityChangeEvt.apply _, objects,
-    PointOwnerMap.nonSizedLinearBlocking(_.stats.blocksVisibility)
+    PointOwnerMap.nonSizedLinearBlocking(endPointBlocks = false, _.stats.blocksVisibility)
   )
 
   def pointsOf(obj: OwnedObj) =
@@ -21,7 +21,7 @@ object WarpZoneMap {
     bounds: Bounds, objects: WorldObjs
   ): WarpZoneMap = PointOwnerMap(
     bounds, pointsOf _, WarpZoneChangeEvt.apply _, objects,
-    PointOwnerMap.nonSizedLinearBlocking(_.stats.blocksWarp)
+    PointOwnerMap.nonSizedLinearBlocking(endPointBlocks = true, _.stats.blocksWarp)
   )
 
   def pointsOf(obj: OwnedObj) =

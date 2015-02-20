@@ -67,16 +67,22 @@ object PointOwnerMap {
 
   /* Checks if something in the world blocks the line from origin to target. */
   def checkLine
-  (origin: Vect2, target: Vect2, objs: WorldObjs)(predicate: WObject => Boolean) = {
+  (origin: Vect2, target: Vect2, objs: WorldObjs, endPointBlocks: Boolean)
+  (predicate: WObject => Boolean) = {
     LineDrawing.line(origin, target).v.exists { point =>
-      point != origin && point != target && objs.objectsIn(point).exists(predicate)
+      point != origin && (point != target || endPointBlocks) &&
+      objs.objectsIn(point).exists(predicate)
     }
   }
 
-  def nonSizedLinearBlocking(predicate: WObject => Boolean): IsBlockedFactory =
+  def nonSizedLinearBlocking(
+    endPointBlocks: Boolean, objPredicate: WObject => Boolean
+  ): IsBlockedFactory =
     (objs, obj) =>
       if (obj.isInstanceOf[SizedWObject]) None
-      else Some(point => checkLine(obj.position, point, objs)(predicate))
+      else Some(
+        point => checkLine(obj.position, point, objs, endPointBlocks)(objPredicate)
+      )
 
   val NeverBlock: IsBlocked = p => false
 }
