@@ -69,7 +69,11 @@ object PointOwnerMap {
   def checkLine
   (origin: Vect2, target: Vect2, objs: WorldObjs, endPointBlocks: Boolean)
   (predicate: WObject => Boolean) = {
-    LineDrawing.line(origin, target).v.exists { point =>
+    // Join both directions to compensate for asymmetry of a -> b and b -> a.
+    // TODO: use a better algorithm for vision
+    val points =
+      LineDrawing.line(origin, target).v.toSet ++ LineDrawing.line(target, origin).v
+    points.exists { point =>
       point != origin && (point != target || endPointBlocks) &&
       objs.objectsIn(point).exists(predicate)
     }
