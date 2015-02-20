@@ -5,7 +5,7 @@ import java.util.UUID
 import akka.actor._
 import akka.event.LoggingReceive
 import app.actors.NetClient.Management.{SessionToken, PlainPassword, Credentials}
-import app.actors.game.GameActor
+import app.actors.game.{GamesManagerActor, GameActor}
 import app.models._
 import app.models.game.Human
 import app.persistence.tables.Tables
@@ -164,7 +164,7 @@ class NetClient(
       RegisterResponse(if (success) Some(token) else None).out()
 
     case FromClient.Management(JoinGame) =>
-      gamesManager ! GameActor.In.Join(user)
+      gamesManager ! GamesManagerActor.In.Join(user)
 
     case GameActor.Out.Joined(human, game) =>
       GameJoined(human).out()

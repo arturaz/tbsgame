@@ -16,27 +16,35 @@ object GamesManagerActor {
   val PlayersPerTeam = 1
   val PlayersNeeded = Teams * PlayersPerTeam
   val StartingResources = Resources(40)
+
+  sealed trait In
+  object In {
+    case class Join(user: User) extends In
+  }
 }
 
 class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorLogging {
   import GamesManagerActor._
 
   private[this] var waitingList = Vector.empty[(User, ActorRef)]
-  private[this] var user2game = Map.empty[User, ActorRef]
-  private[this] var game2user = Map.empty[ActorRef, User]
+  private[this] var user2game = Map.empty[User, (ActorRef, Human)]
+  private[this] var game2human = Map.empty[ActorRef, Human]
 
   override def supervisorStrategy = OneForOneStrategy() {
     case _ => Stop
   }
 
   override def receive = LoggingReceive {
-    case msg @ GameActor.In.Join(user) =>
-      user2game.get(user).fold2(noExistingGame(user, sender()), _.tell(msg, sender()))
+    case GamesManagerActor.In.Join(user) =>
+      user2game.get(user).fold2(
+        noExistingGame(user, sender()),
+        { case (game, human) => game.tell(GameActor.In.Join(human), sender()) }
+      )
     case Terminated(ref) =>
-      game2user.get(ref).foreach { user =>
-        log.info("Game {} terminated for user {}", ref, user)
-        game2user -= ref
-        user2game -= user
+      game2human.get(ref).foreach { human =>
+        log.info("Game {} terminated for human {}", ref, human)
+        game2human -= ref
+        user2game -= human.user
       }
   }
 
@@ -70,9 +78,8 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
     val game = context.actorOf(GameActor.props(map, aiTeam, starting))
     context.watch(game)
     starting.foreach { data =>
-      val user = data.human.user
-      user2game += user -> game
-      game2user += game -> user
+      user2game += data.human.user -> (game, data.human)
+      game2human += game -> data.human
     }
     log.info("Game {} created for {}", game, starting)
     game

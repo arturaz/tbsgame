@@ -21,7 +21,7 @@ import scalaz.{\/-, -\/, \/}
 object GameActor {
   sealed trait In
   object In {
-    case class Join(user: User) extends In
+    case class Join(human: Human) extends In
     case class Leave(human: Human) extends In
     case class Warp(
       human: Human, position: Vect2, warpable: WarpableCompanion.Some
@@ -206,29 +206,31 @@ class GameActor private (
   }
 
   def receive = LoggingReceive {
-// TODO: allow rejoins
-//    case In.Join(user) =>
-//      val human = Human(user.name, HumanTeam, Player.Id(user.id))
-//      val ref = sender()
-//      ref ! Out.Joined(human, self)
-//      def doInit(tbg: TurnBasedGame): Unit = {
-//        init(human, ref, tbg.game)
-//        if (tbg.currentTeam === human.team)
-//          events(human, ref, Vector(TurnStartedEvt(human.team)))
-//        clients += human -> ref
-//      }
-//
-//      if (game.isJoined(human)) {
-//        log.info("Rejoining {} to {}", human, self)
-//        doInit(game)
-//      }
-//      else update(
-//        ref, human,
-//        _.join(human, GameActor.StartingResources).right.map { evtTbg =>
-//          doInit(evtTbg.value)
-//          evtTbg
-//        }
-//      )
+    case In.Join(human) =>
+      val ref = sender()
+      ref ! Out.Joined(human, self)
+      def doInit(tbg: TurnBasedGame): Unit = {
+        init(human, ref, tbg.game)
+        if (tbg.currentTeam === human.team)
+          events(human, ref, Vector(TurnStartedEvt(human.team)))
+        clients += human -> ref
+      }
+
+      if (game.isJoined(human)) {
+        log.info("Rejoining {} to {}", human, self)
+        doInit(game)
+      }
+      else {
+        log.error("Unknown human trying to join the game: {}", human)
+        // TODO: allow new joins?
+//        update(
+//          ref, human,
+//          _.join(human, GameActor.StartingResources).right.map { evtTbg =>
+//            doInit(evtTbg.value)
+//            evtTbg
+//          }
+//        )
+      }
     case In.Leave(human) =>
       if (clients.contains(human)) {
         update(sender(), human, _.leave(human).right.map { evtTbg =>
