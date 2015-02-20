@@ -10,7 +10,6 @@ object WaspStats extends WFighterUnitStats with EmptySpaceWarpableCompanion[Wasp
   override val attackRange = RadialDistance.Three
   override val movement = Movement.fromTiles(3)
   override val visibility = RectDistance(4)
-  override val warpTime = WarpTime(0)
   override val cost = Resources(10)
   override val populationCost = Population(2)
   override val kind = WObjKind.Medium

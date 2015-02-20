@@ -4,6 +4,7 @@ import app.models.game.world._
 
 trait WUnitStats extends OwnedObjStats with MovableStats with WarpableStats {
   override val group = WarpableGroup.Unit
+  override val warpTime = WarpTime(1)
 }
 
 trait WFighterUnitStats extends WUnitStats with FighterStats

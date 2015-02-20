@@ -13,7 +13,6 @@ object RayShipStats extends WFighterUnitStats with EmptySpaceWarpableCompanion[R
   override val visibility = RectDistance(6)
   override val cost = Resources(10)
   override val populationCost = Population(2)
-  override val warpTime = WarpTime(0)
   override val kind = WObjKind.Light
 
   override def warp(owner: Player, position: Vect2) = RayShip(position, owner)

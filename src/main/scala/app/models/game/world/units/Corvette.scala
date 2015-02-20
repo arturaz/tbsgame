@@ -13,7 +13,6 @@ with EmptySpaceWarpableCompanion[Corvette]
   override val attackRange = RadialDistance.Five
   override val movement = Movement.fromTiles(12)
   override val visibility = RectDistance(4)
-  override val warpTime = WarpTime(0)
   override val cost = Resources(6)
   override val populationCost = Population(2)
   override val kind = WObjKind.Medium

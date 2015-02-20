@@ -14,7 +14,6 @@ with EmptySpaceWarpableCompanion[RocketFrigate]
   override val visibility = RectDistance(2)
   override val cost = Resources(8)
   override val populationCost = Population(3)
-  override val warpTime = WarpTime(0)
   override val kind = WObjKind.Light
 
   override def warp(owner: Player, position: Vect2) = RocketFrigate(position, owner)

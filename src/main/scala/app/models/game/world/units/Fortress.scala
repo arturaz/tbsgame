@@ -11,7 +11,6 @@ object FortressStats extends WFighterUnitStats with EmptySpaceWarpableCompanion[
   override val attackRange = RadialDistance.Three
   override val movement = Movement.fromTiles(2)
   override val cost = Resources(10)
-  override val warpTime = WarpTime(0)
   override val populationCost = Population(2)
   override val kind = WObjKind.Heavy
   override val visibility = RectDistance(5)

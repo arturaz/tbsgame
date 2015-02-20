@@ -11,7 +11,7 @@ with EmptySpaceWarpableCompanion[LaserTower]
   override val maxHp = HP(550)
   override val attack = Atk(60)
   override val attacks = Attacks(3)
-  override val warpTime = WarpTime(1)
+  override val warpTime = WarpTime(2)
   override val cost = Resources(12)
   override val attackRange = RadialDistance.Six
   override val visibility = RectDistance(4)
