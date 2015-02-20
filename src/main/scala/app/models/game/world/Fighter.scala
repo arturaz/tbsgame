@@ -104,7 +104,7 @@ trait FighterOps[Self <: Fighter] {
             self.attacksLeft - Attacks(1)
           )(world)
           newSelf <- newSelf.withNewXPEvt(
-            newSelf.xp + XP(newObj.map(_ => 0).getOrElse(1))
+            newSelf.xp + XP(newObj.fold2(1, _ => 0))
           )(world)
           newSelf <- newSelf.withNewHPEvt(
             if (self.level == newSelf.level) newSelf.hp
