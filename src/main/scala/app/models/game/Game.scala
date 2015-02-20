@@ -237,10 +237,15 @@ case class Game private (
   override def moveAttack(
     human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id
   )(implicit log: LoggingAdapter) = {
-    for {
-      evtMovedGame <- move(human, id, path).right
-      evtAttackedGame <- evtMovedGame.value.attack(human, id, targetId).right
-    } yield evtMovedGame.events ++: evtAttackedGame
+    move(human, id, path).right.flatMap { evtMovedGame =>
+      // The object might get killed after the move.
+      if (evtMovedGame.value.world.objects.contains(id)) {
+        evtMovedGame.value.attack(human, id, targetId).right.map { evtAttackedGame =>
+          evtMovedGame.events ++: evtAttackedGame
+        }
+      }
+      else evtMovedGame.right
+    }
   }
 
   override def special(
