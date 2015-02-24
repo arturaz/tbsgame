@@ -18,8 +18,8 @@ import scalaz.\/
 
 object Game {
   private[this] def lenser = Lenser[Game]
-  val world = lenser(_.world)
-  val states = lenser(_.states)
+  val worldL = lenser(_.world)
+  val statesL = lenser(_.states)
 
   type ResultT[A] = Either[String, Evented[A]]
   type Result = ResultT[Game]
@@ -99,6 +99,76 @@ object Game {
       } }
     }
   }
+
+  private def recalculateHumanStatesOnTeamTurnStart
+  (team: Team)(g: Evented[Game]): Evented[Game] =
+    g.flatMap { game =>
+      val teamStates = game.states.filterKeys(_.team === team)
+      teamStates.foldLeft(Evented(game.states)) { case (e, (player, state)) =>
+        val newState = state.copy(
+          actions = game.world.actionsFor(player), turnEnded = false
+        )
+        if (state === newState) e
+        else e.flatMap { curStates => Evented(
+          curStates + (player -> newState),
+          Vector(
+            TurnEndedChangeEvt(player, newState.turnEnded),
+            ActionsChangeEvt(player, newState.actions)
+          )
+        ) }
+      }.map(game.updated)
+    }
+
+  private def doAutoSpecials(team: Team)(g: Evented[Game])(implicit log: LoggingAdapter)
+  : Evented[Game] = {
+    def forPlayer(
+      teamObjects: Vector[SpecialAtEndOfTurn], player: Player, state: GamePlayerState,
+      startingWorld: World
+    ): Evented[(World, GamePlayerState)] = {
+      val objects =
+        teamObjects.filter(_.canDoSpecial(player)).sortBy(_.endOfTurnPriority)
+      var evented = Evented(startingWorld)
+      var actions = state.actions
+      def retEvt = evented.map(world => (world, state.copy(actions = actions)))
+
+      objects.foreach { obj =>
+        while (actions >= obj.stats.specialActionsNeeded) {
+          obj.special(evented.value, player).fold(
+            err => {
+              log.error(
+                "Failed to do auto special for {} on {} with state {}",
+                player, obj, state
+              )
+              return retEvt
+            },
+            newEvtWorld => evented = evented.events ++: newEvtWorld
+          )
+
+          actions -= obj.stats.specialActionsNeeded
+        }
+      }
+
+      retEvt
+    }
+
+    g.flatMap { game =>
+      val teamStates =
+        game.states.filterKeys(_.team === team).filter(_._2.actions.isPositive)
+      val teamObjects = game.world.objects.collect {
+        case obj: SpecialAtEndOfTurn if obj.owner.isFriendOf(team) => obj
+      }
+      teamStates.foldLeft(Evented(game)) { case (evtGame, (player, state)) =>
+        evtGame.flatMap { game =>
+          forPlayer(teamObjects, player, state, game.world).flatMap {
+            case (world, newState) => Evented(
+              game.copy(world = world, states = game.states + (player -> newState)),
+              ActionsChangeEvt(player, newState.actions)
+            )
+          }
+        }
+      }
+    }
+  }
 }
 
 trait GameLike[+A] {
@@ -127,37 +197,19 @@ case class Game private (
 
   private[this] def fromWorld(w: Evented[World]) = w.map(updated)
 
-  private[this] def recalculateHumanStatesOnTeamTurnStart
-  (team: Team)(g: Evented[Game]): Evented[Game] =
-    g.flatMap { game =>
-      val teamStates = game.states.filterKeys(_.team === team)
-      teamStates.foldLeft(Evented(game.states)) { case (e, (player, state)) =>
-        val newState = state.copy(
-          actions = game.world.actionsFor(player), turnEnded = false
-        )
-        if (state === newState) e
-        else e.flatMap { curStates => Evented(
-          curStates + (player -> newState),
-          Vector(
-            TurnEndedChangeEvt(player, newState.turnEnded),
-            ActionsChangeEvt(player, newState.actions)
-          )
-        ) }
-      }.map(game.updated)
-    }
-
   def gameTurnStarted(implicit log: LoggingAdapter) = world.gameTurnStarted |> fromWorld
   def gameTurnFinished(implicit log: LoggingAdapter) = world.gameTurnFinished |> fromWorld
   def teamTurnStarted(team: Team)(implicit log: LoggingAdapter) =
     world.teamTurnStarted(team) |> fromWorld |>
-    recalculateHumanStatesOnTeamTurnStart(team)
+    Game.recalculateHumanStatesOnTeamTurnStart(team)
   def teamTurnFinished(team: Team)(implicit log: LoggingAdapter)
-  : Evented[Winner \/ Game] =
-    (world.teamTurnFinished(team) |> fromWorld).flatMap { game =>
-      val remaining = game.remainingObjectives(team)
-      if (remaining.someCompleted) Evented(Winner(team).leftZ, GameWonEvt(team))
-      else Evented(game.rightZ)
-    }
+  : Evented[Winner \/ Game] = (
+    world.teamTurnFinished(team) |> fromWorld |> Game.doAutoSpecials(team)
+  ).flatMap { game =>
+    val remaining = game.remainingObjectives(team)
+    if (remaining.someCompleted) Evented(Winner(team).leftZ, GameWonEvt(team))
+    else Evented(game.rightZ)
+  }
 
   def winner: Option[Team] = {
     world.objects.collect {

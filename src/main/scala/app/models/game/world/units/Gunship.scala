@@ -5,7 +5,7 @@ import app.models.game.world._
 
 object GunshipStats extends WFighterUnitStats with EmptySpaceWarpableCompanion[Gunship]
 {
-  override val maxHp = HP(110)
+  override val maxHp = HP(180)
   override val attack = Atk(75)
   override val attacks = Attacks(3)
   override val attackRange = RadialDistance.Three

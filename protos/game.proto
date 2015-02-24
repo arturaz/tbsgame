@@ -16,9 +16,11 @@ message FromClient {
 
   optional MLeave leave = 1001;
   optional MEndTurn end_turn = 1002;
+  optional MConcede concede = 1003;
 }
 
 message MLeave {}
+message MConcede {}
 
 message MWarp {
   enum HumanWarpable {

@@ -13,7 +13,7 @@ with EmptySpaceWarpableCompanion[LaserTower]
   override val attacks = Attacks(3)
   override val warpTime = WarpTime(2)
   override val cost = Resources(12)
-  override val attackRange = RadialDistance.Six
+  override val attackRange = RadialDistance.Five
   override val visibility = RectDistance(4)
   override val kind = WObjKind.Heavy
   override val specialActionsNeeded = Actions(2)

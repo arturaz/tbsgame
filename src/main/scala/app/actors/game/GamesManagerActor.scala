@@ -6,6 +6,8 @@ import akka.event.LoggingReceive
 import app.actors.game.GameActor.StartingHuman
 import app.models.User
 import app.models.game.world.Resources
+import app.models.game.world.buildings.{WarpLinkerStats, ExtractorStats}
+import app.models.game.world.units.ScoutStats
 import app.models.game.{Human, Bot, Team}
 import app.models.game.world.maps.GameMap
 import implicits._
@@ -15,7 +17,7 @@ object GamesManagerActor {
   val Teams = 2
   val PlayersPerTeam = 1
   val PlayersNeeded = Teams * PlayersPerTeam
-  val StartingResources = Resources(40)
+  val StartingResources = ExtractorStats.cost * Resources(3)
 
   sealed trait In
   object In {
@@ -28,7 +30,7 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
 
   private[this] var waitingList = Vector.empty[(User, ActorRef)]
   private[this] var user2game = Map.empty[User, (ActorRef, Human)]
-  private[this] var game2human = Map.empty[ActorRef, Human]
+  private[this] var game2humans = Map.empty[ActorRef, Set[Human]]
 
   override def supervisorStrategy = OneForOneStrategy() {
     case _ => Stop
@@ -41,10 +43,10 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
         { case (game, human) => game.tell(GameActor.In.Join(human), sender()) }
       )
     case Terminated(ref) =>
-      game2human.get(ref).foreach { human =>
-        log.info("Game {} terminated for human {}", ref, human)
-        game2human -= ref
-        user2game -= human.user
+      game2humans.get(ref).foreach { humans =>
+        log.info("Game {} terminated for humans {}", ref, humans)
+        game2humans -= ref
+        humans.foreach { human => user2game -= human.user }
       }
   }
 
@@ -79,8 +81,8 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
     context.watch(game)
     starting.foreach { data =>
       user2game += data.human.user -> (game, data.human)
-      game2human += game -> data.human
     }
+    game2humans += game -> starting.map(_.human)
     log.info("Game {} created for {}", game, starting)
     game
   }

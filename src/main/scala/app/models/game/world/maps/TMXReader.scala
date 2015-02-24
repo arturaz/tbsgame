@@ -16,12 +16,21 @@ import scalaz.syntax.all._
 * Created by arturas on 2015-01-29.
 */
 object TMXReader {
-  private[this] def extractedIn(turns: Int) =
-    ExtractorStats.turnStartExtracts  * Resources(turns) + ExtractorStats.cost
+  val baseExtractionRate = Resources(2)
+  private[this] def extractedIn(turns: Int) = Resources(turns) + ExtractorStats.cost
+  private[this] def extractedInRange(turns: Int) =
+    (extractedIn(turns - 1), extractedIn(turns + 1))
 
-  val MaxResource = (extractedIn(15), extractedIn(30))
-  val MidResource = (extractedIn(7), extractedIn(15))
-  val MinResource = (extractedIn(3), extractedIn(10))
+  case class ResourceField(range: (Resources, Resources), extractionSpeed: Resources)
+  val MaxResource = ResourceField(
+    extractedInRange(25), baseExtractionRate + Resources(2)
+  )
+  val MidResource = ResourceField(
+    extractedInRange(12), baseExtractionRate + Resources(1)
+  )
+  val MinResource = ResourceField(
+    extractedInRange(5), baseExtractionRate
+  )
 
   private[this] val FlipHorizontal = 0x80000000
   private[this] val FlipVertical = 0x40000000
@@ -116,13 +125,13 @@ object TMXReader {
   ): String \/ GameMap = {
     gid match {
       case 1 => current add Rock(position)
-      case 2 | 3 | 4 => current add Asteroid(
-        position, gid match {
-          case 2 => resources(MaxResource)
-          case 3 => resources(MidResource)
-          case 4 => resources(MinResource)
+      case 2 | 3 | 4 =>
+        val field = gid match {
+          case 2 => MaxResource
+          case 3 => MidResource
+          case 4 => MinResource
         }
-      )
+        current add Asteroid(position, resources(field.range), field.extractionSpeed)
       case 5 => current.addNpc(npc => Spawner(position, npc)).rightZ
       case 6 => current.addNpc(npc => VPTower(position, npc.team)).rightZ
       case 7 => current.addStarting(position).rightZ

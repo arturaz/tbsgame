@@ -11,13 +11,13 @@ with EmptySpaceWarpableCompanion[Corvette]
   override val attack = Atk(45)
   override val attacks = Attacks(3)
   override val attackRange = RadialDistance.Five
-  override val movement = Movement.fromTiles(12)
+  override val movement = Movement.fromTiles(10)
   override val visibility = RectDistance(4)
   override val cost = Resources(6)
   override val populationCost = Population(2)
   override val kind = WObjKind.Medium
 
-  val specialMovementAdded = Movement.fromTiles(6)
+  val specialMovementAdded = Movement.fromTiles(5)
   override val specialActionsNeeded = Actions(0)
 
   override def warp(owner: Player, position: Vect2) = Corvette(position, owner)

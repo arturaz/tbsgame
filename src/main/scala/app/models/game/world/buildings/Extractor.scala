@@ -9,15 +9,14 @@ import implicits._
 object ExtractorStats extends WBuildingStats with SpecialActionStats
 with WarpableCompanion[Extractor]
 {
-  override val maxHp = HP(45)
+  override val maxHp = HP(60)
   override val warpTime = WarpTime(1)
-  override val cost = Resources(8)
+  override val cost = Resources(3)
   override val populationCost = Population(1)
-  /* How much resources does turn start extract? */
-  val turnStartExtracts = Resources(1)
-  /* How much resources does special action extract? */
-  val specialExtracts = Resources(3)
-  val specialCollapseResources = cost
+  /* How much resource % does special action extract from asteroid? */
+  val specialExtractsPercentage = 0.5
+  /* How much fixed */
+  val specialExtractsFixed = cost
   override val specialActionsNeeded = Actions(1)
   override val kind = WObjKind.Medium
 
@@ -52,7 +51,7 @@ _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
       },
       asteroid => {
         if (asteroid.resources.isZero) orig
-        else turnStartExtractResources(world)(asteroid).fold(
+        else turnStartExtractResources(world, asteroid).fold(
           err => {
             log.error(s"Error while extracting resources on turn start for $this: $err")
             orig
@@ -86,18 +85,21 @@ _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
     }
   }
 
-  private[this] def turnStartExtractResources(world: World) =
-    extractResources(world, stats.turnStartExtracts) _
+  private[this] def turnStartExtractResources(world: World, asteroid: Asteroid) =
+    extractResources(world, asteroid.extractionSpeed)(asteroid)
 
   override def specialImpl(world: World, invokedBy: Player) = {
-    val extracts = stats.specialExtracts
     findAsteroid(world).right.flatMap { asteroid =>
-      if (asteroid.resources.isZero) (for {
-        world <- world.addResources(owner, stats.specialCollapseResources).right.get
+      val percentageResources = Resources(
+        (asteroid.resources.value * stats.specialExtractsPercentage).round.toInt
+      )
+      val fixedResources = stats.specialExtractsFixed
+      val resources = percentageResources + fixedResources
+      (for {
+        world <- world.addResources(owner, resources).right.get
         world <- world.removeEvt(this)
         world <- world.removeEvt(asteroid)
       } yield world).right
-      else extractResources(world, extracts)(asteroid)
     }
   }
 }

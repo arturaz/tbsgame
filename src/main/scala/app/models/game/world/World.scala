@@ -384,7 +384,7 @@ object World {
           val resources = math.min(resourcesLeft, asteroidResources.random)
           resourcesLeft -= resources
           log.debug(s"asteroid @ {} with $resources res, left: $resourcesLeft", objPos)
-          objects += Asteroid(objPos, Resources(resources))
+          objects += Asteroid(objPos, Resources(resources), Resources(1))
         }
         else if (
           enemyResourcesInBounds < enemyResourcesNeeded &&

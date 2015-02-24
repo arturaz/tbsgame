@@ -12,7 +12,7 @@ import utils.IdObj
 
 /* Asteroids can be mined for resources */
 case class Asteroid(
-  position: Vect2, resources: Resources,
+  position: Vect2, resources: Resources, extractionSpeed: Resources,
   id: WObject.Id=WObject.newId
 ) extends Prop {
   type Stats = AsteroidStats.type
@@ -39,9 +39,10 @@ case class WarpGate(
   position: Vect2, owner: Team,
   hp: HP=WarpGateStats.maxHp, id: WObject.Id=WObject.newId
 ) extends WarpGateImpl with TeamBuilding with GivingActions with GivingPopulation
-with SizedWObject with SpecialAction {
+with SizedWObject with SpecialAction with SpecialAtEndOfTurn {
   type Stats = WarpGateStats.type
   override val stats = WarpGateStats
+  override def endOfTurnPriority = 0
 }
 
 /* Gives victory points each turn to its owner */
@@ -227,6 +228,12 @@ sealed trait ReactiveFighter extends Fighter with ReactiveFighterImpl
 
 /* If destroyed this object should respawn with new owner and hp. */
 sealed trait RespawnsOnDestruction extends OwnedObj with RespawnsOnDestructionImpl
+
+/* Marker that says use special action at end of turn for all the possible actions. */
+sealed trait SpecialAtEndOfTurn extends SpecialAction {
+  /* Lowest is first */
+  def endOfTurnPriority: Int
+}
 
 /* Things that can be warped by in a player/bot. */
 sealed trait Warpable extends OwnedObj with WarpableImpl
