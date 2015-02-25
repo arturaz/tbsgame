@@ -68,6 +68,8 @@ object ProtobufCoding {
         m.getSpecial.mapVal { m => Special(_: Human, m.getId) }.right
       else if (m.hasEndTurn)
         (EndTurn.apply(_: Human)).right
+      else if (m.hasConcede)
+        (Concede.apply(_: Human)).right
       else if (m.hasGetMovement)
         m.getGetMovement.mapVal { m => GetMovement(_: Human, m.getId) }.right
       else if (m.hasMoveAttack)
@@ -184,7 +186,8 @@ object ProtobufCoding {
     implicit def convert(state: HumanState): Game.PlayerState =
       Game.PlayerState.newBuilder().
         setActions(state.gameState.actions).setPopulation(state.population).
-        setResources(state.resources).setTurnEnded(state.gameState.turnEnded).build()
+        setResources(state.resources).setTurnEnded(!state.gameState.activity.canAct).
+        build()
 
     def convert(player: Player, state: Option[HumanState]): Game.InitPlayer =
       Game.InitPlayer.newBuilder().setPlayer(convert(player)).

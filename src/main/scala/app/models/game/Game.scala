@@ -23,7 +23,7 @@ object Game {
 
   type ResultT[A] = Either[String, Evented[A]]
   type Result = ResultT[Game]
-  private type States = Map[Player, GamePlayerState]
+  type States = Map[Player, GamePlayerState]
   type ObjectivesMap = Map[Team, Objectives]
 
   case class StartingPlayer(player: Player, resources: Resources)
@@ -41,7 +41,7 @@ object Game {
   }
 
   def startingState(world: World, player: Player) =
-    GamePlayerState(world.actionsFor(player), turnEnded = false)
+    GamePlayerState(world.actionsFor(player), GamePlayerState.WaitingForTurnEnd)
 
   def startingStates(
     world: World, players: Iterable[Player]
@@ -105,14 +105,12 @@ object Game {
     g.flatMap { game =>
       val teamStates = game.states.filterKeys(_.team === team)
       teamStates.foldLeft(Evented(game.states)) { case (e, (player, state)) =>
-        val newState = state.copy(
-          actions = game.world.actionsFor(player), turnEnded = false
-        )
+        val newState = state.onTurnStart(game.world.actionsFor(player))
         if (state === newState) e
         else e.flatMap { curStates => Evented(
           curStates + (player -> newState),
           Vector(
-            TurnEndedChangeEvt(player, newState.turnEnded),
+            TurnEndedChangeEvt(player, ! newState.activity.canAct),
             ActionsChangeEvt(player, newState.actions)
           )
         ) }
@@ -188,6 +186,7 @@ trait GameLike[+A] {
   )(implicit log: LoggingAdapter): Game.ResultT[A]
   def special(human: Human, id: WObject.Id)(implicit log: LoggingAdapter): Game.ResultT[A]
   def endTurn(human: Human)(implicit log: LoggingAdapter): Game.ResultT[A]
+  def concede(human: Human)(implicit log: LoggingAdapter): Game.ResultT[A]
 }
 
 case class Game private (
@@ -224,7 +223,9 @@ case class Game private (
 
   def actionsLeftFor(team: Team) = teamStates(team).map(_._2.actions).sum
   /* Checks if all players have sent the turn ended flag. */
-  def allPlayersTurnEnded(team: Team) = teamStates(team).forall(_._2.turnEnded)
+  def allPlayersTurnEnded(team: Team) = teamStates(team).forall(!_._2.activity.canAct)
+  def otherTeamsConceded(team: Team): Boolean =
+    states.filter(_._1.team =/= team).forall(_._2.activity === GamePlayerState.Conceded)
 
   override def isJoined(human: Human)(implicit log: LoggingAdapter) =
     states.contains(human)
@@ -311,11 +312,26 @@ case class Game private (
 
   override def endTurn(human: Human)(implicit log: LoggingAdapter): Game.Result =
     withState(human) { state =>
-      val turnEnded = true
-      Evented(
-        updated(world, human -> state.copy(turnEnded = turnEnded)),
-        TurnEndedChangeEvt(human, turnEnded)
-      ).right
+      if (state.activity =/= GamePlayerState.WaitingForTurnEnd)
+        s"Can't end turn: $human has state $state!".left
+      else {
+        Evented(
+          updated(world, human -> state.onTurnEnd),
+          TurnEndedChangeEvt(human, turnEnded = true)
+        ).right
+      }
+    }
+
+  override def concede(human: Human)(implicit log: LoggingAdapter): Game.Result =
+    withState(human) { state =>
+      if (state.activity === GamePlayerState.Conceded)
+        s"Can't concede: $human has already conceded!".left
+      else {
+        Evented(
+          updated(world, human -> GamePlayerState.conceded),
+          TurnEndedChangeEvt(human, turnEnded = true)
+        ).right
+      }
     }
 
   def movementFor(obj: Movable): Vector[Path] =

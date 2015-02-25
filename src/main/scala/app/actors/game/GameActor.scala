@@ -35,6 +35,7 @@ object GameActor {
     ) extends In
     case class Special(human: Human, id: WObject.Id) extends In
     case class EndTurn(human: Human) extends In
+    case class Concede(human: Human) extends In
   }
 
   sealed trait Out
@@ -105,8 +106,8 @@ object GameActor {
     }
   }
 
-  private def init(human: Human, ref: ActorRef, game: Game): Unit =
-    initMsg(human, game).fold(
+  private def init(human: Human, ref: ActorRef, tbgame: TurnBasedGame): Unit =
+    initMsg(human, tbgame.game).fold(
       err => throw new IllegalStateException(s"cannot init game state: $err"),
       ref ! _
     )
@@ -178,7 +179,7 @@ class GameActor private (
       )
     ) ++ humanTeams.map { _ -> Objectives(
 //      gatherResources = Some(Objective.GatherResources(world, Resources(200), Percentage(0.15))),
-      collectVps = Some(Objective.CollectVPs(VPS(10))),
+//      collectVps = Some(Objective.CollectVPs(VPS(10))),
       destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
     ) }.toMap
     log.debug("Objectives initialized to {}", objectives)
@@ -191,7 +192,7 @@ class GameActor private (
         starting.foreach { data =>
           data.client ! Joined(data.human, self)
           // We need to init the game to starting state.
-          init(data.human, data.client, evented.value.game)
+          init(data.human, data.client, evented.value)
           events(data.human, data.client, evented.events)
         }
         // And then get to the state where next ready team can act
@@ -210,7 +211,7 @@ class GameActor private (
       val ref = sender()
       ref ! Out.Joined(human, self)
       def doInit(tbg: TurnBasedGame): Unit = {
-        init(human, ref, tbg.game)
+        init(human, ref, tbg)
         if (tbg.currentTeam === human.team)
           events(human, ref, Vector(TurnStartedEvt(human.team)))
         clients += human -> ref
@@ -253,6 +254,8 @@ class GameActor private (
       update(sender(), human, _.special(human, id))
     case In.EndTurn(human) =>
       update(sender(), human, _.endTurn(human))
+    case In.Concede(human) =>
+      update(sender(), human, _.concede(human))
     case In.GetMovement(human, id) =>
       game.game.world.objects.getCT[Movable](id)
         .toRight(s"Can't find movable world object with $id").right

@@ -8,7 +8,9 @@ sealed trait Objective {
   type Remaining <: IntValueClass[Remaining]
   def remainingZero: Remaining
 
-  def remaining(game: Game, team: Team) = remainingImpl(game, team) max remainingZero
+  def remaining(game: Game, team: Team) =
+    if (game.otherTeamsConceded(team)) remainingZero
+    else remainingImpl(game, team) max remainingZero
   protected def remainingImpl(game: Game, team: Team): Remaining
 
   def isCompleted(remaining: Remaining): Boolean = remaining.isZero
@@ -53,11 +55,12 @@ object Objective {
     type Remaining = ObjectCount
     def remainingZero = ObjectCount(0)
 
-    def remainingImpl(game: Game, team: Team) =
-      ObjectCount(game.world.objects.count {
+    def remainingImpl(game: Game, team: Team) = ObjectCount(
+      game.world.objects.count {
         case oo: OwnedObj if oo.stats.isCritical && oo.owner.isEnemyOf(team) => true
         case _ => false
-      })
+      }
+    )
 
     override def isCompleted(remaining: Remaining) = remaining.isZero
   }

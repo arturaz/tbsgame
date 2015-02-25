@@ -1,6 +1,7 @@
 package app.models.game
 
 import akka.event.LoggingAdapter
+import app.models.game.Game.States
 import app.models.game.events.Evented
 import app.models.game.world.WObject.Id
 import app.models.game.world._
@@ -32,10 +33,20 @@ object TurnBasedGame {
     val startingTeam = teams.head
     val gameTurnStartedGame = game.gameTurnStarted
     val teamTurnStartedGame = gameTurnStartedGame.flatMap(_.teamTurnStarted(startingTeam))
-    val turnBasedGame = teamTurnStartedGame.map {
-      apply(_, startingTeam, teams.tail, Vector.empty)
+    val turnBasedGame = teamTurnStartedGame.map { game =>
+      apply(
+        endTurnForNonCurrentTeamPlayers(game, startingTeam),
+        startingTeam, teams.tail, Vector.empty
+      )
     }
     turnBasedGame
+  }
+
+  private[this] def endTurnForNonCurrentTeamPlayers(game: Game, currentTeam: Team) = {
+    game.copy(states = game.states.map {
+      case orig @ (player, state) if player.team === currentTeam => orig
+      case (player, state) => player -> state.onTurnEnd
+    })
   }
 }
 
@@ -85,6 +96,9 @@ case class TurnBasedGame private (
 
   override def endTurn(human: Human)(implicit log: LoggingAdapter) =
     humanDo(human)(game.endTurn)
+
+  override def concede(human: Human)(implicit log: LoggingAdapter) =
+    update(game.concede(human))
 
   def nextTeamTurn(implicit log: LoggingAdapter): Evented[Winner \/ TurnBasedGame] = {
     log.debug("current team finishing: {}", currentTeam)
