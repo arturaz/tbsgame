@@ -204,10 +204,14 @@ case class Game private (
   def teamTurnFinished(team: Team)(implicit log: LoggingAdapter)
   : Evented[Winner \/ Game] = (
     world.teamTurnFinished(team) |> fromWorld |> Game.doAutoSpecials(team)
-  ).flatMap { game =>
-    val remaining = game.remainingObjectives(team)
-    if (remaining.someCompleted) Evented(Winner(team).leftZ, GameWonEvt(team))
-    else Evented(game.rightZ)
+  ).flatMap(checkObjectivesForWinner)
+
+  private[this] def checkObjectivesForWinner(game: Game): Evented[Winner \/ Game] = {
+    val winningTeamOpt = world.teams.find(game.remainingObjectives(_).someCompleted)
+    winningTeamOpt.fold2(
+      Evented(game.rightZ),
+      winnerTeam => Evented(Winner(winnerTeam).leftZ, GameWonEvt(winnerTeam))
+    )
   }
 
   def winner: Option[Team] = {
