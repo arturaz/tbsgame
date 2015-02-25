@@ -214,15 +214,6 @@ case class Game private (
     )
   }
 
-  def winner: Option[Team] = {
-    world.objects.collect {
-      case obj: OwnedObj if obj.stats.isCritical => obj.owner.team
-    } match {
-      case s if s.size === 1 => Some(s.head)
-      case _ => None
-    }
-  }
-
   private[this] def teamStates(team: Team) = states.view.filter(_._1.team === team)
 
   def actionsLeftFor(team: Team) = teamStates(team).map(_._2.actions).sum
