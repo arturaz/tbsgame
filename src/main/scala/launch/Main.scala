@@ -9,6 +9,7 @@ import app.models.game.world.maps.{TMXReader, GameMap}
 import app.persistence.DBDriver
 import org.apache.commons.io.{Charsets, IOUtils}
 import org.flywaydb.core.Flyway
+import utils.JAR
 import utils.data.NonEmptyVector
 import collection.JavaConverters._
 import implicits._
@@ -49,9 +50,8 @@ object Main {
     println("Loading maps...")
     val dirPath = if (path.endsWith("/")) path else s"$path/"
     val cl = getClass.getClassLoader
-    val names = IOUtils.readLines(
-      cl.getResourceAsStream(dirPath), Charsets.UTF_8
-    ).asScala.filter(_.endsWith(".tmx")).toVector
+    val names =
+      JAR.getResourceListing(getClass, dirPath).filter(_.endsWith(".tmx")).toVector
     println(s"Maps discovered (${names.size}): ${names.mkString(",")}")
     names.flatMap(name =>
       TMXReader.read(cl.getResourceAsStream(s"$dirPath$name")).fold(
