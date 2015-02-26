@@ -11,6 +11,7 @@ message FromClient {
   optional Register register = 3;
   optional Login login = 4;
   optional JoinGame join_game = 5;
+  optional CancelJoinGame cancel_join_game = 6;
 }
 
 message FromServer {
@@ -18,6 +19,7 @@ message FromServer {
   optional RegisterResponse register = 2;
   optional LoginResponse login = 3;
   optional GameJoined game_joined = 4;
+  optional JoinGameCancelled game_join_cancelled = 5;
 }
 
 message Credentials {
@@ -73,7 +75,17 @@ message LoginResponse {
 }
 
 
-message JoinGame {}
+message JoinGame {
+  message Mode {
+    required uint32 teams = 1;
+    required uint32 players_per_team = 2;
+  }
+
+  required Mode mode = 1;
+}
 message GameJoined {
   required game.Player player = 1;
 }
+
+message CancelJoinGame {}
+message JoinGameCancelled {}

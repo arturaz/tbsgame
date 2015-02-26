@@ -288,12 +288,19 @@ object World {
     }
   }
 
-  private[this] def randomDirection = {
+  private[this] def randomDirectionAll(includeDiagonals: Boolean) = {
     def rDir = Random.nextInt(3) - 1
     val hDir = rDir
-    val vDir = Stream.continually(rDir).filter(d => hDir =/= 0 || d =/= 0).head
+    val vDir =
+      if (includeDiagonals)
+        Stream.continually(rDir).filter(d => hDir =/= 0 || d =/= 0).head
+      else
+        if (hDir === 0) rDir else 0
     Vect2(hDir, vDir)
   }
+
+  private[this] def randomDirection = randomDirectionAll(true)
+  private[this] def randomHVDirection = randomDirectionAll(false)
 
   private[this] def bounds(objects: TraversableOnce[WObject]) =
     objects.map(_.bounds).reduce(_ join _)
@@ -304,6 +311,9 @@ object World {
     startingPoint: Vect2 = Vect2(0, 0),
     endDistance: TileDistance = TileDistance(30),
     branches: Range = 2 to 12,
+    rockLines: Range = 0 to 5,
+    rockLineLength: Range = 2 to 8,
+    rockLineDirectionChangeChance: Double = 0.2,
     spawners: Int = 2,
     jumpDistance: Range = 3 to 6,
     blobSize: Range = 2 to 5,
@@ -314,7 +324,7 @@ object World {
     safeDistance: TileDistance = TileDistance(10),
     enemyResourcesAtMaxDistance: Resources = WaspStats.cost * Resources(3),
     vpTowers: Int = 3
-  )(implicit log1: LoggingAdapter) = {
+  )(implicit initialLog: LoggingAdapter) = {
     val npcChances = IndexedSeq(
       IndexedSeq(WaspStats -> 1) -> 3,
       IndexedSeq(WaspStats -> 2, FortressStats -> 1) -> 2,
@@ -323,7 +333,7 @@ object World {
       IndexedSeq(WaspStats -> 1, RayShipStats -> 1, FortressStats -> 1) -> 1
     )
 
-    val log = new PrefixedLoggingAdapter("World#create|", log1)
+    val log = new PrefixedLoggingAdapter("World#create|", initialLog)
     val warpGate = WarpGate(startingPoint, playersTeam)
     var objects = WorldObjs(warpGate).right_!
     // Main branch is also a branch.
@@ -407,7 +417,35 @@ object World {
         }
       }
 
+      spawnRocks(bounds)
+
       log.debug("Blob spawn end")
+    }
+
+    def spawnRocks(bounds: Bounds): Unit = {
+      val shuffledPoints = Random.shuffle(bounds.points)
+
+      (1 to rockLines.random).foreach { _ =>
+        val startOpt =
+          shuffledPoints.collectFirst { case p if objects.nonEmptyAt(p) => p }
+        startOpt.foreach { start =>
+          var position = start
+          val length = rockLineLength.random
+          var placed = 0
+          var direction = randomHVDirection
+
+          while (bounds.contains(position) && placed < length) {
+            if (objects.emptyAt(position)) {
+              objects += Rock(position)
+              placed += 1
+            }
+
+            if (Random.chance(rockLineDirectionChangeChance))
+              direction = randomHVDirection
+            position += direction
+          }
+        }
+      }
     }
 
     def branch(branchStart: Vect2): Unit = {

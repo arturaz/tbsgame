@@ -35,6 +35,11 @@ public final class Management {
     boolean hasJoinGame();
     netmsg.Management.JoinGame getJoinGame();
     netmsg.Management.JoinGameOrBuilder getJoinGameOrBuilder();
+    
+    // optional .management.CancelJoinGame cancel_join_game = 6;
+    boolean hasCancelJoinGame();
+    netmsg.Management.CancelJoinGame getCancelJoinGame();
+    netmsg.Management.CancelJoinGameOrBuilder getCancelJoinGameOrBuilder();
   }
   public static final class FromClient extends
       com.google.protobuf.GeneratedMessage
@@ -130,12 +135,26 @@ public final class Management {
       return joinGame_;
     }
     
+    // optional .management.CancelJoinGame cancel_join_game = 6;
+    public static final int CANCEL_JOIN_GAME_FIELD_NUMBER = 6;
+    private netmsg.Management.CancelJoinGame cancelJoinGame_;
+    public boolean hasCancelJoinGame() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    public netmsg.Management.CancelJoinGame getCancelJoinGame() {
+      return cancelJoinGame_;
+    }
+    public netmsg.Management.CancelJoinGameOrBuilder getCancelJoinGameOrBuilder() {
+      return cancelJoinGame_;
+    }
+    
     private void initFields() {
       autoRegister_ = netmsg.Management.AutoRegister.getDefaultInstance();
       checkNameAvailability_ = netmsg.Management.CheckNameAvailability.getDefaultInstance();
       register_ = netmsg.Management.Register.getDefaultInstance();
       login_ = netmsg.Management.Login.getDefaultInstance();
       joinGame_ = netmsg.Management.JoinGame.getDefaultInstance();
+      cancelJoinGame_ = netmsg.Management.CancelJoinGame.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -156,6 +175,12 @@ public final class Management {
       }
       if (hasLogin()) {
         if (!getLogin().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasJoinGame()) {
+        if (!getJoinGame().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -181,6 +206,9 @@ public final class Management {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeMessage(5, joinGame_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeMessage(6, cancelJoinGame_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -210,6 +238,10 @@ public final class Management {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, joinGame_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, cancelJoinGame_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -332,6 +364,7 @@ public final class Management {
           getRegisterFieldBuilder();
           getLoginFieldBuilder();
           getJoinGameFieldBuilder();
+          getCancelJoinGameFieldBuilder();
         }
       }
       private static Builder create() {
@@ -370,6 +403,12 @@ public final class Management {
           joinGameBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000010);
+        if (cancelJoinGameBuilder_ == null) {
+          cancelJoinGame_ = netmsg.Management.CancelJoinGame.getDefaultInstance();
+        } else {
+          cancelJoinGameBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
       
@@ -448,6 +487,14 @@ public final class Management {
         } else {
           result.joinGame_ = joinGameBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        if (cancelJoinGameBuilder_ == null) {
+          result.cancelJoinGame_ = cancelJoinGame_;
+        } else {
+          result.cancelJoinGame_ = cancelJoinGameBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -479,6 +526,9 @@ public final class Management {
         if (other.hasJoinGame()) {
           mergeJoinGame(other.getJoinGame());
         }
+        if (other.hasCancelJoinGame()) {
+          mergeCancelJoinGame(other.getCancelJoinGame());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -498,6 +548,12 @@ public final class Management {
         }
         if (hasLogin()) {
           if (!getLogin().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasJoinGame()) {
+          if (!getJoinGame().isInitialized()) {
             
             return false;
           }
@@ -571,6 +627,15 @@ public final class Management {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setJoinGame(subBuilder.buildPartial());
+              break;
+            }
+            case 50: {
+              netmsg.Management.CancelJoinGame.Builder subBuilder = netmsg.Management.CancelJoinGame.newBuilder();
+              if (hasCancelJoinGame()) {
+                subBuilder.mergeFrom(getCancelJoinGame());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setCancelJoinGame(subBuilder.buildPartial());
               break;
             }
           }
@@ -1029,6 +1094,96 @@ public final class Management {
         return joinGameBuilder_;
       }
       
+      // optional .management.CancelJoinGame cancel_join_game = 6;
+      private netmsg.Management.CancelJoinGame cancelJoinGame_ = netmsg.Management.CancelJoinGame.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Management.CancelJoinGame, netmsg.Management.CancelJoinGame.Builder, netmsg.Management.CancelJoinGameOrBuilder> cancelJoinGameBuilder_;
+      public boolean hasCancelJoinGame() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      public netmsg.Management.CancelJoinGame getCancelJoinGame() {
+        if (cancelJoinGameBuilder_ == null) {
+          return cancelJoinGame_;
+        } else {
+          return cancelJoinGameBuilder_.getMessage();
+        }
+      }
+      public Builder setCancelJoinGame(netmsg.Management.CancelJoinGame value) {
+        if (cancelJoinGameBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          cancelJoinGame_ = value;
+          onChanged();
+        } else {
+          cancelJoinGameBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      public Builder setCancelJoinGame(
+          netmsg.Management.CancelJoinGame.Builder builderForValue) {
+        if (cancelJoinGameBuilder_ == null) {
+          cancelJoinGame_ = builderForValue.build();
+          onChanged();
+        } else {
+          cancelJoinGameBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      public Builder mergeCancelJoinGame(netmsg.Management.CancelJoinGame value) {
+        if (cancelJoinGameBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) == 0x00000020) &&
+              cancelJoinGame_ != netmsg.Management.CancelJoinGame.getDefaultInstance()) {
+            cancelJoinGame_ =
+              netmsg.Management.CancelJoinGame.newBuilder(cancelJoinGame_).mergeFrom(value).buildPartial();
+          } else {
+            cancelJoinGame_ = value;
+          }
+          onChanged();
+        } else {
+          cancelJoinGameBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      public Builder clearCancelJoinGame() {
+        if (cancelJoinGameBuilder_ == null) {
+          cancelJoinGame_ = netmsg.Management.CancelJoinGame.getDefaultInstance();
+          onChanged();
+        } else {
+          cancelJoinGameBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
+        return this;
+      }
+      public netmsg.Management.CancelJoinGame.Builder getCancelJoinGameBuilder() {
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return getCancelJoinGameFieldBuilder().getBuilder();
+      }
+      public netmsg.Management.CancelJoinGameOrBuilder getCancelJoinGameOrBuilder() {
+        if (cancelJoinGameBuilder_ != null) {
+          return cancelJoinGameBuilder_.getMessageOrBuilder();
+        } else {
+          return cancelJoinGame_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Management.CancelJoinGame, netmsg.Management.CancelJoinGame.Builder, netmsg.Management.CancelJoinGameOrBuilder> 
+          getCancelJoinGameFieldBuilder() {
+        if (cancelJoinGameBuilder_ == null) {
+          cancelJoinGameBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Management.CancelJoinGame, netmsg.Management.CancelJoinGame.Builder, netmsg.Management.CancelJoinGameOrBuilder>(
+                  cancelJoinGame_,
+                  getParentForChildren(),
+                  isClean());
+          cancelJoinGame_ = null;
+        }
+        return cancelJoinGameBuilder_;
+      }
+      
       // @@protoc_insertion_point(builder_scope:management.FromClient)
     }
     
@@ -1062,6 +1217,11 @@ public final class Management {
     boolean hasGameJoined();
     netmsg.Management.GameJoined getGameJoined();
     netmsg.Management.GameJoinedOrBuilder getGameJoinedOrBuilder();
+    
+    // optional .management.JoinGameCancelled game_join_cancelled = 5;
+    boolean hasGameJoinCancelled();
+    netmsg.Management.JoinGameCancelled getGameJoinCancelled();
+    netmsg.Management.JoinGameCancelledOrBuilder getGameJoinCancelledOrBuilder();
   }
   public static final class FromServer extends
       com.google.protobuf.GeneratedMessage
@@ -1144,11 +1304,25 @@ public final class Management {
       return gameJoined_;
     }
     
+    // optional .management.JoinGameCancelled game_join_cancelled = 5;
+    public static final int GAME_JOIN_CANCELLED_FIELD_NUMBER = 5;
+    private netmsg.Management.JoinGameCancelled gameJoinCancelled_;
+    public boolean hasGameJoinCancelled() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public netmsg.Management.JoinGameCancelled getGameJoinCancelled() {
+      return gameJoinCancelled_;
+    }
+    public netmsg.Management.JoinGameCancelledOrBuilder getGameJoinCancelledOrBuilder() {
+      return gameJoinCancelled_;
+    }
+    
     private void initFields() {
       checkNameAvailability_ = netmsg.Management.CheckNameAvailabilityResponse.getDefaultInstance();
       register_ = netmsg.Management.RegisterResponse.getDefaultInstance();
       login_ = netmsg.Management.LoginResponse.getDefaultInstance();
       gameJoined_ = netmsg.Management.GameJoined.getDefaultInstance();
+      gameJoinCancelled_ = netmsg.Management.JoinGameCancelled.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1192,6 +1366,9 @@ public final class Management {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeMessage(4, gameJoined_);
       }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeMessage(5, gameJoinCancelled_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -1216,6 +1393,10 @@ public final class Management {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, gameJoined_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, gameJoinCancelled_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1337,6 +1518,7 @@ public final class Management {
           getRegisterFieldBuilder();
           getLoginFieldBuilder();
           getGameJoinedFieldBuilder();
+          getGameJoinCancelledFieldBuilder();
         }
       }
       private static Builder create() {
@@ -1369,6 +1551,12 @@ public final class Management {
           gameJoinedBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000008);
+        if (gameJoinCancelledBuilder_ == null) {
+          gameJoinCancelled_ = netmsg.Management.JoinGameCancelled.getDefaultInstance();
+        } else {
+          gameJoinCancelledBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       
@@ -1439,6 +1627,14 @@ public final class Management {
         } else {
           result.gameJoined_ = gameJoinedBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        if (gameJoinCancelledBuilder_ == null) {
+          result.gameJoinCancelled_ = gameJoinCancelled_;
+        } else {
+          result.gameJoinCancelled_ = gameJoinCancelledBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1466,6 +1662,9 @@ public final class Management {
         }
         if (other.hasGameJoined()) {
           mergeGameJoined(other.getGameJoined());
+        }
+        if (other.hasGameJoinCancelled()) {
+          mergeGameJoinCancelled(other.getGameJoinCancelled());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -1550,6 +1749,15 @@ public final class Management {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setGameJoined(subBuilder.buildPartial());
+              break;
+            }
+            case 42: {
+              netmsg.Management.JoinGameCancelled.Builder subBuilder = netmsg.Management.JoinGameCancelled.newBuilder();
+              if (hasGameJoinCancelled()) {
+                subBuilder.mergeFrom(getGameJoinCancelled());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setGameJoinCancelled(subBuilder.buildPartial());
               break;
             }
           }
@@ -1916,6 +2124,96 @@ public final class Management {
           gameJoined_ = null;
         }
         return gameJoinedBuilder_;
+      }
+      
+      // optional .management.JoinGameCancelled game_join_cancelled = 5;
+      private netmsg.Management.JoinGameCancelled gameJoinCancelled_ = netmsg.Management.JoinGameCancelled.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Management.JoinGameCancelled, netmsg.Management.JoinGameCancelled.Builder, netmsg.Management.JoinGameCancelledOrBuilder> gameJoinCancelledBuilder_;
+      public boolean hasGameJoinCancelled() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public netmsg.Management.JoinGameCancelled getGameJoinCancelled() {
+        if (gameJoinCancelledBuilder_ == null) {
+          return gameJoinCancelled_;
+        } else {
+          return gameJoinCancelledBuilder_.getMessage();
+        }
+      }
+      public Builder setGameJoinCancelled(netmsg.Management.JoinGameCancelled value) {
+        if (gameJoinCancelledBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          gameJoinCancelled_ = value;
+          onChanged();
+        } else {
+          gameJoinCancelledBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      public Builder setGameJoinCancelled(
+          netmsg.Management.JoinGameCancelled.Builder builderForValue) {
+        if (gameJoinCancelledBuilder_ == null) {
+          gameJoinCancelled_ = builderForValue.build();
+          onChanged();
+        } else {
+          gameJoinCancelledBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      public Builder mergeGameJoinCancelled(netmsg.Management.JoinGameCancelled value) {
+        if (gameJoinCancelledBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) == 0x00000010) &&
+              gameJoinCancelled_ != netmsg.Management.JoinGameCancelled.getDefaultInstance()) {
+            gameJoinCancelled_ =
+              netmsg.Management.JoinGameCancelled.newBuilder(gameJoinCancelled_).mergeFrom(value).buildPartial();
+          } else {
+            gameJoinCancelled_ = value;
+          }
+          onChanged();
+        } else {
+          gameJoinCancelledBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      public Builder clearGameJoinCancelled() {
+        if (gameJoinCancelledBuilder_ == null) {
+          gameJoinCancelled_ = netmsg.Management.JoinGameCancelled.getDefaultInstance();
+          onChanged();
+        } else {
+          gameJoinCancelledBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
+        return this;
+      }
+      public netmsg.Management.JoinGameCancelled.Builder getGameJoinCancelledBuilder() {
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return getGameJoinCancelledFieldBuilder().getBuilder();
+      }
+      public netmsg.Management.JoinGameCancelledOrBuilder getGameJoinCancelledOrBuilder() {
+        if (gameJoinCancelledBuilder_ != null) {
+          return gameJoinCancelledBuilder_.getMessageOrBuilder();
+        } else {
+          return gameJoinCancelled_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Management.JoinGameCancelled, netmsg.Management.JoinGameCancelled.Builder, netmsg.Management.JoinGameCancelledOrBuilder> 
+          getGameJoinCancelledFieldBuilder() {
+        if (gameJoinCancelledBuilder_ == null) {
+          gameJoinCancelledBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Management.JoinGameCancelled, netmsg.Management.JoinGameCancelled.Builder, netmsg.Management.JoinGameCancelledOrBuilder>(
+                  gameJoinCancelled_,
+                  getParentForChildren(),
+                  isClean());
+          gameJoinCancelled_ = null;
+        }
+        return gameJoinCancelledBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:management.FromServer)
@@ -6156,6 +6454,11 @@ public final class Management {
   
   public interface JoinGameOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
+    
+    // required .management.JoinGame.Mode mode = 1;
+    boolean hasMode();
+    netmsg.Management.JoinGame.Mode getMode();
+    netmsg.Management.JoinGame.ModeOrBuilder getModeOrBuilder();
   }
   public static final class JoinGame extends
       com.google.protobuf.GeneratedMessage
@@ -6185,13 +6488,447 @@ public final class Management {
       return netmsg.Management.internal_static_management_JoinGame_fieldAccessorTable;
     }
     
+    public interface ModeOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+      
+      // required uint32 teams = 1;
+      boolean hasTeams();
+      int getTeams();
+      
+      // required uint32 players_per_team = 2;
+      boolean hasPlayersPerTeam();
+      int getPlayersPerTeam();
+    }
+    public static final class Mode extends
+        com.google.protobuf.GeneratedMessage
+        implements ModeOrBuilder {
+      // Use Mode.newBuilder() to construct.
+      private Mode(Builder builder) {
+        super(builder);
+      }
+      private Mode(boolean noInit) {}
+      
+      private static final Mode defaultInstance;
+      public static Mode getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public Mode getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return netmsg.Management.internal_static_management_JoinGame_Mode_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return netmsg.Management.internal_static_management_JoinGame_Mode_fieldAccessorTable;
+      }
+      
+      private int bitField0_;
+      // required uint32 teams = 1;
+      public static final int TEAMS_FIELD_NUMBER = 1;
+      private int teams_;
+      public boolean hasTeams() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public int getTeams() {
+        return teams_;
+      }
+      
+      // required uint32 players_per_team = 2;
+      public static final int PLAYERS_PER_TEAM_FIELD_NUMBER = 2;
+      private int playersPerTeam_;
+      public boolean hasPlayersPerTeam() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public int getPlayersPerTeam() {
+        return playersPerTeam_;
+      }
+      
+      private void initFields() {
+        teams_ = 0;
+        playersPerTeam_ = 0;
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+        
+        if (!hasTeams()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasPlayersPerTeam()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeUInt32(1, teams_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeUInt32(2, playersPerTeam_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32Size(1, teams_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32Size(2, playersPerTeam_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+      
+      public static netmsg.Management.JoinGame.Mode parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static netmsg.Management.JoinGame.Mode parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static netmsg.Management.JoinGame.Mode parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static netmsg.Management.JoinGame.Mode parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static netmsg.Management.JoinGame.Mode parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static netmsg.Management.JoinGame.Mode parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static netmsg.Management.JoinGame.Mode parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        Builder builder = newBuilder();
+        if (builder.mergeDelimitedFrom(input)) {
+          return builder.buildParsed();
+        } else {
+          return null;
+        }
+      }
+      public static netmsg.Management.JoinGame.Mode parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        Builder builder = newBuilder();
+        if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+          return builder.buildParsed();
+        } else {
+          return null;
+        }
+      }
+      public static netmsg.Management.JoinGame.Mode parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static netmsg.Management.JoinGame.Mode parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(netmsg.Management.JoinGame.Mode prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements netmsg.Management.JoinGame.ModeOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return netmsg.Management.internal_static_management_JoinGame_Mode_descriptor;
+        }
+        
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return netmsg.Management.internal_static_management_JoinGame_Mode_fieldAccessorTable;
+        }
+        
+        // Construct using netmsg.Management.JoinGame.Mode.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+        
+        private Builder(BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+        
+        public Builder clear() {
+          super.clear();
+          teams_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000001);
+          playersPerTeam_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return netmsg.Management.JoinGame.Mode.getDescriptor();
+        }
+        
+        public netmsg.Management.JoinGame.Mode getDefaultInstanceForType() {
+          return netmsg.Management.JoinGame.Mode.getDefaultInstance();
+        }
+        
+        public netmsg.Management.JoinGame.Mode build() {
+          netmsg.Management.JoinGame.Mode result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+        
+        private netmsg.Management.JoinGame.Mode buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          netmsg.Management.JoinGame.Mode result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return result;
+        }
+        
+        public netmsg.Management.JoinGame.Mode buildPartial() {
+          netmsg.Management.JoinGame.Mode result = new netmsg.Management.JoinGame.Mode(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.teams_ = teams_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.playersPerTeam_ = playersPerTeam_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof netmsg.Management.JoinGame.Mode) {
+            return mergeFrom((netmsg.Management.JoinGame.Mode)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(netmsg.Management.JoinGame.Mode other) {
+          if (other == netmsg.Management.JoinGame.Mode.getDefaultInstance()) return this;
+          if (other.hasTeams()) {
+            setTeams(other.getTeams());
+          }
+          if (other.hasPlayersPerTeam()) {
+            setPlayersPerTeam(other.getPlayersPerTeam());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public final boolean isInitialized() {
+          if (!hasTeams()) {
+            
+            return false;
+          }
+          if (!hasPlayersPerTeam()) {
+            
+            return false;
+          }
+          return true;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  onChanged();
+                  return this;
+                }
+                break;
+              }
+              case 8: {
+                bitField0_ |= 0x00000001;
+                teams_ = input.readUInt32();
+                break;
+              }
+              case 16: {
+                bitField0_ |= 0x00000002;
+                playersPerTeam_ = input.readUInt32();
+                break;
+              }
+            }
+          }
+        }
+        
+        private int bitField0_;
+        
+        // required uint32 teams = 1;
+        private int teams_ ;
+        public boolean hasTeams() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        public int getTeams() {
+          return teams_;
+        }
+        public Builder setTeams(int value) {
+          bitField0_ |= 0x00000001;
+          teams_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearTeams() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          teams_ = 0;
+          onChanged();
+          return this;
+        }
+        
+        // required uint32 players_per_team = 2;
+        private int playersPerTeam_ ;
+        public boolean hasPlayersPerTeam() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        public int getPlayersPerTeam() {
+          return playersPerTeam_;
+        }
+        public Builder setPlayersPerTeam(int value) {
+          bitField0_ |= 0x00000002;
+          playersPerTeam_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearPlayersPerTeam() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          playersPerTeam_ = 0;
+          onChanged();
+          return this;
+        }
+        
+        // @@protoc_insertion_point(builder_scope:management.JoinGame.Mode)
+      }
+      
+      static {
+        defaultInstance = new Mode(true);
+        defaultInstance.initFields();
+      }
+      
+      // @@protoc_insertion_point(class_scope:management.JoinGame.Mode)
+    }
+    
+    private int bitField0_;
+    // required .management.JoinGame.Mode mode = 1;
+    public static final int MODE_FIELD_NUMBER = 1;
+    private netmsg.Management.JoinGame.Mode mode_;
+    public boolean hasMode() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public netmsg.Management.JoinGame.Mode getMode() {
+      return mode_;
+    }
+    public netmsg.Management.JoinGame.ModeOrBuilder getModeOrBuilder() {
+      return mode_;
+    }
+    
     private void initFields() {
+      mode_ = netmsg.Management.JoinGame.Mode.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
       
+      if (!hasMode()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getMode().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -6199,6 +6936,9 @@ public final class Management {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, mode_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -6208,6 +6948,10 @@ public final class Management {
       if (size != -1) return size;
     
       size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, mode_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
@@ -6324,6 +7068,7 @@ public final class Management {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getModeFieldBuilder();
         }
       }
       private static Builder create() {
@@ -6332,6 +7077,12 @@ public final class Management {
       
       public Builder clear() {
         super.clear();
+        if (modeBuilder_ == null) {
+          mode_ = netmsg.Management.JoinGame.Mode.getDefaultInstance();
+        } else {
+          modeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
       
@@ -6368,6 +7119,17 @@ public final class Management {
       
       public netmsg.Management.JoinGame buildPartial() {
         netmsg.Management.JoinGame result = new netmsg.Management.JoinGame(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (modeBuilder_ == null) {
+          result.mode_ = mode_;
+        } else {
+          result.mode_ = modeBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -6383,11 +7145,22 @@ public final class Management {
       
       public Builder mergeFrom(netmsg.Management.JoinGame other) {
         if (other == netmsg.Management.JoinGame.getDefaultInstance()) return this;
+        if (other.hasMode()) {
+          mergeMode(other.getMode());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
       
       public final boolean isInitialized() {
+        if (!hasMode()) {
+          
+          return false;
+        }
+        if (!getMode().isInitialized()) {
+          
+          return false;
+        }
         return true;
       }
       
@@ -6414,10 +7187,110 @@ public final class Management {
               }
               break;
             }
+            case 10: {
+              netmsg.Management.JoinGame.Mode.Builder subBuilder = netmsg.Management.JoinGame.Mode.newBuilder();
+              if (hasMode()) {
+                subBuilder.mergeFrom(getMode());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setMode(subBuilder.buildPartial());
+              break;
+            }
           }
         }
       }
       
+      private int bitField0_;
+      
+      // required .management.JoinGame.Mode mode = 1;
+      private netmsg.Management.JoinGame.Mode mode_ = netmsg.Management.JoinGame.Mode.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Management.JoinGame.Mode, netmsg.Management.JoinGame.Mode.Builder, netmsg.Management.JoinGame.ModeOrBuilder> modeBuilder_;
+      public boolean hasMode() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public netmsg.Management.JoinGame.Mode getMode() {
+        if (modeBuilder_ == null) {
+          return mode_;
+        } else {
+          return modeBuilder_.getMessage();
+        }
+      }
+      public Builder setMode(netmsg.Management.JoinGame.Mode value) {
+        if (modeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          mode_ = value;
+          onChanged();
+        } else {
+          modeBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder setMode(
+          netmsg.Management.JoinGame.Mode.Builder builderForValue) {
+        if (modeBuilder_ == null) {
+          mode_ = builderForValue.build();
+          onChanged();
+        } else {
+          modeBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder mergeMode(netmsg.Management.JoinGame.Mode value) {
+        if (modeBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              mode_ != netmsg.Management.JoinGame.Mode.getDefaultInstance()) {
+            mode_ =
+              netmsg.Management.JoinGame.Mode.newBuilder(mode_).mergeFrom(value).buildPartial();
+          } else {
+            mode_ = value;
+          }
+          onChanged();
+        } else {
+          modeBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder clearMode() {
+        if (modeBuilder_ == null) {
+          mode_ = netmsg.Management.JoinGame.Mode.getDefaultInstance();
+          onChanged();
+        } else {
+          modeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      public netmsg.Management.JoinGame.Mode.Builder getModeBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getModeFieldBuilder().getBuilder();
+      }
+      public netmsg.Management.JoinGame.ModeOrBuilder getModeOrBuilder() {
+        if (modeBuilder_ != null) {
+          return modeBuilder_.getMessageOrBuilder();
+        } else {
+          return mode_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Management.JoinGame.Mode, netmsg.Management.JoinGame.Mode.Builder, netmsg.Management.JoinGame.ModeOrBuilder> 
+          getModeFieldBuilder() {
+        if (modeBuilder_ == null) {
+          modeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Management.JoinGame.Mode, netmsg.Management.JoinGame.Mode.Builder, netmsg.Management.JoinGame.ModeOrBuilder>(
+                  mode_,
+                  getParentForChildren(),
+                  isClean());
+          mode_ = null;
+        }
+        return modeBuilder_;
+      }
       
       // @@protoc_insertion_point(builder_scope:management.JoinGame)
     }
@@ -6870,6 +7743,558 @@ public final class Management {
     // @@protoc_insertion_point(class_scope:management.GameJoined)
   }
   
+  public interface CancelJoinGameOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+  }
+  public static final class CancelJoinGame extends
+      com.google.protobuf.GeneratedMessage
+      implements CancelJoinGameOrBuilder {
+    // Use CancelJoinGame.newBuilder() to construct.
+    private CancelJoinGame(Builder builder) {
+      super(builder);
+    }
+    private CancelJoinGame(boolean noInit) {}
+    
+    private static final CancelJoinGame defaultInstance;
+    public static CancelJoinGame getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public CancelJoinGame getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return netmsg.Management.internal_static_management_CancelJoinGame_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return netmsg.Management.internal_static_management_CancelJoinGame_fieldAccessorTable;
+    }
+    
+    private void initFields() {
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static netmsg.Management.CancelJoinGame parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Management.CancelJoinGame parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Management.CancelJoinGame parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Management.CancelJoinGame parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Management.CancelJoinGame parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Management.CancelJoinGame parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Management.CancelJoinGame parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Management.CancelJoinGame parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Management.CancelJoinGame parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Management.CancelJoinGame parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(netmsg.Management.CancelJoinGame prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements netmsg.Management.CancelJoinGameOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return netmsg.Management.internal_static_management_CancelJoinGame_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return netmsg.Management.internal_static_management_CancelJoinGame_fieldAccessorTable;
+      }
+      
+      // Construct using netmsg.Management.CancelJoinGame.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return netmsg.Management.CancelJoinGame.getDescriptor();
+      }
+      
+      public netmsg.Management.CancelJoinGame getDefaultInstanceForType() {
+        return netmsg.Management.CancelJoinGame.getDefaultInstance();
+      }
+      
+      public netmsg.Management.CancelJoinGame build() {
+        netmsg.Management.CancelJoinGame result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private netmsg.Management.CancelJoinGame buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        netmsg.Management.CancelJoinGame result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public netmsg.Management.CancelJoinGame buildPartial() {
+        netmsg.Management.CancelJoinGame result = new netmsg.Management.CancelJoinGame(this);
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof netmsg.Management.CancelJoinGame) {
+          return mergeFrom((netmsg.Management.CancelJoinGame)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(netmsg.Management.CancelJoinGame other) {
+        if (other == netmsg.Management.CancelJoinGame.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+          }
+        }
+      }
+      
+      
+      // @@protoc_insertion_point(builder_scope:management.CancelJoinGame)
+    }
+    
+    static {
+      defaultInstance = new CancelJoinGame(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:management.CancelJoinGame)
+  }
+  
+  public interface JoinGameCancelledOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+  }
+  public static final class JoinGameCancelled extends
+      com.google.protobuf.GeneratedMessage
+      implements JoinGameCancelledOrBuilder {
+    // Use JoinGameCancelled.newBuilder() to construct.
+    private JoinGameCancelled(Builder builder) {
+      super(builder);
+    }
+    private JoinGameCancelled(boolean noInit) {}
+    
+    private static final JoinGameCancelled defaultInstance;
+    public static JoinGameCancelled getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public JoinGameCancelled getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return netmsg.Management.internal_static_management_JoinGameCancelled_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return netmsg.Management.internal_static_management_JoinGameCancelled_fieldAccessorTable;
+    }
+    
+    private void initFields() {
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static netmsg.Management.JoinGameCancelled parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Management.JoinGameCancelled parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Management.JoinGameCancelled parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Management.JoinGameCancelled parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Management.JoinGameCancelled parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Management.JoinGameCancelled parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Management.JoinGameCancelled parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Management.JoinGameCancelled parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Management.JoinGameCancelled parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Management.JoinGameCancelled parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(netmsg.Management.JoinGameCancelled prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements netmsg.Management.JoinGameCancelledOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return netmsg.Management.internal_static_management_JoinGameCancelled_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return netmsg.Management.internal_static_management_JoinGameCancelled_fieldAccessorTable;
+      }
+      
+      // Construct using netmsg.Management.JoinGameCancelled.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return netmsg.Management.JoinGameCancelled.getDescriptor();
+      }
+      
+      public netmsg.Management.JoinGameCancelled getDefaultInstanceForType() {
+        return netmsg.Management.JoinGameCancelled.getDefaultInstance();
+      }
+      
+      public netmsg.Management.JoinGameCancelled build() {
+        netmsg.Management.JoinGameCancelled result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private netmsg.Management.JoinGameCancelled buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        netmsg.Management.JoinGameCancelled result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public netmsg.Management.JoinGameCancelled buildPartial() {
+        netmsg.Management.JoinGameCancelled result = new netmsg.Management.JoinGameCancelled(this);
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof netmsg.Management.JoinGameCancelled) {
+          return mergeFrom((netmsg.Management.JoinGameCancelled)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(netmsg.Management.JoinGameCancelled other) {
+        if (other == netmsg.Management.JoinGameCancelled.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+          }
+        }
+      }
+      
+      
+      // @@protoc_insertion_point(builder_scope:management.JoinGameCancelled)
+    }
+    
+    static {
+      defaultInstance = new JoinGameCancelled(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:management.JoinGameCancelled)
+  }
+  
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_management_FromClient_descriptor;
   private static
@@ -6931,10 +8356,25 @@ public final class Management {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_management_JoinGame_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_management_JoinGame_Mode_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_management_JoinGame_Mode_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_management_GameJoined_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_management_GameJoined_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_management_CancelJoinGame_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_management_CancelJoinGame_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_management_JoinGameCancelled_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_management_JoinGameCancelled_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -6945,33 +8385,39 @@ public final class Management {
   static {
     java.lang.String[] descriptorData = {
       "\n\020management.proto\022\nmanagement\032\nbase.pro" +
-      "to\032\ngame.proto\"\364\001\n\nFromClient\022/\n\rauto_re" +
+      "to\032\ngame.proto\"\252\002\n\nFromClient\022/\n\rauto_re" +
       "gister\030\001 \001(\0132\030.management.AutoRegister\022B" +
       "\n\027check_name_availability\030\002 \001(\0132!.manage" +
       "ment.CheckNameAvailability\022&\n\010register\030\003" +
       " \001(\0132\024.management.Register\022 \n\005login\030\004 \001(" +
       "\0132\021.management.Login\022\'\n\tjoin_game\030\005 \001(\0132" +
-      "\024.management.JoinGame\"\337\001\n\nFromServer\022J\n\027" +
-      "check_name_availability\030\001 \001(\0132).manageme" +
-      "nt.CheckNameAvailabilityResponse\022.\n\010regi",
-      "ster\030\002 \001(\0132\034.management.RegisterResponse" +
-      "\022(\n\005login\030\003 \001(\0132\031.management.LoginRespon" +
-      "se\022+\n\013game_joined\030\004 \001(\0132\026.management.Gam" +
-      "eJoined\"D\n\013Credentials\022\014\n\004name\030\001 \002(\t\022\020\n\010" +
-      "password\030\002 \001(\t\022\025\n\rsession_token\030\003 \001(\t\"\016\n" +
-      "\014AutoRegister\"%\n\025CheckNameAvailability\022\014" +
-      "\n\004name\030\001 \002(\t\"@\n\035CheckNameAvailabilityRes" +
-      "ponse\022\014\n\004name\030\001 \002(\t\022\021\n\tavailable\030\002 \002(\010\"=" +
-      "\n\010Register\022\020\n\010username\030\001 \002(\t\022\020\n\010password" +
-      "\030\002 \002(\t\022\r\n\005email\030\003 \002(\t\"-\n\020RegisterRespons",
-      "e\022\031\n\021new_session_token\030\001 \001(\t\"5\n\005Login\022,\n" +
-      "\013credentials\030\001 \002(\0132\027.management.Credenti" +
-      "als\"\235\001\n\rLoginResponse\022,\n\004data\030\001 \001(\0132\036.ma" +
-      "nagement.LoginResponse.Data\032^\n\004Data\022\026\n\002i" +
-      "d\030\001 \002(\0132\n.base.UUID\022\020\n\010username\030\002 \002(\t\022\025\n" +
-      "\rsession_token\030\003 \002(\t\022\025\n\rautogenerated\030\004 " +
-      "\002(\010\"\n\n\010JoinGame\"*\n\nGameJoined\022\034\n\006player\030" +
-      "\001 \002(\0132\014.game.PlayerB\010\n\006netmsg"
+      "\024.management.JoinGame\0224\n\020cancel_join_gam" +
+      "e\030\006 \001(\0132\032.management.CancelJoinGame\"\233\002\n\n" +
+      "FromServer\022J\n\027check_name_availability\030\001 ",
+      "\001(\0132).management.CheckNameAvailabilityRe" +
+      "sponse\022.\n\010register\030\002 \001(\0132\034.management.Re" +
+      "gisterResponse\022(\n\005login\030\003 \001(\0132\031.manageme" +
+      "nt.LoginResponse\022+\n\013game_joined\030\004 \001(\0132\026." +
+      "management.GameJoined\022:\n\023game_join_cance" +
+      "lled\030\005 \001(\0132\035.management.JoinGameCancelle" +
+      "d\"D\n\013Credentials\022\014\n\004name\030\001 \002(\t\022\020\n\010passwo" +
+      "rd\030\002 \001(\t\022\025\n\rsession_token\030\003 \001(\t\"\016\n\014AutoR" +
+      "egister\"%\n\025CheckNameAvailability\022\014\n\004name" +
+      "\030\001 \002(\t\"@\n\035CheckNameAvailabilityResponse\022",
+      "\014\n\004name\030\001 \002(\t\022\021\n\tavailable\030\002 \002(\010\"=\n\010Regi" +
+      "ster\022\020\n\010username\030\001 \002(\t\022\020\n\010password\030\002 \002(\t" +
+      "\022\r\n\005email\030\003 \002(\t\"-\n\020RegisterResponse\022\031\n\021n" +
+      "ew_session_token\030\001 \001(\t\"5\n\005Login\022,\n\013crede" +
+      "ntials\030\001 \002(\0132\027.management.Credentials\"\235\001" +
+      "\n\rLoginResponse\022,\n\004data\030\001 \001(\0132\036.manageme" +
+      "nt.LoginResponse.Data\032^\n\004Data\022\026\n\002id\030\001 \002(" +
+      "\0132\n.base.UUID\022\020\n\010username\030\002 \002(\t\022\025\n\rsessi" +
+      "on_token\030\003 \002(\t\022\025\n\rautogenerated\030\004 \002(\010\"d\n" +
+      "\010JoinGame\022\'\n\004mode\030\001 \002(\0132\031.management.Joi",
+      "nGame.Mode\032/\n\004Mode\022\r\n\005teams\030\001 \002(\r\022\030\n\020pla" +
+      "yers_per_team\030\002 \002(\r\"*\n\nGameJoined\022\034\n\006pla" +
+      "yer\030\001 \002(\0132\014.game.Player\"\020\n\016CancelJoinGam" +
+      "e\"\023\n\021JoinGameCancelledB\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -6983,7 +8429,7 @@ public final class Management {
           internal_static_management_FromClient_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_FromClient_descriptor,
-              new java.lang.String[] { "AutoRegister", "CheckNameAvailability", "Register", "Login", "JoinGame", },
+              new java.lang.String[] { "AutoRegister", "CheckNameAvailability", "Register", "Login", "JoinGame", "CancelJoinGame", },
               netmsg.Management.FromClient.class,
               netmsg.Management.FromClient.Builder.class);
           internal_static_management_FromServer_descriptor =
@@ -6991,7 +8437,7 @@ public final class Management {
           internal_static_management_FromServer_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_FromServer_descriptor,
-              new java.lang.String[] { "CheckNameAvailability", "Register", "Login", "GameJoined", },
+              new java.lang.String[] { "CheckNameAvailability", "Register", "Login", "GameJoined", "GameJoinCancelled", },
               netmsg.Management.FromServer.class,
               netmsg.Management.FromServer.Builder.class);
           internal_static_management_Credentials_descriptor =
@@ -7071,9 +8517,17 @@ public final class Management {
           internal_static_management_JoinGame_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_management_JoinGame_descriptor,
-              new java.lang.String[] { },
+              new java.lang.String[] { "Mode", },
               netmsg.Management.JoinGame.class,
               netmsg.Management.JoinGame.Builder.class);
+          internal_static_management_JoinGame_Mode_descriptor =
+            internal_static_management_JoinGame_descriptor.getNestedTypes().get(0);
+          internal_static_management_JoinGame_Mode_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_management_JoinGame_Mode_descriptor,
+              new java.lang.String[] { "Teams", "PlayersPerTeam", },
+              netmsg.Management.JoinGame.Mode.class,
+              netmsg.Management.JoinGame.Mode.Builder.class);
           internal_static_management_GameJoined_descriptor =
             getDescriptor().getMessageTypes().get(11);
           internal_static_management_GameJoined_fieldAccessorTable = new
@@ -7082,6 +8536,22 @@ public final class Management {
               new java.lang.String[] { "Player", },
               netmsg.Management.GameJoined.class,
               netmsg.Management.GameJoined.Builder.class);
+          internal_static_management_CancelJoinGame_descriptor =
+            getDescriptor().getMessageTypes().get(12);
+          internal_static_management_CancelJoinGame_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_management_CancelJoinGame_descriptor,
+              new java.lang.String[] { },
+              netmsg.Management.CancelJoinGame.class,
+              netmsg.Management.CancelJoinGame.Builder.class);
+          internal_static_management_JoinGameCancelled_descriptor =
+            getDescriptor().getMessageTypes().get(13);
+          internal_static_management_JoinGameCancelled_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_management_JoinGameCancelled_descriptor,
+              new java.lang.String[] { },
+              netmsg.Management.JoinGameCancelled.class,
+              netmsg.Management.JoinGameCancelled.Builder.class);
           return null;
         }
       };

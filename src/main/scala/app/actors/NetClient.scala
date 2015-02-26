@@ -48,7 +48,17 @@ object NetClient {
         username: String, password: PlainPassword, email: String
       ) extends In
       case class Login(credentials: Credentials) extends In
-      case object JoinGame extends In
+      object JoinGame {
+        sealed trait Mode
+        object Mode {
+          case object Singleplayer extends Mode
+          case class PvP(teams: Int, playersPerTeam: Int) extends Mode {
+            def playersNeeded = teams * playersPerTeam
+          }
+        }
+      }
+      case class JoinGame(mode: JoinGame.Mode) extends In
+      case object CancelJoinGame extends In
     }
 
     sealed trait Out
@@ -63,6 +73,7 @@ object NetClient {
       ) extends LoginResponse
 
       case class GameJoined(human: Human) extends Out
+      case object JoinGameCancelled extends Out
     }
   }
 
@@ -163,8 +174,14 @@ class NetClient(
       }.getOrElse(0) === 1
       RegisterResponse(if (success) Some(token) else None).out()
 
-    case FromClient.Management(JoinGame) =>
-      gamesManager ! GamesManagerActor.In.Join(user)
+    case FromClient.Management(JoinGame(mode)) =>
+      gamesManager ! GamesManagerActor.In.Join(user, mode)
+
+    case FromClient.Management(CancelJoinGame) =>
+      gamesManager ! GamesManagerActor.In.CancelJoinGame(user)
+
+    case msg @ JoinGameCancelled =>
+      msg.out()
 
     case GameActor.Out.Joined(human, game) =>
       GameJoined(human).out()

@@ -4,6 +4,7 @@ import java.util.UUID
 
 import akka.util.ByteString
 import app.actors.NetClient.GameInMsg
+import app.actors.NetClient.Management.In.JoinGame
 import app.actors.NetClient.Management.{SessionToken, PlainPassword, Credentials}
 import app.actors.game.GameActor
 import app.algorithms.Pathfinding.Path
@@ -90,6 +91,12 @@ object ProtobufCoding {
         else SessionToken(c.getSessionToken)
     )
 
+    implicit def parse(mode: netmsg.Management.JoinGame.Mode): JoinGame.Mode = {
+      val teams = mode.getTeams
+      if (teams <= 1) JoinGame.Mode.Singleplayer
+      else JoinGame.Mode.PvP(teams, mode.getPlayersPerTeam)
+    }
+
     def parse(m: netmsg.Management.FromClient): Either[String, NetClient.Management.In] = {
       import app.actors.NetClient.Management.In._
 
@@ -104,7 +111,9 @@ object ProtobufCoding {
       else if (m.hasLogin)
         m.getLogin.getCredentials.mapVal(c => Login(c)).right
       else if (m.hasJoinGame)
-        m.getJoinGame.mapVal(_ => JoinGame).right
+        m.getJoinGame.mapVal(jg => JoinGame(jg.getMode)).right
+      else if (m.hasCancelJoinGame)
+        CancelJoinGame.right
       else
         s"Can't parse $m!".left
     }
@@ -614,6 +623,7 @@ object ProtobufCoding {
     ): Management.GameJoined =
       Management.GameJoined.newBuilder().setPlayer(out.human).build()
 
+
     implicit def convert(out: NetClient.Management.Out): Management.FromServer =
       Management.FromServer.newBuilder().mapVal { b => out match {
         case msg: NetClient.Management.Out.CheckNameAvailabilityResponse =>
@@ -622,6 +632,8 @@ object ProtobufCoding {
           b.setRegister(msg)
         case msg: NetClient.Management.Out.LoginResponse => b.setLogin(msg)
         case msg: NetClient.Management.Out.GameJoined => b.setGameJoined(msg)
+        case NetClient.Management.Out.JoinGameCancelled =>
+          b.setGameJoinCancelled(Management.JoinGameCancelled.newBuilder().build())
       } }.build()
 
     implicit def convert(out: NetClient.Msgs.FromServer): Messages.FromServer =

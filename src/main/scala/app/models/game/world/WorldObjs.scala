@@ -147,6 +147,7 @@ case class WorldObjs private (
 
   def idsIn(pos: Vect2) = positionsMap.getOrElse(pos, Set.empty)
   def nonEmptyAt(pos: Vect2) = idsIn(pos).nonEmpty
+  def emptyAt(pos: Vect2) = ! nonEmptyAt(pos)
   def objectsIn(pos: Vect2): Set[WObject] = idsIn(pos).map(objectsMap.apply)
   def objectsIn(bounds: Bounds): Set[WObject] =
     bounds.points.foldLeft(Set.empty[WObject]) { case (s, v) => s ++ objectsIn(v) }

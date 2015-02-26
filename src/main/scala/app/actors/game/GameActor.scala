@@ -9,7 +9,7 @@ import app.models.game._
 import app.models.game.events._
 import app.models.game.world._
 import app.models.game.world.buildings._
-import app.models.game.world.maps.GameMap
+import app.models.game.world.maps.{WorldMaterializer, GameMap}
 import app.models.game.world.units._
 import implicits._
 import utils.data.NonEmptyVector
@@ -143,8 +143,10 @@ object GameActor {
     rec(Evented(game.rightZ))
   }
 
-  def props(map: GameMap, aiTeam: Team, starting: Set[GameActor.StartingHuman]) =
-    Props(new GameActor(map, aiTeam, starting))
+  def props(
+    worldMaterializer: WorldMaterializer, aiTeam: Team,
+    starting: Set[GameActor.StartingHuman]
+  ) = Props(new GameActor(worldMaterializer, aiTeam, starting))
 
   case class StartingHuman(human: Human, resources: Resources, client: ActorRef) {
     def game = Game.StartingPlayer(human, resources)
@@ -152,7 +154,8 @@ object GameActor {
 }
 
 class GameActor private (
-  map: GameMap, aiTeam: Team, starting: Set[GameActor.StartingHuman]
+  worldMaterializer: WorldMaterializer, aiTeam: Team,
+  starting: Set[GameActor.StartingHuman]
 ) extends Actor with ActorLogging {
   import app.actors.game.GameActor._
   implicit val logging = log
@@ -164,14 +167,8 @@ class GameActor private (
   private[this] var clients = starting.map(data => data.human -> data.client).toMap
 
   private[this] var game = {
-//    val singleAi = Bot(AiTeam)
-    val spawnerAi = Bot(aiTeam)
     val humanTeams = starting.map(_.human.team)
-    val world = map.materialize(humanTeams, Bot(aiTeam)).right_!
-//    val world = World.create(
-//      HumanTeam, spawnerAi, spawnerAi,
-//      spawners = 2, endDistance = TileDistance(35)
-//    )
+    val world = worldMaterializer.materialize(humanTeams, aiTeam).right_!
     log.debug("World initialized to {}", world)
     val objectives = Map(
       aiTeam -> Objectives(
