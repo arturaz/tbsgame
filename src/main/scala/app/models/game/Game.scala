@@ -4,6 +4,7 @@ import akka.event.LoggingAdapter
 import app.algorithms.Pathfinding
 import app.algorithms.Pathfinding.Path
 import app.models.game.Game.States
+import app.models.game.GamePlayerState.WaitingForTurnEnd
 import app.models.game.events._
 import app.models.game.world.WObject.Id
 import app.models.game.world._
@@ -36,12 +37,18 @@ object Game {
       case (Right(eWorld), data) =>
         eWorld.map(_.addResources(data.player, data.resources)).extractFlatten
     }.right.map { evtWorld =>
-      apply(evtWorld.value, startingStates(world, starting.map(_.player)), objectives)
+      val world = evtWorld.value
+      apply(
+        world, startingStates(world, world.players), objectives
+      )
     }
   }
 
   def startingState(world: World, player: Player) =
-    GamePlayerState(world.actionsFor(player), GamePlayerState.WaitingForTurnEnd)
+    GamePlayerState(world.actionsFor(player), player match {
+      case _: Human => GamePlayerState.WaitingForTurnEnd
+      case _: Bot => GamePlayerState.TurnEnded
+    })
 
   def startingStates(
     world: World, players: Iterable[Player]
@@ -100,12 +107,12 @@ object Game {
     }
   }
 
-  private def recalculateHumanStatesOnTeamTurnStart
+  private def recalculatePlayerStatesOnTeamTurnStart
   (team: Team)(g: Evented[Game]): Evented[Game] =
     g.flatMap { game =>
       val teamStates = game.states.filterKeys(_.team === team)
       teamStates.foldLeft(Evented(game.states)) { case (e, (player, state)) =>
-        val newState = state.onTurnStart(game.world.actionsFor(player))
+        val newState = state.onTurnStart(player, game.world.actionsFor(player))
         if (state === newState) e
         else e.flatMap { curStates => Evented(
           curStates + (player -> newState),
@@ -200,7 +207,7 @@ case class Game private (
   def gameTurnFinished(implicit log: LoggingAdapter) = world.gameTurnFinished |> fromWorld
   def teamTurnStarted(team: Team)(implicit log: LoggingAdapter) =
     world.teamTurnStarted(team) |> fromWorld |>
-    Game.recalculateHumanStatesOnTeamTurnStart(team)
+    Game.recalculatePlayerStatesOnTeamTurnStart(team)
   def teamTurnFinished(team: Team)(implicit log: LoggingAdapter)
   : Evented[Winner \/ Game] = (
     world.teamTurnFinished(team) |> fromWorld |> Game.doAutoSpecials(team)

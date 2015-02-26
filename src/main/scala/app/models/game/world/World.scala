@@ -306,8 +306,7 @@ object World {
     objects.map(_.bounds).reduce(_ join _)
 
   def create(
-    playersTeam: Team, npcOwner: => Bot,
-    spawnerOwner: => Bot,
+    playersTeam: Team, npcOwner: () => Bot, spawnerOwner: () => Bot,
     startingPoint: Vect2 = Vect2(0, 0),
     endDistance: TileDistance = TileDistance(30),
     branches: Range = 2 to 12,
@@ -407,7 +406,7 @@ object World {
               filter(_.cost <= enemyResourcesNeeded - enemyResourcesInBounds)
           }
           enemyOpt.foreach { enemyWarpable =>
-            objects += enemyWarpable.warp(npcOwner, objPos)
+            objects += enemyWarpable.warp(npcOwner(), objPos)
             enemyResourcesInBounds += enemyWarpable.cost
           }
           log.debug(
@@ -477,8 +476,9 @@ object World {
       if (spawnersLeft > 0) {
         var spawnerPos = position
         while (bTaken(Bounds(spawnerPos, SpawnerStats.size))) spawnerPos += direction
-        branchLog.debug(s"Spawner @ {}", spawnerPos)
-        objects += Spawner(spawnerPos, spawnerOwner)
+        val spawner = Spawner(spawnerPos, spawnerOwner())
+        objects += spawner
+        branchLog.debug(s"Spawner @ {}: {}", spawnerPos, spawner)
         spawnersLeft -= 1
       }
 
@@ -497,7 +497,9 @@ object World {
         (vpDistance.value * Math.sin(angle)).round.toInt
       ) + warpGate.bounds.center
       if (! bTaken(Bounds(position, VPTowerStats.size))) {
-        objects += VPTower(position, spawnerOwner.team)
+        val vpTower = VPTower(position, spawnerOwner().team)
+        objects += vpTower
+        log.debug("vp tower @ {}: {}", position, vpTower)
         vpTowersLeft -= 1
       }
       else {

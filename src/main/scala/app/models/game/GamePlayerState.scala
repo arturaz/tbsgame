@@ -24,9 +24,12 @@ object GamePlayerState {
 }
 
 case class GamePlayerState(actions: Actions, activity: GamePlayerState.State) {
-  def onTurnStart(actions: Actions) = activity match {
+  def onTurnStart(player: Player, actions: Actions) = activity match {
     case GamePlayerState.Conceded =>
       GamePlayerState.conceded
+    case GamePlayerState.WaitingForTurnEnd | GamePlayerState.TurnEnded
+    if player.isBot =>
+      GamePlayerState(actions, GamePlayerState.TurnEnded)
     case GamePlayerState.WaitingForTurnEnd | GamePlayerState.TurnEnded =>
       GamePlayerState(actions, GamePlayerState.WaitingForTurnEnd)
   }
