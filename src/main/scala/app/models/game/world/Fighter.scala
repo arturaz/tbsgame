@@ -82,7 +82,7 @@ trait FighterImpl extends OwnedObjImpl {
 trait FighterOps[Self <: Fighter] {
   def self: Self
 
-  final def fighterTeamTurnFinished(world: World)(implicit log: LoggingAdapter) =
+  final def fighterTeamTurnStarted(world: World)(implicit log: LoggingAdapter) =
     WObject.selfEventedUpdate(world, self, resetAttackIfWarpedIn(world))
 
   private[this] def resetAttackIfWarpedIn(world: World)(implicit log: LoggingAdapter) =

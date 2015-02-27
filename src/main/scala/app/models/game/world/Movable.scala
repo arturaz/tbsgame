@@ -101,6 +101,6 @@ trait MovableOps[Self <: Movable] extends OwnedObjOps[Self] {
     } yield newSelf
   }
 
-  final def movableTeamTurnFinished(world: World)(implicit log: LoggingAdapter) =
+  final def movableTeamTurnStarted(world: World)(implicit log: LoggingAdapter) =
     WObject.selfEventedUpdate(world, self, resetMovementLeft(world))
 }

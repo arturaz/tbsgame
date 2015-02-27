@@ -47,15 +47,15 @@ trait OwnedObjCompanion extends ToOwnedObjOps {
     Evented((world, obj)) |>
       WObject.ifIs[Warpable].evt((w, o) => o.warpableTeamTurnStarted(w)) |>
       WObject.ifIs[GivingVictoryPoints].rawWorld((w, o) => o.givingVPsTeamTurnStarted(w)) |>
-      WObject.ifIs[Extractor].evtWorld((w, o) => o.extractorTeamTurnStarted(w))
+      WObject.ifIs[Extractor].evtWorld((w, o) => o.extractorTeamTurnStarted(w)) |>
+      WObject.ifIs[Movable].evt((w, o) => o.movableTeamTurnStarted(w)) |>
+      WObject.ifIs[Fighter].evt((w, o) => o.fighterTeamTurnStarted(w))
   }
 
   def teamTurnFinished
   (obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
   : Evented[(World, OwnedObj)] = {
     Evented((world, obj)) |>
-      WObject.ifIs[Movable].evt((w, o) => o.movableTeamTurnFinished(w)) |>
-      WObject.ifIs[Fighter].evt((w, o) => o.fighterTeamTurnFinished(w)) |>
       WObject.ifIs[ReactiveFighter].evt((w, o) => o.reactiveFighterTeamTurnFinished(w))
   }
 }
