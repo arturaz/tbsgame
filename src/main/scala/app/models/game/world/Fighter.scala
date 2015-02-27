@@ -127,13 +127,13 @@ trait FighterOps[Self <: Fighter] {
         newWorld <- newObjOpt.fold2(
           // New object is dead, need to respawn
           obj.cast[RespawnsOnDestruction].fold2(
-          // Not respawnable, just remove
-          newWorld.updated(obj, newObjOpt),
-          // Respawn
-          { respawnable =>
-            val newOwner = respawnable.ownerAfterRespawn(self.owner)
-            respawnable.respawn(world, newOwner)
-          }
+            // Not respawnable, just remove
+            newWorld.updated(obj, newObjOpt),
+            // Respawn
+            { respawnable =>
+              val newOwner = respawnable.ownerAfterRespawn(self.owner)
+              respawnable.respawn(newWorld, newOwner)
+            }
           ),
           // Not dead, just update
           _ => newWorld.updated(obj, newObjOpt)
