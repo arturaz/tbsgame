@@ -1,5 +1,6 @@
 package app.models.game.world.buildings
 
+import akka.event.LoggingAdapter
 import app.models.game.{Actions, Player}
 import app.models.game.world._
 import implicits._
@@ -32,7 +33,8 @@ with FighterOps[LaserTower] with WarpableOps[LaserTower]
 }
 
 trait LaserTowerImpl { _: LaserTower =>
-  protected def specialImpl(world: World, invokedBy: Player) =
+  protected def specialImpl
+  (world: World, invokedBy: Player)(implicit log: LoggingAdapter) =
     toFighterOps(this).withAttacksLeftEvt(stats.attacks)(world)
       .flatMap { newSelf => world.updated(this, newSelf) }
       .right

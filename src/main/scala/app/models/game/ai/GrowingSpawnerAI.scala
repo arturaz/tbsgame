@@ -129,9 +129,8 @@ object GrowingSpawnerAI {
     )
   }
 
-  private[this] def spawn(
-    world: World, spawner: Spawner
-  ): Either[String, WObject.WorldObjOptUpdate[SpawnerUnit]] = {
+  private[this] def spawn(world: World, spawner: Spawner)(implicit log: LoggingAdapter)
+  : Either[String, WObject.WorldObjOptUpdate[SpawnerUnit]] = {
     val warpZones = world.objects.collect {
       case o: OwnedObj if o.owner.team == spawner.owner.team => o.warpZone
     }.collect { case Some(wz) => wz }

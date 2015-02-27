@@ -225,7 +225,8 @@ case class World private (
     visibilityMap.isVisible(owner, v)
   def isValidForWarp(owner: Owner, v: Vect2): Boolean = warpZoneMap.isVisible(owner, v)
 
-  def reactTo[A <: OwnedObj](obj: A): WObject.WorldObjOptUpdate[A] = {
+  def reactTo[A <: OwnedObj](obj: A)(implicit log: LoggingAdapter)
+  : WObject.WorldObjOptUpdate[A] = {
     @tailrec def react(
       reactors: Iterable[ReactiveFighter], current: WObject.WorldObjOptUpdate[A]
     ): WObject.WorldObjOptUpdate[A] =

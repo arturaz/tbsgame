@@ -1,5 +1,6 @@
 package app.models.game.world.buildings
 
+import akka.event.LoggingAdapter
 import app.models.game.world._
 import app.models.game.{Player, Actions, Population}
 import implicits._
@@ -20,7 +21,8 @@ with GivingActionsStats with GivingPopulationStats with SpecialActionStats {
 }
 
 trait WarpGateImpl extends OwnedObjImpl with SpecialActionImpl { self: WarpGate =>
-  override protected def specialImpl(world: World, invokedBy: Player) =
+  override protected def specialImpl
+  (world: World, invokedBy: Player)(implicit log: LoggingAdapter) =
     world.addResources(invokedBy, stats.specialResourcesGiven)
 
   override def canDoSpecial(invokedBy: Player) = owner === invokedBy.team

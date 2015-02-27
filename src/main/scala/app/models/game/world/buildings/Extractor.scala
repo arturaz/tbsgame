@@ -88,7 +88,8 @@ _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
   private[this] def turnStartExtractResources(world: World, asteroid: Asteroid) =
     extractResources(world, asteroid.extractionSpeed)(asteroid)
 
-  override def specialImpl(world: World, invokedBy: Player) = {
+  override def specialImpl
+  (world: World, invokedBy: Player)(implicit log: LoggingAdapter) = {
     findAsteroid(world).right.flatMap { asteroid =>
       val percentageResources = Resources(
         (asteroid.resources.value * stats.specialExtractsPercentage).round.toInt

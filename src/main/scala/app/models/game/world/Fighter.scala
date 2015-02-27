@@ -85,22 +85,27 @@ trait FighterOps[Self <: Fighter] {
   final def fighterTeamTurnFinished(world: World)(implicit log: LoggingAdapter) =
     WObject.selfEventedUpdate(world, self, resetAttackIfWarpedIn(world))
 
-  private[this] def resetAttackIfWarpedIn(world: World) =
-    if (self.isWarpedIn) resetAttack(world) else Evented(self)
+  private[this] def resetAttackIfWarpedIn(world: World)(implicit log: LoggingAdapter) =
+    if (self.isWarpedIn) resetAttack(world)
+    else {
+      log.debug("not resetting attack because not warped in {}", self)
+      Evented(self)
+    }
 
-  private[this] def resetAttack(world: World): Evented[Self] =
+  private[this] def resetAttack(world: World)(implicit log: LoggingAdapter)
+  : Evented[Self] =
     withAttacksLeftEvt(self.stats.attacks)(world)
 
-  private[this] def attackSimple[Target <: OwnedObj](
-    obj: Target, world: World
-  ): Either[String, (Attack, Evented[Self], Option[Target])] =
+  private[this] def attackSimple[Target <: OwnedObj]
+  (obj: Target, world: World)(implicit log: LoggingAdapter)
+  : Either[String, (Attack, Evented[Self], Option[Target])] =
     self.cantAttackReason(obj, world).fold2({
       val attack = Attack(self, obj)
       val newObj = attack(obj)
       (
         attack,
         for {
-          newSelf <- self.withAttacksLeftEvt(
+          newSelf <- withAttacksLeftEvt(
             self.attacksLeft - Attacks(1)
           )(world)
           newSelf <- newSelf.withNewXPEvt(
@@ -115,9 +120,9 @@ trait FighterOps[Self <: Fighter] {
       ).right
     }, _.left)
 
-  def attack[Target <: OwnedObj](
-    obj: Target, world: World
-  ): Either[String, Evented[(World, Self, Attack, Option[Target])]] = {
+  def attack[Target <: OwnedObj]
+  (obj: Target, world: World)(implicit log: LoggingAdapter)
+  : Either[String, Evented[(World, Self, Attack, Option[Target])]] = {
     attackSimple(obj, world).right.map { case (attack, attackedEvt, newObjOpt) =>
       for {
         attacked <- attackedEvt
@@ -147,21 +152,25 @@ trait FighterOps[Self <: Fighter] {
     }
   }
 
-  def attackWS(
-    obj: OwnedObj, world: World
-  ): Either[String, WObject.WorldObjUpdate[Self]] =
+  def attackWS(obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
+  : Either[String, WObject.WorldObjUpdate[Self]] =
     attack(obj, world).right.map(_.map { t => (t._1, t._2) })
 
-  def attackW(obj: OwnedObj, world: World): Either[String, Evented[World]] =
+  def attackW(obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
+  : Either[String, Evented[World]] =
     attack(obj, world).right.map(_.map(_._1))
 
   protected def withAttacksLeft(value: Attacks): Self
 
-  def withAttacksLeftEvt(value: Attacks)(world: World): Evented[Self] = {
+  def withAttacksLeftEvt(value: Attacks)(world: World)(implicit log: LoggingAdapter)
+  : Evented[Self] = {
     val newSelf = withAttacksLeft(value)
     Evented(
       newSelf,
-      if (self === newSelf) Vector.empty
+      if (self === newSelf) {
+        log.debug("not creating attacks changed evt, because {} === {}", self, newSelf)
+        Vector.empty
+      }
       else Vector(AttacksChangedEvt(world, newSelf))
     )
   }

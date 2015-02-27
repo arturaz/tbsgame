@@ -25,7 +25,7 @@ trait ReactiveFighterImpl extends FighterImpl { self: Fighter =>
   /* Attacks the target if he can. Returns None if there was no reaction. */
   def reactToOpt[A <: OwnedObj](
     obj: A, world: World
-  ): Option[Reaction[WObject.WorldObjOptUpdate[A]]] = {
+  )(implicit log: LoggingAdapter): Option[Reaction[WObject.WorldObjOptUpdate[A]]] = {
     if (shouldReact(obj))
       toFighterOps(this).attack(obj, world).right.toOption.map {
         case evt @ Evented((newWorld, newSelf, attack, newObjOpt), _) =>
@@ -46,7 +46,7 @@ trait ReactiveFighterImpl extends FighterImpl { self: Fighter =>
   /* Attacks the target if he can. */
   def reactTo[A <: OwnedObj](
     obj: A, world: World
-  ): Reaction[WObject.WorldObjOptUpdate[A]] =
+  )(implicit log: LoggingAdapter): Reaction[WObject.WorldObjOptUpdate[A]] =
     reactToOpt(obj, world).fold2(
       Reaction(Evented((world, Some(obj))), abortReacting = false),
       identity

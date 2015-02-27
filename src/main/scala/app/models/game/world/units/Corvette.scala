@@ -1,5 +1,6 @@
 package app.models.game.world.units
 
+import akka.event.LoggingAdapter
 import app.models.game.world._
 import app.models.game.{Population, Actions, Player}
 import app.models.game.world.Ops._
@@ -37,7 +38,8 @@ trait CorvetteImpl { _: Corvette =>
   type Stats = CorvetteStats.type
   override val stats = CorvetteStats
 
-  override def specialImpl(world: World, invokedBy: Player) = Either.cond(
+  override def specialImpl
+  (world: World, invokedBy: Player)(implicit log: LoggingAdapter) = Either.cond(
     ! noAttacksLeft,
     {
       for {

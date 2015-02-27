@@ -32,7 +32,7 @@ trait WarpableCompanion[Self <: Warpable] { _: WObjectStats =>
   /* Warp with reactions applied. */
   def warp(
     world: World, player: Player, position: Vect2
-  ): Either[String, WObject.WorldObjOptUpdate[Self]] =
+  )(implicit log: LoggingAdapter): Either[String, WObject.WorldObjOptUpdate[Self]] =
     warpWOReaction(world, player, position).right.map { warpedIn =>
       World.revealObjects(
         player.team, WarpEvt(world, warpedIn) +: world.add(warpedIn)
@@ -41,7 +41,7 @@ trait WarpableCompanion[Self <: Warpable] { _: WObjectStats =>
 
   def warpW(
     world: World, player: Player, position: Vect2
-  ): Either[String, Evented[World]] =
+  )(implicit log: LoggingAdapter): Either[String, Evented[World]] =
     warp(world, player, position).right.map { _.map(_._1) }
 }
 

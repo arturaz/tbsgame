@@ -1,5 +1,6 @@
 package app.models.game.world
 
+import akka.event.LoggingAdapter
 import app.models.game.{Player, Actions}
 import app.models.game.events.Evented
 import implicits._
@@ -13,11 +14,13 @@ trait SpecialActionStats extends OwnedObjStats {
 trait SpecialActionImpl extends OwnedObjImpl {
   type Stats <: SpecialActionStats
 
-  def special(world: World, invokedBy: Player): Either[String, Evented[World]] =
+  def special(world: World, invokedBy: Player)(implicit log: LoggingAdapter)
+  : Either[String, Evented[World]] =
     if (isWarpedIn) specialImpl(world, invokedBy)
     else s"Can't do special for $this while warping in!".left
 
-  protected def specialImpl(world: World, invokedBy: Player): Either[String, Evented[World]]
+  protected def specialImpl(world: World, invokedBy: Player)(implicit log: LoggingAdapter)
+  : Either[String, Evented[World]]
 
   def canDoSpecial(invokedBy: Player) = owner === invokedBy
 }

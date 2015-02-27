@@ -37,7 +37,7 @@ trait MovableOps[Self <: Movable] extends OwnedObjOps[Self] {
 
   def moveTo(
     world: World, path: Path
-  ): Either[String, WObject.WorldObjOptUpdate[Self]] = {
+  )(implicit log: LoggingAdapter): Either[String, WObject.WorldObjOptUpdate[Self]] = {
     if (path.movementNeeded > self.movementLeft)
       s"$this needed ${path.movementNeeded} movement for $path, had ${self.movementLeft
       }".left
@@ -55,14 +55,14 @@ trait MovableOps[Self <: Movable] extends OwnedObjOps[Self] {
 
   def moveTo(
     world: World, path: NonEmptyVector[Vect2]
-  ): Either[String, WObject.WorldObjOptUpdate[Self]] =
+  )(implicit log: LoggingAdapter): Either[String, WObject.WorldObjOptUpdate[Self]] =
     Path.validate(world, self.position, path).left.map(err =>
       s"Can't validate path: ${self.position}, $path: $err"
     ).right.flatMap(moveTo(world, _))
 
   private[this] def travel(
     vects: Seq[Vect2], current: WObject.WorldObjOptUpdate[Self]
-  ): WObject.WorldObjOptUpdate[Self] = {
+  )(implicit log: LoggingAdapter): WObject.WorldObjOptUpdate[Self] = {
     if (vects.isEmpty) current
     else current.flatMap {
       case (world, Some(self)) => travel(

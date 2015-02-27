@@ -1,5 +1,6 @@
 package app.models.game.world.buildings
 
+import akka.event.LoggingAdapter
 import app.models.game.{Actions, Bot}
 import app.models.game.world._
 import app.models.game.world.units._
@@ -42,7 +43,7 @@ trait SpawnerImpl { _: Spawner =>
   val turnsPerStrength: SpawnerStr
 
   /* Try to spawn at position, returning Right(None) if unit was killed after spawn. */
-  def spawn(world: World, position: Vect2) = {
+  def spawn(world: World, position: Vect2)(implicit log: LoggingAdapter) = {
     case class Counter(counts: Map[WObjKind, Int]=Map.empty.withDefaultValue(0)) {
       def +(kind: WObjKind) = Counter(counts updated (kind, counts(kind) + 1))
 
