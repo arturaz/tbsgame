@@ -112,7 +112,7 @@ object RectDistance {
 }
 
 
-class Movement private (val value: Int) extends IntValueClass[Movement] {
+case class Movement private (value: Int) extends IntValueClass[Movement] {
   override def self(v: Int) = new Movement(v)
   def tileValue = value / Movement.Multiplier
 }
@@ -121,7 +121,7 @@ object Movement {
   val zero = fromAbsolute(0)
 
   def fromTiles(tiles: Int) = fromAbsolute(tiles * Multiplier)
-  def fromAbsolute(value: Int) = new Movement(value)
+  def fromAbsolute(value: Int) = Movement(value)
 
   implicit object MovementNumeric extends IntValueClass.Numeric[Movement] {
     override def fromInt(x: Int) = Movement.fromAbsolute(x)
