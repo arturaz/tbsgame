@@ -44,17 +44,27 @@ case class World private (
     gameTurnX(log.prefixed("finished|")) {
       implicit log => obj => world => WObject.gameTurnFinished(world, obj).map(_._1)
     }
-  def teamTurnStarted(team: Team)(implicit log: LoggingAdapter) =
+
+  /* If team does not have any objects, there is nothing it can do thus it should be
+     skipped. For example this can happen when playing 1v1 pvp and all NPC objects are
+     eradicated. */
+  def ifTeamExists(team: Team)(f: => Evented[World]) =
+    if (teams.contains(team)) f else Evented(this)
+
+  def teamTurnStarted(team: Team)(implicit log: LoggingAdapter) = ifTeamExists(team) {
+    /* Run only if this team has objects */
     Evented(this, Vector(TurnStartedEvt(team))) |>
     teamTurnX(team, log.prefixed("started|")) {
       implicit log => obj => world => OwnedObj.teamTurnStarted(obj, world).map(_._1)
     } |>
     runAI(team)
-  def teamTurnFinished(team: Team)(implicit log: LoggingAdapter) =
+  }
+  def teamTurnFinished(team: Team)(implicit log: LoggingAdapter) = ifTeamExists(team) {
     Evented(this, Vector(TurnEndedEvt(team))) |>
     teamTurnX(team, log.prefixed("finished|")) {
       implicit log => obj => world => OwnedObj.teamTurnFinished(obj, world).map(_._1)
     }
+  }
 
   def actionsFor(player: Player): Actions = {
     val actions = objects.collect {
