@@ -18,7 +18,6 @@ with EmptySpaceWarpableCompanion[LaserTower]
   override val visibility = RectDistance(4)
   override val kind = WObjKind.Heavy
   override val specialActionsNeeded = Actions(2)
-  override def InitialAttacks = Attacks(0)
 
   override def warp(owner: Player, position: Vect2) = LaserTower(position, owner)
 }

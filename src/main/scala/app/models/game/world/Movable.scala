@@ -12,6 +12,7 @@ import scala.language.implicitConversions
 
 trait MovableStats extends OwnedObjStats {
   val movement: Movement
+  val InitialMovement = Movement.fromTiles(0)
 }
 
 trait MovableImpl extends OwnedObjImpl with Mobility[Mobility.Movable.type] {

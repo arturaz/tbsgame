@@ -103,7 +103,7 @@ case class Spawner(
 case class Scout(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=ScoutStats.maxHp,
-  movementLeft: Movement=ScoutStats.movement,
+  movementLeft: Movement=ScoutStats.InitialMovement,
   warpState: WarpTime=ScoutStats.InitialWarpState
 ) extends WUnit {
   type Stats = ScoutStats.type
@@ -115,7 +115,7 @@ case class Corvette(
   id: WObject.Id=WObject.newId, hp: HP=CorvetteStats.maxHp,
   xp: XP=CorvetteStats.InitialXP,
   attacksLeft: Attacks=CorvetteStats.InitialAttacks,
-  movementLeft: Movement=CorvetteStats.movement,
+  movementLeft: Movement=CorvetteStats.InitialMovement,
   warpState: WarpTime=CorvetteStats.InitialWarpState
 ) extends CorvetteImpl with WUnit with Fighter with SpecialAction
 
@@ -123,7 +123,7 @@ case class Gunship(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=GunshipStats.maxHp, xp: XP=GunshipStats.InitialXP,
   attacksLeft: Attacks=GunshipStats.InitialAttacks,
-  movementLeft: Movement=GunshipStats.movement,
+  movementLeft: Movement=GunshipStats.InitialMovement,
   warpState: WarpTime=GunshipStats.InitialWarpState
 ) extends WUnit with Fighter {
   type Stats = GunshipStats.type
@@ -135,7 +135,7 @@ case class RocketFrigate(
   id: WObject.Id=WObject.newId, hp: HP=RocketFrigateStats.maxHp,
   xp: XP=RocketFrigateStats.InitialXP,
   attacksLeft: Attacks=RocketFrigateStats.InitialAttacks,
-  movementLeft: Movement=RocketFrigateStats.movement,
+  movementLeft: Movement=RocketFrigateStats.InitialMovement,
   warpState: WarpTime=RocketFrigateStats.InitialWarpState
 ) extends WUnit with Fighter {
   type Stats = RocketFrigateStats.type
@@ -146,7 +146,8 @@ case class Wasp(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=WaspStats.maxHp, xp: XP=WaspStats.InitialXP,
   attacksLeft: Attacks=WaspStats.InitialAttacks,
-  movementLeft: Movement=WaspStats.movement, warpState: WarpTime=WaspStats.InitialWarpState
+  movementLeft: Movement=WaspStats.InitialMovement,
+  warpState: WarpTime=WaspStats.InitialWarpState
 ) extends WUnit with Fighter {
   type Stats = WaspStats.type
   override val stats = WaspStats
@@ -156,7 +157,7 @@ case class RayShip(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=RayShipStats.maxHp, xp: XP=RayShipStats.InitialXP,
   attacksLeft: Attacks=RayShipStats.InitialAttacks,
-  movementLeft: Movement=RayShipStats.movement,
+  movementLeft: Movement=RayShipStats.InitialMovement,
   warpState: WarpTime=RayShipStats.InitialWarpState
 ) extends WUnit with Fighter {
   type Stats = RayShipStats.type
@@ -167,7 +168,7 @@ case class Fortress(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=FortressStats.maxHp, xp: XP=FortressStats.InitialXP,
   attacksLeft: Attacks=FortressStats.InitialAttacks,
-  movementLeft: Movement=FortressStats.movement,
+  movementLeft: Movement=FortressStats.InitialMovement,
   warpState: WarpTime=FortressStats.InitialWarpState
 ) extends WUnit with Fighter {
   type Stats = FortressStats.type

@@ -25,7 +25,7 @@ trait FighterStats extends OwnedObjStats {
   val attacks: Attacks
   val critical: Chance = Chance(0.1)
   val criticalMultiplier: Double = 2
-  def InitialAttacks = attacks
+  val InitialAttacks = Attacks(0)
 
   val LevelMultiplierTable = Map(
     Level(1) -> 1.15, Level(2) -> 1.45, Level(3) -> 2.0
