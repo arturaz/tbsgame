@@ -46,7 +46,7 @@ object GameActor {
       case class Stats(stats: WObjectStats, showInWarpables: Boolean=false)
     }
     case class Init(
-      bounds: Bounds, objects: WorldObjs,
+      bounds: Bounds, objects: WorldObjs.All,
       warpZonePoints: Iterable[Vect2], visiblePoints: Iterable[Vect2],
       selfTeam: Team, otherTeams: Iterable[Team],
       self: HumanState, others: Iterable[(Player, Option[HumanState])],
@@ -80,7 +80,9 @@ object GameActor {
 
     stateFor(human).right.map { selfState =>
       Out.Init(
-        visibleGame.world.bounds, visibleGame.world.objects,
+        visibleGame.world.bounds,
+        visibleGame.world.objects ++
+          game.world.noLongerVisibleImmovableObjectsFor(human.team),
         visibleGame.world.warpZoneMap.map.keys.map(_._1),
         visibleGame.world.visibilityMap.map.keys.map(_._1),
         human.team, game.world.teams - human.team,

@@ -20,7 +20,7 @@ object GameMap {
 }
 
 case class GameMap private (
-  bounds: Bounds, objects: WorldObjs, npcs: Vector[NpcF],
+  bounds: Bounds, objects: WorldObjs.All, npcs: Vector[NpcF],
   startingPositions: Set[Vect2]
 ) extends WorldMaterializer {
   def add(obj: WObject) = objects.add(obj).map(o => copy(objects = o))

@@ -15,7 +15,7 @@ trait MovableStats extends OwnedObjStats {
   val InitialMovement = Movement.fromTiles(0)
 }
 
-trait MovableImpl extends OwnedObjImpl with Mobility[Mobility.Movable.type] {
+trait MovableImpl extends OwnedObjImpl with MobilityMovable {
   type Stats <: MovableStats
 
   val movementLeft: Movement
@@ -86,7 +86,7 @@ trait MovableOps[Self <: Movable] extends OwnedObjOps[Self] {
     Evented(
       newSelf,
       if (self === newSelf) Vector.empty
-      else Vector(MovementChangeEvt(world, newSelf))
+      else Vector(MovementChangeEvt(world.visibilityMap, newSelf))
     )
   }
 
@@ -98,7 +98,10 @@ trait MovableOps[Self <: Movable] extends OwnedObjOps[Self] {
       newSelf <- Evented(
         setMoveValues(target, self.movementLeft - self.position.movementDistance(target))
       )
-      newSelf <- Evented(newSelf, MoveEvt(world, self, target, newSelf.movementLeft))
+      newSelf <- Evented(
+        newSelf,
+        MoveEvt(world.visibilityMap, self, target, newSelf.movementLeft)
+      )
     } yield newSelf
   }
 

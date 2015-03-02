@@ -10,11 +10,16 @@ import scalaz.{-\/, \/-, \/}
 import implicits._
 
 object WorldObjs {
-  val empty = new WorldObjs(Map.empty, Map.empty)
+  type All = WorldObjs[WObject]
+  type Any = WorldObjs[_ <: WObject]
+  type Static = WorldObjs[WObject.Static]
 
-  def apply(objects: WObject*): String \/ WorldObjs = empty.add(objects)
+  def empty[Obj <: WObject] = new WorldObjs[Obj](Map.empty, Map.empty)
 
-  private type ObjectsMap = Map[WObject.Id, WObject]
+  def apply[Obj <: WObject](objects: Obj*): String \/ WorldObjs[Obj] =
+    empty[Obj].add(objects)
+
+  private type ObjectsMap[Obj <: WObject] = Map[WObject.Id, Obj]
   private type PositionsMap = Map[Vect2, Set[WObject.Id]]
 
   private def addPositions(
@@ -36,38 +41,39 @@ object WorldObjs {
       else fPositions
     }
 
-  def newBuilder = new mutable.Builder[WObject, WorldObjs] {
-    private[this] var objs = empty
+  def newBuilder[Obj <: WObject] = new mutable.Builder[Obj, WorldObjs[Obj]] {
+    private[this] var objs = empty[Obj]
 
-    override def +=(elem: WObject) = { objs += elem; this }
+    override def +=(elem: Obj) = { objs += elem; this }
     override def result() = objs
     override def clear(): Unit = { objs = empty }
   }
 
-  implicit def canBuildFrom[T]: CanBuildFrom[WorldObjs, T, Vector[T]] =
-    new CanBuildFrom[WorldObjs, T, Vector[T]] {
-      override def apply(from: WorldObjs) = apply()
+  implicit def canBuildFrom[Obj <: WObject, T]
+  : CanBuildFrom[WorldObjs[Obj], T, Vector[T]] =
+    new CanBuildFrom[WorldObjs[Obj], T, Vector[T]] {
+      override def apply(from: WorldObjs[Obj]) = apply()
       override def apply() = Vector.newBuilder
     }
 }
 
-case class WorldObjs private (
-  objectsMap: ObjectsMap,
+case class WorldObjs[Obj <: WObject] private (
+  objectsMap: ObjectsMap[Obj],
   positionsMap: PositionsMap
-) extends IterableLike[WObject, WorldObjs]{
+) extends IterableLike[Obj, WorldObjs[Obj]]{
   import WorldObjs._
 
   override def toString() = s"WorldObjs(objects: $objectsMap, positions: $positionsMap)"
 
   private[this] def doManyEither[A]
-  (as: TraversableOnce[A])(f: (WorldObjs, A) => String \/ WorldObjs)
-  : String \/ WorldObjs =
+  (as: TraversableOnce[A])(f: (WorldObjs[Obj], A) => String \/ WorldObjs[Obj])
+  : String \/ WorldObjs[Obj] =
     as.foldLeft(this.rightZ[String]) {
       case (\/-(wo), a) => f(wo, a)
       case (left @ -\/(err), _) => left
     }
 
-  def add(obj: WObject): String \/ WorldObjs = {
+  def add(obj: Obj): String \/ WorldObjs[Obj] = {
     if (objectsMap.contains(obj.id)) s"$obj already exists in $this".leftZ
     else copy(
       objectsMap = objectsMap + (obj.id -> obj),
@@ -75,16 +81,16 @@ case class WorldObjs private (
     ).rightZ
   }
 
-  def add(objs: TraversableOnce[WObject]): String \/ WorldObjs =
+  def add(objs: TraversableOnce[Obj]): String \/ WorldObjs[Obj] =
     doManyEither(objs)(_ add _)
 
-  def add_!(obj: WObject): WorldObjs = add(obj).right_!
-  def +(obj: WObject): WorldObjs = add_!(obj)
+  def add_!(obj: Obj): WorldObjs[Obj] = add(obj).right_!
+  def +(obj: Obj): WorldObjs[Obj] = add_!(obj)
   
-  def add_!(objs: TraversableOnce[WObject]): WorldObjs = add(objs).right_!
-  def ++(objs: TraversableOnce[WObject]): WorldObjs = add_!(objs)
+  def add_!(objs: TraversableOnce[Obj]): WorldObjs[Obj] = add(objs).right_!
+  def ++(objs: TraversableOnce[Obj]): WorldObjs[Obj] = add_!(objs)
 
-  def remove(objId: WObject.Id): String \/ WorldObjs = {
+  def remove(objId: WObject.Id): String \/ WorldObjs[Obj] = {
     objectsMap.get(objId).fold2(
       s"$objId is not in $this".leftZ,
       obj => copy(
@@ -93,16 +99,16 @@ case class WorldObjs private (
       ).rightZ
     )
   }
-  def remove(objs: TraversableOnce[WObject.Id]): String \/ WorldObjs =
+  def remove(objs: TraversableOnce[WObject.Id]): String \/ WorldObjs[Obj] =
     doManyEither(objs)(_ remove _)
 
-  def remove_!(obj: WObject.Id): WorldObjs = remove(obj).right_!
-  def -(obj: WObject.Id): WorldObjs = remove_!(obj)
+  def remove_!(obj: WObject.Id): WorldObjs[Obj] = remove(obj).right_!
+  def -(obj: WObject.Id): WorldObjs[Obj] = remove_!(obj)
 
-  def remove_!(objs: TraversableOnce[WObject.Id]): WorldObjs = remove(objs).right_!
-  def --(objs: TraversableOnce[WObject.Id]): WorldObjs = remove_!(objs)
+  def remove_!(objs: TraversableOnce[WObject.Id]): WorldObjs[Obj] = remove(objs).right_!
+  def --(objs: TraversableOnce[WObject.Id]): WorldObjs[Obj] = remove_!(objs)
 
-  def update[A <: WObject](before: A, after: A): String \/ WorldObjs = {
+  def update[A <: Obj](before: A, after: A): String \/ WorldObjs[Obj] = {
     if (before.id != after.id)
       s"IDs don't match for [before=$before] and [after=$after]!".leftZ
     else if (! objectsMap.contains(before.id))
@@ -121,7 +127,7 @@ case class WorldObjs private (
     }
   }
 
-  def update_![A <: WObject](before: A, after: A): WorldObjs =
+  def update_![A <: Obj](before: A, after: A): WorldObjs[Obj] =
     update(before, after).right_!
 
   def objects = objectsMap.values
@@ -131,26 +137,27 @@ case class WorldObjs private (
   override def seq = objectsMap.values
 
   /* Keeps world objects that are at least partly in given positions */
-  def filterPartial(positions: TraversableOnce[Vect2]): WorldObjs = {
+  def filterPartial(positions: TraversableOnce[Vect2]): WorldObjs[Obj] = {
     val emptyIds = Set.empty[WObject.Id]
     val ids = positions.flatMap(positionsMap.getOrElse(_, emptyIds)).toSet
-    ids.foldLeft(WorldObjs.empty) { case (objs, id) => objs + objectsMap(id) }
+    ids.foldLeft(WorldObjs.empty[Obj]) { case (objs, id) => objs + objectsMap(id) }
   }
 
-  override def filter(predicate: WObject => Boolean): WorldObjs = {
+  override def filter(predicate: Obj => Boolean): WorldObjs[Obj] = {
     objectsMap.valuesIterator.foldLeft(this) { case (fWorldObjs, obj) =>
       if (predicate(obj)) fWorldObjs
       else fWorldObjs remove_! obj.id
     }
   }
-  override def filterNot(p: (WObject) => Boolean) = filter(obj => ! p(obj))
+  override def filterNot(p: Obj => Boolean) = filter(obj => ! p(obj))
 
   def idsIn(pos: Vect2) = positionsMap.getOrElse(pos, Set.empty)
   def nonEmptyAt(pos: Vect2) = idsIn(pos).nonEmpty
   def emptyAt(pos: Vect2) = ! nonEmptyAt(pos)
-  def objectsIn(pos: Vect2): Set[WObject] = idsIn(pos).map(objectsMap.apply)
-  def objectsIn(bounds: Bounds): Set[WObject] =
-    bounds.points.foldLeft(Set.empty[WObject]) { case (s, v) => s ++ objectsIn(v) }
+  def objectsIn(pos: Vect2): Set[Obj] = idsIn(pos).map(objectsMap.apply)
+  def objectsIn(bounds: Bounds): Set[Obj] = objectsIn(bounds.points)
+  def objectsIn(points: TraversableOnce[Vect2]): Set[Obj] =
+    points.foldLeft(Set.empty[Obj]) { case (s, v) => s ++ objectsIn(v) }
   def isAllFree(bounds: Bounds): Boolean = isAllFree(bounds.points)
   def isAllFree(points: TraversableOnce[Vect2]): Boolean = ! points.exists(nonEmptyAt)
 
@@ -164,6 +171,6 @@ case class WorldObjs private (
     objectsIn(position).collectFirst { case o: A => o }
   def getE(position: Vect2) =
     get(position).toRight(s"Can't find obj @ $position in world")
-  def find[A <: WObject](predicate: PartialFunction[WObject, A]): Option[A] =
+  def find[A <: Obj](predicate: PartialFunction[Obj, A]): Option[A] =
     objects.collectFirst(predicate)
 }

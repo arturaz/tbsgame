@@ -35,7 +35,7 @@ trait WarpableCompanion[Self <: Warpable] { _: WObjectStats =>
   )(implicit log: LoggingAdapter): Either[String, WObject.WorldObjOptUpdate[Self]] =
     warpWOReaction(world, player, position).right.map { warpedIn =>
       World.revealObjects(
-        player.team, WarpEvt(world, warpedIn) +: world.add(warpedIn)
+        player.team, WarpEvt(world.visibilityMap, warpedIn) +: world.add(warpedIn)
       ).flatMap(_.reactTo(warpedIn))
     }
 
@@ -86,7 +86,7 @@ trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
     if (self.isWarpedIn) Evented(self)
     else {
       val newSelf = setWarpState(self.warpState + WarpTime(1))
-      Evented(newSelf, Vector(WarpStateChangeEvt(world, newSelf)))
+      Evented(newSelf, Vector(WarpStateChangeEvt(world.visibilityMap, newSelf)))
     }
 
   final def warpableTeamTurnStarted(world: World)(implicit log: LoggingAdapter) =

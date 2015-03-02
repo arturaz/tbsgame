@@ -72,7 +72,7 @@ object Pathfinding {
   }
 
   def movement(
-    origin: Movable, worldBounds: Bounds, obstacles: WorldObjs
+    origin: Movable, worldBounds: Bounds, obstacles: WorldObjs.Any
   ): Vector[Path] = {
     val oNode = originNode(origin.position)
     var nodes = Map.empty[Vect2, Node]
@@ -91,7 +91,7 @@ object Pathfinding {
   /* Finds objects which can be attacked with fewest moves. */
   def attackSearch[A](
     origin: Movable with Fighter, targets: Iterable[A],
-    worldBounds: Bounds, obstacles: WorldObjs
+    worldBounds: Bounds, obstacles: WorldObjs.Any
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = attackSearch(
     origin.position, origin.movementLeft, origin.stats.attackRange,
     targets, worldBounds, obstacles
@@ -99,7 +99,7 @@ object Pathfinding {
 
   /* Finds objects which can be attacked with fewest moves. */
   def attackSearch[A](
-    origin: Fighter, targets: Iterable[A], worldBounds: Bounds, obstacles: WorldObjs
+    origin: Fighter, targets: Iterable[A], worldBounds: Bounds, obstacles: WorldObjs.Any
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = attackSearch(
     origin.position, Movement.fromAbsolute(0), origin.stats.attackRange,
     targets, worldBounds, obstacles
@@ -109,7 +109,7 @@ object Pathfinding {
   private def attackSearch[A](
     /* Only objects that don't move or are 1x1 sized can use this method. */
     origin: Vect2, movementRange: Movement, attackRange: RadialDistance,
-    targets: Iterable[A], worldBounds: Bounds, obstacles: WorldObjs,
+    targets: Iterable[A], worldBounds: Bounds, obstacles: WorldObjs.Any,
     resultsNeeded: Int=Int.MaxValue
   )(aToBounds: A => Bounds): Vector[SearchRes[A]] = {
     def attackableTargets(from: Vect2): Iterable[A] = targets.filter { target =>
@@ -145,7 +145,7 @@ object Pathfinding {
 
   private[this] def bfs(
     originNode: Node, movementRange: Movement, worldBounds: Bounds,
-    obstacles: WorldObjs
+    obstacles: WorldObjs.Any
   )(abortSearch: Node => Boolean, onNodeVisited: Node => Unit): Unit = {
     if (movementRange.isNotZero) {
       val (pos, mr) = (originNode.position, movementRange.tileValue)
@@ -161,12 +161,12 @@ object Pathfinding {
   }
 
   private[this] def bfs(
-    origin: Vect2, worldBounds: Bounds, obstacles: WorldObjs
+    origin: Vect2, worldBounds: Bounds, obstacles: WorldObjs.Any
   )(abortSearch: Node => Boolean, onNodeVisited: Node => Unit): Unit =
     bfs(originNode(origin), worldBounds, obstacles)(abortSearch, onNodeVisited)
 
   private[this] def bfs(
-    originNode: Node, worldBounds: Bounds, obstacles: WorldObjs
+    originNode: Node, worldBounds: Bounds, obstacles: WorldObjs.Any
   )(abortSearch: Node => Boolean, onNodeVisited: Node => Unit): Unit = {
     implicit val ord = Ordering[Movement].on((n: Node) => n.distance).reverse
     val queue = mutable.PriorityQueue(originNode)
@@ -186,11 +186,11 @@ object Pathfinding {
     }
   }
 
-  @inline private[this] def obstructed(v: Vect2, obstacles: WorldObjs) =
+  @inline private[this] def obstructed(v: Vect2, obstacles: WorldObjs.Any) =
     obstacles.nonEmptyAt(v)
 
   private[this] def neighbours(
-    current: Vect2, worldBounds: Bounds, obstacles: WorldObjs
+    current: Vect2, worldBounds: Bounds, obstacles: WorldObjs.Any
   ): Iterator[Vect2] = {
     def add(v: Vect2) =
       if (worldBounds.contains(v) && ! obstructed(v, obstacles)) Iterator(v)
@@ -206,7 +206,7 @@ object Pathfinding {
 
   def aStar(
     unit: Movable, target: Bounds, worldBounds: Bounds,
-    obstacles: WorldObjs
+    obstacles: WorldObjs.Any
   ): Option[Path] = {
     val start = unit.position
     val goal = Iterator.from(1).map { n =>
@@ -219,7 +219,7 @@ object Pathfinding {
   }
 
   private[this] def aStar(
-    start: Vect2, goal: Vect2, worldBounds: Bounds, obstacles: WorldObjs
+    start: Vect2, goal: Vect2, worldBounds: Bounds, obstacles: WorldObjs.Any
   )(heuristicDistance: (Vect2, Vect2) => Movement): Option[Path] = {
     def reconstructPath(
       cameFrom: Map[Vect2, Vect2], currentNode: Vect2

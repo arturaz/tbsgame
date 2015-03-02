@@ -28,7 +28,7 @@ trait RespawnsOnDestructionOps[Self <: RespawnsOnDestruction] extends OwnedObjOp
     Evented(
       newObj,
       if (self.owner == newObj.owner) Vector.empty
-      else Vector(OwnerChangeEvt(world, newObj))
+      else Vector(OwnerChangeEvt(world.visibilityMap, newObj))
     )
   }
 

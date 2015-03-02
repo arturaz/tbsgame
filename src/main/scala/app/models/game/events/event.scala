@@ -2,6 +2,7 @@ package app.models.game.events
 
 import app.models.game._
 import app.models.game.world._
+import app.models.game.world.maps.VisibilityMap
 import implicits._
 import utils.ValWithMax
 
@@ -25,9 +26,9 @@ sealed trait AlwaysVisibleEvent extends VisibleEvent {
 }
 
 sealed trait BoundedEvent extends VisibleEvent {
-  def world: World
+  def visibilityMap: VisibilityMap
   def bounds: Bounds
-  override def visibleBy(owner: Owner) = world.isVisiblePartial(owner, bounds)
+  override def visibleBy(owner: Owner) = visibilityMap.isVisiblePartial(owner, bounds)
 }
 
 case class HumanState(
@@ -63,44 +64,59 @@ case class VisibilityChangeEvt(
   override def unownedVects = invisible
 }
 
-case class WarpEvt(world: World, obj: Warpable) extends BoundedEvent {
+case class WarpEvt(visibilityMap: VisibilityMap, obj: Warpable) extends BoundedEvent {
   def bounds = obj.bounds
 }
 
-case class WarpStateChangeEvt(world: World, newObj: Warpable) extends BoundedEvent {
+case class WarpStateChangeEvt(
+  visibilityMap: VisibilityMap, newObj: Warpable
+) extends BoundedEvent {
   def bounds = newObj.bounds
 }
 
-case class ObjVisibleEvt(team: Team, world: World, obj: WObject) extends VisibleEvent {
+case class ObjVisibleEvt(team: Team, obj: WObject) extends VisibleEvent {
   override def visibleBy(owner: Owner) = owner.team === team
 }
 
-case class ObjDestroyedEvt(world: World, obj: WObject) extends BoundedEvent {
+trait ObjDestroyedEvt extends VisibleEvent {
+  def obj: WObject
+}
+/* Real object was destroyed - dispatch to everyone who sees it. */
+case class RealObjDestroyedEvt(
+  visibilityMap: VisibilityMap, obj: WObject
+) extends ObjDestroyedEvt with BoundedEvent {
   override def bounds = obj.bounds
+}
+/* Ghost object was destroyed - one that we saw in the past but now we can see that it
+   does not exist anymore - dispatch to one team. */
+case class GhostObjDestroyedEvt(
+  dispatchFor: Team, obj: WObject
+) extends ObjDestroyedEvt {
+  override def visibleBy(owner: Owner) = owner.team === dispatchFor
 }
 
 case class MoveEvt(
-  world: World, oldObj: Movable, to: Vect2, movesLeft: Movement
+  visibilityMap: VisibilityMap, oldObj: Movable, to: Vect2, movesLeft: Movement
 ) extends Event {
   override def asViewedBy(owner: Owner) =
-    if (world.isVisibleFor(owner, oldObj.position)) Iterable(this)
-    else if (world.isVisibleFor(owner, to))
-      Iterable(ObjVisibleEvt(owner.team, world, oldObj), this)
+    if (visibilityMap.isVisible(owner, oldObj.position)) Iterable(this)
+    else if (visibilityMap.isVisible(owner, to))
+      Iterable(ObjVisibleEvt(owner.team, oldObj), this)
     else Iterable.empty
 }
 
 case class AttackEvt[D <: OwnedObj](
-  world: World, attacker: Fighter, defender: (D, Option[D]), attack: Attack
+  visibilityMap: VisibilityMap, attacker: Fighter, defender: (D, Option[D]), attack: Attack
 ) extends Event {
   override def asViewedBy(owner: Owner) =
-    if (world.isVisiblePartial(owner, defender._1.bounds)) {
-      if (world.isVisiblePartial(owner, attacker.bounds))
+    if (visibilityMap.isVisiblePartial(owner, defender._1.bounds)) {
+      if (visibilityMap.isVisiblePartial(owner, attacker.bounds))
         // Just attack
         Iterable(this)
       else
         // Show, attack, then hide.
         Iterable(
-          ObjVisibleEvt(owner.team, world, attacker),
+          ObjVisibleEvt(owner.team, attacker),
           this,
           VisibilityChangeEvt(owner.team, invisible = attacker.bounds.points.toVector)
         )
@@ -109,31 +125,31 @@ case class AttackEvt[D <: OwnedObj](
 }
 
 case class AttacksChangedEvt(
-  world: World, newObj: Fighter
+  visibilityMap: VisibilityMap, newObj: Fighter
 ) extends BoundedEvent {
   def bounds = newObj.bounds
 }
 
 case class LevelChangeEvt(
-  world: World, newObj: Fighter
+  visibilityMap: VisibilityMap, newObj: Fighter
 ) extends BoundedEvent {
   def bounds = newObj.bounds
 }
 
 case class HPChangeEvt(
-  world: World, newObj: OwnedObj
+  visibilityMap: VisibilityMap, newObj: OwnedObj
 ) extends BoundedEvent {
   def bounds = newObj.bounds
 }
 
 case class OwnerChangeEvt(
-  world: World, newObj: OwnedObj
+  visibilityMap: VisibilityMap, newObj: OwnedObj
 ) extends BoundedEvent {
   def bounds = newObj.bounds
 }
 
 case class MovementChangeEvt(
-  world: World, changedObj: Movable
+  visibilityMap: VisibilityMap, changedObj: Movable
 ) extends BoundedEvent {
   def bounds = changedObj.bounds
 }

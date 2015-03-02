@@ -52,20 +52,20 @@ class WorldObjsTest extends AppTest {
 
   "removing" - {
     "should fail when removing an object which does not exist" in {
-      forAll { (objs: WorldObjs, wo: WObject) =>
+      forAll { (objs: WorldObjs.All, wo: WObject) =>
         objs.remove(wo.id).isLeft should === (true)
       }
     }
 
     "should become an empty object after removing everything" in {
-      forAll { (objs: WorldObjs) =>
+      forAll { (objs: WorldObjs.All) =>
         val actual = objs.foldLeft(objs) { case (fObjs, obj) => fObjs - obj.id }
-        actual should === (WorldObjs.empty)
+        actual should === (WorldObjs.empty[WObject])
       }
     }
 
     "returns the same object after adding and removing same X objects" in {
-      forAll { (initialObjs: WorldObjs, toBeRemoved: Seq[WObject]) =>
+      forAll { (initialObjs: WorldObjs.All, toBeRemoved: Seq[WObject]) =>
         val objs = initialObjs ++ toBeRemoved -- toBeRemoved.map(_.id)
         objs should === (initialObjs)
       }
@@ -80,13 +80,13 @@ class WorldObjsTest extends AppTest {
     }
 
     "should fail if the object that is being updated is not in the world" in {
-      forAll { (objs: WorldObjs, obj: WObject) =>
+      forAll { (objs: WorldObjs.All, obj: WObject) =>
         objs.update(obj, obj).isLeft should === (true)
       }
     }
 
     "should change the object in the objects map" in {
-      forAll { (objs: WorldObjs, pos: Vect2) => whenever(objs.nonEmpty) {
+      forAll { (objs: WorldObjs.All, pos: Vect2) => whenever(objs.nonEmpty) {
         val obj = objs.head
         val newObj = TestWObject(pos, obj.id)
         objs.update_!(obj, newObj).objectsMap(obj.id) should === (newObj)
@@ -94,7 +94,7 @@ class WorldObjsTest extends AppTest {
     }
 
     case class ChangePoints(
-      oldObj: WObject, newObj: WObject, newObjs: WorldObjs
+      oldObj: WObject, newObj: WObject, newObjs: WorldObjs.All
     ) {
       def id = oldObj.id
       def points(obj: WObject) = obj.bounds.points.toSet
@@ -144,7 +144,7 @@ class WorldObjsTest extends AppTest {
     }
 
     "should remove objects which are not in given positions" in {
-      forAll { (objs: WorldObjs) => whenever(objs.nonEmpty) {
+      forAll { (objs: WorldObjs.All) => whenever(objs.nonEmpty) {
         val objPoints = objs.head.bounds.points.toSet
         val filtered = objs.filterPartial(objPoints)
         val objsNotPartiallyInPoints = filtered.objectsMap.values.
@@ -155,7 +155,7 @@ class WorldObjsTest extends AppTest {
 
     "should remove object ids from positions for objects that are not partially in " +
     "those positions" in {
-      forAll { (objs: WorldObjs) => whenever(objs.nonEmpty) {
+      forAll { (objs: WorldObjs.All) => whenever(objs.nonEmpty) {
         val objPoints = objs.head.bounds.points.toSet
         val nonIncludedObjects = objs.objectsMap.values.filter { obj =>
           obj.bounds.points.toSet.intersect(objPoints).isEmpty
@@ -173,14 +173,14 @@ class WorldObjsTest extends AppTest {
 
   "filtering by predicate" - {
     "should be symmetrical in #filter and #filterNot" in {
-      forAll { (objs: WorldObjs) => whenever(objs.nonEmpty) {
+      forAll { (objs: WorldObjs.All) => whenever(objs.nonEmpty) {
         val obj = objs.head
         objs.filter(_ == obj) should === (objs.filterNot(_ != obj))
       } }
     }
 
     "should remove objects properly" in {
-      forAll { (objs: WorldObjs, toBeFiltered: Seq[WObject]) =>
+      forAll { (objs: WorldObjs.All, toBeFiltered: Seq[WObject]) =>
         val added = objs ++ toBeFiltered
         added.filterNot(toBeFiltered.contains) should === (objs)
       }
