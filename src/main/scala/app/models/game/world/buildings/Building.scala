@@ -14,6 +14,6 @@ trait WBuildingStats extends BuildingStats with WarpableStats {
 }
 
 /* Building existing in game world. */
-trait BuildingImpl extends OwnedObjImpl with Mobility[Mobility.Static.type] {
+trait BuildingImpl extends OwnedObjImpl with MobilityStatic {
   type Stats <: BuildingStats
 }

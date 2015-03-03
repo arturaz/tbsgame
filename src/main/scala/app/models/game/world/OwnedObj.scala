@@ -68,7 +68,8 @@ trait OwnedObjOps[+Self <: OwnedObj] {
     val newSelf = withNewHp(hp)
     Evented(
       newSelf,
-      if (self.hp == newSelf.hp) Vector.empty else Vector(HPChangeEvt(world, newSelf))
+      if (self.hp == newSelf.hp) Vector.empty
+      else Vector(HPChangeEvt(world.visibilityMap, newSelf))
     )
   }
 

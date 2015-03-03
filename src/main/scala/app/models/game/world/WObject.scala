@@ -29,6 +29,15 @@ trait WObjectImpl {
 }
 
 trait WObjectCompanion {
+  type Static = WObject with Mobility[Mobility.Static.type]
+  object Static {
+    def unapply(o: WObject) = o match {
+      case static: WObject with Mobility[_] if static.isStatic =>
+        Some(static.asInstanceOf[Static])
+      case _ => None
+    }
+  }
+
   /* A world update where a new World and Obj is returned. */
   type WorldObjUpdate[+Obj] = Evented[(World, Obj)]
   /* A world update where a new World and Optional Obj (it might have been destroyed in a

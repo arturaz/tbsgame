@@ -127,7 +127,7 @@ trait FighterOps[Self <: Fighter] {
       for {
         attacked <- attackedEvt
         newWorld <-
-          AttackEvt(world, attacked, obj -> newObjOpt, attack) +:
+          AttackEvt(world.visibilityMap, attacked, obj -> newObjOpt, attack) +:
             world.updated(self, attacked)
         newWorld <- newObjOpt.fold2(
           // New object is dead, need to respawn
@@ -171,7 +171,7 @@ trait FighterOps[Self <: Fighter] {
         log.debug("not creating attacks changed evt, because {} === {}", self, newSelf)
         Vector.empty
       }
-      else Vector(AttacksChangedEvt(world, newSelf))
+      else Vector(AttacksChangedEvt(world.visibilityMap, newSelf))
     )
   }
 
@@ -182,7 +182,7 @@ trait FighterOps[Self <: Fighter] {
     Evented(
       newSelf,
       if (self.level == newSelf.level) Vector.empty
-      else Vector(LevelChangeEvt(world, newSelf))
+      else Vector(LevelChangeEvt(world.visibilityMap, newSelf))
     )
   }
 }

@@ -6,7 +6,7 @@ import implicits._
 
 object VisibilityMap {
   def apply(
-    bounds: Bounds, objects: WorldObjs
+    bounds: Bounds, objects: WorldObjs.All
   ): VisibilityMap = PointOwnerMap(
     bounds, pointsOf _, VisibilityChangeEvt.apply _, objects,
     PointOwnerMap.nonSizedLinearBlocking(endPointBlocks = false, _.stats.blocksVisibility)
@@ -18,7 +18,7 @@ object VisibilityMap {
 
 object WarpZoneMap {
   def apply(
-    bounds: Bounds, objects: WorldObjs
+    bounds: Bounds, objects: WorldObjs.All
   ): WarpZoneMap = PointOwnerMap(
     bounds, pointsOf _, WarpZoneChangeEvt.apply _, objects,
     PointOwnerMap.nonSizedLinearBlocking(endPointBlocks = true, _.stats.blocksWarp)
