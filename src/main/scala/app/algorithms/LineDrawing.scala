@@ -96,6 +96,61 @@ object LineDrawing {
     NonEmptyVector(points)
   }
 
+  // returns true if target is visible
+  def checkVisibilty(start: Vect2, end: Vect2, blocks: Vect2 => Boolean,
+                     endPointBlocks: Boolean, radius: Float = 0.4f): Boolean = {
+    val dx = end.x - start.x
+    val dy = end.y - start.y
+    val nx = dx.abs
+    val ny = dy.abs
+    val signX = if (dx > 0) 1 else -1
+    val signY = if (dy > 0) 1 else -1
+
+    var x = start.x
+    var y = start.y
+
+    val linePointDistanceSqr = (p1:Vect2, p2:Vect2, p:Vect2) => {
+      val delta = p2 - p1
+      val nom = delta.y*p.x - delta.x*p.y + p2.x*p1.y - p2.y*p1.x
+      nom * nom
+    }
+    val sqrDist = dx*dx + dy*dy
+    val sqrRadius = radius * radius
+
+    var ix = 0
+    var iy = 0
+    while(ix < nx || iy < ny) {
+      val a = (1+2*ix) * ny
+      val b = (1+2*iy) * nx
+      val prev = Vect2(x, y)
+      if (a == b) {
+        // next step is diagonal
+        x += signX
+        y += signY
+        ix += 1
+        iy += 1
+      } else if (a < b) {
+        // next step is horizontal
+        x += signX
+        ix += 1
+      } else {
+        // next step is vertical
+        y += signY
+        iy += 1
+      }
+      val v = Vect2(x, y)
+      if (!endPointBlocks && v == end) return true
+      if (a != b) {
+        // block visibility through 2 adjacent blocked tiles
+        if (blocks(prev) && blocks(v)) return false
+      }
+      if (linePointDistanceSqr(start, end, v) < sqrDist * sqrRadius) {
+        if (blocks(v)) return false
+      }
+    }
+    return true
+  }
+
   /* http://tech-algorithm.com/articles/drawing-line-using-bresenham-algorithm/ */
   def bresenhamLine(start: Vect2, end: Vect2): NonEmptyVector[Vect2] = {
     val w = end.x - start.x
