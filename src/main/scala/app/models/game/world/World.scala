@@ -585,7 +585,11 @@ object World {
     if (staticObjectsKnownAtStart) {
       val statics = world.objects.collectWO { case WObject.Static(o) => o }
       val wasVisible = world.teams.map { team =>
-        team -> statics.filterNot(o => world.isVisiblePartial(team, o.bounds))
+        team -> statics.filterNot { o =>
+          o.cast[OwnedObj].exists(oo =>
+            oo.stats.isCritical && oo.owner.isEnemyOf(team)
+          ) || world.isVisiblePartial(team, o.bounds)
+        }
       }.toMap
       world.copy(wasVisibleMap = wasVisible)
     }
