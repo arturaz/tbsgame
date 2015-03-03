@@ -22,8 +22,8 @@ with GameUpdate[S]
             NodeResult.error(s"Error while attacking: $state"), state, Some(unit)
           ),
           update => (
-            NodeResult.success, updateGame(state, update),
-            Some(update.value._2.asInstanceOf[FUnit])
+            NodeResult.success, updateGameOpt(state, update),
+            update.value._2
           )
         )
       }

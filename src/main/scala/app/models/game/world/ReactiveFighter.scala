@@ -27,18 +27,18 @@ trait ReactiveFighterImpl extends FighterImpl { self: Fighter =>
     obj: A, world: World
   )(implicit log: LoggingAdapter): Option[Reaction[WObject.WorldObjOptUpdate[A]]] = {
     if (shouldReact(obj))
-      toFighterOps(this).attack(obj, world).right.toOption.map {
-        case evt @ Evented((newWorld, newSelf, attack, newObjOpt), _) =>
+      toFighterOps(this).attack(obj, world, invokeRetaliation = false).right.toOption
+      .map {
+        case evt @ Evented((newWorld, newSelfOpt, attack, newObjOpt), _) =>
           def thisReaction = Reaction(
             evt.map(_ => (newWorld, newObjOpt)), abortReacting = newObjOpt.isEmpty
           )
-          newObjOpt.fold2(
-            thisReaction,
-            newObj => newSelf.reactToOpt(newObj, newWorld).fold2(
-              thisReaction,
-              _.map(evt.events ++: _)
-            )
-          )
+          (newSelfOpt, newObjOpt) match {
+            case (Some(newSelf), Some(newObj)) =>
+              newSelf.reactToOpt(newObj, newWorld)
+                .fold2(thisReaction, _.map(evt.events ++: _))
+            case _ => thisReaction
+          }
       }
     else None
   }
@@ -61,8 +61,8 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] {
     self.attackReachableWhileHasAttacks(world)(log.prefixed("react|"))
 
   def attackReachable
-  (world: World)(implicit log: LoggingAdapter): WObject.WorldObjUpdate[Self] = {
-    def orig = Evented((world, self))
+  (world: World)(implicit log: LoggingAdapter): WObject.WorldObjUpdate[Option[Self]] = {
+    def orig = Evented((world, Some(self)))
 
     if (self.shouldReact) {
       val targets = world.objects.collect {
@@ -98,15 +98,18 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] {
   }
 
   def attackReachableWhileHasAttacks
-  (world: World)(implicit log: LoggingAdapter): WObject.WorldObjUpdate[Self] = {
-    def rec(data: Evented[(World, Self)]): Evented[(World, Self)] = {
+  (world: World)(implicit log: LoggingAdapter): WObject.WorldObjUpdate[Option[Self]] = {
+    def rec(data: Evented[(World, Self)]): Evented[(World, Option[Self])] = {
       val newData = data.value._2.attackReachable(world)
 
       if (newData.events.isEmpty) {
         log.debug("nothing happened")
-        data
+        data.map { case (w, s) => (w, Some(s)) }
       }
-      else data.events ++: rec(newData)
+      else data.events ++: (newData.value match {
+        case (world, Some(newSelf)) => rec(newData.map(_ => (world, newSelf)))
+        case _ => newData
+      })
     }
 
     rec(Evented((world, self)))

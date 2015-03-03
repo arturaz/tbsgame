@@ -7,18 +7,14 @@ import app.actors.NetClient
 import app.actors.NetClient.Management.In.JoinGame.Mode
 import app.actors.game.GameActor.StartingHuman
 import app.models.User
-import app.models.game.world.{TileDistance, World, Resources}
-import app.models.game.world.buildings.{WarpLinkerStats, ExtractorStats}
-import app.models.game.world.units.ScoutStats
-import app.models.game.{Human, Bot, Team}
-import app.models.game.world.maps.{SingleplayerMap, WorldMaterializer, GameMap}
+import app.models.game.world.buildings.ExtractorStats
+import app.models.game.world.maps.{GameMap, SingleplayerMap, WorldMaterializer}
+import app.models.game.world.{Resources, World}
+import app.models.game.{Bot, Human, Team}
 import implicits._
 import utils.data.NonEmptyVector
 
 object GamesManagerActor {
-  val Teams = 2
-  val PlayersPerTeam = 1
-  val PlayersNeeded = Teams * PlayersPerTeam
   val StartingResources = ExtractorStats.cost * Resources(3)
 
   sealed trait In
@@ -29,7 +25,7 @@ object GamesManagerActor {
 }
 
 class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorLogging {
-  import GamesManagerActor._
+  import app.actors.game.GamesManagerActor._
 
   type WaitingList = Vector[(User, ActorRef)]
   type WaitingLists = Map[Mode.PvP, WaitingList]
@@ -91,7 +87,9 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
     val materializer = SingleplayerMap { data => implicit log =>
       val npcBot = Bot(data.npcTeam)
       val spawnerBot = Bot(data.npcTeam)
-      World.create(data.humanTeam, () => npcBot, () => spawnerBot)
+      World.create(
+        data.humanTeam, () => npcBot, () => spawnerBot, staticObjectsKnownAtStart = false
+      )
     }
     createGame(
       materializer, Team(),
@@ -102,7 +100,7 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
   private[this] def fromWaitingList(mode: Mode.PvP): Unit = {
     val (entries, newWaitingList) = waitingList(mode).splitAt(mode.playersNeeded)
     waitingList += mode -> newWaitingList
-    val teams = Vector.fill(Teams)(Team())
+    val teams = Vector.fill(mode.teams)(Team())
     val players = entries.zipWithIndex.map { case ((_user, _client), idx) =>
       val team = teams.wrapped(idx)
       StartingHuman(Human(_user, team), StartingResources, _client)

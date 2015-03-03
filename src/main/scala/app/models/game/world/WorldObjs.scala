@@ -149,7 +149,13 @@ case class WorldObjs[Obj <: WObject] private (
       else fWorldObjs remove_! obj.id
     }
   }
+
   override def filterNot(p: Obj => Boolean) = filter(obj => ! p(obj))
+
+  def collectWO[A <: Obj](pf: PartialFunction[Obj, A]): WorldObjs[A] = {
+    val lifted = pf.lift
+    foldLeft(WorldObjs.empty[A]) { case (wo, obj) => lifted(obj).fold2(wo, wo + _) }
+  }
 
   def idsIn(pos: Vect2) = positionsMap.getOrElse(pos, Set.empty)
   def nonEmptyAt(pos: Vect2) = idsIn(pos).nonEmpty

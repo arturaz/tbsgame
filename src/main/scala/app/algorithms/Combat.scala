@@ -28,7 +28,7 @@ object Combat {
     world: World, unit: A,
     movePath: Path, strict: Boolean=true
   )(
-    andThen: (World, A) => ErrOpt[Evented[(World, A)]]
+    andThen: (World, A) => ErrOpt[Evented[(World, Option[A])]]
   )(implicit log: LoggingAdapter): Result[A] = {
     val moveTarget =
       if (!strict && unit.movementLeft < movePath.movementNeeded)
@@ -40,10 +40,7 @@ object Combat {
       movedEvtWorldSelf.value match {
         case (newWorld, Some(movedUnit)) => andThen(newWorld, movedUnit).fold(
           err => if (! strict) movedEvtWorldSelf.right else err.left,
-          andThenEvtWorld => (
-            movedEvtWorldSelf.events ++:
-              andThenEvtWorld.map { case (w, u) => (w, Some(u)) }
-          ).right
+          andThenEvtWorld => (movedEvtWorldSelf.events ++: andThenEvtWorld).right
         )
         case (_, None) => movedEvtWorldSelf.right
       }

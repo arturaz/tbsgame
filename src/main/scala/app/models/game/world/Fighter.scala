@@ -9,6 +9,7 @@ import implicits._
 import app.models.game.world.Ops._
 
 import scala.language.implicitConversions
+import scala.reflect.ClassTag
 
 trait FighterStats extends OwnedObjStats {
   val attack: Atk
@@ -121,39 +122,59 @@ trait FighterOps[Self <: Fighter] {
     }, _.left)
 
   def attack[Target <: OwnedObj]
-  (obj: Target, world: World)(implicit log: LoggingAdapter)
-  : Either[String, Evented[(World, Self, Attack, Option[Target])]] = {
-    attackSimple(obj, world).right.map { case (attack, attackedEvt, newObjOpt) =>
-      for {
-        attacked <- attackedEvt
-        newWorld <-
-          AttackEvt(world.visibilityMap, attacked, obj -> newObjOpt, attack) +:
-            world.updated(self, attacked)
-        newWorld <- newObjOpt.fold2(
-          // New object is dead, need to respawn
-          obj.cast[RespawnsOnDestruction].fold2(
-            // Not respawnable, just remove
-            newWorld.updated(obj, newObjOpt),
-            // Respawn
-            { respawnable =>
-              val newOwner = respawnable.ownerAfterRespawn(self.owner)
-              respawnable.respawn(newWorld, newOwner)
-            }
-          ),
-          // Not dead, just update
-          _ => newWorld.updated(obj, newObjOpt)
-        )
-        newWorld <- self.owner.cast[Player].flatMap { p =>
-          newObjOpt.fold2(obj.destroyReward.map((p, _)), _ => None)
-        }.fold2(Evented(newWorld), { case (player, resources) =>
-          newWorld.addResources(player, resources).right.get
-        })
-      } yield (newWorld, attacked, attack, newObjOpt)
+  (obj: Target, world: World, invokeRetaliation: Boolean=true)(implicit log: LoggingAdapter)
+  : Either[String, Evented[(World, Option[Self], Attack, Option[Target])]] = {
+    val origAtkEvtE = attackSimple(obj, world).right.map {
+      case (attack, attackedEvt, newObjOpt) =>
+        for {
+          attacked <- attackedEvt
+          newWorld <-
+            AttackEvt(world.visibilityMap, attacked, obj -> newObjOpt, attack) +:
+              world.updated(self, attacked)
+          newWorld <- newObjOpt.fold2(
+            // New object is dead, need to respawn
+            obj.cast[RespawnsOnDestruction].fold2(
+              // Not respawnable, just remove
+              newWorld.updated(obj, newObjOpt),
+              // Respawn
+              { respawnable =>
+                val newOwner = respawnable.ownerAfterRespawn(self.owner)
+                respawnable.respawn(newWorld, newOwner)
+              }
+            ),
+            // Not dead, just update
+            _ => newWorld.updated(obj, newObjOpt)
+          )
+          newWorld <- self.owner.cast[Player].flatMap { p =>
+            newObjOpt.fold2(obj.destroyReward.map((p, _)), _ => None)
+          }.fold2(Evented(newWorld), { case (player, resources) =>
+            newWorld.addResources(player, resources).right.get
+          })
+        } yield (newWorld, attacked, attack, newObjOpt)
     }
+
+    def toRet(t: (World, Self, Attack, Option[Target])) = (t._1, Some(t._2), t._3, t._4)
+    def toRetE(t: (World, Self, Attack, Option[Target])) = Evented(toRet(t))
+    // Do retaliation if possible.
+    origAtkEvtE.right.map { _.flatMap {
+      case orig @ (world, self, attack, Some(targetFighter: Fighter))
+      if invokeRetaliation && targetFighter.canAttack(self, world) =>
+        val target = targetFighter.asInstanceOf[Target with Fighter]
+        target.attack(self, world, invokeRetaliation = false).fold(
+          err => {
+            log.error("Error while retaliating with {} to {}: {}", target, self, err)
+            toRetE(orig)
+          },
+          evtRetaliation => evtRetaliation.map { case (world, targetOpt, atk, selfOpt) =>
+            (world, selfOpt, atk, targetOpt)
+          }
+        )
+      case orig => toRetE(orig)
+    } }
   }
 
   def attackWS(obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
-  : Either[String, WObject.WorldObjUpdate[Self]] =
+  : Either[String, WObject.WorldObjUpdate[Option[Self]]] =
     attack(obj, world).right.map(_.map { t => (t._1, t._2) })
 
   def attackW(obj: OwnedObj, world: World)(implicit log: LoggingAdapter)

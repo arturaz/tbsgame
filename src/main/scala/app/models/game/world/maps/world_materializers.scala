@@ -41,7 +41,7 @@ case class GameMap private (
         val position = shuffledStartPositions(idx)
         objE.flatMap { objects => objects.add(WarpGate(position, team)) }
       }
-      withBasesE.map(World(bounds, _))
+      withBasesE.map(World(bounds, _, staticObjectsKnownAtStart = true))
     }
   }
 }

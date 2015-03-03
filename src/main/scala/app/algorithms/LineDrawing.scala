@@ -4,9 +4,9 @@ import app.models.game.world.Vect2
 import utils.data.NonEmptyVector
 
 object LineDrawing {
-  def line(start: Vect2, end: Vect2): NonEmptyVector[Vect2] = {
+  def line(start: Vect2, end: Vect2): NonEmptyVector[Vect2] =
     supercoverLineCircled(start, end)
-  }
+
   /* http://www.redblobgames.com/grids/line-drawing.html */
   def supercoverLine(start: Vect2, end: Vect2): NonEmptyVector[Vect2] = {
     val dx = end.x - start.x
@@ -46,7 +46,9 @@ object LineDrawing {
     NonEmptyVector(points)
   }
 
-  def supercoverLineCircled(start: Vect2, end: Vect2, radius: Float = 0.4f): NonEmptyVector[Vect2] = {
+  def supercoverLineCircled(
+    start: Vect2, end: Vect2, radius: Float = 0.4f
+  ): NonEmptyVector[Vect2] = {
     val dx = end.x - start.x
     val dy = end.y - start.y
     val nx = dx.abs
@@ -66,7 +68,7 @@ object LineDrawing {
     }
     val sqrDist = dx*dx + dy*dy
     val sqrRadius = radius * radius
-    val add = (v: Vect2) => {
+    def add(v: Vect2) = {
       if (linePointDistanceSqr(start, end, v) < sqrDist * sqrRadius)
         points :+= v
     }
