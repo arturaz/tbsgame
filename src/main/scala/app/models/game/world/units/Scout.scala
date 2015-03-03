@@ -4,9 +4,9 @@ import app.models.game.{Population, Player}
 import app.models.game.world._
 
 object ScoutStats extends WUnitStats with EmptySpaceWarpableCompanion[Scout] {
-  override val maxHp = HP(70)
+  override val maxHp = HP(25)
   override val warpTime = WarpTime(0)
-  override val cost = Resources(5)
+  override val cost = Resources(3)
   override val populationCost = Population(1)
   override val movement = Movement.fromTiles(20)
   override val visibility = RectDistance(6)
