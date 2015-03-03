@@ -367,6 +367,7 @@ object World {
 
   def create(
     playersTeam: Team, npcOwner: () => Bot, spawnerOwner: () => Bot,
+    staticObjectsKnownAtStart: Boolean,
     startingPoint: Vect2 = Vect2(0, 0),
     endDistance: TileDistance = TileDistance(30),
     branches: Range = 4 to 6,
@@ -571,11 +572,23 @@ object World {
     }
 
     val bounds = this.bounds(objects) expandBy 5
-    World(bounds, objects)
+    World(bounds, objects, staticObjectsKnownAtStart)
   }
 
-  def apply(bounds: Bounds, objects: WorldObjs.All) = new World(
-    bounds, objects, Map.empty, Map.empty, Map.empty,
-    WarpZoneMap(bounds, objects), VisibilityMap(bounds, objects)
-  )
+  def apply(
+    bounds: Bounds, objects: WorldObjs.All, staticObjectsKnownAtStart: Boolean
+  ) = {
+    val world = new World(
+      bounds, objects, Map.empty, Map.empty, Map.empty,
+      WarpZoneMap(bounds, objects), VisibilityMap(bounds, objects)
+    )
+    if (staticObjectsKnownAtStart) {
+      val statics = world.objects.collectWO { case WObject.Static(o) => o }
+      val wasVisible = world.teams.map { team =>
+        team -> statics.filterNot(o => world.isVisiblePartial(team, o.bounds))
+      }.toMap
+      world.copy(wasVisibleMap = wasVisible)
+    }
+    else world
+  }
 }

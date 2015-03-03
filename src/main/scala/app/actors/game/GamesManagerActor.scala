@@ -87,7 +87,9 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
     val materializer = SingleplayerMap { data => implicit log =>
       val npcBot = Bot(data.npcTeam)
       val spawnerBot = Bot(data.npcTeam)
-      World.create(data.humanTeam, () => npcBot, () => spawnerBot)
+      World.create(
+        data.humanTeam, () => npcBot, () => spawnerBot, staticObjectsKnownAtStart = false
+      )
     }
     createGame(
       materializer, Team(),
