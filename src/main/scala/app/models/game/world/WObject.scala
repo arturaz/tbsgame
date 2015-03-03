@@ -69,27 +69,34 @@ trait WObjectCompanion {
     )
   }
 
-  class IfIs[To <: WObject : ClassTag]() {
-    def evt[A >: To]
-    (f: (World, To) => Evented[(World, To)])
-    (evt: Evented[(World, A)]) =
+  class IfIs[CastClass <: WObject : ClassTag]() {
+    def evt[Base >: CastClass]
+    (f: (World, CastClass) => Evented[(World, CastClass)])
+    (evt: Evented[(World, Base)]): Evented[(World, Base)] =
       evt.flatMap { case orig @ (w, o) =>
-        o.cast[To].fold2(Evented(orig), f(w, _))
+        o.cast[CastClass].fold2(Evented(orig), f(w, _))
       }
 
-    def evtWorld[A >: To]
-    (f: (World, To) => Evented[World])
-    (evt: Evented[(World, A)]) =
-      this.evt[A]((w, o) => f(w, o).map((_, o)))(evt)
+    def evtOpt[Base >: CastClass]
+    (f: (World, CastClass) => Evented[(World, Option[CastClass])])
+    (evt: Evented[(World, Base)]): Evented[(World, Option[Base])] =
+      evt.flatMap { case (w, o) =>
+        o.cast[CastClass].fold2(Evented((w, Some(o))), f(w, _))
+      }
 
-    def raw[A >: To]
-    (f: (World, To) => (World, To))(evt: Evented[(World, A)]) =
-      this.evt[A]((w, o) => Evented(f(w, o)))(evt)
+    def evtWorld[Base >: CastClass]
+    (f: (World, CastClass) => Evented[World])
+    (evt: Evented[(World, Base)]) =
+      this.evt[Base]((w, o) => f(w, o).map((_, o)))(evt)
 
-    def rawWorld[A >: To]
-    (f: (World, To) => World)(evt: Evented[(World, A)]) =
-      this.raw[A]((w, o) => (f(w, o), o))(evt)
+    def raw[Base >: CastClass]
+    (f: (World, CastClass) => (World, CastClass))(evt: Evented[(World, Base)]) =
+      this.evt[Base]((w, o) => Evented(f(w, o)))(evt)
+
+    def rawWorld[Base >: CastClass]
+    (f: (World, CastClass) => World)(evt: Evented[(World, Base)]) =
+      this.raw[Base]((w, o) => (f(w, o), o))(evt)
   }
 
-  def ifIs[To <: WObject : ClassTag] = new IfIs[To]
+  def ifIs[CastClass <: WObject : ClassTag] = new IfIs[CastClass]
 }

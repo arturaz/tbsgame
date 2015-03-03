@@ -43,20 +43,21 @@ trait OwnedObjImpl extends WObjectImpl {
 trait OwnedObjCompanion extends ToOwnedObjOps {
   def teamTurnStarted
   (obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
-  : Evented[(World, OwnedObj)] = {
+  : Evented[(World, Option[OwnedObj])] = {
     Evented((world, obj)) |>
       WObject.ifIs[Warpable].evt((w, o) => o.warpableTeamTurnStarted(w)) |>
       WObject.ifIs[GivingVictoryPoints].rawWorld((w, o) => o.givingVPsTeamTurnStarted(w)) |>
       WObject.ifIs[Extractor].evtWorld((w, o) => o.extractorTeamTurnStarted(w)) |>
       WObject.ifIs[Movable].evt((w, o) => o.movableTeamTurnStarted(w)) |>
-      WObject.ifIs[Fighter].evt((w, o) => o.fighterTeamTurnStarted(w))
+      WObject.ifIs[Fighter].evt((w, o) => o.fighterTeamTurnStarted(w)) |>
+      (_.map { case (newWorld, newObj) => (newWorld, Some(newObj)) })
   }
 
   def teamTurnFinished
   (obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
-  : Evented[(World, OwnedObj)] = {
+  : Evented[(World, Option[OwnedObj])] = {
     Evented((world, obj)) |>
-      WObject.ifIs[ReactiveFighter].evt((w, o) => o.reactiveFighterTeamTurnFinished(w))
+      WObject.ifIs[ReactiveFighter].evtOpt((w, o) => o.reactiveFighterTeamTurnFinished(w))
   }
 }
 
