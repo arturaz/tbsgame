@@ -13,7 +13,7 @@ import scala.reflect.ClassTag
 
 trait FighterStats extends OwnedObjStats {
   val attack: Atk
-  val attackSpread = AtkSpread(0.3)
+  val attackSpread = AtkSpread(0.15)
   // lazy because attackSpread might be overriden
   lazy val attackDamageRange = {
     val from = Atk((attack.value * (1 - attackSpread.value)).round.toInt)
