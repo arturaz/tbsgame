@@ -262,7 +262,12 @@ case class World private (
     react(reactors, Evented((this, Some(obj))))
   }
 
-  lazy val owners = objects.collect { case fo: OwnedObj => fo.owner }.toSet
+  lazy val owners = {
+    def get(o: WorldObjs[_ <: WObject]): Set[Owner] =
+      o.collect { case fo: OwnedObj => fo.owner } (collection.breakOut)
+    // We need to include owners from history as well.
+    get(objects) ++ wasVisibleMap.map(t => get(t._2)).reduceLeft(_ ++ _)
+  }
   lazy val teams = owners.map(_.team)
   lazy val players = owners.collect { case p: Player => p }.toSet ++ playerStates.keySet
   lazy val humans = players.collect { case h: Human => h }.toSet
