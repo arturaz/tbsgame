@@ -99,8 +99,9 @@ object LineDrawing {
   }
 
   // returns true if target is visible
-  def checkVisibilty(start: Vect2, end: Vect2, blocks: Vect2 => Boolean,
-                     endPointBlocks: Boolean, radius: Float = 0.4f): Boolean = {
+  def isLineVisible(
+    start: Vect2, end: Vect2, endPointBlocks: Boolean, radius: Float = 0.4f
+  )(blocks: Vect2 => Boolean): Boolean = {
     val dx = end.x - start.x
     val dy = end.y - start.y
     val nx = dx.abs
@@ -150,7 +151,7 @@ object LineDrawing {
         if (blocks(v)) return false
       }
     }
-    return true
+    true
   }
 
   /* http://tech-algorithm.com/articles/drawing-line-using-bresenham-algorithm/ */

@@ -69,9 +69,9 @@ object PointOwnerMap {
   def checkLine
   (origin: Vect2, target: Vect2, objs: WorldObjs.Any, endPointBlocks: Boolean)
   (predicate: WObject => Boolean) = {
-    // Join both directions to compensate for asymmetry of a -> b and b -> a.
-    // TODO: use a better algorithm for vision
-    !LineDrawing.checkVisibilty(origin, target, objs.objectsIn(_).exists(predicate), endPointBlocks)
+    !LineDrawing.isLineVisible(origin, target, endPointBlocks) {
+      objs.objectsIn(_).exists(predicate)
+    }
   }
 
   def nonSizedLinearBlocking(
