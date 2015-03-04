@@ -83,8 +83,9 @@ trait WarpableImpl extends OwnedObjImpl {
 trait WarpableOps[Self <: Warpable] extends OwnedObjOps[Self] {
   def setWarpState(newState: WarpTime): Self
   def nextWarpState(world: World): Evented[Self] =
-    if (self.isWarpedIn) Evented(self)
+    if (self.isWarpedIn || world.isValidForWarp(self.owner, self.position)) Evented(self)
     else {
+
       val newSelf = setWarpState(self.warpState + WarpTime(1))
       Evented(newSelf, Vector(WarpStateChangeEvt(world.visibilityMap, newSelf)))
     }

@@ -4,6 +4,7 @@ import akka.event.LoggingAdapter
 import app.models.game.Owner
 import app.models.game.events.{Evented, HPChangeEvt}
 import app.models.game.world.buildings._
+import app.models.game.world.maps.WarpZoneMap
 import app.models.game.world.units._
 import implicits._
 import app.models.game.world.Ops._
@@ -31,6 +32,8 @@ trait OwnedObjImpl extends WObjectImpl {
   def isEnemy(o: OwnedObj) = owner.team =/= o.owner.team
   def isFriend(o: OwnedObj) = ! isEnemy(o)
   def destroyReward = Option.empty[Resources]
+
+  def inWarpZone(world: World) = world.isValidForWarp(owner, position)
 
   lazy val visibility = stats.visibility.extend(bounds)
   def sees(obj: WObject) = visibility.intersects(obj.bounds)
