@@ -71,12 +71,7 @@ object PointOwnerMap {
   (predicate: WObject => Boolean) = {
     // Join both directions to compensate for asymmetry of a -> b and b -> a.
     // TODO: use a better algorithm for vision
-    val points =
-      LineDrawing.line(origin, target).v.toSet ++ LineDrawing.line(target, origin).v
-    points.exists { point =>
-      point != origin && (point != target || endPointBlocks) &&
-      objs.objectsIn(point).exists(predicate)
-    }
+    !LineDrawing.checkVisibilty(origin, target, objs.objectsIn(_).exists(predicate), endPointBlocks)
   }
 
   def nonSizedLinearBlocking(
