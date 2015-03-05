@@ -24,8 +24,8 @@ trait FighterStats extends OwnedObjStats {
 
   val attackRange: RadialDistance
   val attacks: Attacks
-  val critical: Chance = Chance(0.1)
-  val criticalMultiplier: Double = 2
+  val critical = Chance(0.05)
+  val criticalMultiplier = 2d
   val InitialAttacks = Attacks(0)
 
   val LevelMultiplierTable = Map(
