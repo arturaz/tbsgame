@@ -472,7 +472,8 @@ object World {
               filter(_.cost <= enemyResourcesNeeded - enemyResourcesInBounds)
           }
           enemyOpt.foreach { enemyWarpable =>
-            objects += enemyWarpable.warp(npcOwner(), objPos)
+            objects += enemyWarpable.warp(npcOwner(), objPos).
+              setWarpState(enemyWarpable.warpTime)
             enemyResourcesInBounds += enemyWarpable.cost
           }
           log.debug(
