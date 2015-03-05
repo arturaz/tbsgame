@@ -108,10 +108,15 @@ object GameActor {
     }
   }
 
-  private def init(human: Human, ref: ActorRef, tbgame: TurnBasedGame): Unit =
+  private def init(
+    human: Human, ref: ActorRef, tbgame: TurnBasedGame
+  )(implicit log: LoggingAdapter): Unit =
     initMsg(human, tbgame.game).fold(
       err => throw new IllegalStateException(s"cannot init game state: $err"),
-      ref ! _
+      msg => {
+        ref ! msg
+        events(human, ref, Vector(TurnStartedEvt(tbgame.currentTeam)))
+      }
     )
 
   private def events(
@@ -211,8 +216,6 @@ class GameActor private (
       ref ! Out.Joined(human, self)
       def doInit(tbg: TurnBasedGame): Unit = {
         init(human, ref, tbg)
-        if (tbg.currentTeam === human.team)
-          events(human, ref, Vector(TurnStartedEvt(human.team)))
         clients += human -> ref
       }
 
