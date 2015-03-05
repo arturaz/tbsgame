@@ -93,8 +93,10 @@ case class World private (
           updatedWorld.objects, updatedWorld.wasVisibleMap, visibilityMapEvt
         )
         for {
-          visibilityMap <- visibilityMapEvt
+          // Order is important here - we need to destroy ghost objects before saying that
+          // tiles are visible.
           wasVisibleMap <- wasVisibleMapEvt
+          visibilityMap <- visibilityMapEvt
           warpZoneMap <- updateWarpZone(updatedWorld, warpZoneMap, b)
         } yield updatedWorld.copy(
           warpZoneMap = warpZoneMap,
