@@ -16,8 +16,8 @@ trait OwnedObjStats extends WObjectStats {
   val visibility: RectDistance
   /* If team has no critical objects it cannot do any more actions and
      loses the game. */
-  val isCritical: Boolean = false
-  val warpGiven: RectDistance = RectDistance(0)
+  val isCritical = false
+  val warpGiven = RectDistance(0)
   val kind: WObjKind
 }
 
