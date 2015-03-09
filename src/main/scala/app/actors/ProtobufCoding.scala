@@ -53,6 +53,8 @@ object ProtobufCoding {
     ): Either[String, NonEmptyVector[Vect2]] =
       NonEmptyVector.create(parse(pathList)).toRight("Can't create path from empty list!")
 
+    def parse(timestamp: Base.Timestamp): DateTime = new DateTime(timestamp.getTimestamp)
+
     def parse(m: Game.FromClient): Either[String, GameInMsg] = {
       import app.actors.game.GameActor.In
       import app.actors.game.GameActor.In.{Attack => _, _}
@@ -119,11 +121,16 @@ object ProtobufCoding {
         s"Can't parse $m!".left
     }
 
+    def parse(m: Messages.TimeSync.FromClient): NetClient.Msgs.FromClient.TimeSync =
+      NetClient.Msgs.FromClient.TimeSync(parse(m.getNow))
+
     def parse(m: Messages.FromClient): Either[String, NetClient.Msgs.FromClient] = {
       if (m.hasGame)
         parse(m.getGame).right.map(NetClient.Msgs.FromClient.Game)
       else if (m.hasManagement)
         parse(m.getManagement).right.map(NetClient.Msgs.FromClient.Management)
+      else if (m.hasTimeSync)
+        parse(m.getTimeSync).right
       else s"Can't parse $m!".left
     }
 
@@ -645,10 +652,16 @@ object ProtobufCoding {
           b.setGameJoinCancelled(Management.JoinGameCancelled.newBuilder().build())
       } }.build()
 
+    implicit def convert(out: NetClient.Msgs.FromServer.TimeSync)
+    : Messages.TimeSync.FromServer =
+      Messages.TimeSync.FromServer.newBuilder().
+        setClientNow(out.clientNow).setServerNow(out.serverNow).build()
+
     implicit def convert(out: NetClient.Msgs.FromServer): Messages.FromServer =
       Messages.FromServer.newBuilder().mapVal { b => out match {
         case msg: NetClient.Msgs.FromServer.Game => b.setGame(msg.msg)
         case msg: NetClient.Msgs.FromServer.Management => b.setManagement(msg.msg)
+        case msg: NetClient.Msgs.FromServer.TimeSync => b.setTimeSync(msg)
       } }.build()
 
     def serialize(out: NetClient.Msgs.FromServer): ByteString =

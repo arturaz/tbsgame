@@ -4,13 +4,26 @@ option java_package = "netmsg";
 
 import "game.proto";
 import "management.proto";
+import "base.proto";
 
 message FromClient {
   optional game.FromClient game = 1;
   optional management.FromClient management = 2;
+  optional TimeSync.FromClient time_sync = 3;
 }
 
 message FromServer {
   optional game.FromServer game = 1;
   optional management.FromServer management = 2;
+  optional TimeSync.FromServer time_sync = 3;
+}
+
+message TimeSync {
+  message FromClient {
+    required base.Timestamp now = 1;
+  }
+  message FromServer {
+    required base.Timestamp client_now = 1;
+    required base.Timestamp server_now = 2;
+  }
 }
