@@ -7,23 +7,23 @@ object GamePlayerState {
 
   val actions = lenser(_.actions)
 
-  sealed trait State {
+  sealed trait Activity {
     def canAct: Boolean
   }
-  case object WaitingForTurnEnd extends State {
+  case object WaitingForTurnEnd extends Activity {
     override val canAct = true
   }
-  case object TurnEnded extends State {
+  case object TurnEnded extends Activity {
     override val canAct = false
   }
-  case object Conceded extends State {
+  case object Conceded extends Activity {
     override val canAct = false
   }
 
   val conceded = GamePlayerState(Actions(0), GamePlayerState.Conceded)
 }
 
-case class GamePlayerState(actions: Actions, activity: GamePlayerState.State) {
+case class GamePlayerState(actions: Actions, activity: GamePlayerState.Activity) {
   def onTurnStart(player: Player, actions: Actions) = activity match {
     case GamePlayerState.Conceded =>
       GamePlayerState.conceded

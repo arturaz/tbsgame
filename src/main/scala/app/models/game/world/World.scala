@@ -333,7 +333,7 @@ object World {
     log: LoggingAdapter, filter: A => Boolean,
     f: LoggingAdapter => A => World => Evented[World]
   )(world: Evented[World]) = world.value.objects.foldLeft(world) {
-    case (w, o: A) if filter(o) => w.laterFlatMap(f(log.prefixed(o.toString))(o))
+    case (w, o: A) if filter(o) => w.flatMap(f(log.prefixed(o.toString))(o))
     case (w, o) => w
   }
 

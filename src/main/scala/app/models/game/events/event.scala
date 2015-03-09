@@ -6,6 +6,8 @@ import app.models.game.world.maps.VisibilityMap
 import implicits._
 import utils.ValWithMax
 
+import scalaz.\/
+
 /* Event that cannot be viewed anymore. */
 sealed trait FinalEvent
 
@@ -41,8 +43,21 @@ case class JoinEvt(human: Human, state: Option[HumanState]) extends Event {
     else Seq(copy(state = None))
 }
 case class LeaveEvt(human: Human) extends AlwaysVisibleEvent
+
 case class TurnStartedEvt(team: Team) extends AlwaysVisibleEvent
 case class TurnEndedEvt(team: Team) extends AlwaysVisibleEvent
+
+case class SetTurnTimerEvt(whom: Human \/ Team, timeframe: TurnTimeframe)
+extends VisibleEvent {
+  override def visibleBy(owner: Owner) = whom.fold(
+    // If this is a turn timer for human, send it only if it directly belongs to that
+    // human.
+    human => owner === human,
+    // If this is a turn timer for team, it is for enemy team and only send it if owner
+    // does not belong to this team.
+    team => owner.team =/= team
+  )
+}
 
 sealed trait PointOwnershipChangeEvt extends VisibleEvent {
   def team: Team

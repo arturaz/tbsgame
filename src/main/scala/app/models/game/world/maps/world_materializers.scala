@@ -2,7 +2,7 @@ package app.models.game.world.maps
 
 import akka.event.LoggingAdapter
 import app.models.game.world.maps.GameMap.NpcF
-import app.models.game.{Human, Bot, Owner, Team}
+import app.models.game._
 import app.models.game.world._
 
 import scala.util.Random

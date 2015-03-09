@@ -10,7 +10,7 @@ import app.models.User
 import app.models.game.world.buildings.ExtractorStats
 import app.models.game.world.maps.{GameMap, SingleplayerMap, WorldMaterializer}
 import app.models.game.world.{Resources, World}
-import app.models.game.{Bot, Human, Team}
+import app.models.game.{TurnTimers, Bot, Human, Team}
 import implicits._
 import utils.data.NonEmptyVector
 
@@ -72,7 +72,7 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
     mode match {
       case Mode.Singleplayer => launchSingleplayer(user, client)
       case pvp: Mode.PvP =>
-        val updatedWaitingList = waitingList(pvp) :+ (user, client)
+        val updatedWaitingList = waitingList(pvp) :+ ((user, client))
         waitingList += pvp -> updatedWaitingList
         waitingListUser2Mode += user -> pvp
         if (updatedWaitingList.size < pvp.playersNeeded) log.debug(
@@ -92,7 +92,7 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
       )
     }
     createGame(
-      materializer, Team(),
+      materializer, None, Team(),
       Set(StartingHuman(Human(user, Team()), StartingResources, client))
     )
   }
@@ -113,17 +113,19 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
     val map = maps.random
     val npcTeam = Team()
 
-    createGame(map, npcTeam, players)
+    createGame(map, Some(TurnTimers.Settings()), npcTeam, players)
   }
 
   private[this] def createGame(
-    worldMaterializer: WorldMaterializer, npcTeam: Team,
-    starting: Set[GameActor.StartingHuman]
+    worldMaterializer: WorldMaterializer, turnTimerSettings: Option[TurnTimers.Settings],
+    npcTeam: Team, starting: Set[GameActor.StartingHuman]
   ): ActorRef = {
-    val game = context.actorOf(GameActor.props(worldMaterializer, npcTeam, starting))
+    val game = context.actorOf(GameActor.props(
+      worldMaterializer, turnTimerSettings, npcTeam, starting
+    ))
     context.watch(game)
     starting.foreach { data =>
-      user2game += data.human.user -> (game, data.human)
+      user2game += data.human.user -> ((game, data.human))
     }
     game2humans += game -> starting.map(_.human)
     log.info("Game {} created for {}", game, starting)

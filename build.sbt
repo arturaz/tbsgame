@@ -1,8 +1,10 @@
 name := "TBS Game"
 
-scalaVersion := "2.11.2"
+scalaVersion := "2.11.6"
 
-scalacOptions := Seq("-feature", "-deprecation", "-unchecked")
+scalacOptions := Seq(
+  "-feature", "-deprecation", "-unchecked", "-Xlint", "-Xfatal-warnings"
+)
 
 unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "gen" / "java"
 
@@ -42,7 +44,6 @@ libraryDependencies ++= Seq(
 
 libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
 
-libraryDependencies ++= Seq(
-  "com.google.protobuf" % "protobuf-java" % "2.4.1"
-//  "net.sandrogrzicic" %% "scalabuff-runtime" % "1.3.9"
-)
+libraryDependencies += "com.google.protobuf" % "protobuf-java" % "2.4.1"
+
+libraryDependencies += "com.github.nscala-time" %% "nscala-time" % "1.8.0"

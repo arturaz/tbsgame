@@ -176,29 +176,9 @@ object Game {
   }
 }
 
-trait GameLike[+A] {
-  def isJoined(human: Human)(implicit log: LoggingAdapter): Boolean
-  def join(human: Human, startingResources: Resources)(implicit log: LoggingAdapter)
-    : Game.ResultT[A]
-  def leave(human: Human)(implicit log: LoggingAdapter): Game.ResultT[A]
-  def warp(
-    human: Human, position: Vect2, warpable: WarpableCompanion.Some
-  )(implicit log: LoggingAdapter): Game.ResultT[A]
-  def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2])
-    (implicit log: LoggingAdapter): Game.ResultT[A]
-  def attack(human: Human, id: WObject.Id, targetId: WObject.Id)
-    (implicit log: LoggingAdapter): Game.ResultT[A]
-  def moveAttack(
-    human: Human, id: WObject.Id, path: NonEmptyVector[Vect2], targetId: WObject.Id
-  )(implicit log: LoggingAdapter): Game.ResultT[A]
-  def special(human: Human, id: WObject.Id)(implicit log: LoggingAdapter): Game.ResultT[A]
-  def endTurn(human: Human)(implicit log: LoggingAdapter): Game.ResultT[A]
-  def concede(human: Human)(implicit log: LoggingAdapter): Game.ResultT[A]
-}
-
 case class Game private (
   world: World, states: Game.States, objectives: Game.ObjectivesMap
-) extends GameLike[Game] {
+) {
   import app.models.game.Game.Withs._
 
   private[this] def fromWorld(w: Evented[World]) = w.map(updated)
@@ -206,10 +186,12 @@ case class Game private (
   def gameTurnStarted(implicit log: LoggingAdapter) = world.gameTurnStarted |> fromWorld
   def gameTurnFinished(implicit log: LoggingAdapter) = world.gameTurnFinished |> fromWorld
   def teamTurnStarted(team: Team)(implicit log: LoggingAdapter) =
-    world.teamTurnStarted(team) |> fromWorld |>
-    Game.recalculatePlayerStatesOnTeamTurnStart(team)
+    checkObjectivesSafe(team) {
+      world.teamTurnStarted(team) |> fromWorld |>
+      Game.recalculatePlayerStatesOnTeamTurnStart(team)
+    }
   def teamTurnFinished(team: Team)(implicit log: LoggingAdapter)
-  : Evented[Winner \/ Game] = (
+  : Evented[Winner \/ Game] = checkObjectivesSafe(team)(
     world.teamTurnFinished(team) |> fromWorld |> Game.doAutoSpecials(team)
   ).flatMap(checkObjectivesForWinner)
 
@@ -229,10 +211,10 @@ case class Game private (
   def otherTeamsConceded(team: Team): Boolean =
     states.filter(_._1.team =/= team).forall(_._2.activity === GamePlayerState.Conceded)
 
-  override def isJoined(human: Human)(implicit log: LoggingAdapter) =
+  def isJoined(human: Human)(implicit log: LoggingAdapter) =
     states.contains(human)
 
-  override def join(human: Human, startingResources: Resources)
+  def join(human: Human, startingResources: Resources)
   (implicit log: LoggingAdapter) = {
     def evt(newState: GamePlayerState) = Evented(
       updated(world, human -> newState),
@@ -242,23 +224,26 @@ case class Game private (
       )
     )
 
+    checkObjectives(human.team) {
     states.get(human).fold2(
       evt(Game.startingState(world, human)).map { g =>
         if (g.world.resourcesMap.contains(human)) Evented(g).right
         else g.world.addResources(human, startingResources).right.map(_.map(g.updated))
       }.extractFlatten,
       state => s"$human is already in the game!".left
-    )
+    ) }
   }
 
-  override def leave(human: Human)(implicit log: LoggingAdapter) =
+  def leave(human: Human)(implicit log: LoggingAdapter) =
+    checkObjectives(human.team) {
     withState(human) { state =>
       Evented(updated(states - human), Vector(LeaveEvt(human))).right
-    }
+    } }
 
-  override def warp(
+  def warp(
     human: Human, position: Vect2, warpable: WarpableCompanion.Some
   )(implicit log: LoggingAdapter): Game.Result =
+    checkObjectives(human.team) {
     withState(human) { state =>
     withActions(human, Warpable.ActionsNeeded, state) { state =>
     withWarpable(human, warpable, world) { evtWorld =>
@@ -266,32 +251,35 @@ case class Game private (
       evtWorld.map { warpable.warpW(_, human, position).right.map { _.map {
         updated(_, human -> state)
       } } }.extract.right.map(_.flatten)
-    } } } }
+    } } } } }
 
-  override def move(
+  def move(
     human: Human, id: WObject.Id, to: NonEmptyVector[Vect2]
   )(implicit log: LoggingAdapter): Game.Result =
+    checkObjectives(human.team) {
     withMoveObj(human, id) { obj =>
     withVisibility(human, to.v.last) {
       obj.moveTo(world, to).right.map { _.map { case (w, _) =>
         updated(w)
       } }
-    } }
+    } } }
 
-  override def attack(
+  def attack(
     human: Human, id: WObject.Id, targetId: WObject.Id
   )(implicit log: LoggingAdapter): Game.Result =
+    checkObjectives(human.team) {
     withAttackObj(human, id) { obj =>
     withTargetObj(human, targetId) { targetObj =>
     withVisibility(human, targetObj) {
       obj.attackW(targetObj, world).right.map { _.map { world =>
         updated(world)
       } }
-    } } }
+    } } } }
 
-  override def moveAttack(
+  def moveAttack(
     human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id
   )(implicit log: LoggingAdapter) = {
+    checkObjectives(human.team) {
     move(human, id, path).right.flatMap { evtMovedGame =>
       // The object might get killed after the move.
       if (evtMovedGame.value.world.objects.contains(id)) {
@@ -300,19 +288,21 @@ case class Game private (
         }
       }
       else evtMovedGame.right
-    }
+    } }
   }
 
-  override def special(
+  def special(
     human: Human, id: WObject.Id
   )(implicit log: LoggingAdapter): Game.Result =
+    checkObjectives(human.team) {
     withState(human) { state =>
     withSpecialObj(human, id) {
     withSpecialAction(human, state) { obj => state =>
       obj.special(world, human).right.map(_.map(world => updated(world, human -> state)))
-    } } }
+    } } } }
 
-  override def endTurn(human: Human)(implicit log: LoggingAdapter): Game.Result =
+  def endTurn(human: Human)(implicit log: LoggingAdapter): Game.Result =
+    checkObjectives(human.team) {
     withState(human) { state =>
       if (state.activity =/= GamePlayerState.WaitingForTurnEnd)
         s"Can't end turn: $human has state $state!".left
@@ -322,9 +312,10 @@ case class Game private (
           TurnEndedChangeEvt(human, turnEnded = true)
         ).right
       }
-    }
+    } }
 
-  override def concede(human: Human)(implicit log: LoggingAdapter): Game.Result =
+  def concede(human: Human)(implicit log: LoggingAdapter): Game.Result =
+    checkObjectives(human.team) {
     withState(human) { state =>
       if (state.activity === GamePlayerState.Conceded)
         s"Can't concede: $human has already conceded!".left
@@ -334,7 +325,7 @@ case class Game private (
           TurnEndedChangeEvt(human, turnEnded = true)
         ).right
       }
-    }
+    } }
 
   def movementFor(obj: Movable): Vector[Path] =
     Pathfinding.movement(
@@ -351,6 +342,22 @@ case class Game private (
   def updated(states: States): Game = copy(states = states)
   def updated(world: World, human: (Human, GamePlayerState)): Game =
     copy(world = world, states = states + human)
+
+  private[this] def checkObjectives(team: Team)(f: => Game.Result): Game.Result = {
+    val currentObjectives = remainingObjectives(team)
+    f.right.map(_.flatMap { game =>
+      val newObjectives = game.remainingObjectives(team)
+      Evented(
+        game,
+        if (currentObjectives =/= newObjectives)
+          Vector(ObjectivesUpdatedEvt(team, newObjectives))
+        else Vector.empty
+      )
+    })
+  }
+
+  private[this] def checkObjectivesSafe(team: Team)(f: => Evented[Game]): Evented[Game] =
+    checkObjectives(team)(f.right).right.get
 
   private[this] def withState(human: Human)(f: GamePlayerState => Game.Result) =
     states.get(human).fold2(Left(s"No state for $human: $states"), f)

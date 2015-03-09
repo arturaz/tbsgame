@@ -15,6 +15,7 @@ import app.models.game.world.units._
 import app.models.game._
 import implicits._
 import netmsg.{Management, Base, Game, Messages}
+import org.joda.time.DateTime
 import utils.{ValWithMax, FloatValueClass, DoubleValueClass, IntValueClass}
 import utils.data.NonEmptyVector
 import collection.JavaConverters._
@@ -151,6 +152,9 @@ object ProtobufCoding {
 
     implicit def convert[A <: IntValueClass[A]](vwm: ValWithMax[A]): Base.ValWithMax =
       Base.ValWithMax.newBuilder().setCurrent(vwm.value).setMaximum(vwm.max).build()
+
+    implicit def convert(dateTime: DateTime): Base.Timestamp =
+      Base.Timestamp.newBuilder().setTimestamp(dateTime.getMillis).build()
 
     /* Data */
 
@@ -520,6 +524,10 @@ object ProtobufCoding {
       Game.PopulationChangeEvt.newBuilder().setPlayerId(evt.player.id).
         setNewPopulation(evt.population).build
 
+    implicit def convert(evt: SetTurnTimerEvt): Game.SetTurnTimerEvt =
+      Game.SetTurnTimerEvt.newBuilder().
+        setTurnBeginsAt(evt.timeframe.start).setTurnEndsAt(evt.timeframe.end).build
+
     implicit def convert(evt: JoinEvt): Game.JoinEvt =
       Game.JoinEvt.newBuilder().setPlayer(convert(evt.human, evt.state)).build()
 
@@ -550,6 +558,7 @@ object ProtobufCoding {
         case evt: ObjectivesUpdatedEvt => b.setObjectivesUpdate(evt)
         case evt: GameWonEvt => b.setGameWon(evt)
         case evt: PopulationChangeEvt => b.setPopulationChange(evt)
+        case evt: SetTurnTimerEvt => b.setSetTurnTimerEvt(evt)
       } }.build()
 
     /* Messages */

@@ -4,23 +4,26 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.event.{LoggingAdapter, LoggingReceive}
 import app.actors.game.GameActor.Out.Joined
 import app.algorithms.Pathfinding.Path
-import app.models.User
+import app.models.game.TurnBasedGame.WithCurrentTime
 import app.models.game._
 import app.models.game.events._
 import app.models.game.world._
 import app.models.game.world.buildings._
-import app.models.game.world.maps.{WorldMaterializer, GameMap}
+import app.models.game.world.maps.WorldMaterializer
 import app.models.game.world.units._
 import implicits._
+import org.joda.time.DateTime
 import utils.data.NonEmptyVector
 
 import scala.annotation.tailrec
+import scala.concurrent.duration._
 import scala.language.existentials
 import scalaz.{\/-, -\/, \/}
 
 object GameActor {
   sealed trait In
   object In {
+    case object CheckTurnTime extends In
     case class Join(human: Human) extends In
     case class Leave(human: Human) extends In
     case class Warp(
@@ -135,7 +138,7 @@ object GameActor {
   }
 
   private def nextReadyTeam(
-    game: TurnBasedGame
+    game: TurnBasedGame, currentTime: DateTime
   )(implicit log: LoggingAdapter): Evented[Winner \/ TurnBasedGame] = {
     @tailrec def rec(
       gameOrWinner: Evented[Winner \/ TurnBasedGame]
@@ -143,7 +146,7 @@ object GameActor {
       if (gameOrWinner.value.fold(_ => true, ! _.currentTeamFinished)) gameOrWinner
       else rec(gameOrWinner.flatMap {
         case left @ -\/(winner) => Evented(left)
-        case \/-(game) => game.nextTeamTurn
+        case \/-(game) => game.nextTeamTurn(currentTime)
       })
     }
 
@@ -151,9 +154,9 @@ object GameActor {
   }
 
   def props(
-    worldMaterializer: WorldMaterializer, aiTeam: Team,
-    starting: Set[GameActor.StartingHuman]
-  ) = Props(new GameActor(worldMaterializer, aiTeam, starting))
+    worldMaterializer: WorldMaterializer, turnTimerSettings: Option[TurnTimers.Settings],
+    aiTeam: Team, starting: Set[GameActor.StartingHuman]
+  ) = Props(new GameActor(worldMaterializer, turnTimerSettings, aiTeam, starting))
 
   case class StartingHuman(human: Human, resources: Resources, client: ActorRef) {
     def game = Game.StartingPlayer(human, resources)
@@ -161,14 +164,16 @@ object GameActor {
 }
 
 class GameActor private (
-  worldMaterializer: WorldMaterializer, aiTeam: Team,
-  starting: Set[GameActor.StartingHuman]
+  worldMaterializer: WorldMaterializer, turnTimerSettings: Option[TurnTimers.Settings],
+  aiTeam: Team, starting: Set[GameActor.StartingHuman]
 ) extends Actor with ActorLogging {
   import app.actors.game.GameActor._
+  import context.dispatcher
   implicit val logging = log
 
   log.debug(
-    "initializing game actor with starting {}", starting
+    "initializing game actor: starting={} turnTimer={}, aiTeam={}",
+    starting, turnTimerSettings, aiTeam
   )
 
   private[this] var clients = starting.map(data => data.human -> data.client).toMap
@@ -188,7 +193,8 @@ class GameActor private (
     ) }.toMap
     log.debug("Objectives initialized to {}", objectives)
     TurnBasedGame(
-      world, starting.map(_.game), objectives
+      world, starting.map(_.game), objectives,
+      turnTimerSettings.map(WithCurrentTime(_, DateTime.now))
     ).fold(
       err => throw new IllegalStateException(s"Cannot initialize game: $err"),
       evented => {
@@ -200,7 +206,7 @@ class GameActor private (
           events(data.human, data.client, evented.events)
         }
         // And then get to the state where next ready team can act
-        val turnStartedGame = evented.flatMap(nextReadyTeam)
+        val turnStartedGame = evented.flatMap(nextReadyTeam(_, DateTime.now))
         starting.foreach { data =>
           events(data.human, data.client, turnStartedGame.events)
         }
@@ -210,7 +216,21 @@ class GameActor private (
     )
   }
 
-  def receive = LoggingReceive {
+  val turnTimerChecker =
+    context.system.scheduler.schedule(1.second, 1.second, self, In.CheckTurnTime)
+
+  @throws[Exception](classOf[Exception])
+  override def postStop() = {
+    super.postStop()
+    turnTimerChecker.cancel()
+  }
+  
+  val notLoggedReceive: Receive = {
+    case In.CheckTurnTime =>
+      postGameChange(checkedTurnTimes)
+  }
+
+  val loggedReceive = LoggingReceive {
     case In.Join(human) =>
       val ref = sender()
       ref ! Out.Joined(human, self)
@@ -226,13 +246,13 @@ class GameActor private (
       else {
         log.error("Unknown human trying to join the game: {}", human)
         // TODO: allow new joins?
-//        update(
-//          ref, human,
-//          _.join(human, GameActor.StartingResources).right.map { evtTbg =>
-//            doInit(evtTbg.value)
-//            evtTbg
-//          }
-//        )
+        //        update(
+        //          ref, human,
+        //          _.join(human, GameActor.StartingResources).right.map { evtTbg =>
+        //            doInit(evtTbg.value)
+        //            evtTbg
+        //          }
+        //        )
       }
     case In.Leave(human) =>
       if (clients.contains(human)) {
@@ -255,7 +275,7 @@ class GameActor private (
     case In.Special(human, id) =>
       update(sender(), human, _.special(human, id))
     case In.EndTurn(human) =>
-      update(sender(), human, _.endTurn(human))
+      update(sender(), human, _.endTurn(human, DateTime.now))
     case In.Concede(human) =>
       update(sender(), human, _.concede(human))
     case In.GetMovement(human, id) =>
@@ -273,38 +293,45 @@ class GameActor private (
         )
   }
 
+  val receive: PartialFunction[Any, Unit] = notLoggedReceive orElse loggedReceive
+
+  private[this] def updatedGame(f: => Evented[TurnBasedGame])
+  : Evented[Winner \/ TurnBasedGame] = f.flatMap(nextReadyTeam(_, DateTime.now))
+
+  private[this] def checkedTurnTimes = updatedGame(game.checkTurnTimes(DateTime.now))
+
   private[this] def update(
     requester: ActorRef, human: Human, f: TurnBasedGame => TurnBasedGame.Result
   ): Unit = {
     log.debug("Updating game by a request from {}", requester)
 
-    def objectivesEvt(game: Game) =
-      ObjectivesUpdatedEvt(human.team, game.remainingObjectives(human.team))
-
-    f(game).right.map { evented =>
-      val firstEvt = objectivesEvt(evented.value.game)
-      val newEvented = (evented :+ firstEvt).flatMap(nextReadyTeam)
-      // After nextReadyTeam it might be our turn again, so see if the objectives has
-      // changed and notify about it if they did
-      newEvented.value.fold(_ => newEvented, newGame => {
-        val secondEvt = objectivesEvt(newGame.game)
-        if (firstEvt == secondEvt) newEvented else newEvented :+ secondEvt
-      })
-    }.fold(err => {
-      log.error(err)
-      requester ! Out.Error(err)
-    }, evented => {
-      dispatchEvents(evented.events)
-      evented.value.fold(
-        winner => {
-          log.info("Game is finished, won by {}", winner)
-          context.stop(self)
+    val afterTimeCheck = checkedTurnTimes
+    afterTimeCheck.value.fold(
+      _ => postGameChange(afterTimeCheck),
+      tbg => f(tbg).right.map(evt => updatedGame(afterTimeCheck.events ++: evt)).fold(
+        err => {
+          log.error(err)
+          requester ! Out.Error(err)
         },
-        g => game = g
+        postGameChange
       )
-    })
+    )
   }
 
-  private[this] def dispatchEvents(events: Events): Unit =
-    clients.foreach { case (human, ref) => GameActor.events(human, ref, events) }
+  private[this] def postGameChange(evented: Evented[Winner \/ TurnBasedGame]): Unit = {
+    dispatchEvents(evented.events)
+    evented.value.fold(
+      winner => {
+        log.info("Game is finished, won by {}", winner)
+        context.stop(self)
+      },
+      g => game = g
+    )
+  }
+
+  private[this] def dispatchEvents(events: Events): Unit = {
+    if (events.nonEmpty) clients.foreach { case (human, ref) =>
+      GameActor.events(human, ref, events)
+    }
+  }
 }

@@ -7,7 +7,7 @@ import akka.event.LoggingReceive
 import app.actors.NetClient.Management.{SessionToken, PlainPassword, Credentials}
 import app.actors.game.{GamesManagerActor, GameActor}
 import app.models._
-import app.models.game.Human
+import app.models.game.{TurnTimers, Human}
 import app.persistence.tables.Tables
 import implicits._
 import app.persistence.DBDriver._
@@ -180,7 +180,7 @@ class NetClient(
     case FromClient.Management(CancelJoinGame) =>
       gamesManager ! GamesManagerActor.In.CancelJoinGame(user)
 
-    case msg @ JoinGameCancelled =>
+    case msg: JoinGameCancelled.type =>
       msg.out()
 
     case GameActor.Out.Joined(human, game) =>

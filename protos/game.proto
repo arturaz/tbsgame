@@ -386,6 +386,7 @@ message Event { // {{{
   optional OwnerChangeEvt owner_change = 18;
   optional ObjectivesUpdateEvt objectives_update = 19;
   optional PopulationChangeEvt population_change = 20;
+  optional SetTurnTimerEvt set_turn_timer_evt = 21;
 
   optional JoinEvt join = 1000;
   optional LeaveEvt leave = 1001;
@@ -508,4 +509,9 @@ message GameWonEvt {
 message PopulationChangeEvt {
   required PlayerID player_id = 1;
   required base.ValWithMax new_population = 2;
+}
+
+message SetTurnTimerEvt {
+  required base.Timestamp turn_begins_at = 1;
+  required base.Timestamp turn_ends_at = 2;
 }

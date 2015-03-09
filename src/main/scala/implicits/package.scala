@@ -2,7 +2,9 @@ import java.nio.{ByteBuffer, ByteOrder}
 import java.util.UUID
 
 import akka.event.LoggingAdapter
+import app.models.game.events.Evented
 import infrastructure.PrefixedLoggingAdapter
+import org.joda.time.DateTime
 import utils.{IntValueClass, Base36, CompositeOrdering}
 
 import scala.reflect.ClassTag
@@ -15,6 +17,10 @@ import scalaz.{-\/, \/, \/-}
 package object implicits {
   implicit class OptionExts[A](val o: Option[A]) extends AnyVal {
     @inline def fold2[B](ifEmpty: => B, ifSome: A => B) = o.fold(ifEmpty)(ifSome)
+  }
+
+  implicit class OptionEventedExts[A](val o: Option[Evented[A]]) extends AnyVal {
+    def extract: Evented[Option[A]] = o.fold2(Evented(None), _.map(Some(_)))
   }
 
   implicit class TryExts[A](val t: Try[A]) extends AnyVal {
@@ -30,7 +36,13 @@ package object implicits {
     @inline def parseDouble: Try[Double] = Try(s.toDouble)
   }
 
-  class LeftSideException(msg: String) extends IllegalStateException(msg)
+  implicit class DateTimeExts(val dt: DateTime) extends AnyVal with Ordered[DateTime] {
+    import concurrent.duration._
+
+    def +(fd: FiniteDuration): DateTime = dt.plus(fd.toMillis)
+    def -(other: DateTime): FiniteDuration = (dt.getMillis - other.getMillis).millis
+    override def compare(that: DateTime) = dt.compareTo(that)
+  }
 
   implicit class EitherZExts[A, B](val either: A \/ B) extends AnyVal {
     def right_! = either.fold(
