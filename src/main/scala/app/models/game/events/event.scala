@@ -5,6 +5,7 @@ import app.models.game.world._
 import app.models.game.world.maps.VisibilityMap
 import implicits._
 import utils.ValWithMax
+import utils.data.Timeframe
 
 import scalaz.\/
 
@@ -47,7 +48,7 @@ case class LeaveEvt(human: Human) extends AlwaysVisibleEvent
 case class TurnStartedEvt(team: Team) extends AlwaysVisibleEvent
 case class TurnEndedEvt(team: Team) extends AlwaysVisibleEvent
 
-case class SetTurnTimerEvt(whom: Human \/ Team, timeframe: TurnTimeframe)
+case class SetTurnTimerEvt(whom: Human \/ Team, timeframe: Timeframe)
 extends VisibleEvent {
   override def visibleBy(owner: Owner) = whom.fold(
     // If this is a turn timer for human, send it only if it directly belongs to that

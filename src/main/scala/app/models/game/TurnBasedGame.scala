@@ -9,7 +9,7 @@ import app.models.game.world.WObject.Id
 import app.models.game.world._
 import implicits._
 import org.joda.time.DateTime
-import utils.data.NonEmptyVector
+import utils.data.{Timeframe, NonEmptyVector}
 
 import scalaz.{\/-, -\/, \/}
 
@@ -184,5 +184,18 @@ case class TurnBasedGame private (
           case (evtTbg, _) => evtTbg
         }
     }
+  }
+
+  /* if turn timers are enabled returns turn timeframe for this turn. */
+  def turnTimeframeFor(human: Human)(implicit log: LoggingAdapter)
+  : Option[Timeframe] = turnTimers.flatMap { timers =>
+    if (currentTeam === human.team) timers.map.get(human).fold2(
+      {
+        log.error("cannot find {} in turn timers {}", human, timers)
+        None
+      },
+      _.currentTurn
+    )
+    else timers.maxTimeframeFor(currentTeam)
   }
 }

@@ -74,6 +74,11 @@ package object implicits {
     @inline def wrapped(idx: Int) = is(idx % is.size)
   }
 
+  implicit class OrderedExts[A <: Ordered[A]](val o: A) extends AnyVal {
+    def min(other: A): A = if (o <= other) o else other
+    def max(other: A): A = if (o >= other) o else other
+  }
+
   type WeightedIS[+A] = IndexedSeq[(A, Int)]
 
   implicit class WeightedISExts[A](val is: WeightedIS[A])

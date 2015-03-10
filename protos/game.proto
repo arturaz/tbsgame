@@ -100,6 +100,8 @@ message MInit {
   repeated InitWObjectStats wobject_stats = 9;
   repeated AttackMultiplier attack_multipliers = 10;
   required Objectives objectives = 11;
+  /* Might not have a turn timer */
+  optional base.Timeframe turn_timeframe = 12;
 }
 
 enum WObjKind {
@@ -512,6 +514,5 @@ message PopulationChangeEvt {
 }
 
 message SetTurnTimerEvt {
-  required base.Timestamp turn_begins_at = 1;
-  required base.Timestamp turn_ends_at = 2;
+  required base.Timeframe turn_timeframe = 1;
 }

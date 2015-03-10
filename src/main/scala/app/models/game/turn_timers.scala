@@ -3,15 +3,12 @@ package app.models.game
 import app.models.game.TurnTimers.HumanTurnTimersMap
 import app.models.game.events.{SetTurnTimerEvt, Evented}
 import org.joda.time.DateTime
+import utils.data.Timeframe
 
 import scala.concurrent.duration._
 import implicits._
 
-case class TurnTimeframe(start: DateTime, end: DateTime) {
-  def timeUsedUp(currentTime: DateTime): Boolean = currentTime >= end
-}
-
-case class TurnTimer(timeLeftPool: FiniteDuration, currentTurn: Option[TurnTimeframe])
+case class TurnTimer(timeLeftPool: FiniteDuration, currentTurn: Option[Timeframe])
 
 object TurnTimers {
   type HumanTurnTimersMap = Map[Human, TurnTimer]
@@ -59,7 +56,7 @@ class TurnTimers(
     ) {
       case ((evented, longestTeamTurnTimeOpt), (human, timer)) if human.team === team =>
         val turnTime = timer.timeLeftPool min settings.upperTurnTimeLimit
-        val timeframe = TurnTimeframe(currentTime, currentTime + turnTime)
+        val timeframe = Timeframe(currentTime, currentTime + turnTime)
         val newTimer = TurnTimer(timer.timeLeftPool - turnTime, Some(timeframe))
         val newLongestTeamTurnTimeOpt =
           longestTeamTurnTimeOpt.map(_ max turnTime).orElse(Some(turnTime))
@@ -75,11 +72,21 @@ class TurnTimers(
     val teamTurnTimerEvt = longestTeamTurnTimeOpt.fold2(
       Vector.empty,
       longestTeamTurnTime => Vector(SetTurnTimerEvt(
-        team.rightZ, TurnTimeframe(currentTime, currentTime + longestTeamTurnTime)
+        team.rightZ, Timeframe(currentTime, currentTime + longestTeamTurnTime)
       ))
     )
     evtNewTimers.map(withMap) :++ teamTurnTimerEvt
   }
+
+  def maxTimeframeFor(team: Team): Option[Timeframe] =
+    map.view.filter(_._1.team === team).foldLeft(Option.empty[Timeframe]) {
+      case (None, (human, TurnTimer(_, timeframeOpt))) =>
+        timeframeOpt
+      case (Some(current), (human, TurnTimer(_, Some(timeframe)))) =>
+        Some(current max timeframe)
+      case (current, _) =>
+        current
+    }
 
   override def toString = s"TurnTimers($settings, timers=$map)"
 

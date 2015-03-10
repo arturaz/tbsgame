@@ -13,7 +13,7 @@ import app.models.game.world.maps.WorldMaterializer
 import app.models.game.world.units._
 import implicits._
 import org.joda.time.DateTime
-import utils.data.NonEmptyVector
+import utils.data.{Timeframe, NonEmptyVector}
 
 import scala.annotation.tailrec
 import scala.concurrent.duration._
@@ -54,7 +54,7 @@ object GameActor {
       selfTeam: Team, otherTeams: Iterable[Team],
       self: HumanState, others: Iterable[(Player, Option[HumanState])],
       wObjectStats: Iterable[Init.Stats], attackMultipliers: Set[(WObjKind, WObjKind)],
-      objectives: RemainingObjectives
+      objectives: RemainingObjectives, turnTimeframe: Option[Timeframe]
     ) extends ClientOut
     case class Events(events: Vector[FinalEvent]) extends ClientOut
     case class Error(error: String) extends ClientOut
@@ -70,7 +70,9 @@ object GameActor {
     case class Movement(id: WObject.Id, response: Movement.Response) extends ClientOut
   }
 
-  private[this] def initMsg(human: Human, game: Game): Either[String, Out.Init] = {
+  private[this] def initMsg(human: Human, tbgame: TurnBasedGame)
+  (implicit log: LoggingAdapter): Either[String, Out.Init] = {
+    val game = tbgame.game
     val visibleGame = game.visibleBy(human)
     val states = visibleGame.states
     val resourceMap = visibleGame.world.resourcesMap
@@ -106,7 +108,8 @@ object GameActor {
           )
         },
         for (from <- WObjKind.All; to <- WObjKind.All) yield from -> to,
-        game.remainingObjectives(human.team)
+        game.remainingObjectives(human.team),
+        tbgame.turnTimeframeFor(human)
       )
     }
   }
@@ -114,7 +117,7 @@ object GameActor {
   private def init(
     human: Human, ref: ActorRef, tbgame: TurnBasedGame
   )(implicit log: LoggingAdapter): Unit =
-    initMsg(human, tbgame.game).fold(
+    initMsg(human, tbgame).fold(
       err => throw new IllegalStateException(s"cannot init game state: $err"),
       msg => {
         ref ! msg

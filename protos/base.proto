@@ -30,3 +30,8 @@ message Range {
 message Timestamp {
   required uint64 timestamp = 1;
 }
+
+message Timeframe {
+  required Timestamp start = 1;
+  required Timestamp end = 2;
+}

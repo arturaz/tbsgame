@@ -2597,6 +2597,605 @@ public final class Base {
     // @@protoc_insertion_point(class_scope:base.Timestamp)
   }
   
+  public interface TimeframeOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required .base.Timestamp start = 1;
+    boolean hasStart();
+    netmsg.Base.Timestamp getStart();
+    netmsg.Base.TimestampOrBuilder getStartOrBuilder();
+    
+    // required .base.Timestamp end = 2;
+    boolean hasEnd();
+    netmsg.Base.Timestamp getEnd();
+    netmsg.Base.TimestampOrBuilder getEndOrBuilder();
+  }
+  public static final class Timeframe extends
+      com.google.protobuf.GeneratedMessage
+      implements TimeframeOrBuilder {
+    // Use Timeframe.newBuilder() to construct.
+    private Timeframe(Builder builder) {
+      super(builder);
+    }
+    private Timeframe(boolean noInit) {}
+    
+    private static final Timeframe defaultInstance;
+    public static Timeframe getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public Timeframe getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return netmsg.Base.internal_static_base_Timeframe_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return netmsg.Base.internal_static_base_Timeframe_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // required .base.Timestamp start = 1;
+    public static final int START_FIELD_NUMBER = 1;
+    private netmsg.Base.Timestamp start_;
+    public boolean hasStart() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public netmsg.Base.Timestamp getStart() {
+      return start_;
+    }
+    public netmsg.Base.TimestampOrBuilder getStartOrBuilder() {
+      return start_;
+    }
+    
+    // required .base.Timestamp end = 2;
+    public static final int END_FIELD_NUMBER = 2;
+    private netmsg.Base.Timestamp end_;
+    public boolean hasEnd() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public netmsg.Base.Timestamp getEnd() {
+      return end_;
+    }
+    public netmsg.Base.TimestampOrBuilder getEndOrBuilder() {
+      return end_;
+    }
+    
+    private void initFields() {
+      start_ = netmsg.Base.Timestamp.getDefaultInstance();
+      end_ = netmsg.Base.Timestamp.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasStart()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasEnd()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getStart().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getEnd().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, start_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, end_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, start_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, end_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static netmsg.Base.Timeframe parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Base.Timeframe parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Base.Timeframe parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static netmsg.Base.Timeframe parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Base.Timeframe parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Base.Timeframe parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static netmsg.Base.Timeframe parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Base.Timeframe parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static netmsg.Base.Timeframe parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static netmsg.Base.Timeframe parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(netmsg.Base.Timeframe prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements netmsg.Base.TimeframeOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return netmsg.Base.internal_static_base_Timeframe_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return netmsg.Base.internal_static_base_Timeframe_fieldAccessorTable;
+      }
+      
+      // Construct using netmsg.Base.Timeframe.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getStartFieldBuilder();
+          getEndFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        if (startBuilder_ == null) {
+          start_ = netmsg.Base.Timestamp.getDefaultInstance();
+        } else {
+          startBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (endBuilder_ == null) {
+          end_ = netmsg.Base.Timestamp.getDefaultInstance();
+        } else {
+          endBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return netmsg.Base.Timeframe.getDescriptor();
+      }
+      
+      public netmsg.Base.Timeframe getDefaultInstanceForType() {
+        return netmsg.Base.Timeframe.getDefaultInstance();
+      }
+      
+      public netmsg.Base.Timeframe build() {
+        netmsg.Base.Timeframe result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private netmsg.Base.Timeframe buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        netmsg.Base.Timeframe result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public netmsg.Base.Timeframe buildPartial() {
+        netmsg.Base.Timeframe result = new netmsg.Base.Timeframe(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (startBuilder_ == null) {
+          result.start_ = start_;
+        } else {
+          result.start_ = startBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (endBuilder_ == null) {
+          result.end_ = end_;
+        } else {
+          result.end_ = endBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof netmsg.Base.Timeframe) {
+          return mergeFrom((netmsg.Base.Timeframe)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(netmsg.Base.Timeframe other) {
+        if (other == netmsg.Base.Timeframe.getDefaultInstance()) return this;
+        if (other.hasStart()) {
+          mergeStart(other.getStart());
+        }
+        if (other.hasEnd()) {
+          mergeEnd(other.getEnd());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (!hasStart()) {
+          
+          return false;
+        }
+        if (!hasEnd()) {
+          
+          return false;
+        }
+        if (!getStart().isInitialized()) {
+          
+          return false;
+        }
+        if (!getEnd().isInitialized()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              netmsg.Base.Timestamp.Builder subBuilder = netmsg.Base.Timestamp.newBuilder();
+              if (hasStart()) {
+                subBuilder.mergeFrom(getStart());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setStart(subBuilder.buildPartial());
+              break;
+            }
+            case 18: {
+              netmsg.Base.Timestamp.Builder subBuilder = netmsg.Base.Timestamp.newBuilder();
+              if (hasEnd()) {
+                subBuilder.mergeFrom(getEnd());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setEnd(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // required .base.Timestamp start = 1;
+      private netmsg.Base.Timestamp start_ = netmsg.Base.Timestamp.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> startBuilder_;
+      public boolean hasStart() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public netmsg.Base.Timestamp getStart() {
+        if (startBuilder_ == null) {
+          return start_;
+        } else {
+          return startBuilder_.getMessage();
+        }
+      }
+      public Builder setStart(netmsg.Base.Timestamp value) {
+        if (startBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          start_ = value;
+          onChanged();
+        } else {
+          startBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder setStart(
+          netmsg.Base.Timestamp.Builder builderForValue) {
+        if (startBuilder_ == null) {
+          start_ = builderForValue.build();
+          onChanged();
+        } else {
+          startBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder mergeStart(netmsg.Base.Timestamp value) {
+        if (startBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              start_ != netmsg.Base.Timestamp.getDefaultInstance()) {
+            start_ =
+              netmsg.Base.Timestamp.newBuilder(start_).mergeFrom(value).buildPartial();
+          } else {
+            start_ = value;
+          }
+          onChanged();
+        } else {
+          startBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder clearStart() {
+        if (startBuilder_ == null) {
+          start_ = netmsg.Base.Timestamp.getDefaultInstance();
+          onChanged();
+        } else {
+          startBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      public netmsg.Base.Timestamp.Builder getStartBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getStartFieldBuilder().getBuilder();
+      }
+      public netmsg.Base.TimestampOrBuilder getStartOrBuilder() {
+        if (startBuilder_ != null) {
+          return startBuilder_.getMessageOrBuilder();
+        } else {
+          return start_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> 
+          getStartFieldBuilder() {
+        if (startBuilder_ == null) {
+          startBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder>(
+                  start_,
+                  getParentForChildren(),
+                  isClean());
+          start_ = null;
+        }
+        return startBuilder_;
+      }
+      
+      // required .base.Timestamp end = 2;
+      private netmsg.Base.Timestamp end_ = netmsg.Base.Timestamp.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> endBuilder_;
+      public boolean hasEnd() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public netmsg.Base.Timestamp getEnd() {
+        if (endBuilder_ == null) {
+          return end_;
+        } else {
+          return endBuilder_.getMessage();
+        }
+      }
+      public Builder setEnd(netmsg.Base.Timestamp value) {
+        if (endBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          end_ = value;
+          onChanged();
+        } else {
+          endBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder setEnd(
+          netmsg.Base.Timestamp.Builder builderForValue) {
+        if (endBuilder_ == null) {
+          end_ = builderForValue.build();
+          onChanged();
+        } else {
+          endBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder mergeEnd(netmsg.Base.Timestamp value) {
+        if (endBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              end_ != netmsg.Base.Timestamp.getDefaultInstance()) {
+            end_ =
+              netmsg.Base.Timestamp.newBuilder(end_).mergeFrom(value).buildPartial();
+          } else {
+            end_ = value;
+          }
+          onChanged();
+        } else {
+          endBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder clearEnd() {
+        if (endBuilder_ == null) {
+          end_ = netmsg.Base.Timestamp.getDefaultInstance();
+          onChanged();
+        } else {
+          endBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      public netmsg.Base.Timestamp.Builder getEndBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getEndFieldBuilder().getBuilder();
+      }
+      public netmsg.Base.TimestampOrBuilder getEndOrBuilder() {
+        if (endBuilder_ != null) {
+          return endBuilder_.getMessageOrBuilder();
+        } else {
+          return end_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> 
+          getEndFieldBuilder() {
+        if (endBuilder_ == null) {
+          endBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder>(
+                  end_,
+                  getParentForChildren(),
+                  isClean());
+          end_ = null;
+        }
+        return endBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:base.Timeframe)
+    }
+    
+    static {
+      defaultInstance = new Timeframe(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:base.Timeframe)
+  }
+  
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_base_Vect2_descriptor;
   private static
@@ -2627,6 +3226,11 @@ public final class Base {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_base_Timestamp_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_base_Timeframe_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_base_Timeframe_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -2643,7 +3247,9 @@ public final class Base {
       "ficant\030\002 \002(\006\".\n\nValWithMax\022\017\n\007current\030\001 " +
       "\002(\r\022\017\n\007maximum\030\002 \002(\r\"#\n\005Range\022\r\n\005start\030\001" +
       " \002(\r\022\013\n\003end\030\002 \002(\r\"\036\n\tTimestamp\022\021\n\ttimest" +
-      "amp\030\001 \002(\004B\010\n\006netmsg"
+      "amp\030\001 \002(\004\"I\n\tTimeframe\022\036\n\005start\030\001 \002(\0132\017." +
+      "base.Timestamp\022\034\n\003end\030\002 \002(\0132\017.base.Times" +
+      "tampB\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2698,6 +3304,14 @@ public final class Base {
               new java.lang.String[] { "Timestamp", },
               netmsg.Base.Timestamp.class,
               netmsg.Base.Timestamp.Builder.class);
+          internal_static_base_Timeframe_descriptor =
+            getDescriptor().getMessageTypes().get(6);
+          internal_static_base_Timeframe_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_base_Timeframe_descriptor,
+              new java.lang.String[] { "Start", "End", },
+              netmsg.Base.Timeframe.class,
+              netmsg.Base.Timeframe.Builder.class);
           return null;
         }
       };

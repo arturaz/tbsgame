@@ -17,7 +17,7 @@ import implicits._
 import netmsg.{Management, Base, Game, Messages}
 import org.joda.time.DateTime
 import utils.{ValWithMax, FloatValueClass, DoubleValueClass, IntValueClass}
-import utils.data.NonEmptyVector
+import utils.data.{Timeframe, NonEmptyVector}
 import collection.JavaConverters._
 
 object ProtobufCoding {
@@ -162,6 +162,9 @@ object ProtobufCoding {
 
     implicit def convert(dateTime: DateTime): Base.Timestamp =
       Base.Timestamp.newBuilder().setTimestamp(dateTime.getMillis).build()
+
+    implicit def convert(tf: Timeframe): Base.Timeframe =
+      Base.Timeframe.newBuilder().setStart(tf.start).setEnd(tf.end).build()
 
     /* Data */
 
@@ -532,8 +535,7 @@ object ProtobufCoding {
         setNewPopulation(evt.population).build
 
     implicit def convert(evt: SetTurnTimerEvt): Game.SetTurnTimerEvt =
-      Game.SetTurnTimerEvt.newBuilder().
-        setTurnBeginsAt(evt.timeframe.start).setTurnEndsAt(evt.timeframe.end).build
+      Game.SetTurnTimerEvt.newBuilder().setTurnTimeframe(evt.timeframe).build
 
     implicit def convert(evt: JoinEvt): Game.JoinEvt =
       Game.JoinEvt.newBuilder().setPlayer(convert(evt.human, evt.state)).build()
@@ -599,6 +601,7 @@ object ProtobufCoding {
           attackMultiplier(from, to)
         }.asJava).
         setObjectives(msg.objectives).
+        mapVal { b => msg.turnTimeframe.fold2(b, b.setTurnTimeframe(_)) }.
         build()
 
     implicit def convert(out: GameActor.ClientOut): Game.FromServer =
@@ -638,7 +641,6 @@ object ProtobufCoding {
       out: NetClient.Management.Out.GameJoined
     ): Management.GameJoined =
       Management.GameJoined.newBuilder().setPlayer(out.human).build()
-
 
     implicit def convert(out: NetClient.Management.Out): Management.FromServer =
       Management.FromServer.newBuilder().mapVal { b => out match {
