@@ -14,11 +14,11 @@ object TurnTimers {
   type HumanTurnTimersMap = Map[Human, TurnTimer]
   
   case class Settings(
-    maxTurnPoolSize: FiniteDuration = 5.minutes,
+    maxTurnPoolSize: FiniteDuration = 15.minutes,
     /* Max turn time */
-    upperTurnTimeLimit: FiniteDuration = 2.minutes,
+    upperTurnTimeLimit: FiniteDuration = 1.minute + 30.seconds,
     /* Guaranteed time given for each turn */
-    constantTimeGiven: FiniteDuration = 1.minute
+    constantTimeGiven: FiniteDuration = 45.seconds
   ) {
     val defaultTimer = TurnTimer(upperTurnTimeLimit, None)
 
