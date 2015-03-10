@@ -214,31 +214,31 @@ case class Game private (
   def isJoined(human: Human)(implicit log: LoggingAdapter) =
     states.contains(human)
 
-  def join(human: Human, startingResources: Resources)
-  (implicit log: LoggingAdapter) = {
-    def evt(newState: GamePlayerState) = Evented(
-      updated(world, human -> newState),
-      JoinEvt(
-        human,
-        Some(HumanState(startingResources, world.populationFor(human), newState))
-      )
-    )
-
-    checkObjectives(human.team) {
-    states.get(human).fold2(
-      evt(Game.startingState(world, human)).map { g =>
-        if (g.world.resourcesMap.contains(human)) Evented(g).right
-        else g.world.addResources(human, startingResources).right.map(_.map(g.updated))
-      }.extractFlatten,
-      state => s"$human is already in the game!".left
-    ) }
-  }
-
-  def leave(human: Human)(implicit log: LoggingAdapter) =
-    checkObjectives(human.team) {
-    withState(human) { state =>
-      Evented(updated(states - human), Vector(LeaveEvt(human))).right
-    } }
+//  def join(human: Human, startingResources: Resources)
+//  (implicit log: LoggingAdapter) = {
+//    def evt(newState: GamePlayerState) = Evented(
+//      updated(world, human -> newState),
+//      JoinEvt(
+//        human,
+//        Some(HumanState(startingResources, world.populationFor(human), newState))
+//      )
+//    )
+//
+//    checkObjectives(human.team) {
+//    states.get(human).fold2(
+//      evt(Game.startingState(world, human)).map { g =>
+//        if (g.world.resourcesMap.contains(human)) Evented(g).right
+//        else g.world.addResources(human, startingResources).right.map(_.map(g.updated))
+//      }.extractFlatten,
+//      state => s"$human is already in the game!".left
+//    ) }
+//  }
+//
+//  def leave(human: Human)(implicit log: LoggingAdapter) =
+//    checkObjectives(human.team) {
+//    withState(human) { state =>
+//      Evented(updated(states - human), Vector(LeaveEvt(human))).right
+//    } }
 
   def warp(
     human: Human, position: Vect2, warpable: WarpableCompanion.Some

@@ -257,16 +257,16 @@ class GameActor private (
         //          }
         //        )
       }
-    case In.Leave(human) =>
-      if (clients.contains(human)) {
-        update(sender(), human, _.leave(human).right.map { evtTbg =>
-          clients -= human
-          evtTbg
-        })
-      }
-      else {
-        sender ! Out.Error(s"No human $human is joined.")
-      }
+//    case In.Leave(human) =>
+//      if (clients.contains(human)) {
+//        update(sender(), human, _.leave(human).right.map { evtTbg =>
+//          clients -= human
+//          evtTbg
+//        })
+//      }
+//      else {
+//        sender ! Out.Error(s"No human $human is joined.")
+//      }
     case In.Warp(human, position, warpable) =>
       update(sender(), human, _.warp(human, position, warpable))
     case In.Move(human, id, path) =>

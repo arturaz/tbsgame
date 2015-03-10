@@ -84,12 +84,12 @@ case class TurnBasedGame private (
   def isJoined(human: Human)
   (implicit log: LoggingAdapter) = game.isJoined(human)
 
-  def join(human: Human, startingResources: Resources)
-  (implicit log: LoggingAdapter) =
-    update(game.join(human, startingResources))
-
-  def leave(human: Human)(implicit log: LoggingAdapter) =
-    update(game.leave(human))
+//  def join(human: Human, startingResources: Resources)
+//  (implicit log: LoggingAdapter) =
+//    update(game.join(human, startingResources))
+//
+//  def leave(human: Human)(implicit log: LoggingAdapter) =
+//    update(game.leave(human))
 
   def warp(
     human: Human, position: Vect2,
