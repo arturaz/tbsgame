@@ -90,8 +90,11 @@ object GrowingSpawnerAI {
     SingleMindAI.whileHasAttacksLeft(world, unit)(
       (world, unit) => {
         possibleTargets = world.objects.collect {
-          case fo: OwnedObj if fo.isEnemy(unit) => fo
-        }.toSet
+          case fo: OwnedObj if fo.isEnemy(unit) && (
+            fo.stats.isCritical // Critical objects are always known
+            || world.isVisiblePartial(unit.owner, fo.bounds) // Otherwise obey visibility
+          ) => fo
+        }(collection.breakOut)
 
         SingleMindAI.findAndMoveAttackTarget(world, possibleTargets, unit)
       },
