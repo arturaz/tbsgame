@@ -131,6 +131,9 @@ object TMXReader {
       case 7 => current.addStarting(position).rightZ
       case 8 => current add Brush(position)
       case 9 => current add Crystal(position)
+      case 10 => current.addNpc(npc => Fortress(position, npc)).rightZ
+      case 11 => current.addNpc(npc => RayShip(position, npc)).rightZ
+      case 12 => current.addNpc(npc => Wasp(position, npc)).rightZ
     }
   }
 
