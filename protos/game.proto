@@ -215,6 +215,8 @@ message WObject { // {{{
     U_FORTRESS = 13;
     B_VP_TOWER = 14;
     P_ROCK = 15;
+    P_BRUSH = 16;
+    P_CRYSTAL = 17;
   }
 
   enum ExtractionSpeed {

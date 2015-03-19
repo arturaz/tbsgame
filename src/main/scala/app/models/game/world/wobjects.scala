@@ -16,7 +16,7 @@ case class Asteroid(
   id: WObject.Id=WObject.newId
 ) extends Prop with AsteroidImpl
 
-/* Rock is an immovable 1x1 obstacle */
+/* Rock is an immovable 1x1 obstacle that you can neither move nor see through. */
 case class Rock(
   position: Vect2, id: WObject.Id=WObject.newId
 ) extends Prop {
@@ -25,6 +25,31 @@ case class Rock(
 }
 object RockStats extends WObjectStats {
   override val blocksVisibility = true
+  override val blocksWarp = true
+}
+
+/* Brush is an immovable 1x1 object that obstructs visibility, but you can still move
+   into it. */
+case class Brush(
+  position: Vect2, id: WObject.Id=WObject.newId
+) extends Prop {
+  type Stats = BrushStats.type
+  override val stats = BrushStats
+}
+object BrushStats extends WObjectStats {
+  override val blocksVisibility = true
+  override val blocksMovement = false
+}
+
+/* Crystal is an immovable 1x1 object that obstructs movement & warp zone, but you can
+   see through it. */
+case class Crystal(
+  position: Vect2, id: WObject.Id=WObject.newId
+) extends Prop {
+  type Stats = CrystalStats.type
+  override val stats = CrystalStats
+}
+object CrystalStats extends WObjectStats {
   override val blocksWarp = true
 }
 

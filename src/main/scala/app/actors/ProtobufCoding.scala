@@ -362,6 +362,8 @@ object ProtobufCoding {
             case o: Fortress => b.setKind(U_FORTRESS)
             case o: VPTower => b.setKind(B_VP_TOWER)
             case o: Rock => b.setKind(P_ROCK)
+            case o: Brush => b.setKind(P_BRUSH)
+            case o: Crystal => b.setKind(P_CRYSTAL)
             case o: WObjectTestRoot => b
           }
         }.build()

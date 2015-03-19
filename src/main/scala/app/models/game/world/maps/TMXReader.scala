@@ -129,6 +129,8 @@ object TMXReader {
       case 5 => current.addNpc(npc => Spawner(position, npc)).rightZ
       case 6 => current.addNpc(npc => VPTower(position, npc.team)).rightZ
       case 7 => current.addStarting(position).rightZ
+      case 8 => current add Brush(position)
+      case 9 => current add Crystal(position)
     }
   }
 

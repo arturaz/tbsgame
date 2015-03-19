@@ -13,6 +13,7 @@ trait WObjectStats {
   val size = Vect2.one
   val blocksVisibility = false
   val blocksWarp = false
+  val blocksMovement = true
 
   def bounds(position: Vect2) = Bounds(position, size)
 }
