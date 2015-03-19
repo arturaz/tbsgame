@@ -1,14 +1,6 @@
+import sbt.Keys._
+
 name := "TBS Game"
-
-scalaVersion := "2.11.6"
-
-scalacOptions := Seq(
-  "-feature", "-deprecation", "-unchecked", "-Xlint", "-Xfatal-warnings"
-)
-
-unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "gen" / "java"
-
-initialCommands in console := """import app.models._, world._, implicits._"""
 
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 
@@ -16,34 +8,46 @@ resolvers += Resolver.sonatypeRepo("releases")
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
-libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.3.6"
-
-libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.1.0"
-
-libraryDependencies += "commons-io" % "commons-io" % "2.4"
-
-libraryDependencies ++= Seq(
-  "org.flywaydb" % "flyway-core" % "3.1",
-  "com.zaxxer" % "HikariCP-java6" % "2.2.5",
-  "org.xerial" % "sqlite-jdbc" % "3.8.7",
-  "com.typesafe.slick" %% "slick" % "2.1.0"
+val commonSettings = Seq(
+  scalaVersion := "2.11.6",
+  scalacOptions := Seq("-feature", "-unchecked")
 )
 
-libraryDependencies += "com.github.t3hnar" %% "scala-bcrypt" % "2.4"
-
-val monocleLibVer = "0.5.1"
-
-libraryDependencies += "com.chuusai" %% "shapeless" % "2.0.0"
-
-libraryDependencies ++= Seq(
-  "com.github.julien-truffaut"  %%  "monocle-core"    % monocleLibVer,
-  "com.github.julien-truffaut"  %%  "monocle-generic" % monocleLibVer,
-  "com.github.julien-truffaut"  %%  "monocle-macro"   % monocleLibVer,         // since 0.4.0
-  "com.github.julien-truffaut"  %%  "monocle-law"     % monocleLibVer % "test" // since 0.4.0
+val macrosSettings = commonSettings ++ Seq(
+  libraryDependencies <+= scalaVersion("org.scala-lang" % "scala-reflect" % _)
 )
 
-libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
+val rootSettings = commonSettings ++ Seq(
+  scalacOptions ++= Seq("-deprecation", "-Xlint", "-Xfatal-warnings"),
+  unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "gen" / "java",
+  initialCommands in console := """import app.models._, world._, implicits._""",
+  libraryDependencies ++= Seq(
+    "com.typesafe.akka" %% "akka-actor" % "2.3.6",
+    "org.scalaz" %% "scalaz-core" % "7.1.0",
+    "commons-io" % "commons-io" % "2.4",
+    "com.github.t3hnar" %% "scala-bcrypt" % "2.4",
+    "com.google.protobuf" % "protobuf-java" % "2.4.1",
+    "com.github.nscala-time" %% "nscala-time" % "1.8.0",
+    "com.beachape" %% "enumeratum" % "1.0.1"
+  ) ++ Seq(
+    "org.flywaydb" % "flyway-core" % "3.1",
+    "com.zaxxer" % "HikariCP-java6" % "2.2.5",
+    "org.xerial" % "sqlite-jdbc" % "3.8.7",
+    "com.typesafe.slick" %% "slick" % "2.1.0"
+  ) ++ {
+    val monocleLibVer = "0.5.1"
+    Seq(
+      "com.github.julien-truffaut"  %%  "monocle-core"    % monocleLibVer,
+      "com.github.julien-truffaut"  %%  "monocle-generic" % monocleLibVer,
+      "com.github.julien-truffaut"  %%  "monocle-macro"   % monocleLibVer,         // since 0.4.0
+      "com.github.julien-truffaut"  %%  "monocle-law"     % monocleLibVer % "test" // since 0.4.0
+    )
+  } ++ Seq(
+    "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
+  )
+)
+//libraryDependencies += "com.chuusai" %% "shapeless" % "2.0.0"
 
-libraryDependencies += "com.google.protobuf" % "protobuf-java" % "2.4.1"
+lazy val macros = project.settings(macrosSettings:_*)
 
-libraryDependencies += "com.github.nscala-time" %% "nscala-time" % "1.8.0"
+lazy val root = (project in file(".")).dependsOn(macros).settings(rootSettings:_*)

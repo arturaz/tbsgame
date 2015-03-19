@@ -10,6 +10,7 @@ import app.models.game.events._
 import app.models.game.world._
 import app.models.game.world.buildings._
 import app.models.game.world.maps.WorldMaterializer
+import app.models.game.world.props.{ExtractionSpeed, AsteroidStats}
 import app.models.game.world.units._
 import implicits._
 import org.joda.time.DateTime
@@ -54,7 +55,8 @@ object GameActor {
       selfTeam: Team, otherTeams: Iterable[Team],
       self: HumanState, others: Iterable[(Player, Option[HumanState])],
       wObjectStats: Iterable[Init.Stats], attackMultipliers: Set[(WObjKind, WObjKind)],
-      objectives: RemainingObjectives, turnTimeframe: Option[Timeframe]
+      objectives: RemainingObjectives, turnTimeframe: Option[Timeframe],
+      extractionSpeeds: Set[ExtractionSpeed]
     ) extends ClientOut
     case class Events(events: Vector[FinalEvent]) extends ClientOut
     case class Error(error: String) extends ClientOut
@@ -109,7 +111,7 @@ object GameActor {
         },
         for (from <- WObjKind.All; to <- WObjKind.All) yield from -> to,
         game.remainingObjectives(human.team),
-        tbgame.turnTimeframeFor(human)
+        tbgame.turnTimeframeFor(human), ExtractionSpeed.values
       )
     }
   }

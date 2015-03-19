@@ -4,7 +4,7 @@ import java.util.UUID
 
 import app.models.game._
 import app.models.game.world.buildings._
-import app.models.game.world.props.PropImpl
+import app.models.game.world.props.{ExtractionSpeed, AsteroidImpl, PropImpl}
 import app.models.game.world.units._
 import utils.IdObj
 
@@ -12,13 +12,9 @@ import utils.IdObj
 
 /* Asteroids can be mined for resources */
 case class Asteroid(
-  position: Vect2, resources: Resources, extractionSpeed: Resources,
+  position: Vect2, resources: Resources, extractionSpeed: ExtractionSpeed,
   id: WObject.Id=WObject.newId
-) extends Prop {
-  type Stats = AsteroidStats.type
-  override val stats = AsteroidStats
-}
-object AsteroidStats extends WObjectStats
+) extends Prop with AsteroidImpl
 
 /* Rock is an immovable 1x1 obstacle */
 case class Rock(

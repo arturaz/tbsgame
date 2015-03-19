@@ -7672,6 +7672,16 @@ public final class Game {
     boolean hasTurnTimeframe();
     netmsg.Base.Timeframe getTurnTimeframe();
     netmsg.Base.TimeframeOrBuilder getTurnTimeframeOrBuilder();
+    
+    // repeated .game.MInit.ExtractionSpeedRate extraction_speed_rates = 13;
+    java.util.List<netmsg.Game.MInit.ExtractionSpeedRate> 
+        getExtractionSpeedRatesList();
+    netmsg.Game.MInit.ExtractionSpeedRate getExtractionSpeedRates(int index);
+    int getExtractionSpeedRatesCount();
+    java.util.List<? extends netmsg.Game.MInit.ExtractionSpeedRateOrBuilder> 
+        getExtractionSpeedRatesOrBuilderList();
+    netmsg.Game.MInit.ExtractionSpeedRateOrBuilder getExtractionSpeedRatesOrBuilder(
+        int index);
   }
   public static final class MInit extends
       com.google.protobuf.GeneratedMessage
@@ -8195,6 +8205,426 @@ public final class Game {
       // @@protoc_insertion_point(class_scope:game.MInit.AttackMultiplier)
     }
     
+    public interface ExtractionSpeedRateOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+      
+      // required .game.WObject.ExtractionSpeed extraction_speed = 1;
+      boolean hasExtractionSpeed();
+      netmsg.Game.WObject.ExtractionSpeed getExtractionSpeed();
+      
+      // required uint32 resources_per_turn = 2;
+      boolean hasResourcesPerTurn();
+      int getResourcesPerTurn();
+    }
+    public static final class ExtractionSpeedRate extends
+        com.google.protobuf.GeneratedMessage
+        implements ExtractionSpeedRateOrBuilder {
+      // Use ExtractionSpeedRate.newBuilder() to construct.
+      private ExtractionSpeedRate(Builder builder) {
+        super(builder);
+      }
+      private ExtractionSpeedRate(boolean noInit) {}
+      
+      private static final ExtractionSpeedRate defaultInstance;
+      public static ExtractionSpeedRate getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public ExtractionSpeedRate getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return netmsg.Game.internal_static_game_MInit_ExtractionSpeedRate_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return netmsg.Game.internal_static_game_MInit_ExtractionSpeedRate_fieldAccessorTable;
+      }
+      
+      private int bitField0_;
+      // required .game.WObject.ExtractionSpeed extraction_speed = 1;
+      public static final int EXTRACTION_SPEED_FIELD_NUMBER = 1;
+      private netmsg.Game.WObject.ExtractionSpeed extractionSpeed_;
+      public boolean hasExtractionSpeed() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public netmsg.Game.WObject.ExtractionSpeed getExtractionSpeed() {
+        return extractionSpeed_;
+      }
+      
+      // required uint32 resources_per_turn = 2;
+      public static final int RESOURCES_PER_TURN_FIELD_NUMBER = 2;
+      private int resourcesPerTurn_;
+      public boolean hasResourcesPerTurn() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public int getResourcesPerTurn() {
+        return resourcesPerTurn_;
+      }
+      
+      private void initFields() {
+        extractionSpeed_ = netmsg.Game.WObject.ExtractionSpeed.SLOW;
+        resourcesPerTurn_ = 0;
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+        
+        if (!hasExtractionSpeed()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasResourcesPerTurn()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeEnum(1, extractionSpeed_.getNumber());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeUInt32(2, resourcesPerTurn_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(1, extractionSpeed_.getNumber());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32Size(2, resourcesPerTurn_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+      
+      public static netmsg.Game.MInit.ExtractionSpeedRate parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static netmsg.Game.MInit.ExtractionSpeedRate parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static netmsg.Game.MInit.ExtractionSpeedRate parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static netmsg.Game.MInit.ExtractionSpeedRate parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static netmsg.Game.MInit.ExtractionSpeedRate parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static netmsg.Game.MInit.ExtractionSpeedRate parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static netmsg.Game.MInit.ExtractionSpeedRate parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        Builder builder = newBuilder();
+        if (builder.mergeDelimitedFrom(input)) {
+          return builder.buildParsed();
+        } else {
+          return null;
+        }
+      }
+      public static netmsg.Game.MInit.ExtractionSpeedRate parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        Builder builder = newBuilder();
+        if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+          return builder.buildParsed();
+        } else {
+          return null;
+        }
+      }
+      public static netmsg.Game.MInit.ExtractionSpeedRate parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static netmsg.Game.MInit.ExtractionSpeedRate parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(netmsg.Game.MInit.ExtractionSpeedRate prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements netmsg.Game.MInit.ExtractionSpeedRateOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return netmsg.Game.internal_static_game_MInit_ExtractionSpeedRate_descriptor;
+        }
+        
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return netmsg.Game.internal_static_game_MInit_ExtractionSpeedRate_fieldAccessorTable;
+        }
+        
+        // Construct using netmsg.Game.MInit.ExtractionSpeedRate.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+        
+        private Builder(BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+        
+        public Builder clear() {
+          super.clear();
+          extractionSpeed_ = netmsg.Game.WObject.ExtractionSpeed.SLOW;
+          bitField0_ = (bitField0_ & ~0x00000001);
+          resourcesPerTurn_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return netmsg.Game.MInit.ExtractionSpeedRate.getDescriptor();
+        }
+        
+        public netmsg.Game.MInit.ExtractionSpeedRate getDefaultInstanceForType() {
+          return netmsg.Game.MInit.ExtractionSpeedRate.getDefaultInstance();
+        }
+        
+        public netmsg.Game.MInit.ExtractionSpeedRate build() {
+          netmsg.Game.MInit.ExtractionSpeedRate result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+        
+        private netmsg.Game.MInit.ExtractionSpeedRate buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          netmsg.Game.MInit.ExtractionSpeedRate result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return result;
+        }
+        
+        public netmsg.Game.MInit.ExtractionSpeedRate buildPartial() {
+          netmsg.Game.MInit.ExtractionSpeedRate result = new netmsg.Game.MInit.ExtractionSpeedRate(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.extractionSpeed_ = extractionSpeed_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.resourcesPerTurn_ = resourcesPerTurn_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof netmsg.Game.MInit.ExtractionSpeedRate) {
+            return mergeFrom((netmsg.Game.MInit.ExtractionSpeedRate)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(netmsg.Game.MInit.ExtractionSpeedRate other) {
+          if (other == netmsg.Game.MInit.ExtractionSpeedRate.getDefaultInstance()) return this;
+          if (other.hasExtractionSpeed()) {
+            setExtractionSpeed(other.getExtractionSpeed());
+          }
+          if (other.hasResourcesPerTurn()) {
+            setResourcesPerTurn(other.getResourcesPerTurn());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public final boolean isInitialized() {
+          if (!hasExtractionSpeed()) {
+            
+            return false;
+          }
+          if (!hasResourcesPerTurn()) {
+            
+            return false;
+          }
+          return true;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  onChanged();
+                  return this;
+                }
+                break;
+              }
+              case 8: {
+                int rawValue = input.readEnum();
+                netmsg.Game.WObject.ExtractionSpeed value = netmsg.Game.WObject.ExtractionSpeed.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(1, rawValue);
+                } else {
+                  bitField0_ |= 0x00000001;
+                  extractionSpeed_ = value;
+                }
+                break;
+              }
+              case 16: {
+                bitField0_ |= 0x00000002;
+                resourcesPerTurn_ = input.readUInt32();
+                break;
+              }
+            }
+          }
+        }
+        
+        private int bitField0_;
+        
+        // required .game.WObject.ExtractionSpeed extraction_speed = 1;
+        private netmsg.Game.WObject.ExtractionSpeed extractionSpeed_ = netmsg.Game.WObject.ExtractionSpeed.SLOW;
+        public boolean hasExtractionSpeed() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        public netmsg.Game.WObject.ExtractionSpeed getExtractionSpeed() {
+          return extractionSpeed_;
+        }
+        public Builder setExtractionSpeed(netmsg.Game.WObject.ExtractionSpeed value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          bitField0_ |= 0x00000001;
+          extractionSpeed_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearExtractionSpeed() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          extractionSpeed_ = netmsg.Game.WObject.ExtractionSpeed.SLOW;
+          onChanged();
+          return this;
+        }
+        
+        // required uint32 resources_per_turn = 2;
+        private int resourcesPerTurn_ ;
+        public boolean hasResourcesPerTurn() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        public int getResourcesPerTurn() {
+          return resourcesPerTurn_;
+        }
+        public Builder setResourcesPerTurn(int value) {
+          bitField0_ |= 0x00000002;
+          resourcesPerTurn_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearResourcesPerTurn() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          resourcesPerTurn_ = 0;
+          onChanged();
+          return this;
+        }
+        
+        // @@protoc_insertion_point(builder_scope:game.MInit.ExtractionSpeedRate)
+      }
+      
+      static {
+        defaultInstance = new ExtractionSpeedRate(true);
+        defaultInstance.initFields();
+      }
+      
+      // @@protoc_insertion_point(class_scope:game.MInit.ExtractionSpeedRate)
+    }
+    
     private int bitField0_;
     // required .base.Bounds bounds = 1;
     public static final int BOUNDS_FIELD_NUMBER = 1;
@@ -8408,6 +8838,27 @@ public final class Game {
       return turnTimeframe_;
     }
     
+    // repeated .game.MInit.ExtractionSpeedRate extraction_speed_rates = 13;
+    public static final int EXTRACTION_SPEED_RATES_FIELD_NUMBER = 13;
+    private java.util.List<netmsg.Game.MInit.ExtractionSpeedRate> extractionSpeedRates_;
+    public java.util.List<netmsg.Game.MInit.ExtractionSpeedRate> getExtractionSpeedRatesList() {
+      return extractionSpeedRates_;
+    }
+    public java.util.List<? extends netmsg.Game.MInit.ExtractionSpeedRateOrBuilder> 
+        getExtractionSpeedRatesOrBuilderList() {
+      return extractionSpeedRates_;
+    }
+    public int getExtractionSpeedRatesCount() {
+      return extractionSpeedRates_.size();
+    }
+    public netmsg.Game.MInit.ExtractionSpeedRate getExtractionSpeedRates(int index) {
+      return extractionSpeedRates_.get(index);
+    }
+    public netmsg.Game.MInit.ExtractionSpeedRateOrBuilder getExtractionSpeedRatesOrBuilder(
+        int index) {
+      return extractionSpeedRates_.get(index);
+    }
+    
     private void initFields() {
       bounds_ = netmsg.Base.Bounds.getDefaultInstance();
       objects_ = java.util.Collections.emptyList();
@@ -8421,6 +8872,7 @@ public final class Game {
       attackMultipliers_ = java.util.Collections.emptyList();
       objectives_ = netmsg.Game.Objectives.getDefaultInstance();
       turnTimeframe_ = netmsg.Base.Timeframe.getDefaultInstance();
+      extractionSpeedRates_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -8503,6 +8955,12 @@ public final class Game {
           return false;
         }
       }
+      for (int i = 0; i < getExtractionSpeedRatesCount(); i++) {
+        if (!getExtractionSpeedRates(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -8545,6 +9003,9 @@ public final class Game {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeMessage(12, turnTimeframe_);
+      }
+      for (int i = 0; i < extractionSpeedRates_.size(); i++) {
+        output.writeMessage(13, extractionSpeedRates_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -8602,6 +9063,10 @@ public final class Game {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(12, turnTimeframe_);
+      }
+      for (int i = 0; i < extractionSpeedRates_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(13, extractionSpeedRates_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -8731,6 +9196,7 @@ public final class Game {
           getAttackMultipliersFieldBuilder();
           getObjectivesFieldBuilder();
           getTurnTimeframeFieldBuilder();
+          getExtractionSpeedRatesFieldBuilder();
         }
       }
       private static Builder create() {
@@ -8811,6 +9277,12 @@ public final class Game {
           turnTimeframeBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000800);
+        if (extractionSpeedRatesBuilder_ == null) {
+          extractionSpeedRates_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00001000);
+        } else {
+          extractionSpeedRatesBuilder_.clear();
+        }
         return this;
       }
       
@@ -8951,6 +9423,15 @@ public final class Game {
           result.turnTimeframe_ = turnTimeframe_;
         } else {
           result.turnTimeframe_ = turnTimeframeBuilder_.build();
+        }
+        if (extractionSpeedRatesBuilder_ == null) {
+          if (((bitField0_ & 0x00001000) == 0x00001000)) {
+            extractionSpeedRates_ = java.util.Collections.unmodifiableList(extractionSpeedRates_);
+            bitField0_ = (bitField0_ & ~0x00001000);
+          }
+          result.extractionSpeedRates_ = extractionSpeedRates_;
+        } else {
+          result.extractionSpeedRates_ = extractionSpeedRatesBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -9165,6 +9646,32 @@ public final class Game {
         if (other.hasTurnTimeframe()) {
           mergeTurnTimeframe(other.getTurnTimeframe());
         }
+        if (extractionSpeedRatesBuilder_ == null) {
+          if (!other.extractionSpeedRates_.isEmpty()) {
+            if (extractionSpeedRates_.isEmpty()) {
+              extractionSpeedRates_ = other.extractionSpeedRates_;
+              bitField0_ = (bitField0_ & ~0x00001000);
+            } else {
+              ensureExtractionSpeedRatesIsMutable();
+              extractionSpeedRates_.addAll(other.extractionSpeedRates_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.extractionSpeedRates_.isEmpty()) {
+            if (extractionSpeedRatesBuilder_.isEmpty()) {
+              extractionSpeedRatesBuilder_.dispose();
+              extractionSpeedRatesBuilder_ = null;
+              extractionSpeedRates_ = other.extractionSpeedRates_;
+              bitField0_ = (bitField0_ & ~0x00001000);
+              extractionSpeedRatesBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getExtractionSpeedRatesFieldBuilder() : null;
+            } else {
+              extractionSpeedRatesBuilder_.addAllMessages(other.extractionSpeedRates_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -9242,6 +9749,12 @@ public final class Game {
         }
         if (hasTurnTimeframe()) {
           if (!getTurnTimeframe().isInitialized()) {
+            
+            return false;
+          }
+        }
+        for (int i = 0; i < getExtractionSpeedRatesCount(); i++) {
+          if (!getExtractionSpeedRates(i).isInitialized()) {
             
             return false;
           }
@@ -9357,6 +9870,12 @@ public final class Game {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setTurnTimeframe(subBuilder.buildPartial());
+              break;
+            }
+            case 106: {
+              netmsg.Game.MInit.ExtractionSpeedRate.Builder subBuilder = netmsg.Game.MInit.ExtractionSpeedRate.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addExtractionSpeedRates(subBuilder.buildPartial());
               break;
             }
           }
@@ -11115,6 +11634,192 @@ public final class Game {
           turnTimeframe_ = null;
         }
         return turnTimeframeBuilder_;
+      }
+      
+      // repeated .game.MInit.ExtractionSpeedRate extraction_speed_rates = 13;
+      private java.util.List<netmsg.Game.MInit.ExtractionSpeedRate> extractionSpeedRates_ =
+        java.util.Collections.emptyList();
+      private void ensureExtractionSpeedRatesIsMutable() {
+        if (!((bitField0_ & 0x00001000) == 0x00001000)) {
+          extractionSpeedRates_ = new java.util.ArrayList<netmsg.Game.MInit.ExtractionSpeedRate>(extractionSpeedRates_);
+          bitField0_ |= 0x00001000;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          netmsg.Game.MInit.ExtractionSpeedRate, netmsg.Game.MInit.ExtractionSpeedRate.Builder, netmsg.Game.MInit.ExtractionSpeedRateOrBuilder> extractionSpeedRatesBuilder_;
+      
+      public java.util.List<netmsg.Game.MInit.ExtractionSpeedRate> getExtractionSpeedRatesList() {
+        if (extractionSpeedRatesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(extractionSpeedRates_);
+        } else {
+          return extractionSpeedRatesBuilder_.getMessageList();
+        }
+      }
+      public int getExtractionSpeedRatesCount() {
+        if (extractionSpeedRatesBuilder_ == null) {
+          return extractionSpeedRates_.size();
+        } else {
+          return extractionSpeedRatesBuilder_.getCount();
+        }
+      }
+      public netmsg.Game.MInit.ExtractionSpeedRate getExtractionSpeedRates(int index) {
+        if (extractionSpeedRatesBuilder_ == null) {
+          return extractionSpeedRates_.get(index);
+        } else {
+          return extractionSpeedRatesBuilder_.getMessage(index);
+        }
+      }
+      public Builder setExtractionSpeedRates(
+          int index, netmsg.Game.MInit.ExtractionSpeedRate value) {
+        if (extractionSpeedRatesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureExtractionSpeedRatesIsMutable();
+          extractionSpeedRates_.set(index, value);
+          onChanged();
+        } else {
+          extractionSpeedRatesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setExtractionSpeedRates(
+          int index, netmsg.Game.MInit.ExtractionSpeedRate.Builder builderForValue) {
+        if (extractionSpeedRatesBuilder_ == null) {
+          ensureExtractionSpeedRatesIsMutable();
+          extractionSpeedRates_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          extractionSpeedRatesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addExtractionSpeedRates(netmsg.Game.MInit.ExtractionSpeedRate value) {
+        if (extractionSpeedRatesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureExtractionSpeedRatesIsMutable();
+          extractionSpeedRates_.add(value);
+          onChanged();
+        } else {
+          extractionSpeedRatesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addExtractionSpeedRates(
+          int index, netmsg.Game.MInit.ExtractionSpeedRate value) {
+        if (extractionSpeedRatesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureExtractionSpeedRatesIsMutable();
+          extractionSpeedRates_.add(index, value);
+          onChanged();
+        } else {
+          extractionSpeedRatesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addExtractionSpeedRates(
+          netmsg.Game.MInit.ExtractionSpeedRate.Builder builderForValue) {
+        if (extractionSpeedRatesBuilder_ == null) {
+          ensureExtractionSpeedRatesIsMutable();
+          extractionSpeedRates_.add(builderForValue.build());
+          onChanged();
+        } else {
+          extractionSpeedRatesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addExtractionSpeedRates(
+          int index, netmsg.Game.MInit.ExtractionSpeedRate.Builder builderForValue) {
+        if (extractionSpeedRatesBuilder_ == null) {
+          ensureExtractionSpeedRatesIsMutable();
+          extractionSpeedRates_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          extractionSpeedRatesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllExtractionSpeedRates(
+          java.lang.Iterable<? extends netmsg.Game.MInit.ExtractionSpeedRate> values) {
+        if (extractionSpeedRatesBuilder_ == null) {
+          ensureExtractionSpeedRatesIsMutable();
+          super.addAll(values, extractionSpeedRates_);
+          onChanged();
+        } else {
+          extractionSpeedRatesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearExtractionSpeedRates() {
+        if (extractionSpeedRatesBuilder_ == null) {
+          extractionSpeedRates_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00001000);
+          onChanged();
+        } else {
+          extractionSpeedRatesBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeExtractionSpeedRates(int index) {
+        if (extractionSpeedRatesBuilder_ == null) {
+          ensureExtractionSpeedRatesIsMutable();
+          extractionSpeedRates_.remove(index);
+          onChanged();
+        } else {
+          extractionSpeedRatesBuilder_.remove(index);
+        }
+        return this;
+      }
+      public netmsg.Game.MInit.ExtractionSpeedRate.Builder getExtractionSpeedRatesBuilder(
+          int index) {
+        return getExtractionSpeedRatesFieldBuilder().getBuilder(index);
+      }
+      public netmsg.Game.MInit.ExtractionSpeedRateOrBuilder getExtractionSpeedRatesOrBuilder(
+          int index) {
+        if (extractionSpeedRatesBuilder_ == null) {
+          return extractionSpeedRates_.get(index);  } else {
+          return extractionSpeedRatesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends netmsg.Game.MInit.ExtractionSpeedRateOrBuilder> 
+           getExtractionSpeedRatesOrBuilderList() {
+        if (extractionSpeedRatesBuilder_ != null) {
+          return extractionSpeedRatesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(extractionSpeedRates_);
+        }
+      }
+      public netmsg.Game.MInit.ExtractionSpeedRate.Builder addExtractionSpeedRatesBuilder() {
+        return getExtractionSpeedRatesFieldBuilder().addBuilder(
+            netmsg.Game.MInit.ExtractionSpeedRate.getDefaultInstance());
+      }
+      public netmsg.Game.MInit.ExtractionSpeedRate.Builder addExtractionSpeedRatesBuilder(
+          int index) {
+        return getExtractionSpeedRatesFieldBuilder().addBuilder(
+            index, netmsg.Game.MInit.ExtractionSpeedRate.getDefaultInstance());
+      }
+      public java.util.List<netmsg.Game.MInit.ExtractionSpeedRate.Builder> 
+           getExtractionSpeedRatesBuilderList() {
+        return getExtractionSpeedRatesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          netmsg.Game.MInit.ExtractionSpeedRate, netmsg.Game.MInit.ExtractionSpeedRate.Builder, netmsg.Game.MInit.ExtractionSpeedRateOrBuilder> 
+          getExtractionSpeedRatesFieldBuilder() {
+        if (extractionSpeedRatesBuilder_ == null) {
+          extractionSpeedRatesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              netmsg.Game.MInit.ExtractionSpeedRate, netmsg.Game.MInit.ExtractionSpeedRate.Builder, netmsg.Game.MInit.ExtractionSpeedRateOrBuilder>(
+                  extractionSpeedRates_,
+                  ((bitField0_ & 0x00001000) == 0x00001000),
+                  getParentForChildren(),
+                  isClean());
+          extractionSpeedRates_ = null;
+        }
+        return extractionSpeedRatesBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:game.MInit)
@@ -19961,6 +20666,78 @@ public final class Game {
       // @@protoc_insertion_point(enum_scope:game.WObject.Kind)
     }
     
+    public enum ExtractionSpeed
+        implements com.google.protobuf.ProtocolMessageEnum {
+      SLOW(0, 1),
+      MEDIUM(1, 2),
+      FAST(2, 3),
+      ;
+      
+      public static final int SLOW_VALUE = 1;
+      public static final int MEDIUM_VALUE = 2;
+      public static final int FAST_VALUE = 3;
+      
+      
+      public final int getNumber() { return value; }
+      
+      public static ExtractionSpeed valueOf(int value) {
+        switch (value) {
+          case 1: return SLOW;
+          case 2: return MEDIUM;
+          case 3: return FAST;
+          default: return null;
+        }
+      }
+      
+      public static com.google.protobuf.Internal.EnumLiteMap<ExtractionSpeed>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static com.google.protobuf.Internal.EnumLiteMap<ExtractionSpeed>
+          internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<ExtractionSpeed>() {
+              public ExtractionSpeed findValueByNumber(int number) {
+                return ExtractionSpeed.valueOf(number);
+              }
+            };
+      
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        return getDescriptor().getValues().get(index);
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return netmsg.Game.WObject.getDescriptor().getEnumTypes().get(1);
+      }
+      
+      private static final ExtractionSpeed[] VALUES = {
+        SLOW, MEDIUM, FAST, 
+      };
+      
+      public static ExtractionSpeed valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        return VALUES[desc.getIndex()];
+      }
+      
+      private final int index;
+      private final int value;
+      
+      private ExtractionSpeed(int index, int value) {
+        this.index = index;
+        this.value = value;
+      }
+      
+      // @@protoc_insertion_point(enum_scope:game.WObject.ExtractionSpeed)
+    }
+    
     public interface SizedObjOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
@@ -27599,6 +28376,10 @@ public final class Game {
       // required uint32 resources = 1;
       boolean hasResources();
       int getResources();
+      
+      // required .game.WObject.ExtractionSpeed extraction_speed = 2;
+      boolean hasExtractionSpeed();
+      netmsg.Game.WObject.ExtractionSpeed getExtractionSpeed();
     }
     public static final class Asteroid extends
         com.google.protobuf.GeneratedMessage
@@ -27639,8 +28420,19 @@ public final class Game {
         return resources_;
       }
       
+      // required .game.WObject.ExtractionSpeed extraction_speed = 2;
+      public static final int EXTRACTION_SPEED_FIELD_NUMBER = 2;
+      private netmsg.Game.WObject.ExtractionSpeed extractionSpeed_;
+      public boolean hasExtractionSpeed() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public netmsg.Game.WObject.ExtractionSpeed getExtractionSpeed() {
+        return extractionSpeed_;
+      }
+      
       private void initFields() {
         resources_ = 0;
+        extractionSpeed_ = netmsg.Game.WObject.ExtractionSpeed.SLOW;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -27648,6 +28440,10 @@ public final class Game {
         if (isInitialized != -1) return isInitialized == 1;
         
         if (!hasResources()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasExtractionSpeed()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -27661,6 +28457,9 @@ public final class Game {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           output.writeUInt32(1, resources_);
         }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeEnum(2, extractionSpeed_.getNumber());
+        }
         getUnknownFields().writeTo(output);
       }
       
@@ -27673,6 +28472,10 @@ public final class Game {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           size += com.google.protobuf.CodedOutputStream
             .computeUInt32Size(1, resources_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(2, extractionSpeed_.getNumber());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -27800,6 +28603,8 @@ public final class Game {
           super.clear();
           resources_ = 0;
           bitField0_ = (bitField0_ & ~0x00000001);
+          extractionSpeed_ = netmsg.Game.WObject.ExtractionSpeed.SLOW;
+          bitField0_ = (bitField0_ & ~0x00000002);
           return this;
         }
         
@@ -27842,6 +28647,10 @@ public final class Game {
             to_bitField0_ |= 0x00000001;
           }
           result.resources_ = resources_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.extractionSpeed_ = extractionSpeed_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -27861,12 +28670,19 @@ public final class Game {
           if (other.hasResources()) {
             setResources(other.getResources());
           }
+          if (other.hasExtractionSpeed()) {
+            setExtractionSpeed(other.getExtractionSpeed());
+          }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
         
         public final boolean isInitialized() {
           if (!hasResources()) {
+            
+            return false;
+          }
+          if (!hasExtractionSpeed()) {
             
             return false;
           }
@@ -27901,6 +28717,17 @@ public final class Game {
                 resources_ = input.readUInt32();
                 break;
               }
+              case 16: {
+                int rawValue = input.readEnum();
+                netmsg.Game.WObject.ExtractionSpeed value = netmsg.Game.WObject.ExtractionSpeed.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(2, rawValue);
+                } else {
+                  bitField0_ |= 0x00000002;
+                  extractionSpeed_ = value;
+                }
+                break;
+              }
             }
           }
         }
@@ -27924,6 +28751,30 @@ public final class Game {
         public Builder clearResources() {
           bitField0_ = (bitField0_ & ~0x00000001);
           resources_ = 0;
+          onChanged();
+          return this;
+        }
+        
+        // required .game.WObject.ExtractionSpeed extraction_speed = 2;
+        private netmsg.Game.WObject.ExtractionSpeed extractionSpeed_ = netmsg.Game.WObject.ExtractionSpeed.SLOW;
+        public boolean hasExtractionSpeed() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        public netmsg.Game.WObject.ExtractionSpeed getExtractionSpeed() {
+          return extractionSpeed_;
+        }
+        public Builder setExtractionSpeed(netmsg.Game.WObject.ExtractionSpeed value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          bitField0_ |= 0x00000002;
+          extractionSpeed_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearExtractionSpeed() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          extractionSpeed_ = netmsg.Game.WObject.ExtractionSpeed.SLOW;
           onChanged();
           return this;
         }
@@ -50667,6 +51518,11 @@ public final class Game {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_game_MInit_AttackMultiplier_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_game_MInit_ExtractionSpeedRate_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_game_MInit_ExtractionSpeedRate_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_game_MEvents_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -51022,7 +51878,7 @@ public final class Game {
       "ts\022\033\n\005error\030\002 \001(\0132\014.game.MError\022!\n\010movem" +
       "ent\030\003 \001(\0132\017.game.MMovement\022\032\n\004init\030\350\007 \001(" +
       "\0132\013.game.MInit\"\'\n\007MJoined\022\034\n\006player\030\001 \002(" +
-      "\0132\014.game.Player\"\270\004\n\005MInit\022\034\n\006bounds\030\001 \002(" +
+      "\0132\014.game.Player\"\345\005\n\005MInit\022\034\n\006bounds\030\001 \002(" +
       "\0132\014.base.Bounds\022\036\n\007objects\030\002 \003(\0132\r.game." +
       "WObject\022\036\n\twarp_zone\030\003 \003(\0132\013.base.Vect2\022",
       "#\n\016visible_points\030\004 \003(\0132\013.base.Vect2\022\035\n\t" +
@@ -51033,178 +51889,185 @@ public final class Game {
       "game.InitWObjectStats\0228\n\022attack_multipli" +
       "ers\030\n \003(\0132\034.game.MInit.AttackMultiplier\022" +
       "$\n\nobjectives\030\013 \002(\0132\020.game.Objectives\022\'\n" +
-      "\016turn_timeframe\030\014 \001(\0132\017.base.Timeframe\032j" +
-      "\n\020AttackMultiplier\022!\n\tfrom_kind\030\001 \002(\0162\016.",
-      "game.WObjKind\022\037\n\007to_kind\030\002 \002(\0162\016.game.WO" +
-      "bjKind\022\022\n\nmultiplier\030\003 \002(\002\"&\n\007MEvents\022\033\n" +
-      "\006events\030\001 \003(\0132\013.game.Event\"\027\n\006MError\022\r\n\005" +
-      "error\030\001 \002(\t\"\371\001\n\tMMovement\022\030\n\002id\030\001 \002(\0132\014." +
-      "game.WObjID\022$\n\005paths\030\002 \001(\0132\025.game.MMovem" +
-      "ent.Paths\022,\n\tpositions\030\003 \001(\0132\031.game.MMov" +
-      "ement.Positions\032%\n\004Path\022\035\n\010position\030\001 \003(" +
-      "\0132\013.base.Vect2\032+\n\005Paths\022\"\n\004path\030\001 \003(\0132\024." +
-      "game.MMovement.Path\032*\n\tPositions\022\035\n\010posi" +
-      "tion\030\001 \003(\0132\013.base.Vect2\" \n\006TeamID\022\026\n\002id\030",
-      "\001 \002(\0132\n.base.UUID\"\"\n\010PlayerID\022\026\n\002id\030\001 \002(" +
-      "\0132\n.base.UUID\"K\n\007OwnerID\022\035\n\007team_id\030\001 \001(" +
-      "\0132\014.game.TeamID\022!\n\tplayer_id\030\002 \001(\0132\016.gam" +
-      "e.PlayerID\" \n\006WObjID\022\026\n\002id\030\001 \002(\0132\n.base." +
-      "UUID\" \n\004Team\022\030\n\002id\030\001 \002(\0132\014.game.TeamID\"Q" +
-      "\n\006Player\022\014\n\004name\030\001 \002(\t\022\032\n\002id\030\002 \002(\0132\016.gam" +
-      "e.PlayerID\022\035\n\007team_id\030\003 \002(\0132\014.game.TeamI" +
-      "D\"k\n\013PlayerState\022\021\n\tresources\030\001 \002(\r\022\017\n\007a" +
-      "ctions\030\002 \002(\r\022\022\n\nturn_ended\030\003 \002(\010\022$\n\npopu" +
-      "lation\030\004 \002(\0132\020.base.ValWithMax\"L\n\nInitPl",
-      "ayer\022\034\n\006player\030\001 \002(\0132\014.game.Player\022 \n\005st" +
-      "ate\030\002 \001(\0132\021.game.PlayerState\"c\n\020InitWObj" +
-      "ectStats\022\"\n\005stats\030\001 \002(\0132\023.game.WObject.S" +
-      "tats\022+\n\010warpable\030\002 \001(\0162\031.game.MWarp.Huma" +
-      "nWarpable\"p\n\nObjectives\022\035\n\025gather_resour" +
-      "ces_left\030\001 \001(\r\022\030\n\020collect_vps_left\030\002 \001(\r" +
-      "\022)\n!destroy_all_critical_objects_left\030\003 " +
-      "\001(\r\"\233\026\n\007WObject\022\030\n\002id\030\001 \002(\0132\014.game.WObjI" +
-      "D\022\035\n\010position\030\002 \002(\0132\013.base.Vect2\022 \n\004kind" +
-      "\030\003 \002(\0162\022.game.WObject.Kind\022*\n\tsized_obj\030",
-      "\350\007 \001(\0132\026.game.WObject.SizedObj\022*\n\towned_" +
-      "obj\030\351\007 \001(\0132\026.game.WObject.OwnedObj\0224\n\016gi" +
-      "ving_actions\030\352\007 \001(\0132\033.game.WObject.Givin" +
-      "gActions\022)\n\010warpable\030\353\007 \001(\0132\026.game.WObje" +
-      "ct.Warpable\0224\n\016special_action\030\354\007 \001(\0132\033.g" +
-      "ame.WObject.SpecialAction\022\'\n\007fighter\030\355\007 " +
-      "\001(\0132\025.game.WObject.Fighter\022\'\n\007movable\030\357\007" +
-      " \001(\0132\025.game.WObject.Movable\022:\n\021giving_po" +
-      "pulation\030\360\007 \001(\0132\036.game.WObject.GivingPop" +
-      "ulation\022)\n\010asteroid\030\320\017 \001(\0132\026.game.WObjec",
-      "t.Asteroid\022+\n\textractor\030\321\017 \001(\0132\027.game.WO" +
-      "bject.Extractor\022)\n\010corvette\030\322\017 \001(\0132\026.gam" +
-      "e.WObject.Corvette\032[\n\010SizedObj\022+\n\005stats\030" +
-      "\001 \002(\0132\034.game.WObject.SizedObj.Stats\032\"\n\005S" +
-      "tats\022\031\n\004size\030\001 \002(\0132\013.base.Vect2\032\334\001\n\010Owne" +
-      "dObj\022+\n\005stats\030\001 \002(\0132\034.game.WObject.Owned" +
-      "Obj.Stats\022\037\n\010owner_id\030\002 \002(\0132\r.game.Owner" +
-      "ID\022\n\n\002hp\030\003 \002(\r\032v\n\005Stats\022\023\n\013is_critical\030\001" +
-      " \002(\010\022\022\n\nvisibility\030\002 \002(\r\022\016\n\006max_hp\030\003 \002(\r" +
-      "\022\034\n\004kind\030\004 \002(\0162\016.game.WObjKind\022\026\n\016is_res",
-      "pawnable\030\005 \002(\010\032a\n\rGivingActions\0220\n\005stats" +
-      "\030\001 \002(\0132!.game.WObject.GivingActions.Stat" +
-      "s\032\036\n\005Stats\022\025\n\ractions_given\030\001 \002(\r\032\334\001\n\010Wa" +
-      "rpable\022+\n\005stats\030\001 \002(\0132\034.game.WObject.War" +
-      "pable.Stats\022\022\n\nwarp_state\030\002 \002(\r\032n\n\005Stats" +
-      "\022\021\n\twarp_time\030\001 \002(\r\022\014\n\004cost\030\002 \002(\r\022\027\n\017pop" +
-      "ulation_cost\030\003 \002(\r\022+\n\005group\030\004 \002(\0162\034.game" +
-      ".WObject.Warpable.Group\"\037\n\005Group\022\014\n\010BUIL" +
-      "DING\020\001\022\010\n\004UNIT\020\002\032b\n\rSpecialAction\0220\n\005sta" +
-      "ts\030\001 \002(\0132!.game.WObject.SpecialAction.St",
-      "ats\032\037\n\005Stats\022\026\n\016actions_needed\030\001 \002(\r\032\246\001\n" +
-      "\007Fighter\022*\n\005stats\030\001 \002(\0132\033.game.WObject.F" +
-      "ighter.Stats\022\023\n\013attacksLeft\030\002 \002(\r\022\r\n\005lev" +
-      "el\030\003 \002(\r\032K\n\005Stats\022\033\n\006attack\030\001 \002(\0132\013.base" +
-      ".Range\022\024\n\014attack_range\030\002 \002(\002\022\017\n\007attacks\030" +
-      "\003 \002(\r\032h\n\007Movable\022*\n\005stats\030\001 \002(\0132\033.game.W" +
-      "Object.Movable.Stats\022\020\n\010movement\030\002 \002(\r\032\037" +
-      "\n\005Stats\022\026\n\016movement_range\030\001 \002(\r\032j\n\020Givin" +
-      "gPopulation\0223\n\005stats\030\001 \002(\0132$.game.WObjec" +
-      "t.GivingPopulation.Stats\032!\n\005Stats\022\030\n\020pop",
-      "ulation_given\030\001 \002(\r\032\035\n\010Asteroid\022\021\n\tresou" +
-      "rces\030\001 \002(\r\032\233\001\n\tExtractor\022,\n\005stats\030\001 \002(\0132" +
-      "\035.game.WObject.Extractor.Stats\032`\n\005Stats\022" +
-      "\033\n\023turn_start_extracts\030\001 \002(\r\022\030\n\020special_" +
-      "extracts\030\002 \002(\r\022 \n\030special_consume_extrac" +
-      "ts\030\003 \002(\r\032`\n\010Corvette\022+\n\005stats\030\001 \002(\0132\034.ga" +
-      "me.WObject.Corvette.Stats\032\'\n\005Stats\022\036\n\026sp" +
-      "ecial_movement_added\030\001 \002(\r\032\272\004\n\005Stats\022 \n\004" +
-      "kind\030\001 \002(\0162\022.game.WObject.Kind\0220\n\tsized_" +
-      "obj\030\350\007 \001(\0132\034.game.WObject.SizedObj.Stats",
-      "\0220\n\towned_obj\030\351\007 \001(\0132\034.game.WObject.Owne" +
-      "dObj.Stats\022:\n\016giving_actions\030\352\007 \001(\0132!.ga" +
-      "me.WObject.GivingActions.Stats\022/\n\010warpab" +
-      "le\030\353\007 \001(\0132\034.game.WObject.Warpable.Stats\022" +
-      ":\n\016special_action\030\354\007 \001(\0132!.game.WObject." +
-      "SpecialAction.Stats\022-\n\007fighter\030\355\007 \001(\0132\033." +
-      "game.WObject.Fighter.Stats\022-\n\007movable\030\357\007" +
-      " \001(\0132\033.game.WObject.Movable.Stats\022@\n\021giv" +
-      "ing_population\030\360\007 \001(\0132$.game.WObject.Giv" +
-      "ingPopulation.Stats\0221\n\textractor\030\321\017 \001(\0132",
-      "\035.game.WObject.Extractor.Stats\022/\n\010corvet" +
-      "te\030\322\017 \001(\0132\034.game.WObject.Corvette.Stats\"" +
-      "\367\001\n\004Kind\022\016\n\nP_ASTEROID\020\001\022\017\n\013B_WARP_GATE\020" +
-      "\002\022\017\n\013B_EXTRACTOR\020\003\022\021\n\rB_WARP_LINKER\020\004\022\r\n" +
-      "\tB_SPAWNER\020\005\022\021\n\rB_LASER_TOWER\020\006\022\016\n\nU_COR" +
-      "VETTE\020\007\022\n\n\006U_WASP\020\010\022\013\n\007U_SCOUT\020\t\022\016\n\nU_RA" +
-      "Y_SHIP\020\n\022\024\n\020U_ROCKET_FRIGATE\020\013\022\r\n\tU_GUNS" +
-      "HIP\020\014\022\016\n\nU_FORTRESS\020\r\022\016\n\nB_VP_TOWER\020\016\022\n\n" +
-      "\006P_ROCK\020\017\"\364\007\n\005Event\022*\n\014turn_started\030\001 \001(" +
-      "\0132\024.game.TurnStartedEvt\022&\n\nturn_ended\030\002 ",
-      "\001(\0132\022.game.TurnEndedEvt\022<\n\026point_owner_m" +
-      "ap_change\030\003 \001(\0132\034.game.PointOwnerMapChan" +
-      "geEvt\022\033\n\004warp\030\004 \001(\0132\r.game.WarpEvt\022(\n\013ob" +
-      "j_visible\030\005 \001(\0132\023.game.ObjVisibleEvt\022\033\n\004" +
-      "move\030\006 \001(\0132\r.game.MoveEvt\022\037\n\006attack\030\007 \001(" +
-      "\0132\017.game.AttackEvt\0220\n\017movement_change\030\010 " +
-      "\001(\0132\027.game.MovementChangeEvt\0220\n\017resource" +
-      "_change\030\n \001(\0132\027.game.ResourceChangeEvt\022." +
-      "\n\016actions_change\030\013 \001(\0132\026.game.ActionsCha" +
-      "ngeEvt\022-\n\013warp_change\030\014 \001(\0132\030.game.WarpS",
-      "tateChangeEvt\022.\n\016attacks_change\030\r \001(\0132\026." +
-      "game.AttacksChangeEvt\0223\n\021turn_ended_chan" +
-      "ge\030\016 \001(\0132\030.game.TurnEndedChangeEvt\022,\n\rob" +
-      "j_destroyed\030\017 \001(\0132\025.game.ObjDestroyedEvt" +
-      "\022$\n\thp_change\030\020 \001(\0132\021.game.HPChangeEvt\022*" +
-      "\n\014level_change\030\021 \001(\0132\024.game.LevelChangeE" +
-      "vt\022*\n\014owner_change\030\022 \001(\0132\024.game.OwnerCha" +
-      "ngeEvt\0224\n\021objectives_update\030\023 \001(\0132\031.game" +
-      ".ObjectivesUpdateEvt\0224\n\021population_chang" +
-      "e\030\024 \001(\0132\031.game.PopulationChangeEvt\0221\n\022se",
-      "t_turn_timer_evt\030\025 \001(\0132\025.game.SetTurnTim" +
-      "erEvt\022\034\n\004join\030\350\007 \001(\0132\r.game.JoinEvt\022\036\n\005l" +
-      "eave\030\351\007 \001(\0132\016.game.LeaveEvt\022#\n\010game_won\030" +
-      "\352\007 \001(\0132\020.game.GameWonEvt\"+\n\007JoinEvt\022 \n\006p" +
-      "layer\030\001 \002(\0132\020.game.InitPlayer\"-\n\010LeaveEv" +
-      "t\022!\n\tplayer_id\030\001 \002(\0132\016.game.PlayerID\"/\n\016" +
-      "TurnStartedEvt\022\035\n\007team_id\030\001 \002(\0132\014.game.T" +
-      "eamID\"-\n\014TurnEndedEvt\022\035\n\007team_id\030\001 \002(\0132\014" +
-      ".game.TeamID\"\252\001\n\026PointOwnerMapChangeEvt\022" +
-      "/\n\004kind\030\001 \002(\0162!.game.PointOwnerMapChange",
-      "Evt.Kind\022\032\n\005owned\030\002 \003(\0132\013.base.Vect2\022\034\n\007" +
-      "unowned\030\003 \003(\0132\013.base.Vect2\"%\n\004Kind\022\r\n\tWA" +
-      "RP_ZONE\020\001\022\016\n\nVISIBILITY\020\002\"(\n\007WarpEvt\022\035\n\006" +
-      "object\030\001 \002(\0132\r.game.WObject\".\n\rObjVisibl" +
-      "eEvt\022\035\n\006object\030\001 \002(\0132\r.game.WObject\"o\n\007M" +
-      "oveEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\031\n\004" +
-      "from\030\002 \002(\0132\013.base.Vect2\022\027\n\002to\030\003 \002(\0132\013.ba" +
-      "se.Vect2\022\022\n\nmoves_left\030\004 \002(\r\"\200\001\n\tAttackE" +
-      "vt\022!\n\013attacker_id\030\001 \002(\0132\014.game.WObjID\022!\n" +
-      "\013defender_id\030\002 \002(\0132\014.game.WObjID\022\017\n\007hp_l",
-      "eft\030\003 \002(\r\022\034\n\006attack\030\004 \002(\0132\014.game.Attack\"" +
-      "3\n\006Attack\022\025\n\rattacker_roll\030\001 \002(\r\022\022\n\nsucc" +
-      "essful\030\002 \002(\010\"G\n\021MovementChangeEvt\022\034\n\006obj" +
-      "_id\030\001 \002(\0132\014.game.WObjID\022\024\n\014new_movement\030" +
-      "\002 \002(\r\"M\n\013HPChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.g" +
-      "ame.WObjID\022 \n\006new_hp\030\002 \002(\0132\020.base.ValWit" +
-      "hMax\"A\n\016LevelChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014" +
-      ".game.WObjID\022\021\n\tnew_level\030\002 \002(\r\"k\n\021Resou" +
-      "rceChangeEvt\022\034\n\006obj_id\030\001 \001(\0132\014.game.WObj" +
-      "ID\022!\n\tplayer_id\030\002 \001(\0132\016.game.PlayerID\022\025\n",
-      "\rnew_resources\030\003 \002(\r\"J\n\020ActionsChangeEvt" +
-      "\022!\n\tplayer_id\030\001 \002(\0132\016.game.PlayerID\022\023\n\013n" +
-      "ew_actions\030\002 \002(\r\"J\n\022WarpStateChangeEvt\022\034" +
-      "\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\026\n\016new_warp" +
-      "_state\030\002 \002(\r\"F\n\020AttacksChangeEvt\022\034\n\006obj_" +
-      "id\030\001 \002(\0132\014.game.WObjID\022\024\n\014attacks_left\030\002" +
-      " \002(\r\"O\n\022TurnEndedChangeEvt\022!\n\tplayer_id\030" +
-      "\001 \002(\0132\016.game.PlayerID\022\026\n\016new_turn_ended\030" +
-      "\002 \002(\010\"/\n\017ObjDestroyedEvt\022\034\n\006obj_id\030\001 \002(\013" +
-      "2\014.game.WObjID\"S\n\016OwnerChangeEvt\022\034\n\006obj_",
-      "id\030\001 \002(\0132\014.game.WObjID\022#\n\014new_owner_id\030\002" +
-      " \002(\0132\r.game.OwnerID\"?\n\023ObjectivesUpdateE" +
-      "vt\022(\n\016new_objectives\030\001 \002(\0132\020.game.Object" +
-      "ives\"+\n\nGameWonEvt\022\035\n\007team_id\030\001 \002(\0132\014.ga" +
-      "me.TeamID\"b\n\023PopulationChangeEvt\022!\n\tplay" +
-      "er_id\030\001 \002(\0132\016.game.PlayerID\022(\n\016new_popul" +
-      "ation\030\002 \002(\0132\020.base.ValWithMax\":\n\017SetTurn" +
-      "TimerEvt\022\'\n\016turn_timeframe\030\001 \002(\0132\017.base." +
-      "Timeframe*,\n\010WObjKind\022\t\n\005LIGHT\020\001\022\n\n\006MEDI" +
-      "UM\020\002\022\t\n\005HEAVY\020\003B\010\n\006netmsg"
+      "\016turn_timeframe\030\014 \001(\0132\017.base.Timeframe\022?" +
+      "\n\026extraction_speed_rates\030\r \003(\0132\037.game.MI",
+      "nit.ExtractionSpeedRate\032j\n\020AttackMultipl" +
+      "ier\022!\n\tfrom_kind\030\001 \002(\0162\016.game.WObjKind\022\037" +
+      "\n\007to_kind\030\002 \002(\0162\016.game.WObjKind\022\022\n\nmulti" +
+      "plier\030\003 \002(\002\032j\n\023ExtractionSpeedRate\0227\n\020ex" +
+      "traction_speed\030\001 \002(\0162\035.game.WObject.Extr" +
+      "actionSpeed\022\032\n\022resources_per_turn\030\002 \002(\r\"" +
+      "&\n\007MEvents\022\033\n\006events\030\001 \003(\0132\013.game.Event\"" +
+      "\027\n\006MError\022\r\n\005error\030\001 \002(\t\"\371\001\n\tMMovement\022\030" +
+      "\n\002id\030\001 \002(\0132\014.game.WObjID\022$\n\005paths\030\002 \001(\0132" +
+      "\025.game.MMovement.Paths\022,\n\tpositions\030\003 \001(",
+      "\0132\031.game.MMovement.Positions\032%\n\004Path\022\035\n\010" +
+      "position\030\001 \003(\0132\013.base.Vect2\032+\n\005Paths\022\"\n\004" +
+      "path\030\001 \003(\0132\024.game.MMovement.Path\032*\n\tPosi" +
+      "tions\022\035\n\010position\030\001 \003(\0132\013.base.Vect2\" \n\006" +
+      "TeamID\022\026\n\002id\030\001 \002(\0132\n.base.UUID\"\"\n\010Player" +
+      "ID\022\026\n\002id\030\001 \002(\0132\n.base.UUID\"K\n\007OwnerID\022\035\n" +
+      "\007team_id\030\001 \001(\0132\014.game.TeamID\022!\n\tplayer_i" +
+      "d\030\002 \001(\0132\016.game.PlayerID\" \n\006WObjID\022\026\n\002id\030" +
+      "\001 \002(\0132\n.base.UUID\" \n\004Team\022\030\n\002id\030\001 \002(\0132\014." +
+      "game.TeamID\"Q\n\006Player\022\014\n\004name\030\001 \002(\t\022\032\n\002i",
+      "d\030\002 \002(\0132\016.game.PlayerID\022\035\n\007team_id\030\003 \002(\013" +
+      "2\014.game.TeamID\"k\n\013PlayerState\022\021\n\tresourc" +
+      "es\030\001 \002(\r\022\017\n\007actions\030\002 \002(\r\022\022\n\nturn_ended\030" +
+      "\003 \002(\010\022$\n\npopulation\030\004 \002(\0132\020.base.ValWith" +
+      "Max\"L\n\nInitPlayer\022\034\n\006player\030\001 \002(\0132\014.game" +
+      ".Player\022 \n\005state\030\002 \001(\0132\021.game.PlayerStat" +
+      "e\"c\n\020InitWObjectStats\022\"\n\005stats\030\001 \002(\0132\023.g" +
+      "ame.WObject.Stats\022+\n\010warpable\030\002 \001(\0162\031.ga" +
+      "me.MWarp.HumanWarpable\"p\n\nObjectives\022\035\n\025" +
+      "gather_resources_left\030\001 \001(\r\022\030\n\020collect_v",
+      "ps_left\030\002 \001(\r\022)\n!destroy_all_critical_ob" +
+      "jects_left\030\003 \001(\r\"\207\027\n\007WObject\022\030\n\002id\030\001 \002(\013" +
+      "2\014.game.WObjID\022\035\n\010position\030\002 \002(\0132\013.base." +
+      "Vect2\022 \n\004kind\030\003 \002(\0162\022.game.WObject.Kind\022" +
+      "*\n\tsized_obj\030\350\007 \001(\0132\026.game.WObject.Sized" +
+      "Obj\022*\n\towned_obj\030\351\007 \001(\0132\026.game.WObject.O" +
+      "wnedObj\0224\n\016giving_actions\030\352\007 \001(\0132\033.game." +
+      "WObject.GivingActions\022)\n\010warpable\030\353\007 \001(\013" +
+      "2\026.game.WObject.Warpable\0224\n\016special_acti" +
+      "on\030\354\007 \001(\0132\033.game.WObject.SpecialAction\022\'",
+      "\n\007fighter\030\355\007 \001(\0132\025.game.WObject.Fighter\022" +
+      "\'\n\007movable\030\357\007 \001(\0132\025.game.WObject.Movable" +
+      "\022:\n\021giving_population\030\360\007 \001(\0132\036.game.WObj" +
+      "ect.GivingPopulation\022)\n\010asteroid\030\320\017 \001(\0132" +
+      "\026.game.WObject.Asteroid\022+\n\textractor\030\321\017 " +
+      "\001(\0132\027.game.WObject.Extractor\022)\n\010corvette" +
+      "\030\322\017 \001(\0132\026.game.WObject.Corvette\032[\n\010Sized" +
+      "Obj\022+\n\005stats\030\001 \002(\0132\034.game.WObject.SizedO" +
+      "bj.Stats\032\"\n\005Stats\022\031\n\004size\030\001 \002(\0132\013.base.V" +
+      "ect2\032\334\001\n\010OwnedObj\022+\n\005stats\030\001 \002(\0132\034.game.",
+      "WObject.OwnedObj.Stats\022\037\n\010owner_id\030\002 \002(\013" +
+      "2\r.game.OwnerID\022\n\n\002hp\030\003 \002(\r\032v\n\005Stats\022\023\n\013" +
+      "is_critical\030\001 \002(\010\022\022\n\nvisibility\030\002 \002(\r\022\016\n" +
+      "\006max_hp\030\003 \002(\r\022\034\n\004kind\030\004 \002(\0162\016.game.WObjK" +
+      "ind\022\026\n\016is_respawnable\030\005 \002(\010\032a\n\rGivingAct" +
+      "ions\0220\n\005stats\030\001 \002(\0132!.game.WObject.Givin" +
+      "gActions.Stats\032\036\n\005Stats\022\025\n\ractions_given" +
+      "\030\001 \002(\r\032\334\001\n\010Warpable\022+\n\005stats\030\001 \002(\0132\034.gam" +
+      "e.WObject.Warpable.Stats\022\022\n\nwarp_state\030\002" +
+      " \002(\r\032n\n\005Stats\022\021\n\twarp_time\030\001 \002(\r\022\014\n\004cost",
+      "\030\002 \002(\r\022\027\n\017population_cost\030\003 \002(\r\022+\n\005group" +
+      "\030\004 \002(\0162\034.game.WObject.Warpable.Group\"\037\n\005" +
+      "Group\022\014\n\010BUILDING\020\001\022\010\n\004UNIT\020\002\032b\n\rSpecial" +
+      "Action\0220\n\005stats\030\001 \002(\0132!.game.WObject.Spe" +
+      "cialAction.Stats\032\037\n\005Stats\022\026\n\016actions_nee" +
+      "ded\030\001 \002(\r\032\246\001\n\007Fighter\022*\n\005stats\030\001 \002(\0132\033.g" +
+      "ame.WObject.Fighter.Stats\022\023\n\013attacksLeft" +
+      "\030\002 \002(\r\022\r\n\005level\030\003 \002(\r\032K\n\005Stats\022\033\n\006attack" +
+      "\030\001 \002(\0132\013.base.Range\022\024\n\014attack_range\030\002 \002(" +
+      "\002\022\017\n\007attacks\030\003 \002(\r\032h\n\007Movable\022*\n\005stats\030\001",
+      " \002(\0132\033.game.WObject.Movable.Stats\022\020\n\010mov" +
+      "ement\030\002 \002(\r\032\037\n\005Stats\022\026\n\016movement_range\030\001" +
+      " \002(\r\032j\n\020GivingPopulation\0223\n\005stats\030\001 \002(\0132" +
+      "$.game.WObject.GivingPopulation.Stats\032!\n" +
+      "\005Stats\022\030\n\020population_given\030\001 \002(\r\032V\n\010Aste" +
+      "roid\022\021\n\tresources\030\001 \002(\r\0227\n\020extraction_sp" +
+      "eed\030\002 \002(\0162\035.game.WObject.ExtractionSpeed" +
+      "\032\233\001\n\tExtractor\022,\n\005stats\030\001 \002(\0132\035.game.WOb" +
+      "ject.Extractor.Stats\032`\n\005Stats\022\033\n\023turn_st" +
+      "art_extracts\030\001 \002(\r\022\030\n\020special_extracts\030\002",
+      " \002(\r\022 \n\030special_consume_extracts\030\003 \002(\r\032`" +
+      "\n\010Corvette\022+\n\005stats\030\001 \002(\0132\034.game.WObject" +
+      ".Corvette.Stats\032\'\n\005Stats\022\036\n\026special_move" +
+      "ment_added\030\001 \002(\r\032\272\004\n\005Stats\022 \n\004kind\030\001 \002(\016" +
+      "2\022.game.WObject.Kind\0220\n\tsized_obj\030\350\007 \001(\013" +
+      "2\034.game.WObject.SizedObj.Stats\0220\n\towned_" +
+      "obj\030\351\007 \001(\0132\034.game.WObject.OwnedObj.Stats" +
+      "\022:\n\016giving_actions\030\352\007 \001(\0132!.game.WObject" +
+      ".GivingActions.Stats\022/\n\010warpable\030\353\007 \001(\0132" +
+      "\034.game.WObject.Warpable.Stats\022:\n\016special",
+      "_action\030\354\007 \001(\0132!.game.WObject.SpecialAct" +
+      "ion.Stats\022-\n\007fighter\030\355\007 \001(\0132\033.game.WObje" +
+      "ct.Fighter.Stats\022-\n\007movable\030\357\007 \001(\0132\033.gam" +
+      "e.WObject.Movable.Stats\022@\n\021giving_popula" +
+      "tion\030\360\007 \001(\0132$.game.WObject.GivingPopulat" +
+      "ion.Stats\0221\n\textractor\030\321\017 \001(\0132\035.game.WOb" +
+      "ject.Extractor.Stats\022/\n\010corvette\030\322\017 \001(\0132" +
+      "\034.game.WObject.Corvette.Stats\"\367\001\n\004Kind\022\016" +
+      "\n\nP_ASTEROID\020\001\022\017\n\013B_WARP_GATE\020\002\022\017\n\013B_EXT" +
+      "RACTOR\020\003\022\021\n\rB_WARP_LINKER\020\004\022\r\n\tB_SPAWNER",
+      "\020\005\022\021\n\rB_LASER_TOWER\020\006\022\016\n\nU_CORVETTE\020\007\022\n\n" +
+      "\006U_WASP\020\010\022\013\n\007U_SCOUT\020\t\022\016\n\nU_RAY_SHIP\020\n\022\024" +
+      "\n\020U_ROCKET_FRIGATE\020\013\022\r\n\tU_GUNSHIP\020\014\022\016\n\nU" +
+      "_FORTRESS\020\r\022\016\n\nB_VP_TOWER\020\016\022\n\n\006P_ROCK\020\017\"" +
+      "1\n\017ExtractionSpeed\022\010\n\004SLOW\020\001\022\n\n\006MEDIUM\020\002" +
+      "\022\010\n\004FAST\020\003\"\364\007\n\005Event\022*\n\014turn_started\030\001 \001" +
+      "(\0132\024.game.TurnStartedEvt\022&\n\nturn_ended\030\002" +
+      " \001(\0132\022.game.TurnEndedEvt\022<\n\026point_owner_" +
+      "map_change\030\003 \001(\0132\034.game.PointOwnerMapCha" +
+      "ngeEvt\022\033\n\004warp\030\004 \001(\0132\r.game.WarpEvt\022(\n\013o",
+      "bj_visible\030\005 \001(\0132\023.game.ObjVisibleEvt\022\033\n" +
+      "\004move\030\006 \001(\0132\r.game.MoveEvt\022\037\n\006attack\030\007 \001" +
+      "(\0132\017.game.AttackEvt\0220\n\017movement_change\030\010" +
+      " \001(\0132\027.game.MovementChangeEvt\0220\n\017resourc" +
+      "e_change\030\n \001(\0132\027.game.ResourceChangeEvt\022" +
+      ".\n\016actions_change\030\013 \001(\0132\026.game.ActionsCh" +
+      "angeEvt\022-\n\013warp_change\030\014 \001(\0132\030.game.Warp" +
+      "StateChangeEvt\022.\n\016attacks_change\030\r \001(\0132\026" +
+      ".game.AttacksChangeEvt\0223\n\021turn_ended_cha" +
+      "nge\030\016 \001(\0132\030.game.TurnEndedChangeEvt\022,\n\ro",
+      "bj_destroyed\030\017 \001(\0132\025.game.ObjDestroyedEv" +
+      "t\022$\n\thp_change\030\020 \001(\0132\021.game.HPChangeEvt\022" +
+      "*\n\014level_change\030\021 \001(\0132\024.game.LevelChange" +
+      "Evt\022*\n\014owner_change\030\022 \001(\0132\024.game.OwnerCh" +
+      "angeEvt\0224\n\021objectives_update\030\023 \001(\0132\031.gam" +
+      "e.ObjectivesUpdateEvt\0224\n\021population_chan" +
+      "ge\030\024 \001(\0132\031.game.PopulationChangeEvt\0221\n\022s" +
+      "et_turn_timer_evt\030\025 \001(\0132\025.game.SetTurnTi" +
+      "merEvt\022\034\n\004join\030\350\007 \001(\0132\r.game.JoinEvt\022\036\n\005" +
+      "leave\030\351\007 \001(\0132\016.game.LeaveEvt\022#\n\010game_won",
+      "\030\352\007 \001(\0132\020.game.GameWonEvt\"+\n\007JoinEvt\022 \n\006" +
+      "player\030\001 \002(\0132\020.game.InitPlayer\"-\n\010LeaveE" +
+      "vt\022!\n\tplayer_id\030\001 \002(\0132\016.game.PlayerID\"/\n" +
+      "\016TurnStartedEvt\022\035\n\007team_id\030\001 \002(\0132\014.game." +
+      "TeamID\"-\n\014TurnEndedEvt\022\035\n\007team_id\030\001 \002(\0132" +
+      "\014.game.TeamID\"\252\001\n\026PointOwnerMapChangeEvt" +
+      "\022/\n\004kind\030\001 \002(\0162!.game.PointOwnerMapChang" +
+      "eEvt.Kind\022\032\n\005owned\030\002 \003(\0132\013.base.Vect2\022\034\n" +
+      "\007unowned\030\003 \003(\0132\013.base.Vect2\"%\n\004Kind\022\r\n\tW" +
+      "ARP_ZONE\020\001\022\016\n\nVISIBILITY\020\002\"(\n\007WarpEvt\022\035\n",
+      "\006object\030\001 \002(\0132\r.game.WObject\".\n\rObjVisib" +
+      "leEvt\022\035\n\006object\030\001 \002(\0132\r.game.WObject\"o\n\007" +
+      "MoveEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\031\n" +
+      "\004from\030\002 \002(\0132\013.base.Vect2\022\027\n\002to\030\003 \002(\0132\013.b" +
+      "ase.Vect2\022\022\n\nmoves_left\030\004 \002(\r\"\200\001\n\tAttack" +
+      "Evt\022!\n\013attacker_id\030\001 \002(\0132\014.game.WObjID\022!" +
+      "\n\013defender_id\030\002 \002(\0132\014.game.WObjID\022\017\n\007hp_" +
+      "left\030\003 \002(\r\022\034\n\006attack\030\004 \002(\0132\014.game.Attack" +
+      "\"3\n\006Attack\022\025\n\rattacker_roll\030\001 \002(\r\022\022\n\nsuc" +
+      "cessful\030\002 \002(\010\"G\n\021MovementChangeEvt\022\034\n\006ob",
+      "j_id\030\001 \002(\0132\014.game.WObjID\022\024\n\014new_movement" +
+      "\030\002 \002(\r\"M\n\013HPChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014." +
+      "game.WObjID\022 \n\006new_hp\030\002 \002(\0132\020.base.ValWi" +
+      "thMax\"A\n\016LevelChangeEvt\022\034\n\006obj_id\030\001 \002(\0132" +
+      "\014.game.WObjID\022\021\n\tnew_level\030\002 \002(\r\"k\n\021Reso" +
+      "urceChangeEvt\022\034\n\006obj_id\030\001 \001(\0132\014.game.WOb" +
+      "jID\022!\n\tplayer_id\030\002 \001(\0132\016.game.PlayerID\022\025" +
+      "\n\rnew_resources\030\003 \002(\r\"J\n\020ActionsChangeEv" +
+      "t\022!\n\tplayer_id\030\001 \002(\0132\016.game.PlayerID\022\023\n\013" +
+      "new_actions\030\002 \002(\r\"J\n\022WarpStateChangeEvt\022",
+      "\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\026\n\016new_war" +
+      "p_state\030\002 \002(\r\"F\n\020AttacksChangeEvt\022\034\n\006obj" +
+      "_id\030\001 \002(\0132\014.game.WObjID\022\024\n\014attacks_left\030" +
+      "\002 \002(\r\"O\n\022TurnEndedChangeEvt\022!\n\tplayer_id" +
+      "\030\001 \002(\0132\016.game.PlayerID\022\026\n\016new_turn_ended" +
+      "\030\002 \002(\010\"/\n\017ObjDestroyedEvt\022\034\n\006obj_id\030\001 \002(" +
+      "\0132\014.game.WObjID\"S\n\016OwnerChangeEvt\022\034\n\006obj" +
+      "_id\030\001 \002(\0132\014.game.WObjID\022#\n\014new_owner_id\030" +
+      "\002 \002(\0132\r.game.OwnerID\"?\n\023ObjectivesUpdate" +
+      "Evt\022(\n\016new_objectives\030\001 \002(\0132\020.game.Objec",
+      "tives\"+\n\nGameWonEvt\022\035\n\007team_id\030\001 \002(\0132\014.g" +
+      "ame.TeamID\"b\n\023PopulationChangeEvt\022!\n\tpla" +
+      "yer_id\030\001 \002(\0132\016.game.PlayerID\022(\n\016new_popu" +
+      "lation\030\002 \002(\0132\020.base.ValWithMax\":\n\017SetTur" +
+      "nTimerEvt\022\'\n\016turn_timeframe\030\001 \002(\0132\017.base" +
+      ".Timeframe*,\n\010WObjKind\022\t\n\005LIGHT\020\001\022\n\n\006MED" +
+      "IUM\020\002\022\t\n\005HEAVY\020\003B\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -51312,7 +52175,7 @@ public final class Game {
           internal_static_game_MInit_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_MInit_descriptor,
-              new java.lang.String[] { "Bounds", "Objects", "WarpZone", "VisiblePoints", "SelfTeam", "OtherTeams", "Self", "OtherPlayers", "WobjectStats", "AttackMultipliers", "Objectives", "TurnTimeframe", },
+              new java.lang.String[] { "Bounds", "Objects", "WarpZone", "VisiblePoints", "SelfTeam", "OtherTeams", "Self", "OtherPlayers", "WobjectStats", "AttackMultipliers", "Objectives", "TurnTimeframe", "ExtractionSpeedRates", },
               netmsg.Game.MInit.class,
               netmsg.Game.MInit.Builder.class);
           internal_static_game_MInit_AttackMultiplier_descriptor =
@@ -51323,6 +52186,14 @@ public final class Game {
               new java.lang.String[] { "FromKind", "ToKind", "Multiplier", },
               netmsg.Game.MInit.AttackMultiplier.class,
               netmsg.Game.MInit.AttackMultiplier.Builder.class);
+          internal_static_game_MInit_ExtractionSpeedRate_descriptor =
+            internal_static_game_MInit_descriptor.getNestedTypes().get(1);
+          internal_static_game_MInit_ExtractionSpeedRate_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_game_MInit_ExtractionSpeedRate_descriptor,
+              new java.lang.String[] { "ExtractionSpeed", "ResourcesPerTurn", },
+              netmsg.Game.MInit.ExtractionSpeedRate.class,
+              netmsg.Game.MInit.ExtractionSpeedRate.Builder.class);
           internal_static_game_MEvents_descriptor =
             getDescriptor().getMessageTypes().get(13);
           internal_static_game_MEvents_fieldAccessorTable = new
@@ -51592,7 +52463,7 @@ public final class Game {
           internal_static_game_WObject_Asteroid_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_game_WObject_Asteroid_descriptor,
-              new java.lang.String[] { "Resources", },
+              new java.lang.String[] { "Resources", "ExtractionSpeed", },
               netmsg.Game.WObject.Asteroid.class,
               netmsg.Game.WObject.Asteroid.Builder.class);
           internal_static_game_WObject_Extractor_descriptor =

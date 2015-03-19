@@ -1,6 +1,9 @@
 /target
 /project/target
 /project/project/target
+/macros/target
+/macros/project/target
+/macros/project/project/target
 /.idea
 *.iml
 

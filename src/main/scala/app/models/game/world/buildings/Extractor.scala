@@ -86,7 +86,7 @@ _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
   }
 
   private[this] def turnStartExtractResources(world: World, asteroid: Asteroid) =
-    extractResources(world, asteroid.extractionSpeed)(asteroid)
+    extractResources(world, asteroid.extractionSpeed.resourcesPerTurn)(asteroid)
 
   override def specialImpl
   (world: World, invokedBy: Player)(implicit log: LoggingAdapter) = {

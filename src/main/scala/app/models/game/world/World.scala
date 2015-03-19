@@ -7,6 +7,7 @@ import app.models.game.events._
 import app.models.game.world.WObject.Id
 import app.models.game.world.buildings.{VPTowerStats, SpawnerStats, WarpGateStats}
 import app.models.game.world.maps.{WasVisibleMap, VisibilityMap, WarpZoneMap}
+import app.models.game.world.props.ExtractionSpeed
 import app.models.game.world.units.{FortressStats, RayShipStats, WaspStats}
 import implicits._
 import infrastructure.PrefixedLoggingAdapter
@@ -421,6 +422,8 @@ object World {
       a
     }
 
+    val extractionSpeeds = ExtractionSpeed.values.toIndexedSeq
+
     def spawnBlob(bounds: Bounds, log: LoggingAdapter): Unit = {
       val npcPool = npcChances.weightedRandom.get
       val enemyResourcesNeeded = Resources(math.min(
@@ -461,7 +464,7 @@ object World {
           val resources = math.min(resourcesLeft, asteroidResources.random)
           resourcesLeft -= resources
           log.debug(s"asteroid @ {} with $resources res, left: $resourcesLeft", objPos)
-          objects += Asteroid(objPos, Resources(resources), Resources(1))
+          objects += Asteroid(objPos, Resources(resources), extractionSpeeds.random.get)
         }
         else if (
           enemyResourcesInBounds < enemyResourcesNeeded &&

@@ -87,6 +87,11 @@ message MInit {
     required float multiplier = 3;
   }
 
+  message ExtractionSpeedRate {
+    required WObject.ExtractionSpeed extraction_speed = 1;
+    required uint32 resources_per_turn = 2;
+  }
+
   required base.Bounds bounds = 1;
   repeated WObject objects = 2;
   repeated base.Vect2 warp_zone = 3;
@@ -102,6 +107,7 @@ message MInit {
   required Objectives objectives = 11;
   /* Might not have a turn timer */
   optional base.Timeframe turn_timeframe = 12;
+  repeated ExtractionSpeedRate extraction_speed_rates = 13;
 }
 
 enum WObjKind {
@@ -211,6 +217,12 @@ message WObject { // {{{
     P_ROCK = 15;
   }
 
+  enum ExtractionSpeed {
+    SLOW = 1;
+    MEDIUM = 2;
+    FAST = 3;
+  }
+
   /* Trait properties {{{ */
 
   message SizedObj {
@@ -303,6 +315,7 @@ message WObject { // {{{
 
   message Asteroid {
     required uint32 resources = 1;
+    required ExtractionSpeed extraction_speed = 2;
   }
 
   message Extractor {

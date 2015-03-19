@@ -5,6 +5,7 @@ import java.io.{InputStream, File}
 import app.models.game.Bot
 import app.models.game.world.buildings._
 import app.models.game.world._
+import app.models.game.world.props.ExtractionSpeed
 import implicits._
 
 import scala.util.{Random, Try}
@@ -16,21 +17,14 @@ import scalaz.syntax.all._
 * Created by arturas on 2015-01-29.
 */
 object TMXReader {
-  val baseExtractionRate = Resources(2)
   private[this] def extractedIn(turns: Int) = Resources(turns) + ExtractorStats.cost
   private[this] def extractedInRange(turns: Int) =
     (extractedIn(turns - 1), extractedIn(turns + 1))
 
-  case class ResourceField(range: (Resources, Resources), extractionSpeed: Resources)
-  val MaxResource = ResourceField(
-    extractedInRange(25), baseExtractionRate + Resources(2)
-  )
-  val MidResource = ResourceField(
-    extractedInRange(12), baseExtractionRate + Resources(1)
-  )
-  val MinResource = ResourceField(
-    extractedInRange(5), baseExtractionRate
-  )
+  case class ResourceField(range: (Resources, Resources), extractionSpeed: ExtractionSpeed)
+  val MaxResource = ResourceField(extractedInRange(25), ExtractionSpeed.Fast)
+  val MidResource = ResourceField(extractedInRange(12), ExtractionSpeed.Medium)
+  val MinResource = ResourceField(extractedInRange(5), ExtractionSpeed.Slow)
 
   private[this] val FlipHorizontal = 0x80000000
   private[this] val FlipVertical = 0x40000000

@@ -11,6 +11,7 @@ import app.algorithms.Pathfinding.Path
 import app.models.game.events._
 import app.models.game.world._
 import app.models.game.world.buildings._
+import app.models.game.world.props.{ExtractionSpeed, AsteroidStats}
 import app.models.game.world.units._
 import app.models.game._
 import implicits._
@@ -166,6 +167,18 @@ object ProtobufCoding {
     implicit def convert(tf: Timeframe): Base.Timeframe =
       Base.Timeframe.newBuilder().setStart(tf.start).setEnd(tf.end).build()
 
+    implicit def convert(extractionSpeed: ExtractionSpeed): Game.WObject.ExtractionSpeed =
+      extractionSpeed match {
+        case ExtractionSpeed.Slow => Game.WObject.ExtractionSpeed.SLOW
+        case ExtractionSpeed.Medium => Game.WObject.ExtractionSpeed.MEDIUM
+        case ExtractionSpeed.Fast => Game.WObject.ExtractionSpeed.FAST
+      }
+
+    def convertInit(extractionSpeed: ExtractionSpeed): Game.MInit.ExtractionSpeedRate =
+      Game.MInit.ExtractionSpeedRate.newBuilder().
+        setExtractionSpeed(extractionSpeed).
+        setResourcesPerTurn(extractionSpeed.resourcesPerTurn).build()
+
     /* Data */
 
     implicit def convert(id: UUID): Base.UUID =
@@ -302,7 +315,8 @@ object ProtobufCoding {
         setMovement(obj.movementLeft).build()
 
     implicit def convert(obj: Asteroid): Game.WObject.Asteroid =
-      Game.WObject.Asteroid.newBuilder().setResources(obj.resources).build()
+      Game.WObject.Asteroid.newBuilder().setResources(obj.resources).
+        setExtractionSpeed(obj.extractionSpeed).build()
 
     implicit def convert(obj: ExtractorStats.type): Game.WObject.Extractor.Stats =
       Game.WObject.Extractor.Stats.newBuilder().
@@ -602,6 +616,7 @@ object ProtobufCoding {
         }.asJava).
         setObjectives(msg.objectives).
         mapVal { b => msg.turnTimeframe.fold2(b, b.setTurnTimeframe(_)) }.
+        addAllExtractionSpeedRates(convert(msg.extractionSpeeds)(convertInit)).
         build()
 
     implicit def convert(out: GameActor.ClientOut): Game.FromServer =
