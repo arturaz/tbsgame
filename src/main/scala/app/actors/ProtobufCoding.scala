@@ -320,9 +320,9 @@ object ProtobufCoding {
 
     implicit def convert(obj: ExtractorStats.type): Game.WObject.Extractor.Stats =
       Game.WObject.Extractor.Stats.newBuilder().
-        setSpecialExtracts(Resources(0)).
-        setTurnStartExtracts(Resources(1)).
-        setSpecialConsumeExtracts(obj.specialExtractsFixed).build()
+        setSpecialExtractsFixed(obj.specialExtractsFixed).
+        setSpecialExtractsPercentage(obj.specialExtractsPercentage).
+        setTurnStartExtracts(Resources(1)).build()
 
     implicit def convert(obj: Extractor): Game.WObject.Extractor =
       Game.WObject.Extractor.newBuilder().setStats(obj.stats).build()

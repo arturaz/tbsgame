@@ -1,6 +1,6 @@
 package app.models.game
 
-import utils.{DoubleValueClass, IntValueClass}
+import utils.{FloatValueClass, DoubleValueClass, IntValueClass}
 
 case class Actions(value: Int) extends AnyVal with IntValueClass[Actions] {
   override def self(v: Int) = Actions(v)
@@ -20,11 +20,11 @@ object Population {
   }
 }
 
-case class Percentage(value: Double) extends AnyVal with DoubleValueClass[Percentage] {
-  def self(v: Double) = Percentage(v)
+case class Percentage(value: Float) extends AnyVal with FloatValueClass[Percentage] {
+  def self(v: Float) = Percentage(v)
 }
 object Percentage {
-  implicit object Numeric extends DoubleValueClass.Numeric[Percentage] {
+  implicit object Numeric extends FloatValueClass.Numeric[Percentage] {
     override def fromInt(x: Int) = Percentage(x)
   }
 }
