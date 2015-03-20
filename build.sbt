@@ -28,7 +28,8 @@ val rootSettings = commonSettings ++ Seq(
     "com.github.t3hnar" %% "scala-bcrypt" % "2.4",
     "com.google.protobuf" % "protobuf-java" % "2.4.1",
     "com.github.nscala-time" %% "nscala-time" % "1.8.0",
-    "com.beachape" %% "enumeratum" % "1.0.1"
+    "com.beachape" %% "enumeratum" % "1.0.1",
+    "org.spire-math" %% "spire" % "0.9.0"
   ) ++ Seq(
     "org.flywaydb" % "flyway-core" % "3.1",
     "com.zaxxer" % "HikariCP-java6" % "2.2.5",

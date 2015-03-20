@@ -35,3 +35,8 @@ message Timeframe {
   required Timestamp start = 1;
   required Timestamp end = 2;
 }
+
+message Rational {
+  required int64 numerator = 1;
+  required int64 denominator = 2;
+}

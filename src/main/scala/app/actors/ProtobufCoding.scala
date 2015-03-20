@@ -17,7 +17,8 @@ import app.models.game._
 import implicits._
 import netmsg.{Management, Base, Game, Messages}
 import org.joda.time.DateTime
-import utils.{ValWithMax, FloatValueClass, DoubleValueClass, IntValueClass}
+import spire.math.Rational
+import utils._
 import utils.data.{Timeframe, NonEmptyVector}
 import collection.JavaConverters._
 
@@ -189,6 +190,10 @@ object ProtobufCoding {
     implicit def convert(v: IntValueClass[_]): Int = v.value
     implicit def convert(v: DoubleValueClass[_]): Double = v.value
     implicit def convert(v: FloatValueClass[_]): Float = v.value
+    implicit def convert(v: RationalValueClass[_]): Base.Rational = v.value
+    implicit def convert(r: Rational): Base.Rational =
+      Base.Rational.newBuilder().
+        setNumerator(r.numeratorAsLong).setDenominator(r.denominatorAsLong).build()
 
     implicit def convert(range: Range.Inclusive): Base.Range =
       Base.Range.newBuilder().setStart(range.start).setEnd(range.end).build()

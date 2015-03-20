@@ -1,6 +1,7 @@
 package app.models.game
 
-import utils.{FloatValueClass, DoubleValueClass, IntValueClass}
+import spire.math.Rational
+import utils.{RationalValueClass, FloatValueClass, DoubleValueClass, IntValueClass}
 
 case class Actions(value: Int) extends AnyVal with IntValueClass[Actions] {
   override def self(v: Int) = Actions(v)
@@ -20,11 +21,11 @@ object Population {
   }
 }
 
-case class Percentage(value: Float) extends AnyVal with FloatValueClass[Percentage] {
-  def self(v: Float) = Percentage(v)
+case class Percentage(value: Rational) extends AnyVal with RationalValueClass[Percentage] {
+  def self(v: Rational) = Percentage(v)
 }
 object Percentage {
-  implicit object Numeric extends FloatValueClass.Numeric[Percentage] {
+  implicit object Numeric extends RationalValueClass.Numeric[Percentage] {
     override def fromInt(x: Int) = Percentage(x)
   }
 }

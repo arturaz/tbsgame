@@ -28843,9 +28843,10 @@ public final class Game {
         boolean hasSpecialExtractsFixed();
         int getSpecialExtractsFixed();
         
-        // required float special_extracts_percentage = 3;
+        // required .base.Rational special_extracts_percentage = 3;
         boolean hasSpecialExtractsPercentage();
-        float getSpecialExtractsPercentage();
+        netmsg.Base.Rational getSpecialExtractsPercentage();
+        netmsg.Base.RationalOrBuilder getSpecialExtractsPercentageOrBuilder();
       }
       public static final class Stats extends
           com.google.protobuf.GeneratedMessage
@@ -28896,20 +28897,23 @@ public final class Game {
           return specialExtractsFixed_;
         }
         
-        // required float special_extracts_percentage = 3;
+        // required .base.Rational special_extracts_percentage = 3;
         public static final int SPECIAL_EXTRACTS_PERCENTAGE_FIELD_NUMBER = 3;
-        private float specialExtractsPercentage_;
+        private netmsg.Base.Rational specialExtractsPercentage_;
         public boolean hasSpecialExtractsPercentage() {
           return ((bitField0_ & 0x00000004) == 0x00000004);
         }
-        public float getSpecialExtractsPercentage() {
+        public netmsg.Base.Rational getSpecialExtractsPercentage() {
+          return specialExtractsPercentage_;
+        }
+        public netmsg.Base.RationalOrBuilder getSpecialExtractsPercentageOrBuilder() {
           return specialExtractsPercentage_;
         }
         
         private void initFields() {
           turnStartExtracts_ = 0;
           specialExtractsFixed_ = 0;
-          specialExtractsPercentage_ = 0F;
+          specialExtractsPercentage_ = netmsg.Base.Rational.getDefaultInstance();
         }
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
@@ -28928,6 +28932,10 @@ public final class Game {
             memoizedIsInitialized = 0;
             return false;
           }
+          if (!getSpecialExtractsPercentage().isInitialized()) {
+            memoizedIsInitialized = 0;
+            return false;
+          }
           memoizedIsInitialized = 1;
           return true;
         }
@@ -28942,7 +28950,7 @@ public final class Game {
             output.writeUInt32(2, specialExtractsFixed_);
           }
           if (((bitField0_ & 0x00000004) == 0x00000004)) {
-            output.writeFloat(3, specialExtractsPercentage_);
+            output.writeMessage(3, specialExtractsPercentage_);
           }
           getUnknownFields().writeTo(output);
         }
@@ -28963,7 +28971,7 @@ public final class Game {
           }
           if (((bitField0_ & 0x00000004) == 0x00000004)) {
             size += com.google.protobuf.CodedOutputStream
-              .computeFloatSize(3, specialExtractsPercentage_);
+              .computeMessageSize(3, specialExtractsPercentage_);
           }
           size += getUnknownFields().getSerializedSize();
           memoizedSerializedSize = size;
@@ -29081,6 +29089,7 @@ public final class Game {
           }
           private void maybeForceBuilderInitialization() {
             if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+              getSpecialExtractsPercentageFieldBuilder();
             }
           }
           private static Builder create() {
@@ -29093,7 +29102,11 @@ public final class Game {
             bitField0_ = (bitField0_ & ~0x00000001);
             specialExtractsFixed_ = 0;
             bitField0_ = (bitField0_ & ~0x00000002);
-            specialExtractsPercentage_ = 0F;
+            if (specialExtractsPercentageBuilder_ == null) {
+              specialExtractsPercentage_ = netmsg.Base.Rational.getDefaultInstance();
+            } else {
+              specialExtractsPercentageBuilder_.clear();
+            }
             bitField0_ = (bitField0_ & ~0x00000004);
             return this;
           }
@@ -29144,7 +29157,11 @@ public final class Game {
             if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
               to_bitField0_ |= 0x00000004;
             }
-            result.specialExtractsPercentage_ = specialExtractsPercentage_;
+            if (specialExtractsPercentageBuilder_ == null) {
+              result.specialExtractsPercentage_ = specialExtractsPercentage_;
+            } else {
+              result.specialExtractsPercentage_ = specialExtractsPercentageBuilder_.build();
+            }
             result.bitField0_ = to_bitField0_;
             onBuilt();
             return result;
@@ -29168,7 +29185,7 @@ public final class Game {
               setSpecialExtractsFixed(other.getSpecialExtractsFixed());
             }
             if (other.hasSpecialExtractsPercentage()) {
-              setSpecialExtractsPercentage(other.getSpecialExtractsPercentage());
+              mergeSpecialExtractsPercentage(other.getSpecialExtractsPercentage());
             }
             this.mergeUnknownFields(other.getUnknownFields());
             return this;
@@ -29184,6 +29201,10 @@ public final class Game {
               return false;
             }
             if (!hasSpecialExtractsPercentage()) {
+              
+              return false;
+            }
+            if (!getSpecialExtractsPercentage().isInitialized()) {
               
               return false;
             }
@@ -29223,9 +29244,13 @@ public final class Game {
                   specialExtractsFixed_ = input.readUInt32();
                   break;
                 }
-                case 29: {
-                  bitField0_ |= 0x00000004;
-                  specialExtractsPercentage_ = input.readFloat();
+                case 26: {
+                  netmsg.Base.Rational.Builder subBuilder = netmsg.Base.Rational.newBuilder();
+                  if (hasSpecialExtractsPercentage()) {
+                    subBuilder.mergeFrom(getSpecialExtractsPercentage());
+                  }
+                  input.readMessage(subBuilder, extensionRegistry);
+                  setSpecialExtractsPercentage(subBuilder.buildPartial());
                   break;
                 }
               }
@@ -29276,25 +29301,94 @@ public final class Game {
             return this;
           }
           
-          // required float special_extracts_percentage = 3;
-          private float specialExtractsPercentage_ ;
+          // required .base.Rational special_extracts_percentage = 3;
+          private netmsg.Base.Rational specialExtractsPercentage_ = netmsg.Base.Rational.getDefaultInstance();
+          private com.google.protobuf.SingleFieldBuilder<
+              netmsg.Base.Rational, netmsg.Base.Rational.Builder, netmsg.Base.RationalOrBuilder> specialExtractsPercentageBuilder_;
           public boolean hasSpecialExtractsPercentage() {
             return ((bitField0_ & 0x00000004) == 0x00000004);
           }
-          public float getSpecialExtractsPercentage() {
-            return specialExtractsPercentage_;
+          public netmsg.Base.Rational getSpecialExtractsPercentage() {
+            if (specialExtractsPercentageBuilder_ == null) {
+              return specialExtractsPercentage_;
+            } else {
+              return specialExtractsPercentageBuilder_.getMessage();
+            }
           }
-          public Builder setSpecialExtractsPercentage(float value) {
+          public Builder setSpecialExtractsPercentage(netmsg.Base.Rational value) {
+            if (specialExtractsPercentageBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              specialExtractsPercentage_ = value;
+              onChanged();
+            } else {
+              specialExtractsPercentageBuilder_.setMessage(value);
+            }
             bitField0_ |= 0x00000004;
-            specialExtractsPercentage_ = value;
-            onChanged();
+            return this;
+          }
+          public Builder setSpecialExtractsPercentage(
+              netmsg.Base.Rational.Builder builderForValue) {
+            if (specialExtractsPercentageBuilder_ == null) {
+              specialExtractsPercentage_ = builderForValue.build();
+              onChanged();
+            } else {
+              specialExtractsPercentageBuilder_.setMessage(builderForValue.build());
+            }
+            bitField0_ |= 0x00000004;
+            return this;
+          }
+          public Builder mergeSpecialExtractsPercentage(netmsg.Base.Rational value) {
+            if (specialExtractsPercentageBuilder_ == null) {
+              if (((bitField0_ & 0x00000004) == 0x00000004) &&
+                  specialExtractsPercentage_ != netmsg.Base.Rational.getDefaultInstance()) {
+                specialExtractsPercentage_ =
+                  netmsg.Base.Rational.newBuilder(specialExtractsPercentage_).mergeFrom(value).buildPartial();
+              } else {
+                specialExtractsPercentage_ = value;
+              }
+              onChanged();
+            } else {
+              specialExtractsPercentageBuilder_.mergeFrom(value);
+            }
+            bitField0_ |= 0x00000004;
             return this;
           }
           public Builder clearSpecialExtractsPercentage() {
+            if (specialExtractsPercentageBuilder_ == null) {
+              specialExtractsPercentage_ = netmsg.Base.Rational.getDefaultInstance();
+              onChanged();
+            } else {
+              specialExtractsPercentageBuilder_.clear();
+            }
             bitField0_ = (bitField0_ & ~0x00000004);
-            specialExtractsPercentage_ = 0F;
-            onChanged();
             return this;
+          }
+          public netmsg.Base.Rational.Builder getSpecialExtractsPercentageBuilder() {
+            bitField0_ |= 0x00000004;
+            onChanged();
+            return getSpecialExtractsPercentageFieldBuilder().getBuilder();
+          }
+          public netmsg.Base.RationalOrBuilder getSpecialExtractsPercentageOrBuilder() {
+            if (specialExtractsPercentageBuilder_ != null) {
+              return specialExtractsPercentageBuilder_.getMessageOrBuilder();
+            } else {
+              return specialExtractsPercentage_;
+            }
+          }
+          private com.google.protobuf.SingleFieldBuilder<
+              netmsg.Base.Rational, netmsg.Base.Rational.Builder, netmsg.Base.RationalOrBuilder> 
+              getSpecialExtractsPercentageFieldBuilder() {
+            if (specialExtractsPercentageBuilder_ == null) {
+              specialExtractsPercentageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                  netmsg.Base.Rational, netmsg.Base.Rational.Builder, netmsg.Base.RationalOrBuilder>(
+                      specialExtractsPercentage_,
+                      getParentForChildren(),
+                      isClean());
+              specialExtractsPercentage_ = null;
+            }
+            return specialExtractsPercentageBuilder_;
           }
           
           // @@protoc_insertion_point(builder_scope:game.WObject.Extractor.Stats)
@@ -51928,7 +52022,7 @@ public final class Game {
       "me.MWarp.HumanWarpable\"p\n\nObjectives\022\035\n\025" +
       "gather_resources_left\030\001 \001(\r\022\030\n\020collect_v",
       "ps_left\030\002 \001(\r\022)\n!destroy_all_critical_ob" +
-      "jects_left\030\003 \001(\r\"\254\027\n\007WObject\022\030\n\002id\030\001 \002(\013" +
+      "jects_left\030\003 \001(\r\"\274\027\n\007WObject\022\030\n\002id\030\001 \002(\013" +
       "2\014.game.WObjID\022\035\n\010position\030\002 \002(\0132\013.base." +
       "Vect2\022 \n\004kind\030\003 \002(\0162\022.game.WObject.Kind\022" +
       "*\n\tsized_obj\030\350\007 \001(\0132\026.game.WObject.Sized" +
@@ -51974,107 +52068,107 @@ public final class Game {
       "\005Stats\022\030\n\020population_given\030\001 \002(\r\032V\n\010Aste" +
       "roid\022\021\n\tresources\030\001 \002(\r\0227\n\020extraction_sp" +
       "eed\030\002 \002(\0162\035.game.WObject.ExtractionSpeed" +
-      "\032\244\001\n\tExtractor\022,\n\005stats\030\001 \002(\0132\035.game.WOb" +
-      "ject.Extractor.Stats\032i\n\005Stats\022\033\n\023turn_st" +
+      "\032\264\001\n\tExtractor\022,\n\005stats\030\001 \002(\0132\035.game.WOb" +
+      "ject.Extractor.Stats\032y\n\005Stats\022\033\n\023turn_st" +
       "art_extracts\030\001 \002(\r\022\036\n\026special_extracts_f",
-      "ixed\030\002 \002(\r\022#\n\033special_extracts_percentag" +
-      "e\030\003 \002(\002\032`\n\010Corvette\022+\n\005stats\030\001 \002(\0132\034.gam" +
-      "e.WObject.Corvette.Stats\032\'\n\005Stats\022\036\n\026spe" +
-      "cial_movement_added\030\001 \002(\r\032\272\004\n\005Stats\022 \n\004k" +
-      "ind\030\001 \002(\0162\022.game.WObject.Kind\0220\n\tsized_o" +
-      "bj\030\350\007 \001(\0132\034.game.WObject.SizedObj.Stats\022" +
-      "0\n\towned_obj\030\351\007 \001(\0132\034.game.WObject.Owned" +
-      "Obj.Stats\022:\n\016giving_actions\030\352\007 \001(\0132!.gam" +
-      "e.WObject.GivingActions.Stats\022/\n\010warpabl" +
-      "e\030\353\007 \001(\0132\034.game.WObject.Warpable.Stats\022:",
-      "\n\016special_action\030\354\007 \001(\0132!.game.WObject.S" +
-      "pecialAction.Stats\022-\n\007fighter\030\355\007 \001(\0132\033.g" +
-      "ame.WObject.Fighter.Stats\022-\n\007movable\030\357\007 " +
-      "\001(\0132\033.game.WObject.Movable.Stats\022@\n\021givi" +
-      "ng_population\030\360\007 \001(\0132$.game.WObject.Givi" +
-      "ngPopulation.Stats\0221\n\textractor\030\321\017 \001(\0132\035" +
-      ".game.WObject.Extractor.Stats\022/\n\010corvett" +
-      "e\030\322\017 \001(\0132\034.game.WObject.Corvette.Stats\"\223" +
-      "\002\n\004Kind\022\016\n\nP_ASTEROID\020\001\022\017\n\013B_WARP_GATE\020\002" +
-      "\022\017\n\013B_EXTRACTOR\020\003\022\021\n\rB_WARP_LINKER\020\004\022\r\n\t",
-      "B_SPAWNER\020\005\022\021\n\rB_LASER_TOWER\020\006\022\016\n\nU_CORV" +
-      "ETTE\020\007\022\n\n\006U_WASP\020\010\022\013\n\007U_SCOUT\020\t\022\016\n\nU_RAY" +
-      "_SHIP\020\n\022\024\n\020U_ROCKET_FRIGATE\020\013\022\r\n\tU_GUNSH" +
-      "IP\020\014\022\016\n\nU_FORTRESS\020\r\022\016\n\nB_VP_TOWER\020\016\022\n\n\006" +
-      "P_ROCK\020\017\022\013\n\007P_BRUSH\020\020\022\r\n\tP_CRYSTAL\020\021\"1\n\017" +
-      "ExtractionSpeed\022\010\n\004SLOW\020\001\022\n\n\006MEDIUM\020\002\022\010\n" +
-      "\004FAST\020\003\"\364\007\n\005Event\022*\n\014turn_started\030\001 \001(\0132" +
-      "\024.game.TurnStartedEvt\022&\n\nturn_ended\030\002 \001(" +
-      "\0132\022.game.TurnEndedEvt\022<\n\026point_owner_map" +
-      "_change\030\003 \001(\0132\034.game.PointOwnerMapChange",
-      "Evt\022\033\n\004warp\030\004 \001(\0132\r.game.WarpEvt\022(\n\013obj_" +
-      "visible\030\005 \001(\0132\023.game.ObjVisibleEvt\022\033\n\004mo" +
-      "ve\030\006 \001(\0132\r.game.MoveEvt\022\037\n\006attack\030\007 \001(\0132" +
-      "\017.game.AttackEvt\0220\n\017movement_change\030\010 \001(" +
-      "\0132\027.game.MovementChangeEvt\0220\n\017resource_c" +
-      "hange\030\n \001(\0132\027.game.ResourceChangeEvt\022.\n\016" +
-      "actions_change\030\013 \001(\0132\026.game.ActionsChang" +
-      "eEvt\022-\n\013warp_change\030\014 \001(\0132\030.game.WarpSta" +
-      "teChangeEvt\022.\n\016attacks_change\030\r \001(\0132\026.ga" +
-      "me.AttacksChangeEvt\0223\n\021turn_ended_change",
-      "\030\016 \001(\0132\030.game.TurnEndedChangeEvt\022,\n\robj_" +
-      "destroyed\030\017 \001(\0132\025.game.ObjDestroyedEvt\022$" +
-      "\n\thp_change\030\020 \001(\0132\021.game.HPChangeEvt\022*\n\014" +
-      "level_change\030\021 \001(\0132\024.game.LevelChangeEvt" +
-      "\022*\n\014owner_change\030\022 \001(\0132\024.game.OwnerChang" +
-      "eEvt\0224\n\021objectives_update\030\023 \001(\0132\031.game.O" +
-      "bjectivesUpdateEvt\0224\n\021population_change\030" +
-      "\024 \001(\0132\031.game.PopulationChangeEvt\0221\n\022set_" +
-      "turn_timer_evt\030\025 \001(\0132\025.game.SetTurnTimer" +
-      "Evt\022\034\n\004join\030\350\007 \001(\0132\r.game.JoinEvt\022\036\n\005lea",
-      "ve\030\351\007 \001(\0132\016.game.LeaveEvt\022#\n\010game_won\030\352\007" +
-      " \001(\0132\020.game.GameWonEvt\"+\n\007JoinEvt\022 \n\006pla" +
-      "yer\030\001 \002(\0132\020.game.InitPlayer\"-\n\010LeaveEvt\022" +
-      "!\n\tplayer_id\030\001 \002(\0132\016.game.PlayerID\"/\n\016Tu" +
-      "rnStartedEvt\022\035\n\007team_id\030\001 \002(\0132\014.game.Tea" +
-      "mID\"-\n\014TurnEndedEvt\022\035\n\007team_id\030\001 \002(\0132\014.g" +
-      "ame.TeamID\"\252\001\n\026PointOwnerMapChangeEvt\022/\n" +
-      "\004kind\030\001 \002(\0162!.game.PointOwnerMapChangeEv" +
-      "t.Kind\022\032\n\005owned\030\002 \003(\0132\013.base.Vect2\022\034\n\007un" +
-      "owned\030\003 \003(\0132\013.base.Vect2\"%\n\004Kind\022\r\n\tWARP",
-      "_ZONE\020\001\022\016\n\nVISIBILITY\020\002\"(\n\007WarpEvt\022\035\n\006ob" +
-      "ject\030\001 \002(\0132\r.game.WObject\".\n\rObjVisibleE" +
-      "vt\022\035\n\006object\030\001 \002(\0132\r.game.WObject\"o\n\007Mov" +
-      "eEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\031\n\004fr" +
-      "om\030\002 \002(\0132\013.base.Vect2\022\027\n\002to\030\003 \002(\0132\013.base" +
-      ".Vect2\022\022\n\nmoves_left\030\004 \002(\r\"\200\001\n\tAttackEvt" +
-      "\022!\n\013attacker_id\030\001 \002(\0132\014.game.WObjID\022!\n\013d" +
-      "efender_id\030\002 \002(\0132\014.game.WObjID\022\017\n\007hp_lef" +
-      "t\030\003 \002(\r\022\034\n\006attack\030\004 \002(\0132\014.game.Attack\"3\n" +
-      "\006Attack\022\025\n\rattacker_roll\030\001 \002(\r\022\022\n\nsucces",
-      "sful\030\002 \002(\010\"G\n\021MovementChangeEvt\022\034\n\006obj_i" +
-      "d\030\001 \002(\0132\014.game.WObjID\022\024\n\014new_movement\030\002 " +
-      "\002(\r\"M\n\013HPChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.gam" +
-      "e.WObjID\022 \n\006new_hp\030\002 \002(\0132\020.base.ValWithM" +
-      "ax\"A\n\016LevelChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.g" +
-      "ame.WObjID\022\021\n\tnew_level\030\002 \002(\r\"k\n\021Resourc" +
-      "eChangeEvt\022\034\n\006obj_id\030\001 \001(\0132\014.game.WObjID" +
-      "\022!\n\tplayer_id\030\002 \001(\0132\016.game.PlayerID\022\025\n\rn" +
-      "ew_resources\030\003 \002(\r\"J\n\020ActionsChangeEvt\022!" +
-      "\n\tplayer_id\030\001 \002(\0132\016.game.PlayerID\022\023\n\013new",
-      "_actions\030\002 \002(\r\"J\n\022WarpStateChangeEvt\022\034\n\006" +
-      "obj_id\030\001 \002(\0132\014.game.WObjID\022\026\n\016new_warp_s" +
-      "tate\030\002 \002(\r\"F\n\020AttacksChangeEvt\022\034\n\006obj_id" +
-      "\030\001 \002(\0132\014.game.WObjID\022\024\n\014attacks_left\030\002 \002" +
-      "(\r\"O\n\022TurnEndedChangeEvt\022!\n\tplayer_id\030\001 " +
-      "\002(\0132\016.game.PlayerID\022\026\n\016new_turn_ended\030\002 " +
-      "\002(\010\"/\n\017ObjDestroyedEvt\022\034\n\006obj_id\030\001 \002(\0132\014" +
-      ".game.WObjID\"S\n\016OwnerChangeEvt\022\034\n\006obj_id" +
-      "\030\001 \002(\0132\014.game.WObjID\022#\n\014new_owner_id\030\002 \002" +
-      "(\0132\r.game.OwnerID\"?\n\023ObjectivesUpdateEvt",
-      "\022(\n\016new_objectives\030\001 \002(\0132\020.game.Objectiv" +
-      "es\"+\n\nGameWonEvt\022\035\n\007team_id\030\001 \002(\0132\014.game" +
-      ".TeamID\"b\n\023PopulationChangeEvt\022!\n\tplayer" +
-      "_id\030\001 \002(\0132\016.game.PlayerID\022(\n\016new_populat" +
-      "ion\030\002 \002(\0132\020.base.ValWithMax\":\n\017SetTurnTi" +
-      "merEvt\022\'\n\016turn_timeframe\030\001 \002(\0132\017.base.Ti" +
-      "meframe*,\n\010WObjKind\022\t\n\005LIGHT\020\001\022\n\n\006MEDIUM" +
-      "\020\002\022\t\n\005HEAVY\020\003B\010\n\006netmsg"
+      "ixed\030\002 \002(\r\0223\n\033special_extracts_percentag" +
+      "e\030\003 \002(\0132\016.base.Rational\032`\n\010Corvette\022+\n\005s" +
+      "tats\030\001 \002(\0132\034.game.WObject.Corvette.Stats" +
+      "\032\'\n\005Stats\022\036\n\026special_movement_added\030\001 \002(" +
+      "\r\032\272\004\n\005Stats\022 \n\004kind\030\001 \002(\0162\022.game.WObject" +
+      ".Kind\0220\n\tsized_obj\030\350\007 \001(\0132\034.game.WObject" +
+      ".SizedObj.Stats\0220\n\towned_obj\030\351\007 \001(\0132\034.ga" +
+      "me.WObject.OwnedObj.Stats\022:\n\016giving_acti" +
+      "ons\030\352\007 \001(\0132!.game.WObject.GivingActions." +
+      "Stats\022/\n\010warpable\030\353\007 \001(\0132\034.game.WObject.",
+      "Warpable.Stats\022:\n\016special_action\030\354\007 \001(\0132" +
+      "!.game.WObject.SpecialAction.Stats\022-\n\007fi" +
+      "ghter\030\355\007 \001(\0132\033.game.WObject.Fighter.Stat" +
+      "s\022-\n\007movable\030\357\007 \001(\0132\033.game.WObject.Movab" +
+      "le.Stats\022@\n\021giving_population\030\360\007 \001(\0132$.g" +
+      "ame.WObject.GivingPopulation.Stats\0221\n\tex" +
+      "tractor\030\321\017 \001(\0132\035.game.WObject.Extractor." +
+      "Stats\022/\n\010corvette\030\322\017 \001(\0132\034.game.WObject." +
+      "Corvette.Stats\"\223\002\n\004Kind\022\016\n\nP_ASTEROID\020\001\022" +
+      "\017\n\013B_WARP_GATE\020\002\022\017\n\013B_EXTRACTOR\020\003\022\021\n\rB_W",
+      "ARP_LINKER\020\004\022\r\n\tB_SPAWNER\020\005\022\021\n\rB_LASER_T" +
+      "OWER\020\006\022\016\n\nU_CORVETTE\020\007\022\n\n\006U_WASP\020\010\022\013\n\007U_" +
+      "SCOUT\020\t\022\016\n\nU_RAY_SHIP\020\n\022\024\n\020U_ROCKET_FRIG" +
+      "ATE\020\013\022\r\n\tU_GUNSHIP\020\014\022\016\n\nU_FORTRESS\020\r\022\016\n\n" +
+      "B_VP_TOWER\020\016\022\n\n\006P_ROCK\020\017\022\013\n\007P_BRUSH\020\020\022\r\n" +
+      "\tP_CRYSTAL\020\021\"1\n\017ExtractionSpeed\022\010\n\004SLOW\020" +
+      "\001\022\n\n\006MEDIUM\020\002\022\010\n\004FAST\020\003\"\364\007\n\005Event\022*\n\014tur" +
+      "n_started\030\001 \001(\0132\024.game.TurnStartedEvt\022&\n" +
+      "\nturn_ended\030\002 \001(\0132\022.game.TurnEndedEvt\022<\n" +
+      "\026point_owner_map_change\030\003 \001(\0132\034.game.Poi",
+      "ntOwnerMapChangeEvt\022\033\n\004warp\030\004 \001(\0132\r.game" +
+      ".WarpEvt\022(\n\013obj_visible\030\005 \001(\0132\023.game.Obj" +
+      "VisibleEvt\022\033\n\004move\030\006 \001(\0132\r.game.MoveEvt\022" +
+      "\037\n\006attack\030\007 \001(\0132\017.game.AttackEvt\0220\n\017move" +
+      "ment_change\030\010 \001(\0132\027.game.MovementChangeE" +
+      "vt\0220\n\017resource_change\030\n \001(\0132\027.game.Resou" +
+      "rceChangeEvt\022.\n\016actions_change\030\013 \001(\0132\026.g" +
+      "ame.ActionsChangeEvt\022-\n\013warp_change\030\014 \001(" +
+      "\0132\030.game.WarpStateChangeEvt\022.\n\016attacks_c" +
+      "hange\030\r \001(\0132\026.game.AttacksChangeEvt\0223\n\021t",
+      "urn_ended_change\030\016 \001(\0132\030.game.TurnEndedC" +
+      "hangeEvt\022,\n\robj_destroyed\030\017 \001(\0132\025.game.O" +
+      "bjDestroyedEvt\022$\n\thp_change\030\020 \001(\0132\021.game" +
+      ".HPChangeEvt\022*\n\014level_change\030\021 \001(\0132\024.gam" +
+      "e.LevelChangeEvt\022*\n\014owner_change\030\022 \001(\0132\024" +
+      ".game.OwnerChangeEvt\0224\n\021objectives_updat" +
+      "e\030\023 \001(\0132\031.game.ObjectivesUpdateEvt\0224\n\021po" +
+      "pulation_change\030\024 \001(\0132\031.game.PopulationC" +
+      "hangeEvt\0221\n\022set_turn_timer_evt\030\025 \001(\0132\025.g" +
+      "ame.SetTurnTimerEvt\022\034\n\004join\030\350\007 \001(\0132\r.gam",
+      "e.JoinEvt\022\036\n\005leave\030\351\007 \001(\0132\016.game.LeaveEv" +
+      "t\022#\n\010game_won\030\352\007 \001(\0132\020.game.GameWonEvt\"+" +
+      "\n\007JoinEvt\022 \n\006player\030\001 \002(\0132\020.game.InitPla" +
+      "yer\"-\n\010LeaveEvt\022!\n\tplayer_id\030\001 \002(\0132\016.gam" +
+      "e.PlayerID\"/\n\016TurnStartedEvt\022\035\n\007team_id\030" +
+      "\001 \002(\0132\014.game.TeamID\"-\n\014TurnEndedEvt\022\035\n\007t" +
+      "eam_id\030\001 \002(\0132\014.game.TeamID\"\252\001\n\026PointOwne" +
+      "rMapChangeEvt\022/\n\004kind\030\001 \002(\0162!.game.Point" +
+      "OwnerMapChangeEvt.Kind\022\032\n\005owned\030\002 \003(\0132\013." +
+      "base.Vect2\022\034\n\007unowned\030\003 \003(\0132\013.base.Vect2",
+      "\"%\n\004Kind\022\r\n\tWARP_ZONE\020\001\022\016\n\nVISIBILITY\020\002\"" +
+      "(\n\007WarpEvt\022\035\n\006object\030\001 \002(\0132\r.game.WObjec" +
+      "t\".\n\rObjVisibleEvt\022\035\n\006object\030\001 \002(\0132\r.gam" +
+      "e.WObject\"o\n\007MoveEvt\022\034\n\006obj_id\030\001 \002(\0132\014.g" +
+      "ame.WObjID\022\031\n\004from\030\002 \002(\0132\013.base.Vect2\022\027\n" +
+      "\002to\030\003 \002(\0132\013.base.Vect2\022\022\n\nmoves_left\030\004 \002" +
+      "(\r\"\200\001\n\tAttackEvt\022!\n\013attacker_id\030\001 \002(\0132\014." +
+      "game.WObjID\022!\n\013defender_id\030\002 \002(\0132\014.game." +
+      "WObjID\022\017\n\007hp_left\030\003 \002(\r\022\034\n\006attack\030\004 \002(\0132" +
+      "\014.game.Attack\"3\n\006Attack\022\025\n\rattacker_roll",
+      "\030\001 \002(\r\022\022\n\nsuccessful\030\002 \002(\010\"G\n\021MovementCh" +
+      "angeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\024\n" +
+      "\014new_movement\030\002 \002(\r\"M\n\013HPChangeEvt\022\034\n\006ob" +
+      "j_id\030\001 \002(\0132\014.game.WObjID\022 \n\006new_hp\030\002 \002(\013" +
+      "2\020.base.ValWithMax\"A\n\016LevelChangeEvt\022\034\n\006" +
+      "obj_id\030\001 \002(\0132\014.game.WObjID\022\021\n\tnew_level\030" +
+      "\002 \002(\r\"k\n\021ResourceChangeEvt\022\034\n\006obj_id\030\001 \001" +
+      "(\0132\014.game.WObjID\022!\n\tplayer_id\030\002 \001(\0132\016.ga" +
+      "me.PlayerID\022\025\n\rnew_resources\030\003 \002(\r\"J\n\020Ac" +
+      "tionsChangeEvt\022!\n\tplayer_id\030\001 \002(\0132\016.game",
+      ".PlayerID\022\023\n\013new_actions\030\002 \002(\r\"J\n\022WarpSt" +
+      "ateChangeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObj" +
+      "ID\022\026\n\016new_warp_state\030\002 \002(\r\"F\n\020AttacksCha" +
+      "ngeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022\024\n\014" +
+      "attacks_left\030\002 \002(\r\"O\n\022TurnEndedChangeEvt" +
+      "\022!\n\tplayer_id\030\001 \002(\0132\016.game.PlayerID\022\026\n\016n" +
+      "ew_turn_ended\030\002 \002(\010\"/\n\017ObjDestroyedEvt\022\034" +
+      "\n\006obj_id\030\001 \002(\0132\014.game.WObjID\"S\n\016OwnerCha" +
+      "ngeEvt\022\034\n\006obj_id\030\001 \002(\0132\014.game.WObjID\022#\n\014" +
+      "new_owner_id\030\002 \002(\0132\r.game.OwnerID\"?\n\023Obj",
+      "ectivesUpdateEvt\022(\n\016new_objectives\030\001 \002(\013" +
+      "2\020.game.Objectives\"+\n\nGameWonEvt\022\035\n\007team" +
+      "_id\030\001 \002(\0132\014.game.TeamID\"b\n\023PopulationCha" +
+      "ngeEvt\022!\n\tplayer_id\030\001 \002(\0132\016.game.PlayerI" +
+      "D\022(\n\016new_population\030\002 \002(\0132\020.base.ValWith" +
+      "Max\":\n\017SetTurnTimerEvt\022\'\n\016turn_timeframe" +
+      "\030\001 \002(\0132\017.base.Timeframe*,\n\010WObjKind\022\t\n\005L" +
+      "IGHT\020\001\022\n\n\006MEDIUM\020\002\022\t\n\005HEAVY\020\003B\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

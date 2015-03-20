@@ -5,6 +5,7 @@ import app.models.game.events.{Evented, ResourceChangeEvt}
 import app.models.game.world._
 import app.models.game.{Percentage, Actions, Player, Population}
 import implicits._
+import spire.math.Rational
 
 object ExtractorStats extends WBuildingStats with SpecialActionStats
 with WarpableCompanion[Extractor]
@@ -14,7 +15,7 @@ with WarpableCompanion[Extractor]
   override val cost = Resources(3)
   override val populationCost = Population(1)
   /* How much resource % does special action extract from asteroid? */
-  val specialExtractsPercentage = Percentage(0.5f)
+  val specialExtractsPercentage = Percentage(Rational(1, 2))
   /* How much fixed */
   val specialExtractsFixed = cost
   override val specialActionsNeeded = Actions(1)
@@ -92,7 +93,7 @@ _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
   (world: World, invokedBy: Player)(implicit log: LoggingAdapter) = {
     findAsteroid(world).right.flatMap { asteroid =>
       val percentageResources = Resources(
-        (asteroid.resources.value * stats.specialExtractsPercentage.value).round.toInt
+        (asteroid.resources.value * stats.specialExtractsPercentage.value).ceil.toInt
       )
       val fixedResources = stats.specialExtractsFixed
       val resources = percentageResources + fixedResources

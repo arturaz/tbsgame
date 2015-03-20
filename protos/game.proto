@@ -325,7 +325,7 @@ message WObject { // {{{
       required uint32 turn_start_extracts = 1;
       required uint32 special_extracts_fixed = 2;
       // [0..1]
-      required float special_extracts_percentage = 3;
+      required base.Rational special_extracts_percentage = 3;
     }
 
     required Stats stats = 1;
