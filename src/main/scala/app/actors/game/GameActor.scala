@@ -46,15 +46,13 @@ object GameActor {
   sealed trait ClientOut extends Out
   object Out {
     case class Joined(human: Human, game: ActorRef) extends Out
-    object Init {
-      case class Stats(stats: WObjectStats, showInWarpables: Boolean=false)
-    }
     case class Init(
       bounds: Bounds, objects: WorldObjs.All,
       warpZonePoints: Iterable[Vect2], visiblePoints: Iterable[Vect2],
       selfTeam: Team, otherTeams: Iterable[Team],
       self: HumanState, others: Iterable[(Player, Option[HumanState])],
-      wObjectStats: Iterable[Init.Stats], attackMultipliers: Set[(WObjKind, WObjKind)],
+      warpableObjects: Iterable[WarpableStats],
+      attackMultipliers: Set[(WObjKind, WObjKind)],
       objectives: RemainingObjectives, turnTimeframe: Option[Timeframe],
       extractionSpeeds: Set[ExtractionSpeed]
     ) extends ClientOut
@@ -92,23 +90,11 @@ object GameActor {
           game.world.noLongerVisibleImmovableObjectsFor(human.team),
         visibleGame.world.warpZoneMap.map.keys.map(_._1),
         visibleGame.world.visibilityMap.map.keys.map(_._1),
-        human.team, game.world.teams - human.team,
-        selfState, (game.world.players - human).map { player =>
+        human.team, game.world.teams - human.team, selfState,
+        (game.world.players - human).map { player =>
           player -> stateFor(player).right.toOption
-        }, {
-          import Out.Init.Stats
-          Vector(
-            Stats(AsteroidStats), Stats(WarpGateStats), Stats(ExtractorStats),
-            Stats(WarpLinkerStats, showInWarpables = true),
-            Stats(LaserTowerStats, showInWarpables = true),
-            Stats(CorvetteStats, showInWarpables = true),
-            Stats(RocketFrigateStats, showInWarpables = true),
-            Stats(GunshipStats, showInWarpables = true),
-            Stats(ScoutStats, showInWarpables = true),
-            Stats(SpawnerStats), Stats(WaspStats), Stats(RayShipStats),
-            Stats(FortressStats)
-          )
         },
+        selfState.gameState.canWarp,
         for (from <- WObjKind.All; to <- WObjKind.All) yield from -> to,
         game.remainingObjectives(human.team),
         tbgame.turnTimeframeFor(human), ExtractionSpeed.values

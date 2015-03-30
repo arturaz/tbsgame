@@ -17,6 +17,7 @@ import utils.{ValWithMax, IntValueClass}
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
 import scala.util.Random
+import scalaz.Traverse
 
 case class WorldPlayerState(resources: Resources)
 object WorldPlayerState {
@@ -373,15 +374,17 @@ object World {
   private[this] def bounds(objects: TraversableOnce[WObject]) =
     objects.map(_.bounds).reduce(_ join _)
 
+  case class Lines(count: Range, length: Range, directionChangeChance: Double)
+
   def create(
     playersTeam: Team, npcOwner: () => Bot, spawnerOwner: () => Bot,
     staticObjectsKnownAtStart: Boolean,
     startingPoint: Vect2 = Vect2(0, 0),
     endDistance: TileDistance = TileDistance(30),
     branches: Range = 4 to 6,
-    rockLines: Range = 0 to 4,
-    rockLineLength: Range = 1 to 4,
-    rockLineDirectionChangeChance: Double = 0.2,
+    rocks: Lines = Lines(0 to 4, 1 to 4, 0.2),
+    brushes: Lines = Lines(0 to 4, 1 to 4, 0.2),
+    crystals: Lines = Lines(0 to 4, 1 to 4, 0.2),
     spawners: Int = 2,
     jumpDistance: Range = 3 to 6,
     blobSize: Range = 2 to 5,
@@ -488,30 +491,32 @@ object World {
         }
       }
 
-      spawnRocks(bounds)
+      spawnLines(bounds, rocks)(Rock(_))
+      spawnLines(bounds, brushes)(Brush(_))
+      spawnLines(bounds, crystals)(Crystal(_))
 
       log.debug("Blob spawn end")
     }
 
-    def spawnRocks(bounds: Bounds): Unit = {
+    def spawnLines(bounds: Bounds, lines: Lines)(spawn: Vect2 => WObject): Unit = {
       val shuffledPoints = Random.shuffle(bounds.points)
 
-      (1 to rockLines.random).foreach { _ =>
+      (1 to lines.count.random).foreach { _ =>
         val startOpt =
           shuffledPoints.collectFirst { case p if objects.nonEmptyAt(p) => p }
         startOpt.foreach { start =>
           var position = start
-          val length = rockLineLength.random
+          val length = lines.length.random
           var placed = 0
           var direction = randomHVDirection
 
           while (bounds.contains(position) && placed < length) {
             if (objects.emptyAt(position)) {
-              objects += Rock(position)
+              objects += spawn(position)
               placed += 1
             }
 
-            if (Random.chance(rockLineDirectionChangeChance))
+            if (Random.chance(lines.directionChangeChance))
               direction = randomHVDirection
             position += direction
           }

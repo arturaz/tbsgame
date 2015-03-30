@@ -8,66 +8,160 @@ public final class Base {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
-  public interface Vect2OrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // required sint32 x = 1;
+  public interface Vect2OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:base.Vect2)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required sint32 x = 1;</code>
+     */
     boolean hasX();
+    /**
+     * <code>required sint32 x = 1;</code>
+     */
     int getX();
-    
-    // required sint32 y = 2;
+
+    /**
+     * <code>required sint32 y = 2;</code>
+     */
     boolean hasY();
+    /**
+     * <code>required sint32 y = 2;</code>
+     */
     int getY();
   }
+  /**
+   * Protobuf type {@code base.Vect2}
+   */
   public static final class Vect2 extends
-      com.google.protobuf.GeneratedMessage
-      implements Vect2OrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:base.Vect2)
+      Vect2OrBuilder {
     // Use Vect2.newBuilder() to construct.
-    private Vect2(Builder builder) {
+    private Vect2(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private Vect2(boolean noInit) {}
-    
+    private Vect2(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
     private static final Vect2 defaultInstance;
     public static Vect2 getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public Vect2 getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Vect2(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              x_ = input.readSInt32();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              y_ = input.readSInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return netmsg.Base.internal_static_base_Vect2_descriptor;
     }
-    
+
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return netmsg.Base.internal_static_base_Vect2_fieldAccessorTable;
+      return netmsg.Base.internal_static_base_Vect2_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              netmsg.Base.Vect2.class, netmsg.Base.Vect2.Builder.class);
     }
-    
+
+    public static com.google.protobuf.Parser<Vect2> PARSER =
+        new com.google.protobuf.AbstractParser<Vect2>() {
+      public Vect2 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Vect2(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Vect2> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
-    // required sint32 x = 1;
     public static final int X_FIELD_NUMBER = 1;
     private int x_;
+    /**
+     * <code>required sint32 x = 1;</code>
+     */
     public boolean hasX() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
+    /**
+     * <code>required sint32 x = 1;</code>
+     */
     public int getX() {
       return x_;
     }
-    
-    // required sint32 y = 2;
+
     public static final int Y_FIELD_NUMBER = 2;
     private int y_;
+    /**
+     * <code>required sint32 y = 2;</code>
+     */
     public boolean hasY() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
+    /**
+     * <code>required sint32 y = 2;</code>
+     */
     public int getY() {
       return y_;
     }
-    
+
     private void initFields() {
       x_ = 0;
       y_ = 0;
@@ -75,8 +169,9 @@ public final class Base {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
       if (!hasX()) {
         memoizedIsInitialized = 0;
         return false;
@@ -88,7 +183,7 @@ public final class Base {
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -100,12 +195,12 @@ public final class Base {
       }
       getUnknownFields().writeTo(output);
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
@@ -119,113 +214,106 @@ public final class Base {
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static netmsg.Base.Vect2 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.Vect2 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.Vect2 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.Vect2 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.Vect2 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.Vect2 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static netmsg.Base.Vect2 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static netmsg.Base.Vect2 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static netmsg.Base.Vect2 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.Vect2 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(netmsg.Base.Vect2 prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
     @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code base.Vect2}
+     */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements netmsg.Base.Vect2OrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:base.Vect2)
+        netmsg.Base.Vect2OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Base.internal_static_base_Vect2_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Base.internal_static_base_Vect2_fieldAccessorTable;
+        return netmsg.Base.internal_static_base_Vect2_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Base.Vect2.class, netmsg.Base.Vect2.Builder.class);
       }
-      
+
       // Construct using netmsg.Base.Vect2.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
-      private Builder(BuilderParent parent) {
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -236,7 +324,7 @@ public final class Base {
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         x_ = 0;
@@ -245,20 +333,20 @@ public final class Base {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return netmsg.Base.Vect2.getDescriptor();
+        return netmsg.Base.internal_static_base_Vect2_descriptor;
       }
-      
+
       public netmsg.Base.Vect2 getDefaultInstanceForType() {
         return netmsg.Base.Vect2.getDefaultInstance();
       }
-      
+
       public netmsg.Base.Vect2 build() {
         netmsg.Base.Vect2 result = buildPartial();
         if (!result.isInitialized()) {
@@ -266,17 +354,7 @@ public final class Base {
         }
         return result;
       }
-      
-      private netmsg.Base.Vect2 buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        netmsg.Base.Vect2 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public netmsg.Base.Vect2 buildPartial() {
         netmsg.Base.Vect2 result = new netmsg.Base.Vect2(this);
         int from_bitField0_ = bitField0_;
@@ -293,7 +371,7 @@ public final class Base {
         onBuilt();
         return result;
       }
-      
+
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof netmsg.Base.Vect2) {
           return mergeFrom((netmsg.Base.Vect2)other);
@@ -302,7 +380,7 @@ public final class Base {
           return this;
         }
       }
-      
+
       public Builder mergeFrom(netmsg.Base.Vect2 other) {
         if (other == netmsg.Base.Vect2.getDefaultInstance()) return this;
         if (other.hasX()) {
@@ -314,7 +392,7 @@ public final class Base {
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
-      
+
       public final boolean isInitialized() {
         if (!hasX()) {
           
@@ -326,167 +404,315 @@ public final class Base {
         }
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              x_ = input.readSInt32();
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              y_ = input.readSInt32();
-              break;
-            }
+        netmsg.Base.Vect2 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (netmsg.Base.Vect2) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
-      // required sint32 x = 1;
+
       private int x_ ;
+      /**
+       * <code>required sint32 x = 1;</code>
+       */
       public boolean hasX() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>required sint32 x = 1;</code>
+       */
       public int getX() {
         return x_;
       }
+      /**
+       * <code>required sint32 x = 1;</code>
+       */
       public Builder setX(int value) {
         bitField0_ |= 0x00000001;
         x_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>required sint32 x = 1;</code>
+       */
       public Builder clearX() {
         bitField0_ = (bitField0_ & ~0x00000001);
         x_ = 0;
         onChanged();
         return this;
       }
-      
-      // required sint32 y = 2;
+
       private int y_ ;
+      /**
+       * <code>required sint32 y = 2;</code>
+       */
       public boolean hasY() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>required sint32 y = 2;</code>
+       */
       public int getY() {
         return y_;
       }
+      /**
+       * <code>required sint32 y = 2;</code>
+       */
       public Builder setY(int value) {
         bitField0_ |= 0x00000002;
         y_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>required sint32 y = 2;</code>
+       */
       public Builder clearY() {
         bitField0_ = (bitField0_ & ~0x00000002);
         y_ = 0;
         onChanged();
         return this;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:base.Vect2)
     }
-    
+
     static {
       defaultInstance = new Vect2(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:base.Vect2)
   }
-  
-  public interface BoundsOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // required .base.Vect2 start = 1;
+
+  public interface BoundsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:base.Bounds)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required .base.Vect2 start = 1;</code>
+     */
     boolean hasStart();
+    /**
+     * <code>required .base.Vect2 start = 1;</code>
+     */
     netmsg.Base.Vect2 getStart();
+    /**
+     * <code>required .base.Vect2 start = 1;</code>
+     */
     netmsg.Base.Vect2OrBuilder getStartOrBuilder();
-    
-    // required .base.Vect2 end = 2;
+
+    /**
+     * <code>required .base.Vect2 end = 2;</code>
+     *
+     * <pre>
+     * Inclusive
+     * </pre>
+     */
     boolean hasEnd();
+    /**
+     * <code>required .base.Vect2 end = 2;</code>
+     *
+     * <pre>
+     * Inclusive
+     * </pre>
+     */
     netmsg.Base.Vect2 getEnd();
+    /**
+     * <code>required .base.Vect2 end = 2;</code>
+     *
+     * <pre>
+     * Inclusive
+     * </pre>
+     */
     netmsg.Base.Vect2OrBuilder getEndOrBuilder();
   }
+  /**
+   * Protobuf type {@code base.Bounds}
+   */
   public static final class Bounds extends
-      com.google.protobuf.GeneratedMessage
-      implements BoundsOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:base.Bounds)
+      BoundsOrBuilder {
     // Use Bounds.newBuilder() to construct.
-    private Bounds(Builder builder) {
+    private Bounds(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private Bounds(boolean noInit) {}
-    
+    private Bounds(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
     private static final Bounds defaultInstance;
     public static Bounds getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public Bounds getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Bounds(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              netmsg.Base.Vect2.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = start_.toBuilder();
+              }
+              start_ = input.readMessage(netmsg.Base.Vect2.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(start_);
+                start_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 18: {
+              netmsg.Base.Vect2.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = end_.toBuilder();
+              }
+              end_ = input.readMessage(netmsg.Base.Vect2.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(end_);
+                end_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return netmsg.Base.internal_static_base_Bounds_descriptor;
     }
-    
+
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return netmsg.Base.internal_static_base_Bounds_fieldAccessorTable;
+      return netmsg.Base.internal_static_base_Bounds_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              netmsg.Base.Bounds.class, netmsg.Base.Bounds.Builder.class);
     }
-    
+
+    public static com.google.protobuf.Parser<Bounds> PARSER =
+        new com.google.protobuf.AbstractParser<Bounds>() {
+      public Bounds parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Bounds(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Bounds> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
-    // required .base.Vect2 start = 1;
     public static final int START_FIELD_NUMBER = 1;
     private netmsg.Base.Vect2 start_;
+    /**
+     * <code>required .base.Vect2 start = 1;</code>
+     */
     public boolean hasStart() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
+    /**
+     * <code>required .base.Vect2 start = 1;</code>
+     */
     public netmsg.Base.Vect2 getStart() {
       return start_;
     }
+    /**
+     * <code>required .base.Vect2 start = 1;</code>
+     */
     public netmsg.Base.Vect2OrBuilder getStartOrBuilder() {
       return start_;
     }
-    
-    // required .base.Vect2 end = 2;
+
     public static final int END_FIELD_NUMBER = 2;
     private netmsg.Base.Vect2 end_;
+    /**
+     * <code>required .base.Vect2 end = 2;</code>
+     *
+     * <pre>
+     * Inclusive
+     * </pre>
+     */
     public boolean hasEnd() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
+    /**
+     * <code>required .base.Vect2 end = 2;</code>
+     *
+     * <pre>
+     * Inclusive
+     * </pre>
+     */
     public netmsg.Base.Vect2 getEnd() {
       return end_;
     }
+    /**
+     * <code>required .base.Vect2 end = 2;</code>
+     *
+     * <pre>
+     * Inclusive
+     * </pre>
+     */
     public netmsg.Base.Vect2OrBuilder getEndOrBuilder() {
       return end_;
     }
-    
+
     private void initFields() {
       start_ = netmsg.Base.Vect2.getDefaultInstance();
       end_ = netmsg.Base.Vect2.getDefaultInstance();
@@ -494,8 +720,9 @@ public final class Base {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
       if (!hasStart()) {
         memoizedIsInitialized = 0;
         return false;
@@ -515,7 +742,7 @@ public final class Base {
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -527,12 +754,12 @@ public final class Base {
       }
       getUnknownFields().writeTo(output);
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
@@ -546,113 +773,106 @@ public final class Base {
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static netmsg.Base.Bounds parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.Bounds parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.Bounds parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.Bounds parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.Bounds parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.Bounds parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static netmsg.Base.Bounds parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static netmsg.Base.Bounds parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static netmsg.Base.Bounds parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.Bounds parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(netmsg.Base.Bounds prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
     @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code base.Bounds}
+     */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements netmsg.Base.BoundsOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:base.Bounds)
+        netmsg.Base.BoundsOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Base.internal_static_base_Bounds_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Base.internal_static_base_Bounds_fieldAccessorTable;
+        return netmsg.Base.internal_static_base_Bounds_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Base.Bounds.class, netmsg.Base.Bounds.Builder.class);
       }
-      
+
       // Construct using netmsg.Base.Bounds.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
-      private Builder(BuilderParent parent) {
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -665,7 +885,7 @@ public final class Base {
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         if (startBuilder_ == null) {
@@ -682,20 +902,20 @@ public final class Base {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return netmsg.Base.Bounds.getDescriptor();
+        return netmsg.Base.internal_static_base_Bounds_descriptor;
       }
-      
+
       public netmsg.Base.Bounds getDefaultInstanceForType() {
         return netmsg.Base.Bounds.getDefaultInstance();
       }
-      
+
       public netmsg.Base.Bounds build() {
         netmsg.Base.Bounds result = buildPartial();
         if (!result.isInitialized()) {
@@ -703,17 +923,7 @@ public final class Base {
         }
         return result;
       }
-      
-      private netmsg.Base.Bounds buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        netmsg.Base.Bounds result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public netmsg.Base.Bounds buildPartial() {
         netmsg.Base.Bounds result = new netmsg.Base.Bounds(this);
         int from_bitField0_ = bitField0_;
@@ -738,7 +948,7 @@ public final class Base {
         onBuilt();
         return result;
       }
-      
+
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof netmsg.Base.Bounds) {
           return mergeFrom((netmsg.Base.Bounds)other);
@@ -747,7 +957,7 @@ public final class Base {
           return this;
         }
       }
-      
+
       public Builder mergeFrom(netmsg.Base.Bounds other) {
         if (other == netmsg.Base.Bounds.getDefaultInstance()) return this;
         if (other.hasStart()) {
@@ -759,7 +969,7 @@ public final class Base {
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
-      
+
       public final boolean isInitialized() {
         if (!hasStart()) {
           
@@ -779,61 +989,38 @@ public final class Base {
         }
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              netmsg.Base.Vect2.Builder subBuilder = netmsg.Base.Vect2.newBuilder();
-              if (hasStart()) {
-                subBuilder.mergeFrom(getStart());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setStart(subBuilder.buildPartial());
-              break;
-            }
-            case 18: {
-              netmsg.Base.Vect2.Builder subBuilder = netmsg.Base.Vect2.newBuilder();
-              if (hasEnd()) {
-                subBuilder.mergeFrom(getEnd());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setEnd(subBuilder.buildPartial());
-              break;
-            }
+        netmsg.Base.Bounds parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (netmsg.Base.Bounds) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
-      // required .base.Vect2 start = 1;
+
       private netmsg.Base.Vect2 start_ = netmsg.Base.Vect2.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder> startBuilder_;
+      /**
+       * <code>required .base.Vect2 start = 1;</code>
+       */
       public boolean hasStart() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>required .base.Vect2 start = 1;</code>
+       */
       public netmsg.Base.Vect2 getStart() {
         if (startBuilder_ == null) {
           return start_;
@@ -841,6 +1028,9 @@ public final class Base {
           return startBuilder_.getMessage();
         }
       }
+      /**
+       * <code>required .base.Vect2 start = 1;</code>
+       */
       public Builder setStart(netmsg.Base.Vect2 value) {
         if (startBuilder_ == null) {
           if (value == null) {
@@ -854,6 +1044,9 @@ public final class Base {
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>required .base.Vect2 start = 1;</code>
+       */
       public Builder setStart(
           netmsg.Base.Vect2.Builder builderForValue) {
         if (startBuilder_ == null) {
@@ -865,6 +1058,9 @@ public final class Base {
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>required .base.Vect2 start = 1;</code>
+       */
       public Builder mergeStart(netmsg.Base.Vect2 value) {
         if (startBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
@@ -881,6 +1077,9 @@ public final class Base {
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>required .base.Vect2 start = 1;</code>
+       */
       public Builder clearStart() {
         if (startBuilder_ == null) {
           start_ = netmsg.Base.Vect2.getDefaultInstance();
@@ -891,11 +1090,17 @@ public final class Base {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
+      /**
+       * <code>required .base.Vect2 start = 1;</code>
+       */
       public netmsg.Base.Vect2.Builder getStartBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getStartFieldBuilder().getBuilder();
       }
+      /**
+       * <code>required .base.Vect2 start = 1;</code>
+       */
       public netmsg.Base.Vect2OrBuilder getStartOrBuilder() {
         if (startBuilder_ != null) {
           return startBuilder_.getMessageOrBuilder();
@@ -903,27 +1108,43 @@ public final class Base {
           return start_;
         }
       }
+      /**
+       * <code>required .base.Vect2 start = 1;</code>
+       */
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder> 
           getStartFieldBuilder() {
         if (startBuilder_ == null) {
           startBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder>(
-                  start_,
+                  getStart(),
                   getParentForChildren(),
                   isClean());
           start_ = null;
         }
         return startBuilder_;
       }
-      
-      // required .base.Vect2 end = 2;
+
       private netmsg.Base.Vect2 end_ = netmsg.Base.Vect2.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder> endBuilder_;
+      /**
+       * <code>required .base.Vect2 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       public boolean hasEnd() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>required .base.Vect2 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       public netmsg.Base.Vect2 getEnd() {
         if (endBuilder_ == null) {
           return end_;
@@ -931,6 +1152,13 @@ public final class Base {
           return endBuilder_.getMessage();
         }
       }
+      /**
+       * <code>required .base.Vect2 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       public Builder setEnd(netmsg.Base.Vect2 value) {
         if (endBuilder_ == null) {
           if (value == null) {
@@ -944,6 +1172,13 @@ public final class Base {
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>required .base.Vect2 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       public Builder setEnd(
           netmsg.Base.Vect2.Builder builderForValue) {
         if (endBuilder_ == null) {
@@ -955,6 +1190,13 @@ public final class Base {
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>required .base.Vect2 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       public Builder mergeEnd(netmsg.Base.Vect2 value) {
         if (endBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
@@ -971,6 +1213,13 @@ public final class Base {
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>required .base.Vect2 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       public Builder clearEnd() {
         if (endBuilder_ == null) {
           end_ = netmsg.Base.Vect2.getDefaultInstance();
@@ -981,11 +1230,25 @@ public final class Base {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
+      /**
+       * <code>required .base.Vect2 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       public netmsg.Base.Vect2.Builder getEndBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getEndFieldBuilder().getBuilder();
       }
+      /**
+       * <code>required .base.Vect2 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       public netmsg.Base.Vect2OrBuilder getEndOrBuilder() {
         if (endBuilder_ != null) {
           return endBuilder_.getMessageOrBuilder();
@@ -993,91 +1256,192 @@ public final class Base {
           return end_;
         }
       }
+      /**
+       * <code>required .base.Vect2 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder> 
           getEndFieldBuilder() {
         if (endBuilder_ == null) {
           endBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               netmsg.Base.Vect2, netmsg.Base.Vect2.Builder, netmsg.Base.Vect2OrBuilder>(
-                  end_,
+                  getEnd(),
                   getParentForChildren(),
                   isClean());
           end_ = null;
         }
         return endBuilder_;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:base.Bounds)
     }
-    
+
     static {
       defaultInstance = new Bounds(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:base.Bounds)
   }
-  
-  public interface UUIDOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // required fixed64 mostSignificant = 1;
+
+  public interface UUIDOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:base.UUID)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required fixed64 mostSignificant = 1;</code>
+     */
     boolean hasMostSignificant();
+    /**
+     * <code>required fixed64 mostSignificant = 1;</code>
+     */
     long getMostSignificant();
-    
-    // required fixed64 leastSignificant = 2;
+
+    /**
+     * <code>required fixed64 leastSignificant = 2;</code>
+     */
     boolean hasLeastSignificant();
+    /**
+     * <code>required fixed64 leastSignificant = 2;</code>
+     */
     long getLeastSignificant();
   }
+  /**
+   * Protobuf type {@code base.UUID}
+   */
   public static final class UUID extends
-      com.google.protobuf.GeneratedMessage
-      implements UUIDOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:base.UUID)
+      UUIDOrBuilder {
     // Use UUID.newBuilder() to construct.
-    private UUID(Builder builder) {
+    private UUID(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private UUID(boolean noInit) {}
-    
+    private UUID(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
     private static final UUID defaultInstance;
     public static UUID getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public UUID getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private UUID(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 9: {
+              bitField0_ |= 0x00000001;
+              mostSignificant_ = input.readFixed64();
+              break;
+            }
+            case 17: {
+              bitField0_ |= 0x00000002;
+              leastSignificant_ = input.readFixed64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return netmsg.Base.internal_static_base_UUID_descriptor;
     }
-    
+
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return netmsg.Base.internal_static_base_UUID_fieldAccessorTable;
+      return netmsg.Base.internal_static_base_UUID_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              netmsg.Base.UUID.class, netmsg.Base.UUID.Builder.class);
     }
-    
+
+    public static com.google.protobuf.Parser<UUID> PARSER =
+        new com.google.protobuf.AbstractParser<UUID>() {
+      public UUID parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new UUID(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UUID> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
-    // required fixed64 mostSignificant = 1;
     public static final int MOSTSIGNIFICANT_FIELD_NUMBER = 1;
     private long mostSignificant_;
+    /**
+     * <code>required fixed64 mostSignificant = 1;</code>
+     */
     public boolean hasMostSignificant() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
+    /**
+     * <code>required fixed64 mostSignificant = 1;</code>
+     */
     public long getMostSignificant() {
       return mostSignificant_;
     }
-    
-    // required fixed64 leastSignificant = 2;
+
     public static final int LEASTSIGNIFICANT_FIELD_NUMBER = 2;
     private long leastSignificant_;
+    /**
+     * <code>required fixed64 leastSignificant = 2;</code>
+     */
     public boolean hasLeastSignificant() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
+    /**
+     * <code>required fixed64 leastSignificant = 2;</code>
+     */
     public long getLeastSignificant() {
       return leastSignificant_;
     }
-    
+
     private void initFields() {
       mostSignificant_ = 0L;
       leastSignificant_ = 0L;
@@ -1085,8 +1449,9 @@ public final class Base {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
       if (!hasMostSignificant()) {
         memoizedIsInitialized = 0;
         return false;
@@ -1098,7 +1463,7 @@ public final class Base {
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -1110,12 +1475,12 @@ public final class Base {
       }
       getUnknownFields().writeTo(output);
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
@@ -1129,113 +1494,106 @@ public final class Base {
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static netmsg.Base.UUID parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.UUID parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.UUID parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.UUID parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.UUID parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.UUID parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static netmsg.Base.UUID parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static netmsg.Base.UUID parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static netmsg.Base.UUID parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.UUID parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(netmsg.Base.UUID prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
     @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code base.UUID}
+     */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements netmsg.Base.UUIDOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:base.UUID)
+        netmsg.Base.UUIDOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Base.internal_static_base_UUID_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Base.internal_static_base_UUID_fieldAccessorTable;
+        return netmsg.Base.internal_static_base_UUID_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Base.UUID.class, netmsg.Base.UUID.Builder.class);
       }
-      
+
       // Construct using netmsg.Base.UUID.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
-      private Builder(BuilderParent parent) {
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -1246,7 +1604,7 @@ public final class Base {
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         mostSignificant_ = 0L;
@@ -1255,20 +1613,20 @@ public final class Base {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return netmsg.Base.UUID.getDescriptor();
+        return netmsg.Base.internal_static_base_UUID_descriptor;
       }
-      
+
       public netmsg.Base.UUID getDefaultInstanceForType() {
         return netmsg.Base.UUID.getDefaultInstance();
       }
-      
+
       public netmsg.Base.UUID build() {
         netmsg.Base.UUID result = buildPartial();
         if (!result.isInitialized()) {
@@ -1276,17 +1634,7 @@ public final class Base {
         }
         return result;
       }
-      
-      private netmsg.Base.UUID buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        netmsg.Base.UUID result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public netmsg.Base.UUID buildPartial() {
         netmsg.Base.UUID result = new netmsg.Base.UUID(this);
         int from_bitField0_ = bitField0_;
@@ -1303,7 +1651,7 @@ public final class Base {
         onBuilt();
         return result;
       }
-      
+
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof netmsg.Base.UUID) {
           return mergeFrom((netmsg.Base.UUID)other);
@@ -1312,7 +1660,7 @@ public final class Base {
           return this;
         }
       }
-      
+
       public Builder mergeFrom(netmsg.Base.UUID other) {
         if (other == netmsg.Base.UUID.getDefaultInstance()) return this;
         if (other.hasMostSignificant()) {
@@ -1324,7 +1672,7 @@ public final class Base {
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
-      
+
       public final boolean isInitialized() {
         if (!hasMostSignificant()) {
           
@@ -1336,159 +1684,255 @@ public final class Base {
         }
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 9: {
-              bitField0_ |= 0x00000001;
-              mostSignificant_ = input.readFixed64();
-              break;
-            }
-            case 17: {
-              bitField0_ |= 0x00000002;
-              leastSignificant_ = input.readFixed64();
-              break;
-            }
+        netmsg.Base.UUID parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (netmsg.Base.UUID) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
-      // required fixed64 mostSignificant = 1;
+
       private long mostSignificant_ ;
+      /**
+       * <code>required fixed64 mostSignificant = 1;</code>
+       */
       public boolean hasMostSignificant() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>required fixed64 mostSignificant = 1;</code>
+       */
       public long getMostSignificant() {
         return mostSignificant_;
       }
+      /**
+       * <code>required fixed64 mostSignificant = 1;</code>
+       */
       public Builder setMostSignificant(long value) {
         bitField0_ |= 0x00000001;
         mostSignificant_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>required fixed64 mostSignificant = 1;</code>
+       */
       public Builder clearMostSignificant() {
         bitField0_ = (bitField0_ & ~0x00000001);
         mostSignificant_ = 0L;
         onChanged();
         return this;
       }
-      
-      // required fixed64 leastSignificant = 2;
+
       private long leastSignificant_ ;
+      /**
+       * <code>required fixed64 leastSignificant = 2;</code>
+       */
       public boolean hasLeastSignificant() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>required fixed64 leastSignificant = 2;</code>
+       */
       public long getLeastSignificant() {
         return leastSignificant_;
       }
+      /**
+       * <code>required fixed64 leastSignificant = 2;</code>
+       */
       public Builder setLeastSignificant(long value) {
         bitField0_ |= 0x00000002;
         leastSignificant_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>required fixed64 leastSignificant = 2;</code>
+       */
       public Builder clearLeastSignificant() {
         bitField0_ = (bitField0_ & ~0x00000002);
         leastSignificant_ = 0L;
         onChanged();
         return this;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:base.UUID)
     }
-    
+
     static {
       defaultInstance = new UUID(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:base.UUID)
   }
-  
-  public interface ValWithMaxOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // required uint32 current = 1;
+
+  public interface ValWithMaxOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:base.ValWithMax)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required uint32 current = 1;</code>
+     */
     boolean hasCurrent();
+    /**
+     * <code>required uint32 current = 1;</code>
+     */
     int getCurrent();
-    
-    // required uint32 maximum = 2;
+
+    /**
+     * <code>required uint32 maximum = 2;</code>
+     */
     boolean hasMaximum();
+    /**
+     * <code>required uint32 maximum = 2;</code>
+     */
     int getMaximum();
   }
+  /**
+   * Protobuf type {@code base.ValWithMax}
+   */
   public static final class ValWithMax extends
-      com.google.protobuf.GeneratedMessage
-      implements ValWithMaxOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:base.ValWithMax)
+      ValWithMaxOrBuilder {
     // Use ValWithMax.newBuilder() to construct.
-    private ValWithMax(Builder builder) {
+    private ValWithMax(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private ValWithMax(boolean noInit) {}
-    
+    private ValWithMax(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
     private static final ValWithMax defaultInstance;
     public static ValWithMax getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public ValWithMax getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ValWithMax(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              current_ = input.readUInt32();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              maximum_ = input.readUInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return netmsg.Base.internal_static_base_ValWithMax_descriptor;
     }
-    
+
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return netmsg.Base.internal_static_base_ValWithMax_fieldAccessorTable;
+      return netmsg.Base.internal_static_base_ValWithMax_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              netmsg.Base.ValWithMax.class, netmsg.Base.ValWithMax.Builder.class);
     }
-    
+
+    public static com.google.protobuf.Parser<ValWithMax> PARSER =
+        new com.google.protobuf.AbstractParser<ValWithMax>() {
+      public ValWithMax parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ValWithMax(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ValWithMax> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
-    // required uint32 current = 1;
     public static final int CURRENT_FIELD_NUMBER = 1;
     private int current_;
+    /**
+     * <code>required uint32 current = 1;</code>
+     */
     public boolean hasCurrent() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
+    /**
+     * <code>required uint32 current = 1;</code>
+     */
     public int getCurrent() {
       return current_;
     }
-    
-    // required uint32 maximum = 2;
+
     public static final int MAXIMUM_FIELD_NUMBER = 2;
     private int maximum_;
+    /**
+     * <code>required uint32 maximum = 2;</code>
+     */
     public boolean hasMaximum() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
+    /**
+     * <code>required uint32 maximum = 2;</code>
+     */
     public int getMaximum() {
       return maximum_;
     }
-    
+
     private void initFields() {
       current_ = 0;
       maximum_ = 0;
@@ -1496,8 +1940,9 @@ public final class Base {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
       if (!hasCurrent()) {
         memoizedIsInitialized = 0;
         return false;
@@ -1509,7 +1954,7 @@ public final class Base {
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -1521,12 +1966,12 @@ public final class Base {
       }
       getUnknownFields().writeTo(output);
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
@@ -1540,113 +1985,106 @@ public final class Base {
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static netmsg.Base.ValWithMax parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.ValWithMax parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.ValWithMax parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.ValWithMax parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.ValWithMax parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.ValWithMax parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static netmsg.Base.ValWithMax parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static netmsg.Base.ValWithMax parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static netmsg.Base.ValWithMax parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.ValWithMax parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(netmsg.Base.ValWithMax prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
     @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code base.ValWithMax}
+     */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements netmsg.Base.ValWithMaxOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:base.ValWithMax)
+        netmsg.Base.ValWithMaxOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Base.internal_static_base_ValWithMax_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Base.internal_static_base_ValWithMax_fieldAccessorTable;
+        return netmsg.Base.internal_static_base_ValWithMax_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Base.ValWithMax.class, netmsg.Base.ValWithMax.Builder.class);
       }
-      
+
       // Construct using netmsg.Base.ValWithMax.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
-      private Builder(BuilderParent parent) {
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -1657,7 +2095,7 @@ public final class Base {
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         current_ = 0;
@@ -1666,20 +2104,20 @@ public final class Base {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return netmsg.Base.ValWithMax.getDescriptor();
+        return netmsg.Base.internal_static_base_ValWithMax_descriptor;
       }
-      
+
       public netmsg.Base.ValWithMax getDefaultInstanceForType() {
         return netmsg.Base.ValWithMax.getDefaultInstance();
       }
-      
+
       public netmsg.Base.ValWithMax build() {
         netmsg.Base.ValWithMax result = buildPartial();
         if (!result.isInitialized()) {
@@ -1687,17 +2125,7 @@ public final class Base {
         }
         return result;
       }
-      
-      private netmsg.Base.ValWithMax buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        netmsg.Base.ValWithMax result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public netmsg.Base.ValWithMax buildPartial() {
         netmsg.Base.ValWithMax result = new netmsg.Base.ValWithMax(this);
         int from_bitField0_ = bitField0_;
@@ -1714,7 +2142,7 @@ public final class Base {
         onBuilt();
         return result;
       }
-      
+
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof netmsg.Base.ValWithMax) {
           return mergeFrom((netmsg.Base.ValWithMax)other);
@@ -1723,7 +2151,7 @@ public final class Base {
           return this;
         }
       }
-      
+
       public Builder mergeFrom(netmsg.Base.ValWithMax other) {
         if (other == netmsg.Base.ValWithMax.getDefaultInstance()) return this;
         if (other.hasCurrent()) {
@@ -1735,7 +2163,7 @@ public final class Base {
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
-      
+
       public final boolean isInitialized() {
         if (!hasCurrent()) {
           
@@ -1747,159 +2175,271 @@ public final class Base {
         }
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              current_ = input.readUInt32();
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              maximum_ = input.readUInt32();
-              break;
-            }
+        netmsg.Base.ValWithMax parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (netmsg.Base.ValWithMax) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
-      // required uint32 current = 1;
+
       private int current_ ;
+      /**
+       * <code>required uint32 current = 1;</code>
+       */
       public boolean hasCurrent() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>required uint32 current = 1;</code>
+       */
       public int getCurrent() {
         return current_;
       }
+      /**
+       * <code>required uint32 current = 1;</code>
+       */
       public Builder setCurrent(int value) {
         bitField0_ |= 0x00000001;
         current_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>required uint32 current = 1;</code>
+       */
       public Builder clearCurrent() {
         bitField0_ = (bitField0_ & ~0x00000001);
         current_ = 0;
         onChanged();
         return this;
       }
-      
-      // required uint32 maximum = 2;
+
       private int maximum_ ;
+      /**
+       * <code>required uint32 maximum = 2;</code>
+       */
       public boolean hasMaximum() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>required uint32 maximum = 2;</code>
+       */
       public int getMaximum() {
         return maximum_;
       }
+      /**
+       * <code>required uint32 maximum = 2;</code>
+       */
       public Builder setMaximum(int value) {
         bitField0_ |= 0x00000002;
         maximum_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>required uint32 maximum = 2;</code>
+       */
       public Builder clearMaximum() {
         bitField0_ = (bitField0_ & ~0x00000002);
         maximum_ = 0;
         onChanged();
         return this;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:base.ValWithMax)
     }
-    
+
     static {
       defaultInstance = new ValWithMax(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:base.ValWithMax)
   }
-  
-  public interface RangeOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // required uint32 start = 1;
+
+  public interface RangeOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:base.Range)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required uint32 start = 1;</code>
+     */
     boolean hasStart();
+    /**
+     * <code>required uint32 start = 1;</code>
+     */
     int getStart();
-    
-    // required uint32 end = 2;
+
+    /**
+     * <code>required uint32 end = 2;</code>
+     *
+     * <pre>
+     * Inclusive
+     * </pre>
+     */
     boolean hasEnd();
+    /**
+     * <code>required uint32 end = 2;</code>
+     *
+     * <pre>
+     * Inclusive
+     * </pre>
+     */
     int getEnd();
   }
+  /**
+   * Protobuf type {@code base.Range}
+   */
   public static final class Range extends
-      com.google.protobuf.GeneratedMessage
-      implements RangeOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:base.Range)
+      RangeOrBuilder {
     // Use Range.newBuilder() to construct.
-    private Range(Builder builder) {
+    private Range(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private Range(boolean noInit) {}
-    
+    private Range(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
     private static final Range defaultInstance;
     public static Range getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public Range getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Range(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              start_ = input.readUInt32();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              end_ = input.readUInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return netmsg.Base.internal_static_base_Range_descriptor;
     }
-    
+
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return netmsg.Base.internal_static_base_Range_fieldAccessorTable;
+      return netmsg.Base.internal_static_base_Range_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              netmsg.Base.Range.class, netmsg.Base.Range.Builder.class);
     }
-    
+
+    public static com.google.protobuf.Parser<Range> PARSER =
+        new com.google.protobuf.AbstractParser<Range>() {
+      public Range parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Range(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Range> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
-    // required uint32 start = 1;
     public static final int START_FIELD_NUMBER = 1;
     private int start_;
+    /**
+     * <code>required uint32 start = 1;</code>
+     */
     public boolean hasStart() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
+    /**
+     * <code>required uint32 start = 1;</code>
+     */
     public int getStart() {
       return start_;
     }
-    
-    // required uint32 end = 2;
+
     public static final int END_FIELD_NUMBER = 2;
     private int end_;
+    /**
+     * <code>required uint32 end = 2;</code>
+     *
+     * <pre>
+     * Inclusive
+     * </pre>
+     */
     public boolean hasEnd() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
+    /**
+     * <code>required uint32 end = 2;</code>
+     *
+     * <pre>
+     * Inclusive
+     * </pre>
+     */
     public int getEnd() {
       return end_;
     }
-    
+
     private void initFields() {
       start_ = 0;
       end_ = 0;
@@ -1907,8 +2447,9 @@ public final class Base {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
       if (!hasStart()) {
         memoizedIsInitialized = 0;
         return false;
@@ -1920,7 +2461,7 @@ public final class Base {
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -1932,12 +2473,12 @@ public final class Base {
       }
       getUnknownFields().writeTo(output);
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
@@ -1951,113 +2492,106 @@ public final class Base {
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static netmsg.Base.Range parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.Range parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.Range parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.Range parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.Range parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.Range parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static netmsg.Base.Range parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static netmsg.Base.Range parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static netmsg.Base.Range parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.Range parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(netmsg.Base.Range prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
     @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code base.Range}
+     */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements netmsg.Base.RangeOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:base.Range)
+        netmsg.Base.RangeOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Base.internal_static_base_Range_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Base.internal_static_base_Range_fieldAccessorTable;
+        return netmsg.Base.internal_static_base_Range_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Base.Range.class, netmsg.Base.Range.Builder.class);
       }
-      
+
       // Construct using netmsg.Base.Range.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
-      private Builder(BuilderParent parent) {
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -2068,7 +2602,7 @@ public final class Base {
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         start_ = 0;
@@ -2077,20 +2611,20 @@ public final class Base {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return netmsg.Base.Range.getDescriptor();
+        return netmsg.Base.internal_static_base_Range_descriptor;
       }
-      
+
       public netmsg.Base.Range getDefaultInstanceForType() {
         return netmsg.Base.Range.getDefaultInstance();
       }
-      
+
       public netmsg.Base.Range build() {
         netmsg.Base.Range result = buildPartial();
         if (!result.isInitialized()) {
@@ -2098,17 +2632,7 @@ public final class Base {
         }
         return result;
       }
-      
-      private netmsg.Base.Range buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        netmsg.Base.Range result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public netmsg.Base.Range buildPartial() {
         netmsg.Base.Range result = new netmsg.Base.Range(this);
         int from_bitField0_ = bitField0_;
@@ -2125,7 +2649,7 @@ public final class Base {
         onBuilt();
         return result;
       }
-      
+
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof netmsg.Base.Range) {
           return mergeFrom((netmsg.Base.Range)other);
@@ -2134,7 +2658,7 @@ public final class Base {
           return this;
         }
       }
-      
+
       public Builder mergeFrom(netmsg.Base.Range other) {
         if (other == netmsg.Base.Range.getDefaultInstance()) return this;
         if (other.hasStart()) {
@@ -2146,7 +2670,7 @@ public final class Base {
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
-      
+
       public final boolean isInitialized() {
         if (!hasStart()) {
           
@@ -2158,153 +2682,251 @@ public final class Base {
         }
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              start_ = input.readUInt32();
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              end_ = input.readUInt32();
-              break;
-            }
+        netmsg.Base.Range parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (netmsg.Base.Range) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
-      // required uint32 start = 1;
+
       private int start_ ;
+      /**
+       * <code>required uint32 start = 1;</code>
+       */
       public boolean hasStart() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>required uint32 start = 1;</code>
+       */
       public int getStart() {
         return start_;
       }
+      /**
+       * <code>required uint32 start = 1;</code>
+       */
       public Builder setStart(int value) {
         bitField0_ |= 0x00000001;
         start_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>required uint32 start = 1;</code>
+       */
       public Builder clearStart() {
         bitField0_ = (bitField0_ & ~0x00000001);
         start_ = 0;
         onChanged();
         return this;
       }
-      
-      // required uint32 end = 2;
+
       private int end_ ;
+      /**
+       * <code>required uint32 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       public boolean hasEnd() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>required uint32 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       public int getEnd() {
         return end_;
       }
+      /**
+       * <code>required uint32 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       public Builder setEnd(int value) {
         bitField0_ |= 0x00000002;
         end_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>required uint32 end = 2;</code>
+       *
+       * <pre>
+       * Inclusive
+       * </pre>
+       */
       public Builder clearEnd() {
         bitField0_ = (bitField0_ & ~0x00000002);
         end_ = 0;
         onChanged();
         return this;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:base.Range)
     }
-    
+
     static {
       defaultInstance = new Range(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:base.Range)
   }
-  
-  public interface TimestampOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // required uint64 timestamp = 1;
+
+  public interface TimestampOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:base.Timestamp)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required uint64 timestamp = 1;</code>
+     */
     boolean hasTimestamp();
+    /**
+     * <code>required uint64 timestamp = 1;</code>
+     */
     long getTimestamp();
   }
+  /**
+   * Protobuf type {@code base.Timestamp}
+   */
   public static final class Timestamp extends
-      com.google.protobuf.GeneratedMessage
-      implements TimestampOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:base.Timestamp)
+      TimestampOrBuilder {
     // Use Timestamp.newBuilder() to construct.
-    private Timestamp(Builder builder) {
+    private Timestamp(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private Timestamp(boolean noInit) {}
-    
+    private Timestamp(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
     private static final Timestamp defaultInstance;
     public static Timestamp getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public Timestamp getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Timestamp(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              timestamp_ = input.readUInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return netmsg.Base.internal_static_base_Timestamp_descriptor;
     }
-    
+
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return netmsg.Base.internal_static_base_Timestamp_fieldAccessorTable;
+      return netmsg.Base.internal_static_base_Timestamp_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              netmsg.Base.Timestamp.class, netmsg.Base.Timestamp.Builder.class);
     }
-    
+
+    public static com.google.protobuf.Parser<Timestamp> PARSER =
+        new com.google.protobuf.AbstractParser<Timestamp>() {
+      public Timestamp parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Timestamp(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Timestamp> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
-    // required uint64 timestamp = 1;
     public static final int TIMESTAMP_FIELD_NUMBER = 1;
     private long timestamp_;
+    /**
+     * <code>required uint64 timestamp = 1;</code>
+     */
     public boolean hasTimestamp() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
+    /**
+     * <code>required uint64 timestamp = 1;</code>
+     */
     public long getTimestamp() {
       return timestamp_;
     }
-    
+
     private void initFields() {
       timestamp_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
       if (!hasTimestamp()) {
         memoizedIsInitialized = 0;
         return false;
@@ -2312,7 +2934,7 @@ public final class Base {
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -2321,12 +2943,12 @@ public final class Base {
       }
       getUnknownFields().writeTo(output);
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
@@ -2336,113 +2958,106 @@ public final class Base {
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static netmsg.Base.Timestamp parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.Timestamp parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.Timestamp parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.Timestamp parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.Timestamp parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.Timestamp parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static netmsg.Base.Timestamp parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static netmsg.Base.Timestamp parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static netmsg.Base.Timestamp parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.Timestamp parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(netmsg.Base.Timestamp prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
     @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code base.Timestamp}
+     */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements netmsg.Base.TimestampOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:base.Timestamp)
+        netmsg.Base.TimestampOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Base.internal_static_base_Timestamp_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Base.internal_static_base_Timestamp_fieldAccessorTable;
+        return netmsg.Base.internal_static_base_Timestamp_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Base.Timestamp.class, netmsg.Base.Timestamp.Builder.class);
       }
-      
+
       // Construct using netmsg.Base.Timestamp.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
-      private Builder(BuilderParent parent) {
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -2453,27 +3068,27 @@ public final class Base {
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         timestamp_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return netmsg.Base.Timestamp.getDescriptor();
+        return netmsg.Base.internal_static_base_Timestamp_descriptor;
       }
-      
+
       public netmsg.Base.Timestamp getDefaultInstanceForType() {
         return netmsg.Base.Timestamp.getDefaultInstance();
       }
-      
+
       public netmsg.Base.Timestamp build() {
         netmsg.Base.Timestamp result = buildPartial();
         if (!result.isInitialized()) {
@@ -2481,17 +3096,7 @@ public final class Base {
         }
         return result;
       }
-      
-      private netmsg.Base.Timestamp buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        netmsg.Base.Timestamp result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public netmsg.Base.Timestamp buildPartial() {
         netmsg.Base.Timestamp result = new netmsg.Base.Timestamp(this);
         int from_bitField0_ = bitField0_;
@@ -2504,7 +3109,7 @@ public final class Base {
         onBuilt();
         return result;
       }
-      
+
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof netmsg.Base.Timestamp) {
           return mergeFrom((netmsg.Base.Timestamp)other);
@@ -2513,7 +3118,7 @@ public final class Base {
           return this;
         }
       }
-      
+
       public Builder mergeFrom(netmsg.Base.Timestamp other) {
         if (other == netmsg.Base.Timestamp.getDefaultInstance()) return this;
         if (other.hasTimestamp()) {
@@ -2522,7 +3127,7 @@ public final class Base {
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
-      
+
       public final boolean isInitialized() {
         if (!hasTimestamp()) {
           
@@ -2530,141 +3135,259 @@ public final class Base {
         }
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              timestamp_ = input.readUInt64();
-              break;
-            }
+        netmsg.Base.Timestamp parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (netmsg.Base.Timestamp) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
-      // required uint64 timestamp = 1;
+
       private long timestamp_ ;
+      /**
+       * <code>required uint64 timestamp = 1;</code>
+       */
       public boolean hasTimestamp() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>required uint64 timestamp = 1;</code>
+       */
       public long getTimestamp() {
         return timestamp_;
       }
+      /**
+       * <code>required uint64 timestamp = 1;</code>
+       */
       public Builder setTimestamp(long value) {
         bitField0_ |= 0x00000001;
         timestamp_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>required uint64 timestamp = 1;</code>
+       */
       public Builder clearTimestamp() {
         bitField0_ = (bitField0_ & ~0x00000001);
         timestamp_ = 0L;
         onChanged();
         return this;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:base.Timestamp)
     }
-    
+
     static {
       defaultInstance = new Timestamp(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:base.Timestamp)
   }
-  
-  public interface TimeframeOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // required .base.Timestamp start = 1;
+
+  public interface TimeframeOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:base.Timeframe)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required .base.Timestamp start = 1;</code>
+     */
     boolean hasStart();
+    /**
+     * <code>required .base.Timestamp start = 1;</code>
+     */
     netmsg.Base.Timestamp getStart();
+    /**
+     * <code>required .base.Timestamp start = 1;</code>
+     */
     netmsg.Base.TimestampOrBuilder getStartOrBuilder();
-    
-    // required .base.Timestamp end = 2;
+
+    /**
+     * <code>required .base.Timestamp end = 2;</code>
+     */
     boolean hasEnd();
+    /**
+     * <code>required .base.Timestamp end = 2;</code>
+     */
     netmsg.Base.Timestamp getEnd();
+    /**
+     * <code>required .base.Timestamp end = 2;</code>
+     */
     netmsg.Base.TimestampOrBuilder getEndOrBuilder();
   }
+  /**
+   * Protobuf type {@code base.Timeframe}
+   */
   public static final class Timeframe extends
-      com.google.protobuf.GeneratedMessage
-      implements TimeframeOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:base.Timeframe)
+      TimeframeOrBuilder {
     // Use Timeframe.newBuilder() to construct.
-    private Timeframe(Builder builder) {
+    private Timeframe(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private Timeframe(boolean noInit) {}
-    
+    private Timeframe(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
     private static final Timeframe defaultInstance;
     public static Timeframe getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public Timeframe getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Timeframe(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              netmsg.Base.Timestamp.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = start_.toBuilder();
+              }
+              start_ = input.readMessage(netmsg.Base.Timestamp.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(start_);
+                start_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 18: {
+              netmsg.Base.Timestamp.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = end_.toBuilder();
+              }
+              end_ = input.readMessage(netmsg.Base.Timestamp.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(end_);
+                end_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return netmsg.Base.internal_static_base_Timeframe_descriptor;
     }
-    
+
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return netmsg.Base.internal_static_base_Timeframe_fieldAccessorTable;
+      return netmsg.Base.internal_static_base_Timeframe_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              netmsg.Base.Timeframe.class, netmsg.Base.Timeframe.Builder.class);
     }
-    
+
+    public static com.google.protobuf.Parser<Timeframe> PARSER =
+        new com.google.protobuf.AbstractParser<Timeframe>() {
+      public Timeframe parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Timeframe(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Timeframe> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
-    // required .base.Timestamp start = 1;
     public static final int START_FIELD_NUMBER = 1;
     private netmsg.Base.Timestamp start_;
+    /**
+     * <code>required .base.Timestamp start = 1;</code>
+     */
     public boolean hasStart() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
+    /**
+     * <code>required .base.Timestamp start = 1;</code>
+     */
     public netmsg.Base.Timestamp getStart() {
       return start_;
     }
+    /**
+     * <code>required .base.Timestamp start = 1;</code>
+     */
     public netmsg.Base.TimestampOrBuilder getStartOrBuilder() {
       return start_;
     }
-    
-    // required .base.Timestamp end = 2;
+
     public static final int END_FIELD_NUMBER = 2;
     private netmsg.Base.Timestamp end_;
+    /**
+     * <code>required .base.Timestamp end = 2;</code>
+     */
     public boolean hasEnd() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
+    /**
+     * <code>required .base.Timestamp end = 2;</code>
+     */
     public netmsg.Base.Timestamp getEnd() {
       return end_;
     }
+    /**
+     * <code>required .base.Timestamp end = 2;</code>
+     */
     public netmsg.Base.TimestampOrBuilder getEndOrBuilder() {
       return end_;
     }
-    
+
     private void initFields() {
       start_ = netmsg.Base.Timestamp.getDefaultInstance();
       end_ = netmsg.Base.Timestamp.getDefaultInstance();
@@ -2672,8 +3395,9 @@ public final class Base {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
       if (!hasStart()) {
         memoizedIsInitialized = 0;
         return false;
@@ -2693,7 +3417,7 @@ public final class Base {
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -2705,12 +3429,12 @@ public final class Base {
       }
       getUnknownFields().writeTo(output);
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
@@ -2724,113 +3448,106 @@ public final class Base {
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static netmsg.Base.Timeframe parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.Timeframe parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.Timeframe parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.Timeframe parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.Timeframe parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.Timeframe parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static netmsg.Base.Timeframe parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static netmsg.Base.Timeframe parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static netmsg.Base.Timeframe parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.Timeframe parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(netmsg.Base.Timeframe prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
     @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code base.Timeframe}
+     */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements netmsg.Base.TimeframeOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:base.Timeframe)
+        netmsg.Base.TimeframeOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Base.internal_static_base_Timeframe_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Base.internal_static_base_Timeframe_fieldAccessorTable;
+        return netmsg.Base.internal_static_base_Timeframe_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Base.Timeframe.class, netmsg.Base.Timeframe.Builder.class);
       }
-      
+
       // Construct using netmsg.Base.Timeframe.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
-      private Builder(BuilderParent parent) {
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -2843,7 +3560,7 @@ public final class Base {
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         if (startBuilder_ == null) {
@@ -2860,20 +3577,20 @@ public final class Base {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return netmsg.Base.Timeframe.getDescriptor();
+        return netmsg.Base.internal_static_base_Timeframe_descriptor;
       }
-      
+
       public netmsg.Base.Timeframe getDefaultInstanceForType() {
         return netmsg.Base.Timeframe.getDefaultInstance();
       }
-      
+
       public netmsg.Base.Timeframe build() {
         netmsg.Base.Timeframe result = buildPartial();
         if (!result.isInitialized()) {
@@ -2881,17 +3598,7 @@ public final class Base {
         }
         return result;
       }
-      
-      private netmsg.Base.Timeframe buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        netmsg.Base.Timeframe result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public netmsg.Base.Timeframe buildPartial() {
         netmsg.Base.Timeframe result = new netmsg.Base.Timeframe(this);
         int from_bitField0_ = bitField0_;
@@ -2916,7 +3623,7 @@ public final class Base {
         onBuilt();
         return result;
       }
-      
+
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof netmsg.Base.Timeframe) {
           return mergeFrom((netmsg.Base.Timeframe)other);
@@ -2925,7 +3632,7 @@ public final class Base {
           return this;
         }
       }
-      
+
       public Builder mergeFrom(netmsg.Base.Timeframe other) {
         if (other == netmsg.Base.Timeframe.getDefaultInstance()) return this;
         if (other.hasStart()) {
@@ -2937,7 +3644,7 @@ public final class Base {
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
-      
+
       public final boolean isInitialized() {
         if (!hasStart()) {
           
@@ -2957,61 +3664,38 @@ public final class Base {
         }
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              netmsg.Base.Timestamp.Builder subBuilder = netmsg.Base.Timestamp.newBuilder();
-              if (hasStart()) {
-                subBuilder.mergeFrom(getStart());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setStart(subBuilder.buildPartial());
-              break;
-            }
-            case 18: {
-              netmsg.Base.Timestamp.Builder subBuilder = netmsg.Base.Timestamp.newBuilder();
-              if (hasEnd()) {
-                subBuilder.mergeFrom(getEnd());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setEnd(subBuilder.buildPartial());
-              break;
-            }
+        netmsg.Base.Timeframe parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (netmsg.Base.Timeframe) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
-      // required .base.Timestamp start = 1;
+
       private netmsg.Base.Timestamp start_ = netmsg.Base.Timestamp.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> startBuilder_;
+      /**
+       * <code>required .base.Timestamp start = 1;</code>
+       */
       public boolean hasStart() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>required .base.Timestamp start = 1;</code>
+       */
       public netmsg.Base.Timestamp getStart() {
         if (startBuilder_ == null) {
           return start_;
@@ -3019,6 +3703,9 @@ public final class Base {
           return startBuilder_.getMessage();
         }
       }
+      /**
+       * <code>required .base.Timestamp start = 1;</code>
+       */
       public Builder setStart(netmsg.Base.Timestamp value) {
         if (startBuilder_ == null) {
           if (value == null) {
@@ -3032,6 +3719,9 @@ public final class Base {
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>required .base.Timestamp start = 1;</code>
+       */
       public Builder setStart(
           netmsg.Base.Timestamp.Builder builderForValue) {
         if (startBuilder_ == null) {
@@ -3043,6 +3733,9 @@ public final class Base {
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>required .base.Timestamp start = 1;</code>
+       */
       public Builder mergeStart(netmsg.Base.Timestamp value) {
         if (startBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
@@ -3059,6 +3752,9 @@ public final class Base {
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>required .base.Timestamp start = 1;</code>
+       */
       public Builder clearStart() {
         if (startBuilder_ == null) {
           start_ = netmsg.Base.Timestamp.getDefaultInstance();
@@ -3069,11 +3765,17 @@ public final class Base {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
+      /**
+       * <code>required .base.Timestamp start = 1;</code>
+       */
       public netmsg.Base.Timestamp.Builder getStartBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getStartFieldBuilder().getBuilder();
       }
+      /**
+       * <code>required .base.Timestamp start = 1;</code>
+       */
       public netmsg.Base.TimestampOrBuilder getStartOrBuilder() {
         if (startBuilder_ != null) {
           return startBuilder_.getMessageOrBuilder();
@@ -3081,27 +3783,35 @@ public final class Base {
           return start_;
         }
       }
+      /**
+       * <code>required .base.Timestamp start = 1;</code>
+       */
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> 
           getStartFieldBuilder() {
         if (startBuilder_ == null) {
           startBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder>(
-                  start_,
+                  getStart(),
                   getParentForChildren(),
                   isClean());
           start_ = null;
         }
         return startBuilder_;
       }
-      
-      // required .base.Timestamp end = 2;
+
       private netmsg.Base.Timestamp end_ = netmsg.Base.Timestamp.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> endBuilder_;
+      /**
+       * <code>required .base.Timestamp end = 2;</code>
+       */
       public boolean hasEnd() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>required .base.Timestamp end = 2;</code>
+       */
       public netmsg.Base.Timestamp getEnd() {
         if (endBuilder_ == null) {
           return end_;
@@ -3109,6 +3819,9 @@ public final class Base {
           return endBuilder_.getMessage();
         }
       }
+      /**
+       * <code>required .base.Timestamp end = 2;</code>
+       */
       public Builder setEnd(netmsg.Base.Timestamp value) {
         if (endBuilder_ == null) {
           if (value == null) {
@@ -3122,6 +3835,9 @@ public final class Base {
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>required .base.Timestamp end = 2;</code>
+       */
       public Builder setEnd(
           netmsg.Base.Timestamp.Builder builderForValue) {
         if (endBuilder_ == null) {
@@ -3133,6 +3849,9 @@ public final class Base {
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>required .base.Timestamp end = 2;</code>
+       */
       public Builder mergeEnd(netmsg.Base.Timestamp value) {
         if (endBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
@@ -3149,6 +3868,9 @@ public final class Base {
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>required .base.Timestamp end = 2;</code>
+       */
       public Builder clearEnd() {
         if (endBuilder_ == null) {
           end_ = netmsg.Base.Timestamp.getDefaultInstance();
@@ -3159,11 +3881,17 @@ public final class Base {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
+      /**
+       * <code>required .base.Timestamp end = 2;</code>
+       */
       public netmsg.Base.Timestamp.Builder getEndBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getEndFieldBuilder().getBuilder();
       }
+      /**
+       * <code>required .base.Timestamp end = 2;</code>
+       */
       public netmsg.Base.TimestampOrBuilder getEndOrBuilder() {
         if (endBuilder_ != null) {
           return endBuilder_.getMessageOrBuilder();
@@ -3171,91 +3899,188 @@ public final class Base {
           return end_;
         }
       }
+      /**
+       * <code>required .base.Timestamp end = 2;</code>
+       */
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> 
           getEndFieldBuilder() {
         if (endBuilder_ == null) {
           endBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder>(
-                  end_,
+                  getEnd(),
                   getParentForChildren(),
                   isClean());
           end_ = null;
         }
         return endBuilder_;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:base.Timeframe)
     }
-    
+
     static {
       defaultInstance = new Timeframe(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:base.Timeframe)
   }
-  
-  public interface RationalOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // required int64 numerator = 1;
+
+  public interface RationalOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:base.Rational)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required int64 numerator = 1;</code>
+     */
     boolean hasNumerator();
+    /**
+     * <code>required int64 numerator = 1;</code>
+     */
     long getNumerator();
-    
-    // required int64 denominator = 2;
+
+    /**
+     * <code>required int64 denominator = 2;</code>
+     */
     boolean hasDenominator();
+    /**
+     * <code>required int64 denominator = 2;</code>
+     */
     long getDenominator();
   }
+  /**
+   * Protobuf type {@code base.Rational}
+   */
   public static final class Rational extends
-      com.google.protobuf.GeneratedMessage
-      implements RationalOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:base.Rational)
+      RationalOrBuilder {
     // Use Rational.newBuilder() to construct.
-    private Rational(Builder builder) {
+    private Rational(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private Rational(boolean noInit) {}
-    
+    private Rational(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
     private static final Rational defaultInstance;
     public static Rational getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public Rational getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Rational(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              numerator_ = input.readInt64();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              denominator_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return netmsg.Base.internal_static_base_Rational_descriptor;
     }
-    
+
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return netmsg.Base.internal_static_base_Rational_fieldAccessorTable;
+      return netmsg.Base.internal_static_base_Rational_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              netmsg.Base.Rational.class, netmsg.Base.Rational.Builder.class);
     }
-    
+
+    public static com.google.protobuf.Parser<Rational> PARSER =
+        new com.google.protobuf.AbstractParser<Rational>() {
+      public Rational parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Rational(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Rational> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
-    // required int64 numerator = 1;
     public static final int NUMERATOR_FIELD_NUMBER = 1;
     private long numerator_;
+    /**
+     * <code>required int64 numerator = 1;</code>
+     */
     public boolean hasNumerator() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
+    /**
+     * <code>required int64 numerator = 1;</code>
+     */
     public long getNumerator() {
       return numerator_;
     }
-    
-    // required int64 denominator = 2;
+
     public static final int DENOMINATOR_FIELD_NUMBER = 2;
     private long denominator_;
+    /**
+     * <code>required int64 denominator = 2;</code>
+     */
     public boolean hasDenominator() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
+    /**
+     * <code>required int64 denominator = 2;</code>
+     */
     public long getDenominator() {
       return denominator_;
     }
-    
+
     private void initFields() {
       numerator_ = 0L;
       denominator_ = 0L;
@@ -3263,8 +4088,9 @@ public final class Base {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
       if (!hasNumerator()) {
         memoizedIsInitialized = 0;
         return false;
@@ -3276,7 +4102,7 @@ public final class Base {
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -3288,12 +4114,12 @@ public final class Base {
       }
       getUnknownFields().writeTo(output);
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
@@ -3307,113 +4133,106 @@ public final class Base {
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static netmsg.Base.Rational parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.Rational parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.Rational parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Base.Rational parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Base.Rational parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.Rational parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static netmsg.Base.Rational parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static netmsg.Base.Rational parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static netmsg.Base.Rational parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Base.Rational parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(netmsg.Base.Rational prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
     @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code base.Rational}
+     */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements netmsg.Base.RationalOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:base.Rational)
+        netmsg.Base.RationalOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Base.internal_static_base_Rational_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Base.internal_static_base_Rational_fieldAccessorTable;
+        return netmsg.Base.internal_static_base_Rational_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Base.Rational.class, netmsg.Base.Rational.Builder.class);
       }
-      
+
       // Construct using netmsg.Base.Rational.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
-      private Builder(BuilderParent parent) {
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -3424,7 +4243,7 @@ public final class Base {
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         numerator_ = 0L;
@@ -3433,20 +4252,20 @@ public final class Base {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return netmsg.Base.Rational.getDescriptor();
+        return netmsg.Base.internal_static_base_Rational_descriptor;
       }
-      
+
       public netmsg.Base.Rational getDefaultInstanceForType() {
         return netmsg.Base.Rational.getDefaultInstance();
       }
-      
+
       public netmsg.Base.Rational build() {
         netmsg.Base.Rational result = buildPartial();
         if (!result.isInitialized()) {
@@ -3454,17 +4273,7 @@ public final class Base {
         }
         return result;
       }
-      
-      private netmsg.Base.Rational buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        netmsg.Base.Rational result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public netmsg.Base.Rational buildPartial() {
         netmsg.Base.Rational result = new netmsg.Base.Rational(this);
         int from_bitField0_ = bitField0_;
@@ -3481,7 +4290,7 @@ public final class Base {
         onBuilt();
         return result;
       }
-      
+
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof netmsg.Base.Rational) {
           return mergeFrom((netmsg.Base.Rational)other);
@@ -3490,7 +4299,7 @@ public final class Base {
           return this;
         }
       }
-      
+
       public Builder mergeFrom(netmsg.Base.Rational other) {
         if (other == netmsg.Base.Rational.getDefaultInstance()) return this;
         if (other.hasNumerator()) {
@@ -3502,7 +4311,7 @@ public final class Base {
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
-      
+
       public final boolean isInitialized() {
         if (!hasNumerator()) {
           
@@ -3514,140 +4323,142 @@ public final class Base {
         }
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              numerator_ = input.readInt64();
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              denominator_ = input.readInt64();
-              break;
-            }
+        netmsg.Base.Rational parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (netmsg.Base.Rational) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
-      // required int64 numerator = 1;
+
       private long numerator_ ;
+      /**
+       * <code>required int64 numerator = 1;</code>
+       */
       public boolean hasNumerator() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>required int64 numerator = 1;</code>
+       */
       public long getNumerator() {
         return numerator_;
       }
+      /**
+       * <code>required int64 numerator = 1;</code>
+       */
       public Builder setNumerator(long value) {
         bitField0_ |= 0x00000001;
         numerator_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>required int64 numerator = 1;</code>
+       */
       public Builder clearNumerator() {
         bitField0_ = (bitField0_ & ~0x00000001);
         numerator_ = 0L;
         onChanged();
         return this;
       }
-      
-      // required int64 denominator = 2;
+
       private long denominator_ ;
+      /**
+       * <code>required int64 denominator = 2;</code>
+       */
       public boolean hasDenominator() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>required int64 denominator = 2;</code>
+       */
       public long getDenominator() {
         return denominator_;
       }
+      /**
+       * <code>required int64 denominator = 2;</code>
+       */
       public Builder setDenominator(long value) {
         bitField0_ |= 0x00000002;
         denominator_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>required int64 denominator = 2;</code>
+       */
       public Builder clearDenominator() {
         bitField0_ = (bitField0_ & ~0x00000002);
         denominator_ = 0L;
         onChanged();
         return this;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:base.Rational)
     }
-    
+
     static {
       defaultInstance = new Rational(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:base.Rational)
   }
-  
-  private static com.google.protobuf.Descriptors.Descriptor
+
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_base_Vect2_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_base_Vect2_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_base_Bounds_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_base_Bounds_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_base_UUID_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_base_UUID_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_base_ValWithMax_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_base_ValWithMax_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_base_Range_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_base_Range_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_base_Timestamp_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_base_Timestamp_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_base_Timeframe_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_base_Timeframe_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_base_Rational_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_base_Rational_fieldAccessorTable;
-  
+
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
     return descriptor;
@@ -3669,82 +4480,66 @@ public final class Base {
       "enominator\030\002 \002(\003B\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-      new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
-        public com.google.protobuf.ExtensionRegistry assignDescriptors(
-            com.google.protobuf.Descriptors.FileDescriptor root) {
-          descriptor = root;
-          internal_static_base_Vect2_descriptor =
-            getDescriptor().getMessageTypes().get(0);
-          internal_static_base_Vect2_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_base_Vect2_descriptor,
-              new java.lang.String[] { "X", "Y", },
-              netmsg.Base.Vect2.class,
-              netmsg.Base.Vect2.Builder.class);
-          internal_static_base_Bounds_descriptor =
-            getDescriptor().getMessageTypes().get(1);
-          internal_static_base_Bounds_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_base_Bounds_descriptor,
-              new java.lang.String[] { "Start", "End", },
-              netmsg.Base.Bounds.class,
-              netmsg.Base.Bounds.Builder.class);
-          internal_static_base_UUID_descriptor =
-            getDescriptor().getMessageTypes().get(2);
-          internal_static_base_UUID_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_base_UUID_descriptor,
-              new java.lang.String[] { "MostSignificant", "LeastSignificant", },
-              netmsg.Base.UUID.class,
-              netmsg.Base.UUID.Builder.class);
-          internal_static_base_ValWithMax_descriptor =
-            getDescriptor().getMessageTypes().get(3);
-          internal_static_base_ValWithMax_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_base_ValWithMax_descriptor,
-              new java.lang.String[] { "Current", "Maximum", },
-              netmsg.Base.ValWithMax.class,
-              netmsg.Base.ValWithMax.Builder.class);
-          internal_static_base_Range_descriptor =
-            getDescriptor().getMessageTypes().get(4);
-          internal_static_base_Range_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_base_Range_descriptor,
-              new java.lang.String[] { "Start", "End", },
-              netmsg.Base.Range.class,
-              netmsg.Base.Range.Builder.class);
-          internal_static_base_Timestamp_descriptor =
-            getDescriptor().getMessageTypes().get(5);
-          internal_static_base_Timestamp_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_base_Timestamp_descriptor,
-              new java.lang.String[] { "Timestamp", },
-              netmsg.Base.Timestamp.class,
-              netmsg.Base.Timestamp.Builder.class);
-          internal_static_base_Timeframe_descriptor =
-            getDescriptor().getMessageTypes().get(6);
-          internal_static_base_Timeframe_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_base_Timeframe_descriptor,
-              new java.lang.String[] { "Start", "End", },
-              netmsg.Base.Timeframe.class,
-              netmsg.Base.Timeframe.Builder.class);
-          internal_static_base_Rational_descriptor =
-            getDescriptor().getMessageTypes().get(7);
-          internal_static_base_Rational_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_base_Rational_descriptor,
-              new java.lang.String[] { "Numerator", "Denominator", },
-              netmsg.Base.Rational.class,
-              netmsg.Base.Rational.Builder.class);
-          return null;
-        }
-      };
+        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
+          public com.google.protobuf.ExtensionRegistry assignDescriptors(
+              com.google.protobuf.Descriptors.FileDescriptor root) {
+            descriptor = root;
+            return null;
+          }
+        };
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
+    internal_static_base_Vect2_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_base_Vect2_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_base_Vect2_descriptor,
+        new java.lang.String[] { "X", "Y", });
+    internal_static_base_Bounds_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_base_Bounds_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_base_Bounds_descriptor,
+        new java.lang.String[] { "Start", "End", });
+    internal_static_base_UUID_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_base_UUID_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_base_UUID_descriptor,
+        new java.lang.String[] { "MostSignificant", "LeastSignificant", });
+    internal_static_base_ValWithMax_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_base_ValWithMax_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_base_ValWithMax_descriptor,
+        new java.lang.String[] { "Current", "Maximum", });
+    internal_static_base_Range_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_base_Range_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_base_Range_descriptor,
+        new java.lang.String[] { "Start", "End", });
+    internal_static_base_Timestamp_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_base_Timestamp_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_base_Timestamp_descriptor,
+        new java.lang.String[] { "Timestamp", });
+    internal_static_base_Timeframe_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_base_Timeframe_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_base_Timeframe_descriptor,
+        new java.lang.String[] { "Start", "End", });
+    internal_static_base_Rational_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_base_Rational_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_base_Rational_descriptor,
+        new java.lang.String[] { "Numerator", "Denominator", });
   }
-  
+
   // @@protoc_insertion_point(outer_class_scope)
 }

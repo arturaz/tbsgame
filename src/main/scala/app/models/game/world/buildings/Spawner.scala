@@ -15,9 +15,9 @@ object SpawnerStats extends BuildingStats with SizedWObjectStats {
 
   /* Each action from buildings that the team controls reduces spawner strength by this
      much. This makes spawner get angrier as VPTowers are taken from it. */
-  val StrengthReductionPerAction = SpawnerStr(4)
-  val DefaultStartingStrength = SpawnerStr(2 + StrengthReductionPerAction.value * 3)
-  val DefaultTurnsPerStrength = SpawnerStr(5)
+  val StrengthReductionPerAction = SpawnerStr(-1)
+  val DefaultStartingStrength = SpawnerStr(8)
+  val DefaultTurnsPerStrength = Option.empty[SpawnerStr]
 
   val Spawnables = IndexedSeq(
     WObjKind.Light -> WaspStats,
@@ -36,11 +36,12 @@ trait SpawnerImpl { _: Spawner =>
   type Stats = SpawnerStats.type
   override val stats = SpawnerStats
 
-  def strength = startingStrength + SpawnerStr(turns) / turnsPerStrength
+  def strength =
+    startingStrength + turnsPerStrength.fold2(SpawnerStr(0), SpawnerStr(turns) / _)
   def strength(actions: Actions): SpawnerStr =
     strength - stats.StrengthReductionPerAction * SpawnerStr(actions.value)
   val startingStrength: SpawnerStr
-  val turnsPerStrength: SpawnerStr
+  val turnsPerStrength: Option[SpawnerStr]
 
   /* Try to spawn at position, returning Right(None) if unit was killed after spawn. */
   def spawn(world: World, position: Vect2)(implicit log: LoggingAdapter) = {

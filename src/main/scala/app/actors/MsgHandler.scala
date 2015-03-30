@@ -7,6 +7,8 @@ import akka.event.{LoggingAdapter, LoggingReceive}
 import akka.io.Tcp.{ConnectionClosed, Received, Write}
 import akka.util.ByteString
 import app.actors.NetClient.Msgs.{FromClient, FromServer}
+import app.protobuf.parsing.Parsing
+import app.protobuf.serializing.Serializing
 import utils.network.{CodedFramePipeline, IntFramedPipeline, Pipeline}
 
 /**
@@ -32,9 +34,7 @@ class MsgHandler(
 class MsgHandlerPipeline(implicit byteOrder: ByteOrder, log: LoggingAdapter)
 extends Pipeline[ByteString, Vector[FromClient], FromServer, ByteString] {
   private[this] val intFramed = new IntFramedPipeline()
-  private[this] val coded = new CodedFramePipeline(
-    ProtobufCoding.Parsing.parse, ProtobufCoding.Serializing.serialize
-  )
+  private[this] val coded = new CodedFramePipeline(Parsing.parse, Serializing.serialize)
 
   override def fromClient(data: ByteString) = intFramed.fromClient(data).map { frame =>
     coded.fromClient(frame).fold(

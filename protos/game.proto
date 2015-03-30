@@ -22,19 +22,22 @@ message FromClient {
 message MLeave {}
 message MConcede {}
 
-message MWarp {
-  enum HumanWarpable {
-    B_EXTRACTOR = 1;
-    B_WARP_LINKER = 2;
-    B_LASER_TOWER = 3;
-    U_CORVETTE = 4;
-    U_SCOUT = 5;
-    U_ROCKET_FRIGATE = 6;
-    U_GUNSHIP = 7;
-  }
+enum WarpableKind {
+  B_EXTRACTOR = 1;
+  B_WARP_LINKER = 2;
+  B_LASER_TOWER = 3;
+  U_CORVETTE = 4;
+  U_WASP = 5;
+  U_SCOUT = 6;
+  U_ROCKET_FRIGATE = 7;
+  U_RAYSHIP = 8;
+  U_GUNSHIP = 9;
+  U_FORTRESS = 10;
+}
 
+message MWarp {
   required base.Vect2 position = 1;
-  required HumanWarpable warpable = 2;
+  required WarpableKind warpable = 2;
 }
 
 message MMove {
@@ -88,7 +91,7 @@ message MInit {
   }
 
   message ExtractionSpeedRate {
-    required WObject.ExtractionSpeed extraction_speed = 1;
+    required WObject.Asteroid.ExtractionSpeed extraction_speed = 1;
     required uint32 resources_per_turn = 2;
   }
 
@@ -102,7 +105,7 @@ message MInit {
   // Client player.
   required PlayerState self = 7;
   repeated InitPlayer other_players = 8;
-  repeated InitWObjectStats wobject_stats = 9;
+  required WarpableObjectStats warpable_object_stats = 9;
   repeated AttackMultiplier attack_multipliers = 10;
   required Objectives objectives = 11;
   /* Might not have a turn timer */
@@ -186,10 +189,18 @@ message InitPlayer { // {{{
   optional PlayerState state = 2;
 } // }}}
 
-message InitWObjectStats {
-  required WObject.Stats stats = 1;
-  // Not set if a player cannot warp this in.
-  optional MWarp.HumanWarpable warpable = 2;
+message WarpableObjectStats {
+  // If stats are not sent, you cannot warp it in.
+  optional WObjectStats.Extractor extractor = 6;
+  optional WObjectStats.WarpLinker warp_linker = 7;
+  optional WObjectStats.LaserTower laser_tower = 9;
+  optional WObjectStats.Corvette corvette = 10;
+  optional WObjectStats.Wasp wasp = 11;
+  optional WObjectStats.Scout scout = 12;
+  optional WObjectStats.RayShip ray_ship = 13;
+  optional WObjectStats.RocketFrigate rocket_frigate = 14;
+  optional WObjectStats.Gunship gunship = 15;
+  optional WObjectStats.Fortress fortress = 16;
 }
 
 message Objectives {
@@ -199,62 +210,219 @@ message Objectives {
 }
 
 message WObject { // {{{
-  enum Kind {
-    P_ASTEROID = 1;
-    B_WARP_GATE = 2;
-    B_EXTRACTOR = 3;
-    B_WARP_LINKER = 4;
-    B_SPAWNER = 5;
-    B_LASER_TOWER = 6;
-    U_CORVETTE = 7;
-    U_WASP = 8;
-    U_SCOUT = 9;
-    U_RAY_SHIP = 10;
-    U_ROCKET_FRIGATE = 11;
-    U_GUNSHIP = 12;
-    U_FORTRESS = 13;
-    B_VP_TOWER = 14;
-    P_ROCK = 15;
-    P_BRUSH = 16;
-    P_CRYSTAL = 17;
-  }
+  /* Trait properties */
 
-  enum ExtractionSpeed {
-    SLOW = 1;
-    MEDIUM = 2;
-    FAST = 3;
-  }
-
-  /* Trait properties {{{ */
-
-  message SizedObj {
-    message Stats {
-      required base.Vect2 size = 1;
-    }
-
-    required Stats stats = 1;
+  message Base {
+    required WObjID id = 1;
+    required base.Vect2 position = 2;
   }
 
   message OwnedObj {
-    message Stats {
-      required bool is_critical = 1;
-      required uint32 visibility = 2;
-      required uint32 max_hp = 3;
-      required WObjKind kind = 4;
-      required bool is_respawnable = 5;
-    }
-
-    required Stats stats = 1;
     required OwnerID owner_id = 2;
     required uint32 hp = 3;
   }
 
-  message GivingActions {
-    message Stats {
-      required uint32 actions_given = 1;
+  message Warpable {
+    required uint32 warp_state = 2;
+  }
+
+  message Fighter {
+    required uint32 attacksLeft = 2;
+    required uint32 level = 3;
+  }
+
+  message Movable {
+    required uint32 movement = 2;
+  }
+
+  /* Concrete implementations {{{ */
+
+  message Asteroid {
+    enum ExtractionSpeed {
+      SLOW = 1;
+      MEDIUM = 2;
+      FAST = 3;
     }
 
-    required Stats stats = 1;
+    required WObjectStats.Asteroid stats = 1;
+    required Base base = 2;
+
+    required uint32 resources = 3;
+    required ExtractionSpeed extraction_speed = 4;
+  }
+  
+  message Rock {
+    required WObjectStats.Rock stats = 1;
+    required Base base = 2;
+  }
+  
+  message Crystal {
+    required WObjectStats.Crystal stats = 1;
+    required Base base = 2;
+  }
+    
+  message Brush {
+    required WObjectStats.Brush stats = 1;
+    required Base base = 2;
+  }
+
+  message WarpGate {
+    required WObjectStats.WarpGate stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+  }
+
+  message Extractor {
+    required WObjectStats.Extractor stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+  }
+
+  message WarpLinker {
+    required WObjectStats.WarpLinker stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+  }
+
+  message Spawner {
+    required WObjectStats.Spawner stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+  }
+
+  message LaserTower {
+    required WObjectStats.LaserTower stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+    required Fighter fighter = 5;
+  }
+
+  message Corvette {
+    required WObjectStats.Corvette stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+    required Fighter fighter = 5;
+    required Movable movable = 6;
+  }
+
+  message Wasp {
+    required WObjectStats.Wasp stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+    required Fighter fighter = 5;
+    required Movable movable = 6;
+  }
+
+  message Scout {
+    required WObjectStats.Scout stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+    required Movable movable = 6;
+  }
+
+  message RayShip {
+    required WObjectStats.RayShip stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+    required Fighter fighter = 5;
+    required Movable movable = 6;
+  }
+
+  message RocketFrigate {
+    required WObjectStats.RocketFrigate stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+    required Fighter fighter = 5;
+    required Movable movable = 6;
+  }
+
+  message Gunship {
+    required WObjectStats.Gunship stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+    required Fighter fighter = 5;
+    required Movable movable = 6;
+  }
+
+  message Fortress {
+    required WObjectStats.Fortress stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+    required Fighter fighter = 5;
+    required Movable movable = 6;
+  }
+
+  message VpTower {
+    required WObjectStats.VpTower stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+  }
+
+  /*** Message content - one of these should be set ***/
+
+  optional Asteroid asteroid = 1;
+  optional Rock rock = 2;
+  optional Crystal crystal = 3;
+  optional Brush brush = 4;
+  optional WarpGate warp_gate = 5;
+  optional Extractor extractor = 6;
+  optional WarpLinker warp_linker = 7;
+  optional Spawner spawner = 8;
+  optional LaserTower laser_tower = 9;
+  optional Corvette corvette = 10;
+  optional Wasp wasp = 11;
+  optional Scout scout = 12;
+  optional RayShip ray_ship = 13;
+  optional RocketFrigate rocket_frigate = 14;
+  optional Gunship gunship = 15;
+  optional Fortress fortress = 16;
+  optional VpTower vp_tower = 17;
+} // }}}
+
+message WObjectStats {
+  /*** Traits ***/
+
+  message Base {
+    required bool blocks_movement = 1;
+  }
+
+  message SizedObj {
+    required base.Vect2 size = 1;
+  }
+
+  message OwnedObj {
+    required bool is_critical = 1;
+    required uint32 visibility = 2;
+    required uint32 max_hp = 3;
+    required WObjKind kind = 4;
+    required bool is_respawnable = 5;
+  }
+
+  message GivingActions {
+    required uint32 actions_given = 1;
   }
 
   message Warpable {
@@ -263,123 +431,172 @@ message WObject { // {{{
       UNIT = 2;
     }
 
-    message Stats {
-      required uint32 warp_time = 1;
-      required uint32 cost = 2;
-      required uint32 population_cost = 3;
-      required Group group = 4;
-    }
-
-    required Stats stats = 1;
-    required uint32 warp_state = 2;
+    required uint32 warp_time = 1;
+    required uint32 cost = 2;
+    required uint32 population_cost = 3;
+    required Group group = 4;
   }
 
   message SpecialAction {
-    message Stats {
-      required uint32 actions_needed = 1;
-    }
-
-    required Stats stats = 1;
+    required uint32 actions_needed = 1;
   }
 
   message Fighter {
-    message Stats {
-      required base.Range attack = 1;
-      required float attack_range = 2;
-      required uint32 attacks = 3;
-    }
-
-    required Stats stats = 1;
-    required uint32 attacksLeft = 2;
-    required uint32 level = 3;
+    required base.Range attack = 1;
+    required float attack_range = 2;
+    required uint32 attacks = 3;
   }
 
   message Movable {
-    message Stats {
-      required uint32 movement_range = 1;
-    }
-
-    required Stats stats = 1;
-    required uint32 movement = 2;
+    required uint32 movement_range = 1;
   }
 
   message GivingPopulation {
-    message Stats {
-      required uint32 population_given = 1;
-    }
-
-    required Stats stats = 1;
+    required uint32 population_given = 1;
   }
 
-  /* End of Trait properties }}} */
-
-  /* Concrete implementations {{{ */
+  /*** Concrete subtypes ***/
 
   message Asteroid {
-    required uint32 resources = 1;
-    required ExtractionSpeed extraction_speed = 2;
+    required Base base = 1;
+  }
+
+  message Rock {
+    required Base base = 1;
+  }
+
+  message Crystal {
+    required Base base = 1;
+  }
+
+  message Brush {
+    required Base base = 1;
+  }
+
+  message WarpGate {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required SizedObj sized = 3;
+    required GivingActions giving_actions = 4;
+    required GivingPopulation giving_population = 5;
+    required SpecialAction special_action = 6;
   }
 
   message Extractor {
-    message Stats {
-      required uint32 turn_start_extracts = 1;
-      required uint32 special_extracts_fixed = 2;
-      // [0..1]
-      required base.Rational special_extracts_percentage = 3;
-    }
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required SpecialAction special_action = 3;
+    required Warpable warpable = 4;
+    required uint32 special_extracts_fixed = 5;
+    // [0..1]
+    required base.Rational special_extracts_percentage = 6;
+  }
 
-    required Stats stats = 1;
+  message WarpLinker {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Warpable warpable = 3;
+  }
+
+  message Spawner {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required SizedObj sized = 3;
+  }
+
+  message LaserTower {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Fighter fighter = 3;
+    required Warpable warpable = 4;
+    required SpecialAction special_action = 5;
   }
 
   message Corvette {
-    message Stats {
-      required uint32 special_movement_added = 1;
-    }
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Fighter fighter = 3;
+    required Movable movable = 4;
+    required SpecialAction special_action = 5;
+    required Warpable warpable = 6;
 
-    required Stats stats = 1;
+    required uint32 special_movement_added = 10;
   }
 
-  /* End of Concrete implementations }}} */
-
-  /* Properties */
-
-  required WObjID id = 1;
-  required base.Vect2 position = 2;
-  required Kind kind = 3;
-
-  /* Trait properties */
-  optional SizedObj sized_obj = 1000;
-  optional OwnedObj owned_obj = 1001;
-  optional GivingActions giving_actions = 1002;
-  optional Warpable warpable = 1003;
-  optional SpecialAction special_action = 1004;
-  optional Fighter fighter = 1005;
-  optional Movable movable = 1007;
-  optional GivingPopulation giving_population = 1008;
-
-  /* Concrete implementation properties */
-  optional Asteroid asteroid = 2000;
-  optional Extractor extractor = 2001;
-  optional Corvette corvette = 2002;
-
-  message Stats {
-    required Kind kind = 1;
-
-    /* Trait properties */
-    optional SizedObj.Stats sized_obj = 1000;
-    optional OwnedObj.Stats owned_obj = 1001;
-    optional GivingActions.Stats giving_actions = 1002;
-    optional Warpable.Stats warpable = 1003;
-    optional SpecialAction.Stats special_action = 1004;
-    optional Fighter.Stats fighter = 1005;
-    optional Movable.Stats movable = 1007;
-    optional GivingPopulation.Stats giving_population = 1008;
-
-    /* Concrete implementation properties */
-    optional Extractor.Stats extractor = 2001;
-    optional Corvette.Stats corvette = 2002;
+  message Wasp {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Fighter fighter = 3;
+    required Movable movable = 4;
+    required Warpable warpable = 5;
   }
-} // }}}
+
+  message Scout {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Movable movable = 3;
+    required Warpable warpable = 4;
+  }
+
+  message RayShip {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Warpable warpable = 3;
+    required Fighter fighter = 5;
+    required Movable movable = 6;
+  }
+
+  message RocketFrigate {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Fighter fighter = 3;
+    required Movable movable = 4;
+    required Warpable warpable = 5;
+  }
+
+  message Gunship {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Fighter fighter = 3;
+    required Movable movable = 4;
+    required Warpable warpable = 5;
+  }
+
+  message Fortress {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Fighter fighter = 3;
+    required Movable movable = 4;
+    required Warpable warpable = 5;
+  }
+
+  message VpTower {
+    required Base base = 1;
+    required SizedObj sized = 2;
+    required OwnedObj owned = 3;
+    required GivingActions giving_actions = 4;
+  }
+
+  /*** Message content - one of these should be set ***/
+
+  optional Asteroid asteroid = 1;
+  optional Rock rock = 2;
+  optional Crystal crystal = 3;
+  optional Brush brush = 4;
+  optional WarpGate warp_gate = 5;
+  optional Extractor extractor = 6;
+  optional WarpLinker warp_linker = 7;
+  optional Spawner spawner = 8;
+  optional LaserTower laser_tower = 9;
+  optional Corvette corvette = 10;
+  optional Wasp wasp = 11;
+  optional Scout scout = 12;
+  optional RayShip ray_ship = 13;
+  optional RocketFrigate rocket_frigate = 14;
+  optional Gunship gunship = 15;
+  optional Fortress fortress = 16;
+  optional VpTower vp_tower = 17;
+}
 
 /* Events */
 

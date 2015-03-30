@@ -8,92 +8,243 @@ public final class Messages {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
-  public interface FromClientOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // optional .game.FromClient game = 1;
+  public interface FromClientOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:messages.FromClient)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .game.FromClient game = 1;</code>
+     */
     boolean hasGame();
+    /**
+     * <code>optional .game.FromClient game = 1;</code>
+     */
     netmsg.Game.FromClient getGame();
+    /**
+     * <code>optional .game.FromClient game = 1;</code>
+     */
     netmsg.Game.FromClientOrBuilder getGameOrBuilder();
-    
-    // optional .management.FromClient management = 2;
+
+    /**
+     * <code>optional .management.FromClient management = 2;</code>
+     */
     boolean hasManagement();
+    /**
+     * <code>optional .management.FromClient management = 2;</code>
+     */
     netmsg.Management.FromClient getManagement();
+    /**
+     * <code>optional .management.FromClient management = 2;</code>
+     */
     netmsg.Management.FromClientOrBuilder getManagementOrBuilder();
-    
-    // optional .messages.TimeSync.FromClient time_sync = 3;
+
+    /**
+     * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+     */
     boolean hasTimeSync();
+    /**
+     * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+     */
     netmsg.Messages.TimeSync.FromClient getTimeSync();
+    /**
+     * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+     */
     netmsg.Messages.TimeSync.FromClientOrBuilder getTimeSyncOrBuilder();
   }
+  /**
+   * Protobuf type {@code messages.FromClient}
+   */
   public static final class FromClient extends
-      com.google.protobuf.GeneratedMessage
-      implements FromClientOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:messages.FromClient)
+      FromClientOrBuilder {
     // Use FromClient.newBuilder() to construct.
-    private FromClient(Builder builder) {
+    private FromClient(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private FromClient(boolean noInit) {}
-    
+    private FromClient(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
     private static final FromClient defaultInstance;
     public static FromClient getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public FromClient getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private FromClient(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              netmsg.Game.FromClient.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = game_.toBuilder();
+              }
+              game_ = input.readMessage(netmsg.Game.FromClient.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(game_);
+                game_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 18: {
+              netmsg.Management.FromClient.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = management_.toBuilder();
+              }
+              management_ = input.readMessage(netmsg.Management.FromClient.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(management_);
+                management_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+            case 26: {
+              netmsg.Messages.TimeSync.FromClient.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                subBuilder = timeSync_.toBuilder();
+              }
+              timeSync_ = input.readMessage(netmsg.Messages.TimeSync.FromClient.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(timeSync_);
+                timeSync_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000004;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return netmsg.Messages.internal_static_messages_FromClient_descriptor;
     }
-    
+
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return netmsg.Messages.internal_static_messages_FromClient_fieldAccessorTable;
+      return netmsg.Messages.internal_static_messages_FromClient_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              netmsg.Messages.FromClient.class, netmsg.Messages.FromClient.Builder.class);
     }
-    
+
+    public static com.google.protobuf.Parser<FromClient> PARSER =
+        new com.google.protobuf.AbstractParser<FromClient>() {
+      public FromClient parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new FromClient(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<FromClient> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
-    // optional .game.FromClient game = 1;
     public static final int GAME_FIELD_NUMBER = 1;
     private netmsg.Game.FromClient game_;
+    /**
+     * <code>optional .game.FromClient game = 1;</code>
+     */
     public boolean hasGame() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
+    /**
+     * <code>optional .game.FromClient game = 1;</code>
+     */
     public netmsg.Game.FromClient getGame() {
       return game_;
     }
+    /**
+     * <code>optional .game.FromClient game = 1;</code>
+     */
     public netmsg.Game.FromClientOrBuilder getGameOrBuilder() {
       return game_;
     }
-    
-    // optional .management.FromClient management = 2;
+
     public static final int MANAGEMENT_FIELD_NUMBER = 2;
     private netmsg.Management.FromClient management_;
+    /**
+     * <code>optional .management.FromClient management = 2;</code>
+     */
     public boolean hasManagement() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
+    /**
+     * <code>optional .management.FromClient management = 2;</code>
+     */
     public netmsg.Management.FromClient getManagement() {
       return management_;
     }
+    /**
+     * <code>optional .management.FromClient management = 2;</code>
+     */
     public netmsg.Management.FromClientOrBuilder getManagementOrBuilder() {
       return management_;
     }
-    
-    // optional .messages.TimeSync.FromClient time_sync = 3;
+
     public static final int TIME_SYNC_FIELD_NUMBER = 3;
     private netmsg.Messages.TimeSync.FromClient timeSync_;
+    /**
+     * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+     */
     public boolean hasTimeSync() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
+    /**
+     * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+     */
     public netmsg.Messages.TimeSync.FromClient getTimeSync() {
       return timeSync_;
     }
+    /**
+     * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+     */
     public netmsg.Messages.TimeSync.FromClientOrBuilder getTimeSyncOrBuilder() {
       return timeSync_;
     }
-    
+
     private void initFields() {
       game_ = netmsg.Game.FromClient.getDefaultInstance();
       management_ = netmsg.Management.FromClient.getDefaultInstance();
@@ -102,8 +253,9 @@ public final class Messages {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
       if (hasGame()) {
         if (!getGame().isInitialized()) {
           memoizedIsInitialized = 0;
@@ -125,7 +277,7 @@ public final class Messages {
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -140,12 +292,12 @@ public final class Messages {
       }
       getUnknownFields().writeTo(output);
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
@@ -163,113 +315,106 @@ public final class Messages {
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static netmsg.Messages.FromClient parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Messages.FromClient parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Messages.FromClient parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Messages.FromClient parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Messages.FromClient parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Messages.FromClient parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static netmsg.Messages.FromClient parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static netmsg.Messages.FromClient parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static netmsg.Messages.FromClient parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Messages.FromClient parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(netmsg.Messages.FromClient prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
     @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code messages.FromClient}
+     */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements netmsg.Messages.FromClientOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:messages.FromClient)
+        netmsg.Messages.FromClientOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Messages.internal_static_messages_FromClient_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Messages.internal_static_messages_FromClient_fieldAccessorTable;
+        return netmsg.Messages.internal_static_messages_FromClient_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Messages.FromClient.class, netmsg.Messages.FromClient.Builder.class);
       }
-      
+
       // Construct using netmsg.Messages.FromClient.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
-      private Builder(BuilderParent parent) {
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -283,7 +428,7 @@ public final class Messages {
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         if (gameBuilder_ == null) {
@@ -306,20 +451,20 @@ public final class Messages {
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return netmsg.Messages.FromClient.getDescriptor();
+        return netmsg.Messages.internal_static_messages_FromClient_descriptor;
       }
-      
+
       public netmsg.Messages.FromClient getDefaultInstanceForType() {
         return netmsg.Messages.FromClient.getDefaultInstance();
       }
-      
+
       public netmsg.Messages.FromClient build() {
         netmsg.Messages.FromClient result = buildPartial();
         if (!result.isInitialized()) {
@@ -327,17 +472,7 @@ public final class Messages {
         }
         return result;
       }
-      
-      private netmsg.Messages.FromClient buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        netmsg.Messages.FromClient result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public netmsg.Messages.FromClient buildPartial() {
         netmsg.Messages.FromClient result = new netmsg.Messages.FromClient(this);
         int from_bitField0_ = bitField0_;
@@ -370,7 +505,7 @@ public final class Messages {
         onBuilt();
         return result;
       }
-      
+
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof netmsg.Messages.FromClient) {
           return mergeFrom((netmsg.Messages.FromClient)other);
@@ -379,7 +514,7 @@ public final class Messages {
           return this;
         }
       }
-      
+
       public Builder mergeFrom(netmsg.Messages.FromClient other) {
         if (other == netmsg.Messages.FromClient.getDefaultInstance()) return this;
         if (other.hasGame()) {
@@ -394,7 +529,7 @@ public final class Messages {
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
-      
+
       public final boolean isInitialized() {
         if (hasGame()) {
           if (!getGame().isInitialized()) {
@@ -416,70 +551,38 @@ public final class Messages {
         }
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              netmsg.Game.FromClient.Builder subBuilder = netmsg.Game.FromClient.newBuilder();
-              if (hasGame()) {
-                subBuilder.mergeFrom(getGame());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setGame(subBuilder.buildPartial());
-              break;
-            }
-            case 18: {
-              netmsg.Management.FromClient.Builder subBuilder = netmsg.Management.FromClient.newBuilder();
-              if (hasManagement()) {
-                subBuilder.mergeFrom(getManagement());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setManagement(subBuilder.buildPartial());
-              break;
-            }
-            case 26: {
-              netmsg.Messages.TimeSync.FromClient.Builder subBuilder = netmsg.Messages.TimeSync.FromClient.newBuilder();
-              if (hasTimeSync()) {
-                subBuilder.mergeFrom(getTimeSync());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setTimeSync(subBuilder.buildPartial());
-              break;
-            }
+        netmsg.Messages.FromClient parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (netmsg.Messages.FromClient) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
-      // optional .game.FromClient game = 1;
+
       private netmsg.Game.FromClient game_ = netmsg.Game.FromClient.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Game.FromClient, netmsg.Game.FromClient.Builder, netmsg.Game.FromClientOrBuilder> gameBuilder_;
+      /**
+       * <code>optional .game.FromClient game = 1;</code>
+       */
       public boolean hasGame() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>optional .game.FromClient game = 1;</code>
+       */
       public netmsg.Game.FromClient getGame() {
         if (gameBuilder_ == null) {
           return game_;
@@ -487,6 +590,9 @@ public final class Messages {
           return gameBuilder_.getMessage();
         }
       }
+      /**
+       * <code>optional .game.FromClient game = 1;</code>
+       */
       public Builder setGame(netmsg.Game.FromClient value) {
         if (gameBuilder_ == null) {
           if (value == null) {
@@ -500,6 +606,9 @@ public final class Messages {
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>optional .game.FromClient game = 1;</code>
+       */
       public Builder setGame(
           netmsg.Game.FromClient.Builder builderForValue) {
         if (gameBuilder_ == null) {
@@ -511,6 +620,9 @@ public final class Messages {
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>optional .game.FromClient game = 1;</code>
+       */
       public Builder mergeGame(netmsg.Game.FromClient value) {
         if (gameBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
@@ -527,6 +639,9 @@ public final class Messages {
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>optional .game.FromClient game = 1;</code>
+       */
       public Builder clearGame() {
         if (gameBuilder_ == null) {
           game_ = netmsg.Game.FromClient.getDefaultInstance();
@@ -537,11 +652,17 @@ public final class Messages {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
+      /**
+       * <code>optional .game.FromClient game = 1;</code>
+       */
       public netmsg.Game.FromClient.Builder getGameBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getGameFieldBuilder().getBuilder();
       }
+      /**
+       * <code>optional .game.FromClient game = 1;</code>
+       */
       public netmsg.Game.FromClientOrBuilder getGameOrBuilder() {
         if (gameBuilder_ != null) {
           return gameBuilder_.getMessageOrBuilder();
@@ -549,27 +670,35 @@ public final class Messages {
           return game_;
         }
       }
+      /**
+       * <code>optional .game.FromClient game = 1;</code>
+       */
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Game.FromClient, netmsg.Game.FromClient.Builder, netmsg.Game.FromClientOrBuilder> 
           getGameFieldBuilder() {
         if (gameBuilder_ == null) {
           gameBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               netmsg.Game.FromClient, netmsg.Game.FromClient.Builder, netmsg.Game.FromClientOrBuilder>(
-                  game_,
+                  getGame(),
                   getParentForChildren(),
                   isClean());
           game_ = null;
         }
         return gameBuilder_;
       }
-      
-      // optional .management.FromClient management = 2;
+
       private netmsg.Management.FromClient management_ = netmsg.Management.FromClient.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Management.FromClient, netmsg.Management.FromClient.Builder, netmsg.Management.FromClientOrBuilder> managementBuilder_;
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
       public boolean hasManagement() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
       public netmsg.Management.FromClient getManagement() {
         if (managementBuilder_ == null) {
           return management_;
@@ -577,6 +706,9 @@ public final class Messages {
           return managementBuilder_.getMessage();
         }
       }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
       public Builder setManagement(netmsg.Management.FromClient value) {
         if (managementBuilder_ == null) {
           if (value == null) {
@@ -590,6 +722,9 @@ public final class Messages {
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
       public Builder setManagement(
           netmsg.Management.FromClient.Builder builderForValue) {
         if (managementBuilder_ == null) {
@@ -601,6 +736,9 @@ public final class Messages {
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
       public Builder mergeManagement(netmsg.Management.FromClient value) {
         if (managementBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
@@ -617,6 +755,9 @@ public final class Messages {
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
       public Builder clearManagement() {
         if (managementBuilder_ == null) {
           management_ = netmsg.Management.FromClient.getDefaultInstance();
@@ -627,11 +768,17 @@ public final class Messages {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
       public netmsg.Management.FromClient.Builder getManagementBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getManagementFieldBuilder().getBuilder();
       }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
       public netmsg.Management.FromClientOrBuilder getManagementOrBuilder() {
         if (managementBuilder_ != null) {
           return managementBuilder_.getMessageOrBuilder();
@@ -639,27 +786,35 @@ public final class Messages {
           return management_;
         }
       }
+      /**
+       * <code>optional .management.FromClient management = 2;</code>
+       */
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Management.FromClient, netmsg.Management.FromClient.Builder, netmsg.Management.FromClientOrBuilder> 
           getManagementFieldBuilder() {
         if (managementBuilder_ == null) {
           managementBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               netmsg.Management.FromClient, netmsg.Management.FromClient.Builder, netmsg.Management.FromClientOrBuilder>(
-                  management_,
+                  getManagement(),
                   getParentForChildren(),
                   isClean());
           management_ = null;
         }
         return managementBuilder_;
       }
-      
-      // optional .messages.TimeSync.FromClient time_sync = 3;
+
       private netmsg.Messages.TimeSync.FromClient timeSync_ = netmsg.Messages.TimeSync.FromClient.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Messages.TimeSync.FromClient, netmsg.Messages.TimeSync.FromClient.Builder, netmsg.Messages.TimeSync.FromClientOrBuilder> timeSyncBuilder_;
+      /**
+       * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+       */
       public boolean hasTimeSync() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
+      /**
+       * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+       */
       public netmsg.Messages.TimeSync.FromClient getTimeSync() {
         if (timeSyncBuilder_ == null) {
           return timeSync_;
@@ -667,6 +822,9 @@ public final class Messages {
           return timeSyncBuilder_.getMessage();
         }
       }
+      /**
+       * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+       */
       public Builder setTimeSync(netmsg.Messages.TimeSync.FromClient value) {
         if (timeSyncBuilder_ == null) {
           if (value == null) {
@@ -680,6 +838,9 @@ public final class Messages {
         bitField0_ |= 0x00000004;
         return this;
       }
+      /**
+       * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+       */
       public Builder setTimeSync(
           netmsg.Messages.TimeSync.FromClient.Builder builderForValue) {
         if (timeSyncBuilder_ == null) {
@@ -691,6 +852,9 @@ public final class Messages {
         bitField0_ |= 0x00000004;
         return this;
       }
+      /**
+       * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+       */
       public Builder mergeTimeSync(netmsg.Messages.TimeSync.FromClient value) {
         if (timeSyncBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
@@ -707,6 +871,9 @@ public final class Messages {
         bitField0_ |= 0x00000004;
         return this;
       }
+      /**
+       * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+       */
       public Builder clearTimeSync() {
         if (timeSyncBuilder_ == null) {
           timeSync_ = netmsg.Messages.TimeSync.FromClient.getDefaultInstance();
@@ -717,11 +884,17 @@ public final class Messages {
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
+      /**
+       * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+       */
       public netmsg.Messages.TimeSync.FromClient.Builder getTimeSyncBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getTimeSyncFieldBuilder().getBuilder();
       }
+      /**
+       * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+       */
       public netmsg.Messages.TimeSync.FromClientOrBuilder getTimeSyncOrBuilder() {
         if (timeSyncBuilder_ != null) {
           return timeSyncBuilder_.getMessageOrBuilder();
@@ -729,117 +902,271 @@ public final class Messages {
           return timeSync_;
         }
       }
+      /**
+       * <code>optional .messages.TimeSync.FromClient time_sync = 3;</code>
+       */
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Messages.TimeSync.FromClient, netmsg.Messages.TimeSync.FromClient.Builder, netmsg.Messages.TimeSync.FromClientOrBuilder> 
           getTimeSyncFieldBuilder() {
         if (timeSyncBuilder_ == null) {
           timeSyncBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               netmsg.Messages.TimeSync.FromClient, netmsg.Messages.TimeSync.FromClient.Builder, netmsg.Messages.TimeSync.FromClientOrBuilder>(
-                  timeSync_,
+                  getTimeSync(),
                   getParentForChildren(),
                   isClean());
           timeSync_ = null;
         }
         return timeSyncBuilder_;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:messages.FromClient)
     }
-    
+
     static {
       defaultInstance = new FromClient(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:messages.FromClient)
   }
-  
-  public interface FromServerOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // optional .game.FromServer game = 1;
+
+  public interface FromServerOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:messages.FromServer)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .game.FromServer game = 1;</code>
+     */
     boolean hasGame();
+    /**
+     * <code>optional .game.FromServer game = 1;</code>
+     */
     netmsg.Game.FromServer getGame();
+    /**
+     * <code>optional .game.FromServer game = 1;</code>
+     */
     netmsg.Game.FromServerOrBuilder getGameOrBuilder();
-    
-    // optional .management.FromServer management = 2;
+
+    /**
+     * <code>optional .management.FromServer management = 2;</code>
+     */
     boolean hasManagement();
+    /**
+     * <code>optional .management.FromServer management = 2;</code>
+     */
     netmsg.Management.FromServer getManagement();
+    /**
+     * <code>optional .management.FromServer management = 2;</code>
+     */
     netmsg.Management.FromServerOrBuilder getManagementOrBuilder();
-    
-    // optional .messages.TimeSync.FromServer time_sync = 3;
+
+    /**
+     * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+     */
     boolean hasTimeSync();
+    /**
+     * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+     */
     netmsg.Messages.TimeSync.FromServer getTimeSync();
+    /**
+     * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+     */
     netmsg.Messages.TimeSync.FromServerOrBuilder getTimeSyncOrBuilder();
   }
+  /**
+   * Protobuf type {@code messages.FromServer}
+   */
   public static final class FromServer extends
-      com.google.protobuf.GeneratedMessage
-      implements FromServerOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:messages.FromServer)
+      FromServerOrBuilder {
     // Use FromServer.newBuilder() to construct.
-    private FromServer(Builder builder) {
+    private FromServer(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private FromServer(boolean noInit) {}
-    
+    private FromServer(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
     private static final FromServer defaultInstance;
     public static FromServer getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public FromServer getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private FromServer(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              netmsg.Game.FromServer.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = game_.toBuilder();
+              }
+              game_ = input.readMessage(netmsg.Game.FromServer.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(game_);
+                game_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 18: {
+              netmsg.Management.FromServer.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = management_.toBuilder();
+              }
+              management_ = input.readMessage(netmsg.Management.FromServer.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(management_);
+                management_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+            case 26: {
+              netmsg.Messages.TimeSync.FromServer.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                subBuilder = timeSync_.toBuilder();
+              }
+              timeSync_ = input.readMessage(netmsg.Messages.TimeSync.FromServer.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(timeSync_);
+                timeSync_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000004;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return netmsg.Messages.internal_static_messages_FromServer_descriptor;
     }
-    
+
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return netmsg.Messages.internal_static_messages_FromServer_fieldAccessorTable;
+      return netmsg.Messages.internal_static_messages_FromServer_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              netmsg.Messages.FromServer.class, netmsg.Messages.FromServer.Builder.class);
     }
-    
+
+    public static com.google.protobuf.Parser<FromServer> PARSER =
+        new com.google.protobuf.AbstractParser<FromServer>() {
+      public FromServer parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new FromServer(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<FromServer> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
-    // optional .game.FromServer game = 1;
     public static final int GAME_FIELD_NUMBER = 1;
     private netmsg.Game.FromServer game_;
+    /**
+     * <code>optional .game.FromServer game = 1;</code>
+     */
     public boolean hasGame() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
+    /**
+     * <code>optional .game.FromServer game = 1;</code>
+     */
     public netmsg.Game.FromServer getGame() {
       return game_;
     }
+    /**
+     * <code>optional .game.FromServer game = 1;</code>
+     */
     public netmsg.Game.FromServerOrBuilder getGameOrBuilder() {
       return game_;
     }
-    
-    // optional .management.FromServer management = 2;
+
     public static final int MANAGEMENT_FIELD_NUMBER = 2;
     private netmsg.Management.FromServer management_;
+    /**
+     * <code>optional .management.FromServer management = 2;</code>
+     */
     public boolean hasManagement() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
+    /**
+     * <code>optional .management.FromServer management = 2;</code>
+     */
     public netmsg.Management.FromServer getManagement() {
       return management_;
     }
+    /**
+     * <code>optional .management.FromServer management = 2;</code>
+     */
     public netmsg.Management.FromServerOrBuilder getManagementOrBuilder() {
       return management_;
     }
-    
-    // optional .messages.TimeSync.FromServer time_sync = 3;
+
     public static final int TIME_SYNC_FIELD_NUMBER = 3;
     private netmsg.Messages.TimeSync.FromServer timeSync_;
+    /**
+     * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+     */
     public boolean hasTimeSync() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
+    /**
+     * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+     */
     public netmsg.Messages.TimeSync.FromServer getTimeSync() {
       return timeSync_;
     }
+    /**
+     * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+     */
     public netmsg.Messages.TimeSync.FromServerOrBuilder getTimeSyncOrBuilder() {
       return timeSync_;
     }
-    
+
     private void initFields() {
       game_ = netmsg.Game.FromServer.getDefaultInstance();
       management_ = netmsg.Management.FromServer.getDefaultInstance();
@@ -848,8 +1175,9 @@ public final class Messages {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
       if (hasGame()) {
         if (!getGame().isInitialized()) {
           memoizedIsInitialized = 0;
@@ -871,7 +1199,7 @@ public final class Messages {
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -886,12 +1214,12 @@ public final class Messages {
       }
       getUnknownFields().writeTo(output);
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
@@ -909,113 +1237,106 @@ public final class Messages {
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static netmsg.Messages.FromServer parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Messages.FromServer parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Messages.FromServer parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Messages.FromServer parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Messages.FromServer parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Messages.FromServer parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static netmsg.Messages.FromServer parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static netmsg.Messages.FromServer parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static netmsg.Messages.FromServer parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Messages.FromServer parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(netmsg.Messages.FromServer prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
     @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code messages.FromServer}
+     */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements netmsg.Messages.FromServerOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:messages.FromServer)
+        netmsg.Messages.FromServerOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Messages.internal_static_messages_FromServer_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Messages.internal_static_messages_FromServer_fieldAccessorTable;
+        return netmsg.Messages.internal_static_messages_FromServer_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Messages.FromServer.class, netmsg.Messages.FromServer.Builder.class);
       }
-      
+
       // Construct using netmsg.Messages.FromServer.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
-      private Builder(BuilderParent parent) {
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -1029,7 +1350,7 @@ public final class Messages {
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         if (gameBuilder_ == null) {
@@ -1052,20 +1373,20 @@ public final class Messages {
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return netmsg.Messages.FromServer.getDescriptor();
+        return netmsg.Messages.internal_static_messages_FromServer_descriptor;
       }
-      
+
       public netmsg.Messages.FromServer getDefaultInstanceForType() {
         return netmsg.Messages.FromServer.getDefaultInstance();
       }
-      
+
       public netmsg.Messages.FromServer build() {
         netmsg.Messages.FromServer result = buildPartial();
         if (!result.isInitialized()) {
@@ -1073,17 +1394,7 @@ public final class Messages {
         }
         return result;
       }
-      
-      private netmsg.Messages.FromServer buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        netmsg.Messages.FromServer result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public netmsg.Messages.FromServer buildPartial() {
         netmsg.Messages.FromServer result = new netmsg.Messages.FromServer(this);
         int from_bitField0_ = bitField0_;
@@ -1116,7 +1427,7 @@ public final class Messages {
         onBuilt();
         return result;
       }
-      
+
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof netmsg.Messages.FromServer) {
           return mergeFrom((netmsg.Messages.FromServer)other);
@@ -1125,7 +1436,7 @@ public final class Messages {
           return this;
         }
       }
-      
+
       public Builder mergeFrom(netmsg.Messages.FromServer other) {
         if (other == netmsg.Messages.FromServer.getDefaultInstance()) return this;
         if (other.hasGame()) {
@@ -1140,7 +1451,7 @@ public final class Messages {
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
-      
+
       public final boolean isInitialized() {
         if (hasGame()) {
           if (!getGame().isInitialized()) {
@@ -1162,70 +1473,38 @@ public final class Messages {
         }
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              netmsg.Game.FromServer.Builder subBuilder = netmsg.Game.FromServer.newBuilder();
-              if (hasGame()) {
-                subBuilder.mergeFrom(getGame());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setGame(subBuilder.buildPartial());
-              break;
-            }
-            case 18: {
-              netmsg.Management.FromServer.Builder subBuilder = netmsg.Management.FromServer.newBuilder();
-              if (hasManagement()) {
-                subBuilder.mergeFrom(getManagement());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setManagement(subBuilder.buildPartial());
-              break;
-            }
-            case 26: {
-              netmsg.Messages.TimeSync.FromServer.Builder subBuilder = netmsg.Messages.TimeSync.FromServer.newBuilder();
-              if (hasTimeSync()) {
-                subBuilder.mergeFrom(getTimeSync());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setTimeSync(subBuilder.buildPartial());
-              break;
-            }
+        netmsg.Messages.FromServer parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (netmsg.Messages.FromServer) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
-      // optional .game.FromServer game = 1;
+
       private netmsg.Game.FromServer game_ = netmsg.Game.FromServer.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Game.FromServer, netmsg.Game.FromServer.Builder, netmsg.Game.FromServerOrBuilder> gameBuilder_;
+      /**
+       * <code>optional .game.FromServer game = 1;</code>
+       */
       public boolean hasGame() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>optional .game.FromServer game = 1;</code>
+       */
       public netmsg.Game.FromServer getGame() {
         if (gameBuilder_ == null) {
           return game_;
@@ -1233,6 +1512,9 @@ public final class Messages {
           return gameBuilder_.getMessage();
         }
       }
+      /**
+       * <code>optional .game.FromServer game = 1;</code>
+       */
       public Builder setGame(netmsg.Game.FromServer value) {
         if (gameBuilder_ == null) {
           if (value == null) {
@@ -1246,6 +1528,9 @@ public final class Messages {
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>optional .game.FromServer game = 1;</code>
+       */
       public Builder setGame(
           netmsg.Game.FromServer.Builder builderForValue) {
         if (gameBuilder_ == null) {
@@ -1257,6 +1542,9 @@ public final class Messages {
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>optional .game.FromServer game = 1;</code>
+       */
       public Builder mergeGame(netmsg.Game.FromServer value) {
         if (gameBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
@@ -1273,6 +1561,9 @@ public final class Messages {
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>optional .game.FromServer game = 1;</code>
+       */
       public Builder clearGame() {
         if (gameBuilder_ == null) {
           game_ = netmsg.Game.FromServer.getDefaultInstance();
@@ -1283,11 +1574,17 @@ public final class Messages {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
+      /**
+       * <code>optional .game.FromServer game = 1;</code>
+       */
       public netmsg.Game.FromServer.Builder getGameBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getGameFieldBuilder().getBuilder();
       }
+      /**
+       * <code>optional .game.FromServer game = 1;</code>
+       */
       public netmsg.Game.FromServerOrBuilder getGameOrBuilder() {
         if (gameBuilder_ != null) {
           return gameBuilder_.getMessageOrBuilder();
@@ -1295,27 +1592,35 @@ public final class Messages {
           return game_;
         }
       }
+      /**
+       * <code>optional .game.FromServer game = 1;</code>
+       */
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Game.FromServer, netmsg.Game.FromServer.Builder, netmsg.Game.FromServerOrBuilder> 
           getGameFieldBuilder() {
         if (gameBuilder_ == null) {
           gameBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               netmsg.Game.FromServer, netmsg.Game.FromServer.Builder, netmsg.Game.FromServerOrBuilder>(
-                  game_,
+                  getGame(),
                   getParentForChildren(),
                   isClean());
           game_ = null;
         }
         return gameBuilder_;
       }
-      
-      // optional .management.FromServer management = 2;
+
       private netmsg.Management.FromServer management_ = netmsg.Management.FromServer.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Management.FromServer, netmsg.Management.FromServer.Builder, netmsg.Management.FromServerOrBuilder> managementBuilder_;
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
       public boolean hasManagement() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
       public netmsg.Management.FromServer getManagement() {
         if (managementBuilder_ == null) {
           return management_;
@@ -1323,6 +1628,9 @@ public final class Messages {
           return managementBuilder_.getMessage();
         }
       }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
       public Builder setManagement(netmsg.Management.FromServer value) {
         if (managementBuilder_ == null) {
           if (value == null) {
@@ -1336,6 +1644,9 @@ public final class Messages {
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
       public Builder setManagement(
           netmsg.Management.FromServer.Builder builderForValue) {
         if (managementBuilder_ == null) {
@@ -1347,6 +1658,9 @@ public final class Messages {
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
       public Builder mergeManagement(netmsg.Management.FromServer value) {
         if (managementBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
@@ -1363,6 +1677,9 @@ public final class Messages {
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
       public Builder clearManagement() {
         if (managementBuilder_ == null) {
           management_ = netmsg.Management.FromServer.getDefaultInstance();
@@ -1373,11 +1690,17 @@ public final class Messages {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
       public netmsg.Management.FromServer.Builder getManagementBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getManagementFieldBuilder().getBuilder();
       }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
       public netmsg.Management.FromServerOrBuilder getManagementOrBuilder() {
         if (managementBuilder_ != null) {
           return managementBuilder_.getMessageOrBuilder();
@@ -1385,27 +1708,35 @@ public final class Messages {
           return management_;
         }
       }
+      /**
+       * <code>optional .management.FromServer management = 2;</code>
+       */
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Management.FromServer, netmsg.Management.FromServer.Builder, netmsg.Management.FromServerOrBuilder> 
           getManagementFieldBuilder() {
         if (managementBuilder_ == null) {
           managementBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               netmsg.Management.FromServer, netmsg.Management.FromServer.Builder, netmsg.Management.FromServerOrBuilder>(
-                  management_,
+                  getManagement(),
                   getParentForChildren(),
                   isClean());
           management_ = null;
         }
         return managementBuilder_;
       }
-      
-      // optional .messages.TimeSync.FromServer time_sync = 3;
+
       private netmsg.Messages.TimeSync.FromServer timeSync_ = netmsg.Messages.TimeSync.FromServer.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Messages.TimeSync.FromServer, netmsg.Messages.TimeSync.FromServer.Builder, netmsg.Messages.TimeSync.FromServerOrBuilder> timeSyncBuilder_;
+      /**
+       * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+       */
       public boolean hasTimeSync() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
+      /**
+       * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+       */
       public netmsg.Messages.TimeSync.FromServer getTimeSync() {
         if (timeSyncBuilder_ == null) {
           return timeSync_;
@@ -1413,6 +1744,9 @@ public final class Messages {
           return timeSyncBuilder_.getMessage();
         }
       }
+      /**
+       * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+       */
       public Builder setTimeSync(netmsg.Messages.TimeSync.FromServer value) {
         if (timeSyncBuilder_ == null) {
           if (value == null) {
@@ -1426,6 +1760,9 @@ public final class Messages {
         bitField0_ |= 0x00000004;
         return this;
       }
+      /**
+       * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+       */
       public Builder setTimeSync(
           netmsg.Messages.TimeSync.FromServer.Builder builderForValue) {
         if (timeSyncBuilder_ == null) {
@@ -1437,6 +1774,9 @@ public final class Messages {
         bitField0_ |= 0x00000004;
         return this;
       }
+      /**
+       * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+       */
       public Builder mergeTimeSync(netmsg.Messages.TimeSync.FromServer value) {
         if (timeSyncBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
@@ -1453,6 +1793,9 @@ public final class Messages {
         bitField0_ |= 0x00000004;
         return this;
       }
+      /**
+       * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+       */
       public Builder clearTimeSync() {
         if (timeSyncBuilder_ == null) {
           timeSync_ = netmsg.Messages.TimeSync.FromServer.getDefaultInstance();
@@ -1463,11 +1806,17 @@ public final class Messages {
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
+      /**
+       * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+       */
       public netmsg.Messages.TimeSync.FromServer.Builder getTimeSyncBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getTimeSyncFieldBuilder().getBuilder();
       }
+      /**
+       * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+       */
       public netmsg.Messages.TimeSync.FromServerOrBuilder getTimeSyncOrBuilder() {
         if (timeSyncBuilder_ != null) {
           return timeSyncBuilder_.getMessageOrBuilder();
@@ -1475,120 +1824,280 @@ public final class Messages {
           return timeSync_;
         }
       }
+      /**
+       * <code>optional .messages.TimeSync.FromServer time_sync = 3;</code>
+       */
       private com.google.protobuf.SingleFieldBuilder<
           netmsg.Messages.TimeSync.FromServer, netmsg.Messages.TimeSync.FromServer.Builder, netmsg.Messages.TimeSync.FromServerOrBuilder> 
           getTimeSyncFieldBuilder() {
         if (timeSyncBuilder_ == null) {
           timeSyncBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               netmsg.Messages.TimeSync.FromServer, netmsg.Messages.TimeSync.FromServer.Builder, netmsg.Messages.TimeSync.FromServerOrBuilder>(
-                  timeSync_,
+                  getTimeSync(),
                   getParentForChildren(),
                   isClean());
           timeSync_ = null;
         }
         return timeSyncBuilder_;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:messages.FromServer)
     }
-    
+
     static {
       defaultInstance = new FromServer(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:messages.FromServer)
   }
-  
-  public interface TimeSyncOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+
+  public interface TimeSyncOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:messages.TimeSync)
+      com.google.protobuf.MessageOrBuilder {
   }
+  /**
+   * Protobuf type {@code messages.TimeSync}
+   */
   public static final class TimeSync extends
-      com.google.protobuf.GeneratedMessage
-      implements TimeSyncOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:messages.TimeSync)
+      TimeSyncOrBuilder {
     // Use TimeSync.newBuilder() to construct.
-    private TimeSync(Builder builder) {
+    private TimeSync(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private TimeSync(boolean noInit) {}
-    
+    private TimeSync(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
     private static final TimeSync defaultInstance;
     public static TimeSync getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public TimeSync getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private TimeSync(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return netmsg.Messages.internal_static_messages_TimeSync_descriptor;
     }
-    
+
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return netmsg.Messages.internal_static_messages_TimeSync_fieldAccessorTable;
+      return netmsg.Messages.internal_static_messages_TimeSync_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              netmsg.Messages.TimeSync.class, netmsg.Messages.TimeSync.Builder.class);
     }
-    
-    public interface FromClientOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
-      
-      // required .base.Timestamp now = 1;
+
+    public static com.google.protobuf.Parser<TimeSync> PARSER =
+        new com.google.protobuf.AbstractParser<TimeSync>() {
+      public TimeSync parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new TimeSync(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TimeSync> getParserForType() {
+      return PARSER;
+    }
+
+    public interface FromClientOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:messages.TimeSync.FromClient)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>required .base.Timestamp now = 1;</code>
+       */
       boolean hasNow();
+      /**
+       * <code>required .base.Timestamp now = 1;</code>
+       */
       netmsg.Base.Timestamp getNow();
+      /**
+       * <code>required .base.Timestamp now = 1;</code>
+       */
       netmsg.Base.TimestampOrBuilder getNowOrBuilder();
     }
+    /**
+     * Protobuf type {@code messages.TimeSync.FromClient}
+     */
     public static final class FromClient extends
-        com.google.protobuf.GeneratedMessage
-        implements FromClientOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:messages.TimeSync.FromClient)
+        FromClientOrBuilder {
       // Use FromClient.newBuilder() to construct.
-      private FromClient(Builder builder) {
+      private FromClient(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
+        this.unknownFields = builder.getUnknownFields();
       }
-      private FromClient(boolean noInit) {}
-      
+      private FromClient(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
       private static final FromClient defaultInstance;
       public static FromClient getDefaultInstance() {
         return defaultInstance;
       }
-      
+
       public FromClient getDefaultInstanceForType() {
         return defaultInstance;
       }
-      
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private FromClient(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                netmsg.Base.Timestamp.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                  subBuilder = now_.toBuilder();
+                }
+                now_ = input.readMessage(netmsg.Base.Timestamp.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(now_);
+                  now_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000001;
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Messages.internal_static_messages_TimeSync_FromClient_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Messages.internal_static_messages_TimeSync_FromClient_fieldAccessorTable;
+        return netmsg.Messages.internal_static_messages_TimeSync_FromClient_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Messages.TimeSync.FromClient.class, netmsg.Messages.TimeSync.FromClient.Builder.class);
       }
-      
+
+      public static com.google.protobuf.Parser<FromClient> PARSER =
+          new com.google.protobuf.AbstractParser<FromClient>() {
+        public FromClient parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new FromClient(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<FromClient> getParserForType() {
+        return PARSER;
+      }
+
       private int bitField0_;
-      // required .base.Timestamp now = 1;
       public static final int NOW_FIELD_NUMBER = 1;
       private netmsg.Base.Timestamp now_;
+      /**
+       * <code>required .base.Timestamp now = 1;</code>
+       */
       public boolean hasNow() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>required .base.Timestamp now = 1;</code>
+       */
       public netmsg.Base.Timestamp getNow() {
         return now_;
       }
+      /**
+       * <code>required .base.Timestamp now = 1;</code>
+       */
       public netmsg.Base.TimestampOrBuilder getNowOrBuilder() {
         return now_;
       }
-      
+
       private void initFields() {
         now_ = netmsg.Base.Timestamp.getDefaultInstance();
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
-        
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
         if (!hasNow()) {
           memoizedIsInitialized = 0;
           return false;
@@ -1600,7 +2109,7 @@ public final class Messages {
         memoizedIsInitialized = 1;
         return true;
       }
-      
+
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         getSerializedSize();
@@ -1609,12 +2118,12 @@ public final class Messages {
         }
         getUnknownFields().writeTo(output);
       }
-      
+
       private int memoizedSerializedSize = -1;
       public int getSerializedSize() {
         int size = memoizedSerializedSize;
         if (size != -1) return size;
-      
+
         size = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           size += com.google.protobuf.CodedOutputStream
@@ -1624,113 +2133,106 @@ public final class Messages {
         memoizedSerializedSize = size;
         return size;
       }
-      
+
       private static final long serialVersionUID = 0L;
       @java.lang.Override
       protected java.lang.Object writeReplace()
           throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
-      
+
       public static netmsg.Messages.TimeSync.FromClient parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data).buildParsed();
+        return PARSER.parseFrom(data);
       }
       public static netmsg.Messages.TimeSync.FromClient parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data, extensionRegistry)
-                 .buildParsed();
+        return PARSER.parseFrom(data, extensionRegistry);
       }
       public static netmsg.Messages.TimeSync.FromClient parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data).buildParsed();
+        return PARSER.parseFrom(data);
       }
       public static netmsg.Messages.TimeSync.FromClient parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data, extensionRegistry)
-                 .buildParsed();
+        return PARSER.parseFrom(data, extensionRegistry);
       }
       public static netmsg.Messages.TimeSync.FromClient parseFrom(java.io.InputStream input)
           throws java.io.IOException {
-        return newBuilder().mergeFrom(input).buildParsed();
+        return PARSER.parseFrom(input);
       }
       public static netmsg.Messages.TimeSync.FromClient parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return newBuilder().mergeFrom(input, extensionRegistry)
-                 .buildParsed();
+        return PARSER.parseFrom(input, extensionRegistry);
       }
       public static netmsg.Messages.TimeSync.FromClient parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
-        Builder builder = newBuilder();
-        if (builder.mergeDelimitedFrom(input)) {
-          return builder.buildParsed();
-        } else {
-          return null;
-        }
+        return PARSER.parseDelimitedFrom(input);
       }
       public static netmsg.Messages.TimeSync.FromClient parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        Builder builder = newBuilder();
-        if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-          return builder.buildParsed();
-        } else {
-          return null;
-        }
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
       }
       public static netmsg.Messages.TimeSync.FromClient parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
-        return newBuilder().mergeFrom(input).buildParsed();
+        return PARSER.parseFrom(input);
       }
       public static netmsg.Messages.TimeSync.FromClient parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return newBuilder().mergeFrom(input, extensionRegistry)
-                 .buildParsed();
+        return PARSER.parseFrom(input, extensionRegistry);
       }
-      
+
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder(netmsg.Messages.TimeSync.FromClient prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
-      
+
       @java.lang.Override
       protected Builder newBuilderForType(
           com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         Builder builder = new Builder(parent);
         return builder;
       }
+      /**
+       * Protobuf type {@code messages.TimeSync.FromClient}
+       */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements netmsg.Messages.TimeSync.FromClientOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:messages.TimeSync.FromClient)
+          netmsg.Messages.TimeSync.FromClientOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return netmsg.Messages.internal_static_messages_TimeSync_FromClient_descriptor;
         }
-        
+
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return netmsg.Messages.internal_static_messages_TimeSync_FromClient_fieldAccessorTable;
+          return netmsg.Messages.internal_static_messages_TimeSync_FromClient_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  netmsg.Messages.TimeSync.FromClient.class, netmsg.Messages.TimeSync.FromClient.Builder.class);
         }
-        
+
         // Construct using netmsg.Messages.TimeSync.FromClient.newBuilder()
         private Builder() {
           maybeForceBuilderInitialization();
         }
-        
-        private Builder(BuilderParent parent) {
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
           super(parent);
           maybeForceBuilderInitialization();
         }
@@ -1742,7 +2244,7 @@ public final class Messages {
         private static Builder create() {
           return new Builder();
         }
-        
+
         public Builder clear() {
           super.clear();
           if (nowBuilder_ == null) {
@@ -1753,20 +2255,20 @@ public final class Messages {
           bitField0_ = (bitField0_ & ~0x00000001);
           return this;
         }
-        
+
         public Builder clone() {
           return create().mergeFrom(buildPartial());
         }
-        
+
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return netmsg.Messages.TimeSync.FromClient.getDescriptor();
+          return netmsg.Messages.internal_static_messages_TimeSync_FromClient_descriptor;
         }
-        
+
         public netmsg.Messages.TimeSync.FromClient getDefaultInstanceForType() {
           return netmsg.Messages.TimeSync.FromClient.getDefaultInstance();
         }
-        
+
         public netmsg.Messages.TimeSync.FromClient build() {
           netmsg.Messages.TimeSync.FromClient result = buildPartial();
           if (!result.isInitialized()) {
@@ -1774,17 +2276,7 @@ public final class Messages {
           }
           return result;
         }
-        
-        private netmsg.Messages.TimeSync.FromClient buildParsed()
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          netmsg.Messages.TimeSync.FromClient result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(
-              result).asInvalidProtocolBufferException();
-          }
-          return result;
-        }
-        
+
         public netmsg.Messages.TimeSync.FromClient buildPartial() {
           netmsg.Messages.TimeSync.FromClient result = new netmsg.Messages.TimeSync.FromClient(this);
           int from_bitField0_ = bitField0_;
@@ -1801,7 +2293,7 @@ public final class Messages {
           onBuilt();
           return result;
         }
-        
+
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof netmsg.Messages.TimeSync.FromClient) {
             return mergeFrom((netmsg.Messages.TimeSync.FromClient)other);
@@ -1810,7 +2302,7 @@ public final class Messages {
             return this;
           }
         }
-        
+
         public Builder mergeFrom(netmsg.Messages.TimeSync.FromClient other) {
           if (other == netmsg.Messages.TimeSync.FromClient.getDefaultInstance()) return this;
           if (other.hasNow()) {
@@ -1819,7 +2311,7 @@ public final class Messages {
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
-        
+
         public final boolean isInitialized() {
           if (!hasNow()) {
             
@@ -1831,52 +2323,38 @@ public final class Messages {
           }
           return true;
         }
-        
+
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-            com.google.protobuf.UnknownFieldSet.newBuilder(
-              this.getUnknownFields());
-          while (true) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              default: {
-                if (!parseUnknownField(input, unknownFields,
-                                       extensionRegistry, tag)) {
-                  this.setUnknownFields(unknownFields.build());
-                  onChanged();
-                  return this;
-                }
-                break;
-              }
-              case 10: {
-                netmsg.Base.Timestamp.Builder subBuilder = netmsg.Base.Timestamp.newBuilder();
-                if (hasNow()) {
-                  subBuilder.mergeFrom(getNow());
-                }
-                input.readMessage(subBuilder, extensionRegistry);
-                setNow(subBuilder.buildPartial());
-                break;
-              }
+          netmsg.Messages.TimeSync.FromClient parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (netmsg.Messages.TimeSync.FromClient) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
             }
           }
+          return this;
         }
-        
         private int bitField0_;
-        
-        // required .base.Timestamp now = 1;
+
         private netmsg.Base.Timestamp now_ = netmsg.Base.Timestamp.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> nowBuilder_;
+        /**
+         * <code>required .base.Timestamp now = 1;</code>
+         */
         public boolean hasNow() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
+        /**
+         * <code>required .base.Timestamp now = 1;</code>
+         */
         public netmsg.Base.Timestamp getNow() {
           if (nowBuilder_ == null) {
             return now_;
@@ -1884,6 +2362,9 @@ public final class Messages {
             return nowBuilder_.getMessage();
           }
         }
+        /**
+         * <code>required .base.Timestamp now = 1;</code>
+         */
         public Builder setNow(netmsg.Base.Timestamp value) {
           if (nowBuilder_ == null) {
             if (value == null) {
@@ -1897,6 +2378,9 @@ public final class Messages {
           bitField0_ |= 0x00000001;
           return this;
         }
+        /**
+         * <code>required .base.Timestamp now = 1;</code>
+         */
         public Builder setNow(
             netmsg.Base.Timestamp.Builder builderForValue) {
           if (nowBuilder_ == null) {
@@ -1908,6 +2392,9 @@ public final class Messages {
           bitField0_ |= 0x00000001;
           return this;
         }
+        /**
+         * <code>required .base.Timestamp now = 1;</code>
+         */
         public Builder mergeNow(netmsg.Base.Timestamp value) {
           if (nowBuilder_ == null) {
             if (((bitField0_ & 0x00000001) == 0x00000001) &&
@@ -1924,6 +2411,9 @@ public final class Messages {
           bitField0_ |= 0x00000001;
           return this;
         }
+        /**
+         * <code>required .base.Timestamp now = 1;</code>
+         */
         public Builder clearNow() {
           if (nowBuilder_ == null) {
             now_ = netmsg.Base.Timestamp.getDefaultInstance();
@@ -1934,11 +2424,17 @@ public final class Messages {
           bitField0_ = (bitField0_ & ~0x00000001);
           return this;
         }
+        /**
+         * <code>required .base.Timestamp now = 1;</code>
+         */
         public netmsg.Base.Timestamp.Builder getNowBuilder() {
           bitField0_ |= 0x00000001;
           onChanged();
           return getNowFieldBuilder().getBuilder();
         }
+        /**
+         * <code>required .base.Timestamp now = 1;</code>
+         */
         public netmsg.Base.TimestampOrBuilder getNowOrBuilder() {
           if (nowBuilder_ != null) {
             return nowBuilder_.getMessageOrBuilder();
@@ -1946,99 +2442,224 @@ public final class Messages {
             return now_;
           }
         }
+        /**
+         * <code>required .base.Timestamp now = 1;</code>
+         */
         private com.google.protobuf.SingleFieldBuilder<
             netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> 
             getNowFieldBuilder() {
           if (nowBuilder_ == null) {
             nowBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder>(
-                    now_,
+                    getNow(),
                     getParentForChildren(),
                     isClean());
             now_ = null;
           }
           return nowBuilder_;
         }
-        
+
         // @@protoc_insertion_point(builder_scope:messages.TimeSync.FromClient)
       }
-      
+
       static {
         defaultInstance = new FromClient(true);
         defaultInstance.initFields();
       }
-      
+
       // @@protoc_insertion_point(class_scope:messages.TimeSync.FromClient)
     }
-    
-    public interface FromServerOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
-      
-      // required .base.Timestamp client_now = 1;
+
+    public interface FromServerOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:messages.TimeSync.FromServer)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>required .base.Timestamp client_now = 1;</code>
+       */
       boolean hasClientNow();
+      /**
+       * <code>required .base.Timestamp client_now = 1;</code>
+       */
       netmsg.Base.Timestamp getClientNow();
+      /**
+       * <code>required .base.Timestamp client_now = 1;</code>
+       */
       netmsg.Base.TimestampOrBuilder getClientNowOrBuilder();
-      
-      // required .base.Timestamp server_now = 2;
+
+      /**
+       * <code>required .base.Timestamp server_now = 2;</code>
+       */
       boolean hasServerNow();
+      /**
+       * <code>required .base.Timestamp server_now = 2;</code>
+       */
       netmsg.Base.Timestamp getServerNow();
+      /**
+       * <code>required .base.Timestamp server_now = 2;</code>
+       */
       netmsg.Base.TimestampOrBuilder getServerNowOrBuilder();
     }
+    /**
+     * Protobuf type {@code messages.TimeSync.FromServer}
+     */
     public static final class FromServer extends
-        com.google.protobuf.GeneratedMessage
-        implements FromServerOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:messages.TimeSync.FromServer)
+        FromServerOrBuilder {
       // Use FromServer.newBuilder() to construct.
-      private FromServer(Builder builder) {
+      private FromServer(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
+        this.unknownFields = builder.getUnknownFields();
       }
-      private FromServer(boolean noInit) {}
-      
+      private FromServer(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
       private static final FromServer defaultInstance;
       public static FromServer getDefaultInstance() {
         return defaultInstance;
       }
-      
+
       public FromServer getDefaultInstanceForType() {
         return defaultInstance;
       }
-      
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private FromServer(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                netmsg.Base.Timestamp.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                  subBuilder = clientNow_.toBuilder();
+                }
+                clientNow_ = input.readMessage(netmsg.Base.Timestamp.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(clientNow_);
+                  clientNow_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000001;
+                break;
+              }
+              case 18: {
+                netmsg.Base.Timestamp.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                  subBuilder = serverNow_.toBuilder();
+                }
+                serverNow_ = input.readMessage(netmsg.Base.Timestamp.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(serverNow_);
+                  serverNow_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000002;
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Messages.internal_static_messages_TimeSync_FromServer_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Messages.internal_static_messages_TimeSync_FromServer_fieldAccessorTable;
+        return netmsg.Messages.internal_static_messages_TimeSync_FromServer_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Messages.TimeSync.FromServer.class, netmsg.Messages.TimeSync.FromServer.Builder.class);
       }
-      
+
+      public static com.google.protobuf.Parser<FromServer> PARSER =
+          new com.google.protobuf.AbstractParser<FromServer>() {
+        public FromServer parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new FromServer(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<FromServer> getParserForType() {
+        return PARSER;
+      }
+
       private int bitField0_;
-      // required .base.Timestamp client_now = 1;
       public static final int CLIENT_NOW_FIELD_NUMBER = 1;
       private netmsg.Base.Timestamp clientNow_;
+      /**
+       * <code>required .base.Timestamp client_now = 1;</code>
+       */
       public boolean hasClientNow() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>required .base.Timestamp client_now = 1;</code>
+       */
       public netmsg.Base.Timestamp getClientNow() {
         return clientNow_;
       }
+      /**
+       * <code>required .base.Timestamp client_now = 1;</code>
+       */
       public netmsg.Base.TimestampOrBuilder getClientNowOrBuilder() {
         return clientNow_;
       }
-      
-      // required .base.Timestamp server_now = 2;
+
       public static final int SERVER_NOW_FIELD_NUMBER = 2;
       private netmsg.Base.Timestamp serverNow_;
+      /**
+       * <code>required .base.Timestamp server_now = 2;</code>
+       */
       public boolean hasServerNow() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>required .base.Timestamp server_now = 2;</code>
+       */
       public netmsg.Base.Timestamp getServerNow() {
         return serverNow_;
       }
+      /**
+       * <code>required .base.Timestamp server_now = 2;</code>
+       */
       public netmsg.Base.TimestampOrBuilder getServerNowOrBuilder() {
         return serverNow_;
       }
-      
+
       private void initFields() {
         clientNow_ = netmsg.Base.Timestamp.getDefaultInstance();
         serverNow_ = netmsg.Base.Timestamp.getDefaultInstance();
@@ -2046,8 +2667,9 @@ public final class Messages {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
-        
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
         if (!hasClientNow()) {
           memoizedIsInitialized = 0;
           return false;
@@ -2067,7 +2689,7 @@ public final class Messages {
         memoizedIsInitialized = 1;
         return true;
       }
-      
+
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         getSerializedSize();
@@ -2079,12 +2701,12 @@ public final class Messages {
         }
         getUnknownFields().writeTo(output);
       }
-      
+
       private int memoizedSerializedSize = -1;
       public int getSerializedSize() {
         int size = memoizedSerializedSize;
         if (size != -1) return size;
-      
+
         size = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           size += com.google.protobuf.CodedOutputStream
@@ -2098,113 +2720,106 @@ public final class Messages {
         memoizedSerializedSize = size;
         return size;
       }
-      
+
       private static final long serialVersionUID = 0L;
       @java.lang.Override
       protected java.lang.Object writeReplace()
           throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
-      
+
       public static netmsg.Messages.TimeSync.FromServer parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data).buildParsed();
+        return PARSER.parseFrom(data);
       }
       public static netmsg.Messages.TimeSync.FromServer parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data, extensionRegistry)
-                 .buildParsed();
+        return PARSER.parseFrom(data, extensionRegistry);
       }
       public static netmsg.Messages.TimeSync.FromServer parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data).buildParsed();
+        return PARSER.parseFrom(data);
       }
       public static netmsg.Messages.TimeSync.FromServer parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data, extensionRegistry)
-                 .buildParsed();
+        return PARSER.parseFrom(data, extensionRegistry);
       }
       public static netmsg.Messages.TimeSync.FromServer parseFrom(java.io.InputStream input)
           throws java.io.IOException {
-        return newBuilder().mergeFrom(input).buildParsed();
+        return PARSER.parseFrom(input);
       }
       public static netmsg.Messages.TimeSync.FromServer parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return newBuilder().mergeFrom(input, extensionRegistry)
-                 .buildParsed();
+        return PARSER.parseFrom(input, extensionRegistry);
       }
       public static netmsg.Messages.TimeSync.FromServer parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
-        Builder builder = newBuilder();
-        if (builder.mergeDelimitedFrom(input)) {
-          return builder.buildParsed();
-        } else {
-          return null;
-        }
+        return PARSER.parseDelimitedFrom(input);
       }
       public static netmsg.Messages.TimeSync.FromServer parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        Builder builder = newBuilder();
-        if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-          return builder.buildParsed();
-        } else {
-          return null;
-        }
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
       }
       public static netmsg.Messages.TimeSync.FromServer parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
-        return newBuilder().mergeFrom(input).buildParsed();
+        return PARSER.parseFrom(input);
       }
       public static netmsg.Messages.TimeSync.FromServer parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return newBuilder().mergeFrom(input, extensionRegistry)
-                 .buildParsed();
+        return PARSER.parseFrom(input, extensionRegistry);
       }
-      
+
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder(netmsg.Messages.TimeSync.FromServer prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
-      
+
       @java.lang.Override
       protected Builder newBuilderForType(
           com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         Builder builder = new Builder(parent);
         return builder;
       }
+      /**
+       * Protobuf type {@code messages.TimeSync.FromServer}
+       */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements netmsg.Messages.TimeSync.FromServerOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:messages.TimeSync.FromServer)
+          netmsg.Messages.TimeSync.FromServerOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return netmsg.Messages.internal_static_messages_TimeSync_FromServer_descriptor;
         }
-        
+
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return netmsg.Messages.internal_static_messages_TimeSync_FromServer_fieldAccessorTable;
+          return netmsg.Messages.internal_static_messages_TimeSync_FromServer_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  netmsg.Messages.TimeSync.FromServer.class, netmsg.Messages.TimeSync.FromServer.Builder.class);
         }
-        
+
         // Construct using netmsg.Messages.TimeSync.FromServer.newBuilder()
         private Builder() {
           maybeForceBuilderInitialization();
         }
-        
-        private Builder(BuilderParent parent) {
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
           super(parent);
           maybeForceBuilderInitialization();
         }
@@ -2217,7 +2832,7 @@ public final class Messages {
         private static Builder create() {
           return new Builder();
         }
-        
+
         public Builder clear() {
           super.clear();
           if (clientNowBuilder_ == null) {
@@ -2234,20 +2849,20 @@ public final class Messages {
           bitField0_ = (bitField0_ & ~0x00000002);
           return this;
         }
-        
+
         public Builder clone() {
           return create().mergeFrom(buildPartial());
         }
-        
+
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return netmsg.Messages.TimeSync.FromServer.getDescriptor();
+          return netmsg.Messages.internal_static_messages_TimeSync_FromServer_descriptor;
         }
-        
+
         public netmsg.Messages.TimeSync.FromServer getDefaultInstanceForType() {
           return netmsg.Messages.TimeSync.FromServer.getDefaultInstance();
         }
-        
+
         public netmsg.Messages.TimeSync.FromServer build() {
           netmsg.Messages.TimeSync.FromServer result = buildPartial();
           if (!result.isInitialized()) {
@@ -2255,17 +2870,7 @@ public final class Messages {
           }
           return result;
         }
-        
-        private netmsg.Messages.TimeSync.FromServer buildParsed()
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          netmsg.Messages.TimeSync.FromServer result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(
-              result).asInvalidProtocolBufferException();
-          }
-          return result;
-        }
-        
+
         public netmsg.Messages.TimeSync.FromServer buildPartial() {
           netmsg.Messages.TimeSync.FromServer result = new netmsg.Messages.TimeSync.FromServer(this);
           int from_bitField0_ = bitField0_;
@@ -2290,7 +2895,7 @@ public final class Messages {
           onBuilt();
           return result;
         }
-        
+
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof netmsg.Messages.TimeSync.FromServer) {
             return mergeFrom((netmsg.Messages.TimeSync.FromServer)other);
@@ -2299,7 +2904,7 @@ public final class Messages {
             return this;
           }
         }
-        
+
         public Builder mergeFrom(netmsg.Messages.TimeSync.FromServer other) {
           if (other == netmsg.Messages.TimeSync.FromServer.getDefaultInstance()) return this;
           if (other.hasClientNow()) {
@@ -2311,7 +2916,7 @@ public final class Messages {
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
-        
+
         public final boolean isInitialized() {
           if (!hasClientNow()) {
             
@@ -2331,61 +2936,38 @@ public final class Messages {
           }
           return true;
         }
-        
+
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-            com.google.protobuf.UnknownFieldSet.newBuilder(
-              this.getUnknownFields());
-          while (true) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              default: {
-                if (!parseUnknownField(input, unknownFields,
-                                       extensionRegistry, tag)) {
-                  this.setUnknownFields(unknownFields.build());
-                  onChanged();
-                  return this;
-                }
-                break;
-              }
-              case 10: {
-                netmsg.Base.Timestamp.Builder subBuilder = netmsg.Base.Timestamp.newBuilder();
-                if (hasClientNow()) {
-                  subBuilder.mergeFrom(getClientNow());
-                }
-                input.readMessage(subBuilder, extensionRegistry);
-                setClientNow(subBuilder.buildPartial());
-                break;
-              }
-              case 18: {
-                netmsg.Base.Timestamp.Builder subBuilder = netmsg.Base.Timestamp.newBuilder();
-                if (hasServerNow()) {
-                  subBuilder.mergeFrom(getServerNow());
-                }
-                input.readMessage(subBuilder, extensionRegistry);
-                setServerNow(subBuilder.buildPartial());
-                break;
-              }
+          netmsg.Messages.TimeSync.FromServer parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (netmsg.Messages.TimeSync.FromServer) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
             }
           }
+          return this;
         }
-        
         private int bitField0_;
-        
-        // required .base.Timestamp client_now = 1;
+
         private netmsg.Base.Timestamp clientNow_ = netmsg.Base.Timestamp.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> clientNowBuilder_;
+        /**
+         * <code>required .base.Timestamp client_now = 1;</code>
+         */
         public boolean hasClientNow() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
+        /**
+         * <code>required .base.Timestamp client_now = 1;</code>
+         */
         public netmsg.Base.Timestamp getClientNow() {
           if (clientNowBuilder_ == null) {
             return clientNow_;
@@ -2393,6 +2975,9 @@ public final class Messages {
             return clientNowBuilder_.getMessage();
           }
         }
+        /**
+         * <code>required .base.Timestamp client_now = 1;</code>
+         */
         public Builder setClientNow(netmsg.Base.Timestamp value) {
           if (clientNowBuilder_ == null) {
             if (value == null) {
@@ -2406,6 +2991,9 @@ public final class Messages {
           bitField0_ |= 0x00000001;
           return this;
         }
+        /**
+         * <code>required .base.Timestamp client_now = 1;</code>
+         */
         public Builder setClientNow(
             netmsg.Base.Timestamp.Builder builderForValue) {
           if (clientNowBuilder_ == null) {
@@ -2417,6 +3005,9 @@ public final class Messages {
           bitField0_ |= 0x00000001;
           return this;
         }
+        /**
+         * <code>required .base.Timestamp client_now = 1;</code>
+         */
         public Builder mergeClientNow(netmsg.Base.Timestamp value) {
           if (clientNowBuilder_ == null) {
             if (((bitField0_ & 0x00000001) == 0x00000001) &&
@@ -2433,6 +3024,9 @@ public final class Messages {
           bitField0_ |= 0x00000001;
           return this;
         }
+        /**
+         * <code>required .base.Timestamp client_now = 1;</code>
+         */
         public Builder clearClientNow() {
           if (clientNowBuilder_ == null) {
             clientNow_ = netmsg.Base.Timestamp.getDefaultInstance();
@@ -2443,11 +3037,17 @@ public final class Messages {
           bitField0_ = (bitField0_ & ~0x00000001);
           return this;
         }
+        /**
+         * <code>required .base.Timestamp client_now = 1;</code>
+         */
         public netmsg.Base.Timestamp.Builder getClientNowBuilder() {
           bitField0_ |= 0x00000001;
           onChanged();
           return getClientNowFieldBuilder().getBuilder();
         }
+        /**
+         * <code>required .base.Timestamp client_now = 1;</code>
+         */
         public netmsg.Base.TimestampOrBuilder getClientNowOrBuilder() {
           if (clientNowBuilder_ != null) {
             return clientNowBuilder_.getMessageOrBuilder();
@@ -2455,27 +3055,35 @@ public final class Messages {
             return clientNow_;
           }
         }
+        /**
+         * <code>required .base.Timestamp client_now = 1;</code>
+         */
         private com.google.protobuf.SingleFieldBuilder<
             netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> 
             getClientNowFieldBuilder() {
           if (clientNowBuilder_ == null) {
             clientNowBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder>(
-                    clientNow_,
+                    getClientNow(),
                     getParentForChildren(),
                     isClean());
             clientNow_ = null;
           }
           return clientNowBuilder_;
         }
-        
-        // required .base.Timestamp server_now = 2;
+
         private netmsg.Base.Timestamp serverNow_ = netmsg.Base.Timestamp.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> serverNowBuilder_;
+        /**
+         * <code>required .base.Timestamp server_now = 2;</code>
+         */
         public boolean hasServerNow() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
+        /**
+         * <code>required .base.Timestamp server_now = 2;</code>
+         */
         public netmsg.Base.Timestamp getServerNow() {
           if (serverNowBuilder_ == null) {
             return serverNow_;
@@ -2483,6 +3091,9 @@ public final class Messages {
             return serverNowBuilder_.getMessage();
           }
         }
+        /**
+         * <code>required .base.Timestamp server_now = 2;</code>
+         */
         public Builder setServerNow(netmsg.Base.Timestamp value) {
           if (serverNowBuilder_ == null) {
             if (value == null) {
@@ -2496,6 +3107,9 @@ public final class Messages {
           bitField0_ |= 0x00000002;
           return this;
         }
+        /**
+         * <code>required .base.Timestamp server_now = 2;</code>
+         */
         public Builder setServerNow(
             netmsg.Base.Timestamp.Builder builderForValue) {
           if (serverNowBuilder_ == null) {
@@ -2507,6 +3121,9 @@ public final class Messages {
           bitField0_ |= 0x00000002;
           return this;
         }
+        /**
+         * <code>required .base.Timestamp server_now = 2;</code>
+         */
         public Builder mergeServerNow(netmsg.Base.Timestamp value) {
           if (serverNowBuilder_ == null) {
             if (((bitField0_ & 0x00000002) == 0x00000002) &&
@@ -2523,6 +3140,9 @@ public final class Messages {
           bitField0_ |= 0x00000002;
           return this;
         }
+        /**
+         * <code>required .base.Timestamp server_now = 2;</code>
+         */
         public Builder clearServerNow() {
           if (serverNowBuilder_ == null) {
             serverNow_ = netmsg.Base.Timestamp.getDefaultInstance();
@@ -2533,11 +3153,17 @@ public final class Messages {
           bitField0_ = (bitField0_ & ~0x00000002);
           return this;
         }
+        /**
+         * <code>required .base.Timestamp server_now = 2;</code>
+         */
         public netmsg.Base.Timestamp.Builder getServerNowBuilder() {
           bitField0_ |= 0x00000002;
           onChanged();
           return getServerNowFieldBuilder().getBuilder();
         }
+        /**
+         * <code>required .base.Timestamp server_now = 2;</code>
+         */
         public netmsg.Base.TimestampOrBuilder getServerNowOrBuilder() {
           if (serverNowBuilder_ != null) {
             return serverNowBuilder_.getMessageOrBuilder();
@@ -2545,165 +3171,162 @@ public final class Messages {
             return serverNow_;
           }
         }
+        /**
+         * <code>required .base.Timestamp server_now = 2;</code>
+         */
         private com.google.protobuf.SingleFieldBuilder<
             netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder> 
             getServerNowFieldBuilder() {
           if (serverNowBuilder_ == null) {
             serverNowBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 netmsg.Base.Timestamp, netmsg.Base.Timestamp.Builder, netmsg.Base.TimestampOrBuilder>(
-                    serverNow_,
+                    getServerNow(),
                     getParentForChildren(),
                     isClean());
             serverNow_ = null;
           }
           return serverNowBuilder_;
         }
-        
+
         // @@protoc_insertion_point(builder_scope:messages.TimeSync.FromServer)
       }
-      
+
       static {
         defaultInstance = new FromServer(true);
         defaultInstance.initFields();
       }
-      
+
       // @@protoc_insertion_point(class_scope:messages.TimeSync.FromServer)
     }
-    
+
     private void initFields() {
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
       getUnknownFields().writeTo(output);
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static netmsg.Messages.TimeSync parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Messages.TimeSync parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Messages.TimeSync parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static netmsg.Messages.TimeSync parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static netmsg.Messages.TimeSync parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Messages.TimeSync parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static netmsg.Messages.TimeSync parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static netmsg.Messages.TimeSync parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static netmsg.Messages.TimeSync parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static netmsg.Messages.TimeSync parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(netmsg.Messages.TimeSync prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
     @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code messages.TimeSync}
+     */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements netmsg.Messages.TimeSyncOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:messages.TimeSync)
+        netmsg.Messages.TimeSyncOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return netmsg.Messages.internal_static_messages_TimeSync_descriptor;
       }
-      
+
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return netmsg.Messages.internal_static_messages_TimeSync_fieldAccessorTable;
+        return netmsg.Messages.internal_static_messages_TimeSync_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                netmsg.Messages.TimeSync.class, netmsg.Messages.TimeSync.Builder.class);
       }
-      
+
       // Construct using netmsg.Messages.TimeSync.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
-      private Builder(BuilderParent parent) {
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -2714,25 +3337,25 @@ public final class Messages {
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return netmsg.Messages.TimeSync.getDescriptor();
+        return netmsg.Messages.internal_static_messages_TimeSync_descriptor;
       }
-      
+
       public netmsg.Messages.TimeSync getDefaultInstanceForType() {
         return netmsg.Messages.TimeSync.getDefaultInstance();
       }
-      
+
       public netmsg.Messages.TimeSync build() {
         netmsg.Messages.TimeSync result = buildPartial();
         if (!result.isInitialized()) {
@@ -2740,23 +3363,13 @@ public final class Messages {
         }
         return result;
       }
-      
-      private netmsg.Messages.TimeSync buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        netmsg.Messages.TimeSync result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public netmsg.Messages.TimeSync buildPartial() {
         netmsg.Messages.TimeSync result = new netmsg.Messages.TimeSync(this);
         onBuilt();
         return result;
       }
-      
+
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof netmsg.Messages.TimeSync) {
           return mergeFrom((netmsg.Messages.TimeSync)other);
@@ -2765,82 +3378,72 @@ public final class Messages {
           return this;
         }
       }
-      
+
       public Builder mergeFrom(netmsg.Messages.TimeSync other) {
         if (other == netmsg.Messages.TimeSync.getDefaultInstance()) return this;
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
-      
+
       public final boolean isInitialized() {
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
+        netmsg.Messages.TimeSync parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (netmsg.Messages.TimeSync) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
-      
+
       // @@protoc_insertion_point(builder_scope:messages.TimeSync)
     }
-    
+
     static {
       defaultInstance = new TimeSync(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:messages.TimeSync)
   }
-  
-  private static com.google.protobuf.Descriptors.Descriptor
+
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_messages_FromClient_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_messages_FromClient_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_messages_FromServer_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_messages_FromServer_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_messages_TimeSync_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_messages_TimeSync_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_messages_TimeSync_FromClient_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_messages_TimeSync_FromClient_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_messages_TimeSync_FromServer_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_messages_TimeSync_FromServer_fieldAccessorTable;
-  
+
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
     return descriptor;
@@ -2864,53 +3467,13 @@ public final class Messages {
       ".base.TimestampB\010\n\006netmsg"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-      new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
-        public com.google.protobuf.ExtensionRegistry assignDescriptors(
-            com.google.protobuf.Descriptors.FileDescriptor root) {
-          descriptor = root;
-          internal_static_messages_FromClient_descriptor =
-            getDescriptor().getMessageTypes().get(0);
-          internal_static_messages_FromClient_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_messages_FromClient_descriptor,
-              new java.lang.String[] { "Game", "Management", "TimeSync", },
-              netmsg.Messages.FromClient.class,
-              netmsg.Messages.FromClient.Builder.class);
-          internal_static_messages_FromServer_descriptor =
-            getDescriptor().getMessageTypes().get(1);
-          internal_static_messages_FromServer_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_messages_FromServer_descriptor,
-              new java.lang.String[] { "Game", "Management", "TimeSync", },
-              netmsg.Messages.FromServer.class,
-              netmsg.Messages.FromServer.Builder.class);
-          internal_static_messages_TimeSync_descriptor =
-            getDescriptor().getMessageTypes().get(2);
-          internal_static_messages_TimeSync_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_messages_TimeSync_descriptor,
-              new java.lang.String[] { },
-              netmsg.Messages.TimeSync.class,
-              netmsg.Messages.TimeSync.Builder.class);
-          internal_static_messages_TimeSync_FromClient_descriptor =
-            internal_static_messages_TimeSync_descriptor.getNestedTypes().get(0);
-          internal_static_messages_TimeSync_FromClient_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_messages_TimeSync_FromClient_descriptor,
-              new java.lang.String[] { "Now", },
-              netmsg.Messages.TimeSync.FromClient.class,
-              netmsg.Messages.TimeSync.FromClient.Builder.class);
-          internal_static_messages_TimeSync_FromServer_descriptor =
-            internal_static_messages_TimeSync_descriptor.getNestedTypes().get(1);
-          internal_static_messages_TimeSync_FromServer_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_messages_TimeSync_FromServer_descriptor,
-              new java.lang.String[] { "ClientNow", "ServerNow", },
-              netmsg.Messages.TimeSync.FromServer.class,
-              netmsg.Messages.TimeSync.FromServer.Builder.class);
-          return null;
-        }
-      };
+        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
+          public com.google.protobuf.ExtensionRegistry assignDescriptors(
+              com.google.protobuf.Descriptors.FileDescriptor root) {
+            descriptor = root;
+            return null;
+          }
+        };
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
@@ -2918,7 +3481,40 @@ public final class Messages {
           netmsg.Management.getDescriptor(),
           netmsg.Base.getDescriptor(),
         }, assigner);
+    internal_static_messages_FromClient_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_messages_FromClient_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_messages_FromClient_descriptor,
+        new java.lang.String[] { "Game", "Management", "TimeSync", });
+    internal_static_messages_FromServer_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_messages_FromServer_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_messages_FromServer_descriptor,
+        new java.lang.String[] { "Game", "Management", "TimeSync", });
+    internal_static_messages_TimeSync_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_messages_TimeSync_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_messages_TimeSync_descriptor,
+        new java.lang.String[] { });
+    internal_static_messages_TimeSync_FromClient_descriptor =
+      internal_static_messages_TimeSync_descriptor.getNestedTypes().get(0);
+    internal_static_messages_TimeSync_FromClient_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_messages_TimeSync_FromClient_descriptor,
+        new java.lang.String[] { "Now", });
+    internal_static_messages_TimeSync_FromServer_descriptor =
+      internal_static_messages_TimeSync_descriptor.getNestedTypes().get(1);
+    internal_static_messages_TimeSync_FromServer_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_messages_TimeSync_FromServer_descriptor,
+        new java.lang.String[] { "ClientNow", "ServerNow", });
+    netmsg.Game.getDescriptor();
+    netmsg.Management.getDescriptor();
+    netmsg.Base.getDescriptor();
   }
-  
+
   // @@protoc_insertion_point(outer_class_scope)
 }

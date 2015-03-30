@@ -116,7 +116,7 @@ case class WorldObjs[Obj <: WObject] private (
     else {
       val beforePoints = before.bounds.points.toSet
       val afterPoints = after.bounds.points.toSet
-      val removedPositions =  beforePoints -- afterPoints
+      val removedPositions = beforePoints -- afterPoints
       val addedPositions = afterPoints -- beforePoints
       copy(
         objectsMap = objectsMap + (before.id -> after),

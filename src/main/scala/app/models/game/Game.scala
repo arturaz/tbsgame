@@ -4,10 +4,12 @@ import akka.event.LoggingAdapter
 import app.algorithms.Pathfinding
 import app.algorithms.Pathfinding.Path
 import app.models.game.Game.States
-import app.models.game.GamePlayerState.WaitingForTurnEnd
+import app.models.game.GamePlayerState.CanWarp
 import app.models.game.events._
 import app.models.game.world.WObject.Id
 import app.models.game.world._
+import app.models.game.world.buildings.{ExtractorStats, LaserTowerStats, WarpLinkerStats}
+import app.models.game.world.units.{ScoutStats, GunshipStats, RocketFrigateStats, CorvetteStats}
 import implicits._
 import monocle.Lenser
 import monocle.syntax._
@@ -27,11 +29,28 @@ object Game {
   type States = Map[Player, GamePlayerState]
   type ObjectivesMap = Map[Team, Objectives]
 
-  case class StartingPlayer(player: Player, resources: Resources)
+  object StartingPlayer {
+    val DefaultWarpSet: GamePlayerState.CanWarp = Set(
+      ExtractorStats,
+      WarpLinkerStats,
+      LaserTowerStats,
+      CorvetteStats,
+      RocketFrigateStats,
+      GunshipStats,
+      ScoutStats
+    )
+  }
+  case class StartingPlayer(
+    player: Player, resources: Resources,
+    canWarp: GamePlayerState.CanWarp=StartingPlayer.DefaultWarpSet
+  )
 
   def apply(
     world: World, starting: Set[StartingPlayer], objectives: ObjectivesMap
   ): Either[String, Game] = {
+    val startingPlayersWarpMap: Map[Player, CanWarp] =
+      starting.map(sp => sp.player -> sp.canWarp)(collection.breakOut)
+
     starting.foldLeft(Evented(world).right[String]) {
       case (left: Left[_, _], _) => left
       case (Right(eWorld), data) =>
@@ -39,20 +58,29 @@ object Game {
     }.right.map { evtWorld =>
       val world = evtWorld.value
       apply(
-        world, startingStates(world, world.players), objectives
+        world, startingStates(
+          world,
+          world.players.map { player => (
+            player,
+            startingPlayersWarpMap.getOrElse(player, Set.empty[WarpableCompanion.Some])
+          ) }(collection.breakOut)
+        ), objectives
       )
     }
   }
 
-  def startingState(world: World, player: Player) =
-    GamePlayerState(world.actionsFor(player), player match {
-      case _: Human => GamePlayerState.WaitingForTurnEnd
-      case _: Bot => GamePlayerState.TurnEnded
-    })
+  def startingState(world: World, player: Player, canWarp: GamePlayerState.CanWarp) =
+    GamePlayerState(
+      world.actionsFor(player),
+      if (player.isHuman) GamePlayerState.WaitingForTurnEnd else GamePlayerState.TurnEnded,
+      canWarp
+    )
 
   def startingStates(
-    world: World, players: Iterable[Player]
-  ): States = players.map { player => player -> startingState(world, player) }.toMap
+    world: World, players: Map[Player, GamePlayerState.CanWarp]
+  ): States = players.map { case (player, canWarp) =>
+    player -> startingState(world, player, canWarp)
+  }
 
   def canMove(human: Human, obj: Movable) = obj.owner === human
   def canAttack(human: Human, obj: Fighter) = human.isFriendOf(obj.owner)
@@ -97,13 +125,22 @@ object Game {
         s"Needed $populationNeeded, but $human only had $population!".left
     }
 
+    def withAbilityToWarp(
+      human: Human, canWarp: GamePlayerState.CanWarp, warpable: WarpableCompanion.Some
+    )(f: => Game.Result): Game.Result = {
+      if (canWarp.contains(warpable)) f
+      else s"$human cannot warp $warpable! (allowed=$canWarp)".left
+    }
+
     def withWarpable(
-      human: Human, warpable: WarpableStats, world: World
+      human: Human, canWarp: GamePlayerState.CanWarp, warpable: WarpableCompanion.Some,
+      world: World
     )(f: Evented[World] => Game.Result): Game.Result = {
       withResources(human, warpable.cost, world) { evtWorld =>
       withPopulation(human, warpable.populationCost, evtWorld.value) { evtWorld2 =>
+      withAbilityToWarp(human, canWarp, warpable) {
         f(evtWorld.events ++: evtWorld2)
-      } }
+      } } }
     }
   }
 
@@ -191,12 +228,16 @@ case class Game private (
       Game.recalculatePlayerStatesOnTeamTurnStart(team)
     }
   def teamTurnFinished(team: Team)(implicit log: LoggingAdapter)
-  : Evented[Winner \/ Game] = checkObjectivesSafe(team)(
-    world.teamTurnFinished(team) |> fromWorld |> Game.doAutoSpecials(team)
+  : Evented[Winner \/ Game] = (
+    world.teamTurnFinished(team) |> fromWorld |> Game.doAutoSpecials(team) |>
+    checkObjectivesSafe(team)
   ).flatMap(checkObjectivesForWinner)
 
   private[this] def checkObjectivesForWinner(game: Game): Evented[Winner \/ Game] = {
-    val winningTeamOpt = world.teams.find(game.remainingObjectives(_).someCompleted)
+    val winningTeamOpt = world.teams.find { team =>
+      val remaining = game.remainingObjectives(team)
+      remaining.someCompleted
+    }
     winningTeamOpt.fold2(
       Evented(game.rightZ),
       winnerTeam => Evented(Winner(winnerTeam).leftZ, GameWonEvt(winnerTeam))
@@ -246,7 +287,7 @@ case class Game private (
     checkObjectives(human.team) {
     withState(human) { state =>
     withActions(human, Warpable.ActionsNeeded, state) { state =>
-    withWarpable(human, warpable, world) { evtWorld =>
+    withWarpable(human, state.canWarp, warpable, world) { evtWorld =>
     withWarpZone(human, position) {
       evtWorld.map { warpable.warpW(_, human, position).right.map { _.map {
         updated(_, human -> state)
@@ -335,15 +376,17 @@ case class Game private (
   def visibleBy(owner: Owner) =
     copy(world = world.visibleBy(owner), states = states.filterKeys(_.isFriendOf(owner)))
 
-  def remainingObjectives(team: Team) =
-    objectives.getOrElse(team, Objectives.empty).remaining(this, team)
+  def remainingObjectives(team: Team) = {
+    val teamObjectives = objectives.getOrElse(team, Objectives.empty)
+    teamObjectives.remaining(this, team)
+  }
 
   def updated(world: World): Game = copy(world = world)
   def updated(states: States): Game = copy(states = states)
   def updated(world: World, human: (Human, GamePlayerState)): Game =
     copy(world = world, states = states + human)
 
-  private[this] def checkObjectives(team: Team)(f: => Game.Result): Game.Result = {
+  private[this] def checkObjectives(team: Team)(f: Game.Result): Game.Result = {
     val currentObjectives = remainingObjectives(team)
     f.right.map(_.flatMap { game =>
       val newObjectives = game.remainingObjectives(team)
@@ -356,7 +399,7 @@ case class Game private (
     })
   }
 
-  private[this] def checkObjectivesSafe(team: Team)(f: => Evented[Game]): Evented[Game] =
+  private[this] def checkObjectivesSafe(team: Team)(f: Evented[Game]): Evented[Game] =
     checkObjectives(team)(f.right).right.get
 
   private[this] def withState(human: Human)(f: GamePlayerState => Game.Result) =
