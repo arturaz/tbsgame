@@ -77,10 +77,10 @@ object GameActor {
     val states = visibleGame.states
     val resourceMap = visibleGame.world.resourcesMap
     def stateFor(p: Player): Either[String, HumanState] = for {
-      gameState <- states.get(human).
-        toRight(s"can't get game state for $human in $states").right
-      resources <- resourceMap.get(human).
-        toRight(s"can't get game state for $human in $resourceMap").right
+      gameState <- states.get(p).
+        toRight(s"can't get game state for $p in $states").right
+      resources <- resourceMap.get(p).
+        toRight(s"can't get game state for $p in $resourceMap").right
     } yield HumanState(resources, visibleGame.world.populationFor(p), gameState)
 
     stateFor(human).right.map { selfState =>
@@ -91,8 +91,11 @@ object GameActor {
         visibleGame.world.warpZoneMap.map.keys.map(_._1),
         visibleGame.world.visibilityMap.map.keys.map(_._1),
         human.team, game.world.teams - human.team, selfState,
-        (game.world.players - human).map { player =>
-          player -> stateFor(player).right.toOption
+          (game.world.players - human).map { player =>
+          player -> (
+            if (player.isFriendOf(human)) stateFor(player).right.toOption
+            else None
+          )
         },
         selfState.gameState.canWarp,
         for (from <- WObjKind.All; to <- WObjKind.All) yield from -> to,
