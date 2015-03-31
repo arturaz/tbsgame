@@ -17,6 +17,8 @@ trait GameProto extends BaseProto with GameWObjects with GameEvents {
 
   implicit def convert(id: Team.Id): game.TeamID = game.TeamID(id.id)
 
+  implicit def convert(id: World.Id): game.WorldID = game.WorldID(id.id)
+
   implicit def convert(id: Owner.Id): game.OwnerID = id match {
     case pid: Player.Id => game.OwnerID(playerId = Some(pid))
     case tid: Team.Id => game.OwnerID(teamId = Some(tid))

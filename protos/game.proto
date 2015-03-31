@@ -105,6 +105,7 @@ message MInit {
   /* Might not have a turn timer */
   optional base.Timeframe turn_timeframe = 12;
   repeated ExtractionSpeedRate extraction_speed_rates = 13;
+  required WorldID id = 14;
 }
 
 enum WObjKind {
@@ -134,6 +135,10 @@ message PlayerID {
 message OwnerID {
   optional TeamID team_id = 1;
   optional PlayerID player_id = 2;
+}
+
+message WorldID {
+  required base.UUID id = 1;
 }
 
 message WObjID {

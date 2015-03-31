@@ -20,7 +20,7 @@ trait MessagesProto extends Helpers { _: GameProto =>
 
   implicit def convert(msg: GameActor.Out.Init): game.MInit =
     game.MInit(
-      bounds = msg.bounds,
+      id = msg.id, bounds = msg.bounds,
       objects = convertSeq(msg.objects.objects),
       warpZone = convertSeq(msg.warpZonePoints),
       visiblePoints = convertSeq(msg.visiblePoints),
