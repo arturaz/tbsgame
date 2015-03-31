@@ -453,6 +453,7 @@ object World {
         }, already placed: $enemyResourcesInBounds", bounds
       )
 
+      var enemyPlacementFailed = false
       for (objPos <- Random.shuffle(bounds.points)) {
         // Have more space around asteroids
         lazy val asteroidFreeSpace = {
@@ -473,19 +474,21 @@ object World {
           enemyResourcesInBounds < enemyResourcesNeeded &&
           warpGate.bounds.perimeter.map(_.tileDistance(objPos)).
             forall(_ > safeDistance) &&
-          ! pTaken(objPos)
+          ! pTaken(objPos) &&
+          ! enemyPlacementFailed
         ) {
+          val enemyResourcesLeft = enemyResourcesNeeded - enemyResourcesInBounds
           val enemyOpt = tryN(10) {
-            npcPool.weightedRandom.
-              filter(_.cost <= enemyResourcesNeeded - enemyResourcesInBounds)
+            npcPool.weightedRandom.filter(_.cost <= enemyResourcesLeft)
           }
           enemyOpt.foreach { enemyWarpable =>
             objects += enemyWarpable.warp(npcOwner(), objPos).
               setWarpState(enemyWarpable.warpTime)
             enemyResourcesInBounds += enemyWarpable.cost
           }
+          if (enemyOpt.isEmpty) enemyPlacementFailed = true
           log.debug(
-            s"{} @ {}, left: ${enemyResourcesNeeded - enemyResourcesInBounds}",
+            s"enemy {} @ {}, left: $enemyResourcesLeft",
             enemyOpt, objPos
           )
         }
