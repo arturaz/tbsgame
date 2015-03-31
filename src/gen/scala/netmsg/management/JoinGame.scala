@@ -3,7 +3,7 @@
 
 package netmsg.management
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class JoinGame(
@@ -41,25 +41,11 @@ final case class JoinGame(
         case 1 => mode
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.management.JoinGame.toJavaProto(this))
     def companion = netmsg.management.JoinGame
 }
 
-object JoinGame extends com.trueaccord.scalapb.GeneratedMessageCompanion[JoinGame] with com.trueaccord.scalapb.JavaProtoSupport[JoinGame, netmsg.Management.JoinGame]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[JoinGame] with com.trueaccord.scalapb.JavaProtoSupport[JoinGame, netmsg.Management.JoinGame]  = this
-  def toJavaProto(scalaPbSource: netmsg.management.JoinGame): netmsg.Management.JoinGame = {
-    val javaPbOut = netmsg.Management.JoinGame.newBuilder
-    javaPbOut.setMode(netmsg.management.JoinGame.Mode.toJavaProto(scalaPbSource.mode))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Management.JoinGame): netmsg.management.JoinGame = netmsg.management.JoinGame(
-    mode = netmsg.management.JoinGame.Mode.fromJavaProto(javaPbSource.getMode)
-  )
-  override def fromAscii(ascii: String): netmsg.management.JoinGame = {
-    val javaProtoBuilder = netmsg.Management.JoinGame.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object JoinGame extends com.trueaccord.scalapb.GeneratedMessageCompanion[JoinGame]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[JoinGame]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.management.JoinGame = netmsg.management.JoinGame(
     mode = fieldsMap(1).asInstanceOf[netmsg.management.JoinGame.Mode]
   )
@@ -112,27 +98,11 @@ object JoinGame extends com.trueaccord.scalapb.GeneratedMessageCompanion[JoinGam
           case 2 => playersPerTeam
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.management.JoinGame.Mode.toJavaProto(this))
       def companion = netmsg.management.JoinGame.Mode
   }
   
-  object Mode extends com.trueaccord.scalapb.GeneratedMessageCompanion[Mode] with com.trueaccord.scalapb.JavaProtoSupport[Mode, netmsg.Management.JoinGame.Mode]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Mode] with com.trueaccord.scalapb.JavaProtoSupport[Mode, netmsg.Management.JoinGame.Mode]  = this
-    def toJavaProto(scalaPbSource: netmsg.management.JoinGame.Mode): netmsg.Management.JoinGame.Mode = {
-      val javaPbOut = netmsg.Management.JoinGame.Mode.newBuilder
-      javaPbOut.setTeams(scalaPbSource.teams)
-      javaPbOut.setPlayersPerTeam(scalaPbSource.playersPerTeam)
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Management.JoinGame.Mode): netmsg.management.JoinGame.Mode = netmsg.management.JoinGame.Mode(
-      teams = javaPbSource.getTeams.intValue,
-      playersPerTeam = javaPbSource.getPlayersPerTeam.intValue
-    )
-    override def fromAscii(ascii: String): netmsg.management.JoinGame.Mode = {
-      val javaProtoBuilder = netmsg.Management.JoinGame.Mode.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Mode extends com.trueaccord.scalapb.GeneratedMessageCompanion[Mode]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Mode]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.management.JoinGame.Mode = netmsg.management.JoinGame.Mode(
       teams = fieldsMap(1).asInstanceOf[Int],
       playersPerTeam = fieldsMap(2).asInstanceOf[Int]

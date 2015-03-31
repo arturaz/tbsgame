@@ -11,8 +11,7 @@ message FromClient {
   optional MMove move = 2;
   optional MAttack attack = 3;
   optional MSpecial special = 4;
-  optional MGetMovement get_movement = 5;
-  optional MMoveAttack move_attack = 6;
+  optional MMoveAttack move_attack = 5;
 
   optional MLeave leave = 1001;
   optional MEndTurn end_turn = 1002;
@@ -55,10 +54,6 @@ message MSpecial {
   required WObjID id = 1;
 }
 
-message MGetMovement {
-  required WObjID id = 1;
-}
-
 message MMoveAttack {
   required WObjID id = 1;
   // Does not include objects position. Ends with target position.
@@ -74,7 +69,6 @@ message MEndTurn {}
 message FromServer {
   optional MEvents events = 1;
   optional MError error = 2;
-  optional MMovement movement = 3;
 
   optional MInit init = 1000;
 }
@@ -111,6 +105,7 @@ message MInit {
   /* Might not have a turn timer */
   optional base.Timeframe turn_timeframe = 12;
   repeated ExtractionSpeedRate extraction_speed_rates = 13;
+  required WorldID id = 14;
 }
 
 enum WObjKind {
@@ -127,27 +122,6 @@ message MError {
   required string error = 1;
 }
 
-message MMovement {
-  message Path {
-    /* Object position not included. */
-    repeated base.Vect2 position = 1;
-  }
-
-  message Paths {
-    repeated Path path = 1;
-  }
-
-  message Positions {
-    repeated base.Vect2 position = 1;
-  }
-
-  required WObjID id = 1;
-  // Sent if we can move this object.
-  optional Paths paths = 2;
-  // Sent if we can't move this object.
-  optional Positions positions = 3;
-}
-
 /* Data */
 
 message TeamID {
@@ -161,6 +135,10 @@ message PlayerID {
 message OwnerID {
   optional TeamID team_id = 1;
   optional PlayerID player_id = 2;
+}
+
+message WorldID {
+  required base.UUID id = 1;
 }
 
 message WObjID {

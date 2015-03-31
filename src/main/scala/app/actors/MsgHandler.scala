@@ -23,7 +23,10 @@ class MsgHandler(
   private[this] val pipeline = new MsgHandlerPipeline
 
   override def receive = LoggingReceive {
-    case Received(data) => pipeline.fromClient(data).foreach(msg => netClient ! msg)
+    case Received(data) => pipeline.fromClient(data).foreach {
+      case Left(err) => log.error(err)
+      case Right(msg) => netClient ! msg
+    }
     case msg: FromServer => connection ! Write(pipeline.toClient(msg))
     case msg: ConnectionClosed =>
       log.info(s"Connection closed.")
@@ -32,16 +35,12 @@ class MsgHandler(
 }
 
 class MsgHandlerPipeline(implicit byteOrder: ByteOrder, log: LoggingAdapter)
-extends Pipeline[ByteString, Vector[FromClient], FromServer, ByteString] {
+extends Pipeline[ByteString, Vector[Either[String, FromClient]], FromServer, ByteString] {
   private[this] val intFramed = new IntFramedPipeline()
   private[this] val coded = new CodedFramePipeline(Parsing.parse, Serializing.serialize)
 
   override def fromClient(data: ByteString) = intFramed.fromClient(data).map { frame =>
-    coded.fromClient(frame).fold(
-      err =>
-        throw new IllegalArgumentException(s"Cannot decode $frame into message: $err"),
-      identity
-    )
+    coded.fromClient(frame).left.map(err => s"Cannot decode $frame into message: $err")
   }
 
   override def toClient(data: FromServer) = intFramed.toClient(coded.toClient(data))

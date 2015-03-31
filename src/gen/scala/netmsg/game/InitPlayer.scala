@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class InitPlayer(
@@ -56,27 +56,11 @@ final case class InitPlayer(
         case 2 => state
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.InitPlayer.toJavaProto(this))
     def companion = netmsg.game.InitPlayer
 }
 
-object InitPlayer extends com.trueaccord.scalapb.GeneratedMessageCompanion[InitPlayer] with com.trueaccord.scalapb.JavaProtoSupport[InitPlayer, netmsg.Game.InitPlayer]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[InitPlayer] with com.trueaccord.scalapb.JavaProtoSupport[InitPlayer, netmsg.Game.InitPlayer]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.InitPlayer): netmsg.Game.InitPlayer = {
-    val javaPbOut = netmsg.Game.InitPlayer.newBuilder
-    javaPbOut.setPlayer(netmsg.game.Player.toJavaProto(scalaPbSource.player))
-    scalaPbSource.state.map(netmsg.game.PlayerState.toJavaProto).foreach(javaPbOut.setState)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.InitPlayer): netmsg.game.InitPlayer = netmsg.game.InitPlayer(
-    player = netmsg.game.Player.fromJavaProto(javaPbSource.getPlayer),
-    state = if (javaPbSource.hasState) Some(netmsg.game.PlayerState.fromJavaProto(javaPbSource.getState)) else None
-  )
-  override def fromAscii(ascii: String): netmsg.game.InitPlayer = {
-    val javaProtoBuilder = netmsg.Game.InitPlayer.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object InitPlayer extends com.trueaccord.scalapb.GeneratedMessageCompanion[InitPlayer]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[InitPlayer]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.InitPlayer = netmsg.game.InitPlayer(
     player = fieldsMap(1).asInstanceOf[netmsg.game.Player],
     state = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.game.PlayerState]]

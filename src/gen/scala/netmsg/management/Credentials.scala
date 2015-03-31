@@ -3,7 +3,7 @@
 
 package netmsg.management
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Credentials(
@@ -65,29 +65,11 @@ final case class Credentials(
         case 3 => sessionToken
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.management.Credentials.toJavaProto(this))
     def companion = netmsg.management.Credentials
 }
 
-object Credentials extends com.trueaccord.scalapb.GeneratedMessageCompanion[Credentials] with com.trueaccord.scalapb.JavaProtoSupport[Credentials, netmsg.Management.Credentials]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Credentials] with com.trueaccord.scalapb.JavaProtoSupport[Credentials, netmsg.Management.Credentials]  = this
-  def toJavaProto(scalaPbSource: netmsg.management.Credentials): netmsg.Management.Credentials = {
-    val javaPbOut = netmsg.Management.Credentials.newBuilder
-    javaPbOut.setName(scalaPbSource.name)
-    scalaPbSource.password.foreach(javaPbOut.setPassword)
-    scalaPbSource.sessionToken.foreach(javaPbOut.setSessionToken)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Management.Credentials): netmsg.management.Credentials = netmsg.management.Credentials(
-    name = javaPbSource.getName,
-    password = if (javaPbSource.hasPassword) Some(javaPbSource.getPassword) else None,
-    sessionToken = if (javaPbSource.hasSessionToken) Some(javaPbSource.getSessionToken) else None
-  )
-  override def fromAscii(ascii: String): netmsg.management.Credentials = {
-    val javaProtoBuilder = netmsg.Management.Credentials.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Credentials extends com.trueaccord.scalapb.GeneratedMessageCompanion[Credentials]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Credentials]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.management.Credentials = netmsg.management.Credentials(
     name = fieldsMap(1).asInstanceOf[String],
     password = fieldsMap.getOrElse(2, None).asInstanceOf[Option[String]],

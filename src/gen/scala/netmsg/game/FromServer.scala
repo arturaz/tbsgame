@@ -3,20 +3,18 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class FromServer(
     events: Option[netmsg.game.MEvents] = None,
     error: Option[netmsg.game.MError] = None,
-    movement: Option[netmsg.game.MMovement] = None,
     init: Option[netmsg.game.MInit] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[FromServer] with com.trueaccord.lenses.Updatable[FromServer] {
     lazy val serializedSize: Int = {
       var __size = 0
       if (events.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(events.get.serializedSize) + events.get.serializedSize }
       if (error.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(error.get.serializedSize) + error.get.serializedSize }
-      if (movement.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(movement.get.serializedSize) + movement.get.serializedSize }
       if (init.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(init.get.serializedSize) + init.get.serializedSize }
       __size
     }
@@ -31,11 +29,6 @@ final case class FromServer(
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
-      movement.foreach { v => 
-        output.writeTag(3, 2)
-        output.writeRawVarint32(v.serializedSize)
-        v.writeTo(output)
-      }
       init.foreach { v => 
         output.writeTag(1000, 2)
         output.writeRawVarint32(v.serializedSize)
@@ -45,7 +38,6 @@ final case class FromServer(
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.FromServer = {
       var __events = this.events
       var __error = this.error
-      var __movement = this.movement
       var __init = this.init
       var _done__ = false
       while (!_done__) {
@@ -56,8 +48,6 @@ final case class FromServer(
             __events = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __events.getOrElse(netmsg.game.MEvents.defaultInstance)))
           case 18 =>
             __error = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __error.getOrElse(netmsg.game.MError.defaultInstance)))
-          case 26 =>
-            __movement = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __movement.getOrElse(netmsg.game.MMovement.defaultInstance)))
           case 8002 =>
             __init = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __init.getOrElse(netmsg.game.MInit.defaultInstance)))
           case tag => __input.skipField(tag)
@@ -66,7 +56,6 @@ final case class FromServer(
       netmsg.game.FromServer(
           events = __events,
           error = __error,
-          movement = __movement,
           init = __init
       )
     }
@@ -76,9 +65,6 @@ final case class FromServer(
     def getError: netmsg.game.MError = error.getOrElse(netmsg.game.MError.defaultInstance)
     def clearError: FromServer = copy(error = None)
     def withError(__v: netmsg.game.MError): FromServer = copy(error = Some(__v))
-    def getMovement: netmsg.game.MMovement = movement.getOrElse(netmsg.game.MMovement.defaultInstance)
-    def clearMovement: FromServer = copy(movement = None)
-    def withMovement(__v: netmsg.game.MMovement): FromServer = copy(movement = Some(__v))
     def getInit: netmsg.game.MInit = init.getOrElse(netmsg.game.MInit.defaultInstance)
     def clearInit: FromServer = copy(init = None)
     def withInit(__v: netmsg.game.MInit): FromServer = copy(init = Some(__v))
@@ -86,39 +72,17 @@ final case class FromServer(
       __field.number match {
         case 1 => events
         case 2 => error
-        case 3 => movement
         case 1000 => init
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.FromServer.toJavaProto(this))
     def companion = netmsg.game.FromServer
 }
 
-object FromServer extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer] with com.trueaccord.scalapb.JavaProtoSupport[FromServer, netmsg.Game.FromServer]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer] with com.trueaccord.scalapb.JavaProtoSupport[FromServer, netmsg.Game.FromServer]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.FromServer): netmsg.Game.FromServer = {
-    val javaPbOut = netmsg.Game.FromServer.newBuilder
-    scalaPbSource.events.map(netmsg.game.MEvents.toJavaProto).foreach(javaPbOut.setEvents)
-    scalaPbSource.error.map(netmsg.game.MError.toJavaProto).foreach(javaPbOut.setError)
-    scalaPbSource.movement.map(netmsg.game.MMovement.toJavaProto).foreach(javaPbOut.setMovement)
-    scalaPbSource.init.map(netmsg.game.MInit.toJavaProto).foreach(javaPbOut.setInit)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.FromServer): netmsg.game.FromServer = netmsg.game.FromServer(
-    events = if (javaPbSource.hasEvents) Some(netmsg.game.MEvents.fromJavaProto(javaPbSource.getEvents)) else None,
-    error = if (javaPbSource.hasError) Some(netmsg.game.MError.fromJavaProto(javaPbSource.getError)) else None,
-    movement = if (javaPbSource.hasMovement) Some(netmsg.game.MMovement.fromJavaProto(javaPbSource.getMovement)) else None,
-    init = if (javaPbSource.hasInit) Some(netmsg.game.MInit.fromJavaProto(javaPbSource.getInit)) else None
-  )
-  override def fromAscii(ascii: String): netmsg.game.FromServer = {
-    val javaProtoBuilder = netmsg.Game.FromServer.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object FromServer extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.FromServer = netmsg.game.FromServer(
     events = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.game.MEvents]],
     error = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.game.MError]],
-    movement = fieldsMap.getOrElse(3, None).asInstanceOf[Option[netmsg.game.MMovement]],
     init = fieldsMap.getOrElse(1000, None).asInstanceOf[Option[netmsg.game.MInit]]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("FromServer", this,
@@ -132,13 +96,10 @@ object FromServer extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromS
     def optionalEvents: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MEvents]] = field(_.events)((c_, f_) => c_.copy(events = f_))
     def error: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MError] = field(_.getError)((c_, f_) => c_.copy(error = Some(f_)))
     def optionalError: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MError]] = field(_.error)((c_, f_) => c_.copy(error = f_))
-    def movement: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MMovement] = field(_.getMovement)((c_, f_) => c_.copy(movement = Some(f_)))
-    def optionalMovement: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MMovement]] = field(_.movement)((c_, f_) => c_.copy(movement = f_))
     def init: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MInit] = field(_.getInit)((c_, f_) => c_.copy(init = Some(f_)))
     def optionalInit: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MInit]] = field(_.init)((c_, f_) => c_.copy(init = f_))
   }
   final val EVENTS_FIELD_NUMBER = 1
   final val ERROR_FIELD_NUMBER = 2
-  final val MOVEMENT_FIELD_NUMBER = 3
   final val INIT_FIELD_NUMBER = 1000
 }

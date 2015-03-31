@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class HPChangeEvt(
@@ -52,27 +52,11 @@ final case class HPChangeEvt(
         case 2 => newHp
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.HPChangeEvt.toJavaProto(this))
     def companion = netmsg.game.HPChangeEvt
 }
 
-object HPChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[HPChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[HPChangeEvt, netmsg.Game.HPChangeEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[HPChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[HPChangeEvt, netmsg.Game.HPChangeEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.HPChangeEvt): netmsg.Game.HPChangeEvt = {
-    val javaPbOut = netmsg.Game.HPChangeEvt.newBuilder
-    javaPbOut.setObjId(netmsg.game.WObjID.toJavaProto(scalaPbSource.objId))
-    javaPbOut.setNewHp(netmsg.base.ValWithMax.toJavaProto(scalaPbSource.newHp))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.HPChangeEvt): netmsg.game.HPChangeEvt = netmsg.game.HPChangeEvt(
-    objId = netmsg.game.WObjID.fromJavaProto(javaPbSource.getObjId),
-    newHp = netmsg.base.ValWithMax.fromJavaProto(javaPbSource.getNewHp)
-  )
-  override def fromAscii(ascii: String): netmsg.game.HPChangeEvt = {
-    val javaProtoBuilder = netmsg.Game.HPChangeEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object HPChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[HPChangeEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[HPChangeEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.HPChangeEvt = netmsg.game.HPChangeEvt(
     objId = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
     newHp = fieldsMap(2).asInstanceOf[netmsg.base.ValWithMax]

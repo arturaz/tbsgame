@@ -3,7 +3,7 @@
 
 package netmsg.management
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Login(
@@ -41,25 +41,11 @@ final case class Login(
         case 1 => credentials
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.management.Login.toJavaProto(this))
     def companion = netmsg.management.Login
 }
 
-object Login extends com.trueaccord.scalapb.GeneratedMessageCompanion[Login] with com.trueaccord.scalapb.JavaProtoSupport[Login, netmsg.Management.Login]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Login] with com.trueaccord.scalapb.JavaProtoSupport[Login, netmsg.Management.Login]  = this
-  def toJavaProto(scalaPbSource: netmsg.management.Login): netmsg.Management.Login = {
-    val javaPbOut = netmsg.Management.Login.newBuilder
-    javaPbOut.setCredentials(netmsg.management.Credentials.toJavaProto(scalaPbSource.credentials))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Management.Login): netmsg.management.Login = netmsg.management.Login(
-    credentials = netmsg.management.Credentials.fromJavaProto(javaPbSource.getCredentials)
-  )
-  override def fromAscii(ascii: String): netmsg.management.Login = {
-    val javaProtoBuilder = netmsg.Management.Login.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Login extends com.trueaccord.scalapb.GeneratedMessageCompanion[Login]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Login]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.management.Login = netmsg.management.Login(
     credentials = fieldsMap(1).asInstanceOf[netmsg.management.Credentials]
   )

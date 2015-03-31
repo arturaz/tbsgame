@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class PlayerState(
@@ -68,31 +68,11 @@ final case class PlayerState(
         case 4 => population
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.PlayerState.toJavaProto(this))
     def companion = netmsg.game.PlayerState
 }
 
-object PlayerState extends com.trueaccord.scalapb.GeneratedMessageCompanion[PlayerState] with com.trueaccord.scalapb.JavaProtoSupport[PlayerState, netmsg.Game.PlayerState]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[PlayerState] with com.trueaccord.scalapb.JavaProtoSupport[PlayerState, netmsg.Game.PlayerState]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.PlayerState): netmsg.Game.PlayerState = {
-    val javaPbOut = netmsg.Game.PlayerState.newBuilder
-    javaPbOut.setResources(scalaPbSource.resources)
-    javaPbOut.setActions(scalaPbSource.actions)
-    javaPbOut.setTurnEnded(scalaPbSource.turnEnded)
-    javaPbOut.setPopulation(netmsg.base.ValWithMax.toJavaProto(scalaPbSource.population))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.PlayerState): netmsg.game.PlayerState = netmsg.game.PlayerState(
-    resources = javaPbSource.getResources.intValue,
-    actions = javaPbSource.getActions.intValue,
-    turnEnded = javaPbSource.getTurnEnded.booleanValue,
-    population = netmsg.base.ValWithMax.fromJavaProto(javaPbSource.getPopulation)
-  )
-  override def fromAscii(ascii: String): netmsg.game.PlayerState = {
-    val javaProtoBuilder = netmsg.Game.PlayerState.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object PlayerState extends com.trueaccord.scalapb.GeneratedMessageCompanion[PlayerState]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[PlayerState]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.PlayerState = netmsg.game.PlayerState(
     resources = fieldsMap(1).asInstanceOf[Int],
     actions = fieldsMap(2).asInstanceOf[Int],

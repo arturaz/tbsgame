@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 sealed trait WarpableKind extends com.trueaccord.scalapb.GeneratedEnum {
@@ -94,6 +94,4 @@ object WarpableKind extends com.trueaccord.scalapb.GeneratedEnumCompanion[Warpab
     case 10 => U_FORTRESS
   }
   lazy val descriptor = new Descriptors.EnumDescriptor(0, "WarpableKind", this)
-  def fromJavaValue(pbJavaSource: netmsg.Game.WarpableKind): WarpableKind = fromValue(pbJavaSource.getNumber)
-  def toJavaValue(pbScalaSource: WarpableKind): netmsg.Game.WarpableKind = netmsg.Game.WarpableKind.valueOf(pbScalaSource.id)
 }

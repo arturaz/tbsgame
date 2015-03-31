@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class WObjID(
@@ -41,25 +41,11 @@ final case class WObjID(
         case 1 => id
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObjID.toJavaProto(this))
     def companion = netmsg.game.WObjID
 }
 
-object WObjID extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObjID] with com.trueaccord.scalapb.JavaProtoSupport[WObjID, netmsg.Game.WObjID]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WObjID] with com.trueaccord.scalapb.JavaProtoSupport[WObjID, netmsg.Game.WObjID]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.WObjID): netmsg.Game.WObjID = {
-    val javaPbOut = netmsg.Game.WObjID.newBuilder
-    javaPbOut.setId(netmsg.base.UUID.toJavaProto(scalaPbSource.id))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.WObjID): netmsg.game.WObjID = netmsg.game.WObjID(
-    id = netmsg.base.UUID.fromJavaProto(javaPbSource.getId)
-  )
-  override def fromAscii(ascii: String): netmsg.game.WObjID = {
-    val javaProtoBuilder = netmsg.Game.WObjID.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object WObjID extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObjID]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WObjID]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObjID = netmsg.game.WObjID(
     id = fieldsMap(1).asInstanceOf[netmsg.base.UUID]
   )

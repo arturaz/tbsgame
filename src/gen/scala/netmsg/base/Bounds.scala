@@ -3,7 +3,7 @@
 
 package netmsg.base
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Bounds(
@@ -52,27 +52,11 @@ final case class Bounds(
         case 2 => end
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.base.Bounds.toJavaProto(this))
     def companion = netmsg.base.Bounds
 }
 
-object Bounds extends com.trueaccord.scalapb.GeneratedMessageCompanion[Bounds] with com.trueaccord.scalapb.JavaProtoSupport[Bounds, netmsg.Base.Bounds]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Bounds] with com.trueaccord.scalapb.JavaProtoSupport[Bounds, netmsg.Base.Bounds]  = this
-  def toJavaProto(scalaPbSource: netmsg.base.Bounds): netmsg.Base.Bounds = {
-    val javaPbOut = netmsg.Base.Bounds.newBuilder
-    javaPbOut.setStart(netmsg.base.Vect2.toJavaProto(scalaPbSource.start))
-    javaPbOut.setEnd(netmsg.base.Vect2.toJavaProto(scalaPbSource.end))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Base.Bounds): netmsg.base.Bounds = netmsg.base.Bounds(
-    start = netmsg.base.Vect2.fromJavaProto(javaPbSource.getStart),
-    end = netmsg.base.Vect2.fromJavaProto(javaPbSource.getEnd)
-  )
-  override def fromAscii(ascii: String): netmsg.base.Bounds = {
-    val javaProtoBuilder = netmsg.Base.Bounds.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Bounds extends com.trueaccord.scalapb.GeneratedMessageCompanion[Bounds]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Bounds]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.base.Bounds = netmsg.base.Bounds(
     start = fieldsMap(1).asInstanceOf[netmsg.base.Vect2],
     end = fieldsMap(2).asInstanceOf[netmsg.base.Vect2]

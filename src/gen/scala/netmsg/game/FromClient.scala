@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class FromClient(
@@ -11,7 +11,6 @@ final case class FromClient(
     move: Option[netmsg.game.MMove] = None,
     attack: Option[netmsg.game.MAttack] = None,
     special: Option[netmsg.game.MSpecial] = None,
-    getMovement: Option[netmsg.game.MGetMovement] = None,
     moveAttack: Option[netmsg.game.MMoveAttack] = None,
     leave: Option[netmsg.game.MLeave] = None,
     endTurn: Option[netmsg.game.MEndTurn] = None,
@@ -23,7 +22,6 @@ final case class FromClient(
       if (move.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(move.get.serializedSize) + move.get.serializedSize }
       if (attack.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(attack.get.serializedSize) + attack.get.serializedSize }
       if (special.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(special.get.serializedSize) + special.get.serializedSize }
-      if (getMovement.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(getMovement.get.serializedSize) + getMovement.get.serializedSize }
       if (moveAttack.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(moveAttack.get.serializedSize) + moveAttack.get.serializedSize }
       if (leave.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(leave.get.serializedSize) + leave.get.serializedSize }
       if (endTurn.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(endTurn.get.serializedSize) + endTurn.get.serializedSize }
@@ -51,13 +49,8 @@ final case class FromClient(
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
-      getMovement.foreach { v => 
-        output.writeTag(5, 2)
-        output.writeRawVarint32(v.serializedSize)
-        v.writeTo(output)
-      }
       moveAttack.foreach { v => 
-        output.writeTag(6, 2)
+        output.writeTag(5, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
@@ -82,7 +75,6 @@ final case class FromClient(
       var __move = this.move
       var __attack = this.attack
       var __special = this.special
-      var __getMovement = this.getMovement
       var __moveAttack = this.moveAttack
       var __leave = this.leave
       var __endTurn = this.endTurn
@@ -101,8 +93,6 @@ final case class FromClient(
           case 34 =>
             __special = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __special.getOrElse(netmsg.game.MSpecial.defaultInstance)))
           case 42 =>
-            __getMovement = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __getMovement.getOrElse(netmsg.game.MGetMovement.defaultInstance)))
-          case 50 =>
             __moveAttack = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __moveAttack.getOrElse(netmsg.game.MMoveAttack.defaultInstance)))
           case 8010 =>
             __leave = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __leave.getOrElse(netmsg.game.MLeave.defaultInstance)))
@@ -118,7 +108,6 @@ final case class FromClient(
           move = __move,
           attack = __attack,
           special = __special,
-          getMovement = __getMovement,
           moveAttack = __moveAttack,
           leave = __leave,
           endTurn = __endTurn,
@@ -137,9 +126,6 @@ final case class FromClient(
     def getSpecial: netmsg.game.MSpecial = special.getOrElse(netmsg.game.MSpecial.defaultInstance)
     def clearSpecial: FromClient = copy(special = None)
     def withSpecial(__v: netmsg.game.MSpecial): FromClient = copy(special = Some(__v))
-    def getGetMovement: netmsg.game.MGetMovement = getMovement.getOrElse(netmsg.game.MGetMovement.defaultInstance)
-    def clearGetMovement: FromClient = copy(getMovement = None)
-    def withGetMovement(__v: netmsg.game.MGetMovement): FromClient = copy(getMovement = Some(__v))
     def getMoveAttack: netmsg.game.MMoveAttack = moveAttack.getOrElse(netmsg.game.MMoveAttack.defaultInstance)
     def clearMoveAttack: FromClient = copy(moveAttack = None)
     def withMoveAttack(__v: netmsg.game.MMoveAttack): FromClient = copy(moveAttack = Some(__v))
@@ -158,55 +144,23 @@ final case class FromClient(
         case 2 => move
         case 3 => attack
         case 4 => special
-        case 5 => getMovement
-        case 6 => moveAttack
+        case 5 => moveAttack
         case 1001 => leave
         case 1002 => endTurn
         case 1003 => concede
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.FromClient.toJavaProto(this))
     def companion = netmsg.game.FromClient
 }
 
-object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromClient] with com.trueaccord.scalapb.JavaProtoSupport[FromClient, netmsg.Game.FromClient]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromClient] with com.trueaccord.scalapb.JavaProtoSupport[FromClient, netmsg.Game.FromClient]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.FromClient): netmsg.Game.FromClient = {
-    val javaPbOut = netmsg.Game.FromClient.newBuilder
-    scalaPbSource.warp.map(netmsg.game.MWarp.toJavaProto).foreach(javaPbOut.setWarp)
-    scalaPbSource.move.map(netmsg.game.MMove.toJavaProto).foreach(javaPbOut.setMove)
-    scalaPbSource.attack.map(netmsg.game.MAttack.toJavaProto).foreach(javaPbOut.setAttack)
-    scalaPbSource.special.map(netmsg.game.MSpecial.toJavaProto).foreach(javaPbOut.setSpecial)
-    scalaPbSource.getMovement.map(netmsg.game.MGetMovement.toJavaProto).foreach(javaPbOut.setGetMovement)
-    scalaPbSource.moveAttack.map(netmsg.game.MMoveAttack.toJavaProto).foreach(javaPbOut.setMoveAttack)
-    scalaPbSource.leave.map(netmsg.game.MLeave.toJavaProto).foreach(javaPbOut.setLeave)
-    scalaPbSource.endTurn.map(netmsg.game.MEndTurn.toJavaProto).foreach(javaPbOut.setEndTurn)
-    scalaPbSource.concede.map(netmsg.game.MConcede.toJavaProto).foreach(javaPbOut.setConcede)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.FromClient): netmsg.game.FromClient = netmsg.game.FromClient(
-    warp = if (javaPbSource.hasWarp) Some(netmsg.game.MWarp.fromJavaProto(javaPbSource.getWarp)) else None,
-    move = if (javaPbSource.hasMove) Some(netmsg.game.MMove.fromJavaProto(javaPbSource.getMove)) else None,
-    attack = if (javaPbSource.hasAttack) Some(netmsg.game.MAttack.fromJavaProto(javaPbSource.getAttack)) else None,
-    special = if (javaPbSource.hasSpecial) Some(netmsg.game.MSpecial.fromJavaProto(javaPbSource.getSpecial)) else None,
-    getMovement = if (javaPbSource.hasGetMovement) Some(netmsg.game.MGetMovement.fromJavaProto(javaPbSource.getGetMovement)) else None,
-    moveAttack = if (javaPbSource.hasMoveAttack) Some(netmsg.game.MMoveAttack.fromJavaProto(javaPbSource.getMoveAttack)) else None,
-    leave = if (javaPbSource.hasLeave) Some(netmsg.game.MLeave.fromJavaProto(javaPbSource.getLeave)) else None,
-    endTurn = if (javaPbSource.hasEndTurn) Some(netmsg.game.MEndTurn.fromJavaProto(javaPbSource.getEndTurn)) else None,
-    concede = if (javaPbSource.hasConcede) Some(netmsg.game.MConcede.fromJavaProto(javaPbSource.getConcede)) else None
-  )
-  override def fromAscii(ascii: String): netmsg.game.FromClient = {
-    val javaProtoBuilder = netmsg.Game.FromClient.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromClient]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromClient]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.FromClient = netmsg.game.FromClient(
     warp = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.game.MWarp]],
     move = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.game.MMove]],
     attack = fieldsMap.getOrElse(3, None).asInstanceOf[Option[netmsg.game.MAttack]],
     special = fieldsMap.getOrElse(4, None).asInstanceOf[Option[netmsg.game.MSpecial]],
-    getMovement = fieldsMap.getOrElse(5, None).asInstanceOf[Option[netmsg.game.MGetMovement]],
-    moveAttack = fieldsMap.getOrElse(6, None).asInstanceOf[Option[netmsg.game.MMoveAttack]],
+    moveAttack = fieldsMap.getOrElse(5, None).asInstanceOf[Option[netmsg.game.MMoveAttack]],
     leave = fieldsMap.getOrElse(1001, None).asInstanceOf[Option[netmsg.game.MLeave]],
     endTurn = fieldsMap.getOrElse(1002, None).asInstanceOf[Option[netmsg.game.MEndTurn]],
     concede = fieldsMap.getOrElse(1003, None).asInstanceOf[Option[netmsg.game.MConcede]]
@@ -226,8 +180,6 @@ object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromC
     def optionalAttack: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MAttack]] = field(_.attack)((c_, f_) => c_.copy(attack = f_))
     def special: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MSpecial] = field(_.getSpecial)((c_, f_) => c_.copy(special = Some(f_)))
     def optionalSpecial: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MSpecial]] = field(_.special)((c_, f_) => c_.copy(special = f_))
-    def getMovement: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MGetMovement] = field(_.getGetMovement)((c_, f_) => c_.copy(getMovement = Some(f_)))
-    def optionalGetMovement: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MGetMovement]] = field(_.getMovement)((c_, f_) => c_.copy(getMovement = f_))
     def moveAttack: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MMoveAttack] = field(_.getMoveAttack)((c_, f_) => c_.copy(moveAttack = Some(f_)))
     def optionalMoveAttack: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MMoveAttack]] = field(_.moveAttack)((c_, f_) => c_.copy(moveAttack = f_))
     def leave: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MLeave] = field(_.getLeave)((c_, f_) => c_.copy(leave = Some(f_)))
@@ -241,8 +193,7 @@ object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromC
   final val MOVE_FIELD_NUMBER = 2
   final val ATTACK_FIELD_NUMBER = 3
   final val SPECIAL_FIELD_NUMBER = 4
-  final val GET_MOVEMENT_FIELD_NUMBER = 5
-  final val MOVE_ATTACK_FIELD_NUMBER = 6
+  final val MOVE_ATTACK_FIELD_NUMBER = 5
   final val LEAVE_FIELD_NUMBER = 1001
   final val END_TURN_FIELD_NUMBER = 1002
   final val CONCEDE_FIELD_NUMBER = 1003

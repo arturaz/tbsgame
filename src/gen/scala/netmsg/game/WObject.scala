@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class WObject(
@@ -285,57 +285,11 @@ final case class WObject(
         case 17 => vpTower
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.toJavaProto(this))
     def companion = netmsg.game.WObject
 }
 
-object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject] with com.trueaccord.scalapb.JavaProtoSupport[WObject, netmsg.Game.WObject]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WObject] with com.trueaccord.scalapb.JavaProtoSupport[WObject, netmsg.Game.WObject]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.WObject): netmsg.Game.WObject = {
-    val javaPbOut = netmsg.Game.WObject.newBuilder
-    scalaPbSource.asteroid.map(netmsg.game.WObject.Asteroid.toJavaProto).foreach(javaPbOut.setAsteroid)
-    scalaPbSource.rock.map(netmsg.game.WObject.Rock.toJavaProto).foreach(javaPbOut.setRock)
-    scalaPbSource.crystal.map(netmsg.game.WObject.Crystal.toJavaProto).foreach(javaPbOut.setCrystal)
-    scalaPbSource.brush.map(netmsg.game.WObject.Brush.toJavaProto).foreach(javaPbOut.setBrush)
-    scalaPbSource.warpGate.map(netmsg.game.WObject.WarpGate.toJavaProto).foreach(javaPbOut.setWarpGate)
-    scalaPbSource.extractor.map(netmsg.game.WObject.Extractor.toJavaProto).foreach(javaPbOut.setExtractor)
-    scalaPbSource.warpLinker.map(netmsg.game.WObject.WarpLinker.toJavaProto).foreach(javaPbOut.setWarpLinker)
-    scalaPbSource.spawner.map(netmsg.game.WObject.Spawner.toJavaProto).foreach(javaPbOut.setSpawner)
-    scalaPbSource.laserTower.map(netmsg.game.WObject.LaserTower.toJavaProto).foreach(javaPbOut.setLaserTower)
-    scalaPbSource.corvette.map(netmsg.game.WObject.Corvette.toJavaProto).foreach(javaPbOut.setCorvette)
-    scalaPbSource.wasp.map(netmsg.game.WObject.Wasp.toJavaProto).foreach(javaPbOut.setWasp)
-    scalaPbSource.scout.map(netmsg.game.WObject.Scout.toJavaProto).foreach(javaPbOut.setScout)
-    scalaPbSource.rayShip.map(netmsg.game.WObject.RayShip.toJavaProto).foreach(javaPbOut.setRayShip)
-    scalaPbSource.rocketFrigate.map(netmsg.game.WObject.RocketFrigate.toJavaProto).foreach(javaPbOut.setRocketFrigate)
-    scalaPbSource.gunship.map(netmsg.game.WObject.Gunship.toJavaProto).foreach(javaPbOut.setGunship)
-    scalaPbSource.fortress.map(netmsg.game.WObject.Fortress.toJavaProto).foreach(javaPbOut.setFortress)
-    scalaPbSource.vpTower.map(netmsg.game.WObject.VpTower.toJavaProto).foreach(javaPbOut.setVpTower)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.WObject): netmsg.game.WObject = netmsg.game.WObject(
-    asteroid = if (javaPbSource.hasAsteroid) Some(netmsg.game.WObject.Asteroid.fromJavaProto(javaPbSource.getAsteroid)) else None,
-    rock = if (javaPbSource.hasRock) Some(netmsg.game.WObject.Rock.fromJavaProto(javaPbSource.getRock)) else None,
-    crystal = if (javaPbSource.hasCrystal) Some(netmsg.game.WObject.Crystal.fromJavaProto(javaPbSource.getCrystal)) else None,
-    brush = if (javaPbSource.hasBrush) Some(netmsg.game.WObject.Brush.fromJavaProto(javaPbSource.getBrush)) else None,
-    warpGate = if (javaPbSource.hasWarpGate) Some(netmsg.game.WObject.WarpGate.fromJavaProto(javaPbSource.getWarpGate)) else None,
-    extractor = if (javaPbSource.hasExtractor) Some(netmsg.game.WObject.Extractor.fromJavaProto(javaPbSource.getExtractor)) else None,
-    warpLinker = if (javaPbSource.hasWarpLinker) Some(netmsg.game.WObject.WarpLinker.fromJavaProto(javaPbSource.getWarpLinker)) else None,
-    spawner = if (javaPbSource.hasSpawner) Some(netmsg.game.WObject.Spawner.fromJavaProto(javaPbSource.getSpawner)) else None,
-    laserTower = if (javaPbSource.hasLaserTower) Some(netmsg.game.WObject.LaserTower.fromJavaProto(javaPbSource.getLaserTower)) else None,
-    corvette = if (javaPbSource.hasCorvette) Some(netmsg.game.WObject.Corvette.fromJavaProto(javaPbSource.getCorvette)) else None,
-    wasp = if (javaPbSource.hasWasp) Some(netmsg.game.WObject.Wasp.fromJavaProto(javaPbSource.getWasp)) else None,
-    scout = if (javaPbSource.hasScout) Some(netmsg.game.WObject.Scout.fromJavaProto(javaPbSource.getScout)) else None,
-    rayShip = if (javaPbSource.hasRayShip) Some(netmsg.game.WObject.RayShip.fromJavaProto(javaPbSource.getRayShip)) else None,
-    rocketFrigate = if (javaPbSource.hasRocketFrigate) Some(netmsg.game.WObject.RocketFrigate.fromJavaProto(javaPbSource.getRocketFrigate)) else None,
-    gunship = if (javaPbSource.hasGunship) Some(netmsg.game.WObject.Gunship.fromJavaProto(javaPbSource.getGunship)) else None,
-    fortress = if (javaPbSource.hasFortress) Some(netmsg.game.WObject.Fortress.fromJavaProto(javaPbSource.getFortress)) else None,
-    vpTower = if (javaPbSource.hasVpTower) Some(netmsg.game.WObject.VpTower.fromJavaProto(javaPbSource.getVpTower)) else None
-  )
-  override def fromAscii(ascii: String): netmsg.game.WObject = {
-    val javaProtoBuilder = netmsg.Game.WObject.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject = netmsg.game.WObject(
     asteroid = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.game.WObject.Asteroid]],
     rock = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.game.WObject.Rock]],
@@ -407,27 +361,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 2 => position
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Base.toJavaProto(this))
       def companion = netmsg.game.WObject.Base
   }
   
-  object Base extends com.trueaccord.scalapb.GeneratedMessageCompanion[Base] with com.trueaccord.scalapb.JavaProtoSupport[Base, netmsg.Game.WObject.Base]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Base] with com.trueaccord.scalapb.JavaProtoSupport[Base, netmsg.Game.WObject.Base]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Base): netmsg.Game.WObject.Base = {
-      val javaPbOut = netmsg.Game.WObject.Base.newBuilder
-      javaPbOut.setId(netmsg.game.WObjID.toJavaProto(scalaPbSource.id))
-      javaPbOut.setPosition(netmsg.base.Vect2.toJavaProto(scalaPbSource.position))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Base): netmsg.game.WObject.Base = netmsg.game.WObject.Base(
-      id = netmsg.game.WObjID.fromJavaProto(javaPbSource.getId),
-      position = netmsg.base.Vect2.fromJavaProto(javaPbSource.getPosition)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Base = {
-      val javaProtoBuilder = netmsg.Game.WObject.Base.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Base extends com.trueaccord.scalapb.GeneratedMessageCompanion[Base]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Base]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Base = netmsg.game.WObject.Base(
       id = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
       position = fieldsMap(2).asInstanceOf[netmsg.base.Vect2]
@@ -492,27 +430,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 3 => hp
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.OwnedObj.toJavaProto(this))
       def companion = netmsg.game.WObject.OwnedObj
   }
   
-  object OwnedObj extends com.trueaccord.scalapb.GeneratedMessageCompanion[OwnedObj] with com.trueaccord.scalapb.JavaProtoSupport[OwnedObj, netmsg.Game.WObject.OwnedObj]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[OwnedObj] with com.trueaccord.scalapb.JavaProtoSupport[OwnedObj, netmsg.Game.WObject.OwnedObj]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.OwnedObj): netmsg.Game.WObject.OwnedObj = {
-      val javaPbOut = netmsg.Game.WObject.OwnedObj.newBuilder
-      javaPbOut.setOwnerId(netmsg.game.OwnerID.toJavaProto(scalaPbSource.ownerId))
-      javaPbOut.setHp(scalaPbSource.hp)
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.OwnedObj): netmsg.game.WObject.OwnedObj = netmsg.game.WObject.OwnedObj(
-      ownerId = netmsg.game.OwnerID.fromJavaProto(javaPbSource.getOwnerId),
-      hp = javaPbSource.getHp.intValue
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.OwnedObj = {
-      val javaProtoBuilder = netmsg.Game.WObject.OwnedObj.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object OwnedObj extends com.trueaccord.scalapb.GeneratedMessageCompanion[OwnedObj]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[OwnedObj]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.OwnedObj = netmsg.game.WObject.OwnedObj(
       ownerId = fieldsMap(2).asInstanceOf[netmsg.game.OwnerID],
       hp = fieldsMap(3).asInstanceOf[Int]
@@ -566,25 +488,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 2 => warpState
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Warpable.toJavaProto(this))
       def companion = netmsg.game.WObject.Warpable
   }
   
-  object Warpable extends com.trueaccord.scalapb.GeneratedMessageCompanion[Warpable] with com.trueaccord.scalapb.JavaProtoSupport[Warpable, netmsg.Game.WObject.Warpable]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Warpable] with com.trueaccord.scalapb.JavaProtoSupport[Warpable, netmsg.Game.WObject.Warpable]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Warpable): netmsg.Game.WObject.Warpable = {
-      val javaPbOut = netmsg.Game.WObject.Warpable.newBuilder
-      javaPbOut.setWarpState(scalaPbSource.warpState)
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Warpable): netmsg.game.WObject.Warpable = netmsg.game.WObject.Warpable(
-      warpState = javaPbSource.getWarpState.intValue
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Warpable = {
-      val javaProtoBuilder = netmsg.Game.WObject.Warpable.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Warpable extends com.trueaccord.scalapb.GeneratedMessageCompanion[Warpable]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Warpable]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Warpable = netmsg.game.WObject.Warpable(
       warpState = fieldsMap(2).asInstanceOf[Int]
     )
@@ -643,27 +551,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 3 => level
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Fighter.toJavaProto(this))
       def companion = netmsg.game.WObject.Fighter
   }
   
-  object Fighter extends com.trueaccord.scalapb.GeneratedMessageCompanion[Fighter] with com.trueaccord.scalapb.JavaProtoSupport[Fighter, netmsg.Game.WObject.Fighter]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Fighter] with com.trueaccord.scalapb.JavaProtoSupport[Fighter, netmsg.Game.WObject.Fighter]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Fighter): netmsg.Game.WObject.Fighter = {
-      val javaPbOut = netmsg.Game.WObject.Fighter.newBuilder
-      javaPbOut.setAttacksLeft(scalaPbSource.attacksLeft)
-      javaPbOut.setLevel(scalaPbSource.level)
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Fighter): netmsg.game.WObject.Fighter = netmsg.game.WObject.Fighter(
-      attacksLeft = javaPbSource.getAttacksLeft.intValue,
-      level = javaPbSource.getLevel.intValue
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Fighter = {
-      val javaProtoBuilder = netmsg.Game.WObject.Fighter.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Fighter extends com.trueaccord.scalapb.GeneratedMessageCompanion[Fighter]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Fighter]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Fighter = netmsg.game.WObject.Fighter(
       attacksLeft = fieldsMap(2).asInstanceOf[Int],
       level = fieldsMap(3).asInstanceOf[Int]
@@ -717,25 +609,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 2 => movement
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Movable.toJavaProto(this))
       def companion = netmsg.game.WObject.Movable
   }
   
-  object Movable extends com.trueaccord.scalapb.GeneratedMessageCompanion[Movable] with com.trueaccord.scalapb.JavaProtoSupport[Movable, netmsg.Game.WObject.Movable]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Movable] with com.trueaccord.scalapb.JavaProtoSupport[Movable, netmsg.Game.WObject.Movable]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Movable): netmsg.Game.WObject.Movable = {
-      val javaPbOut = netmsg.Game.WObject.Movable.newBuilder
-      javaPbOut.setMovement(scalaPbSource.movement)
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Movable): netmsg.game.WObject.Movable = netmsg.game.WObject.Movable(
-      movement = javaPbSource.getMovement.intValue
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Movable = {
-      val javaProtoBuilder = netmsg.Game.WObject.Movable.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Movable extends com.trueaccord.scalapb.GeneratedMessageCompanion[Movable]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Movable]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Movable = netmsg.game.WObject.Movable(
       movement = fieldsMap(2).asInstanceOf[Int]
     )
@@ -816,31 +694,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 4 => extractionSpeed
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Asteroid.toJavaProto(this))
       def companion = netmsg.game.WObject.Asteroid
   }
   
-  object Asteroid extends com.trueaccord.scalapb.GeneratedMessageCompanion[Asteroid] with com.trueaccord.scalapb.JavaProtoSupport[Asteroid, netmsg.Game.WObject.Asteroid]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Asteroid] with com.trueaccord.scalapb.JavaProtoSupport[Asteroid, netmsg.Game.WObject.Asteroid]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Asteroid): netmsg.Game.WObject.Asteroid = {
-      val javaPbOut = netmsg.Game.WObject.Asteroid.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.Asteroid.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setResources(scalaPbSource.resources)
-      javaPbOut.setExtractionSpeed(netmsg.game.WObject.Asteroid.ExtractionSpeed.toJavaValue(scalaPbSource.extractionSpeed))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Asteroid): netmsg.game.WObject.Asteroid = netmsg.game.WObject.Asteroid(
-      stats = netmsg.game.WObjectStats.Asteroid.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      resources = javaPbSource.getResources.intValue,
-      extractionSpeed = netmsg.game.WObject.Asteroid.ExtractionSpeed.fromJavaValue(javaPbSource.getExtractionSpeed)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Asteroid = {
-      val javaProtoBuilder = netmsg.Game.WObject.Asteroid.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Asteroid extends com.trueaccord.scalapb.GeneratedMessageCompanion[Asteroid]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Asteroid]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Asteroid = netmsg.game.WObject.Asteroid(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.Asteroid],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -889,8 +747,6 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
         case 3 => FAST
       }
       lazy val descriptor = new Descriptors.EnumDescriptor(0, "ExtractionSpeed", this)
-      def fromJavaValue(pbJavaSource: netmsg.Game.WObject.Asteroid.ExtractionSpeed): ExtractionSpeed = fromValue(pbJavaSource.getNumber)
-      def toJavaValue(pbScalaSource: ExtractionSpeed): netmsg.Game.WObject.Asteroid.ExtractionSpeed = netmsg.Game.WObject.Asteroid.ExtractionSpeed.valueOf(pbScalaSource.id)
     }
     implicit class AsteroidLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, Asteroid]) extends com.trueaccord.lenses.ObjectLens[UpperPB, Asteroid](_l) {
       def stats: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.Asteroid] = field(_.stats)((c_, f_) => c_.copy(stats = f_))
@@ -950,27 +806,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 2 => base
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Rock.toJavaProto(this))
       def companion = netmsg.game.WObject.Rock
   }
   
-  object Rock extends com.trueaccord.scalapb.GeneratedMessageCompanion[Rock] with com.trueaccord.scalapb.JavaProtoSupport[Rock, netmsg.Game.WObject.Rock]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Rock] with com.trueaccord.scalapb.JavaProtoSupport[Rock, netmsg.Game.WObject.Rock]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Rock): netmsg.Game.WObject.Rock = {
-      val javaPbOut = netmsg.Game.WObject.Rock.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.Rock.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Rock): netmsg.game.WObject.Rock = netmsg.game.WObject.Rock(
-      stats = netmsg.game.WObjectStats.Rock.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Rock = {
-      val javaProtoBuilder = netmsg.Game.WObject.Rock.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Rock extends com.trueaccord.scalapb.GeneratedMessageCompanion[Rock]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Rock]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Rock = netmsg.game.WObject.Rock(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.Rock],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base]
@@ -1037,27 +877,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 2 => base
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Crystal.toJavaProto(this))
       def companion = netmsg.game.WObject.Crystal
   }
   
-  object Crystal extends com.trueaccord.scalapb.GeneratedMessageCompanion[Crystal] with com.trueaccord.scalapb.JavaProtoSupport[Crystal, netmsg.Game.WObject.Crystal]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Crystal] with com.trueaccord.scalapb.JavaProtoSupport[Crystal, netmsg.Game.WObject.Crystal]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Crystal): netmsg.Game.WObject.Crystal = {
-      val javaPbOut = netmsg.Game.WObject.Crystal.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.Crystal.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Crystal): netmsg.game.WObject.Crystal = netmsg.game.WObject.Crystal(
-      stats = netmsg.game.WObjectStats.Crystal.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Crystal = {
-      val javaProtoBuilder = netmsg.Game.WObject.Crystal.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Crystal extends com.trueaccord.scalapb.GeneratedMessageCompanion[Crystal]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Crystal]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Crystal = netmsg.game.WObject.Crystal(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.Crystal],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base]
@@ -1124,27 +948,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 2 => base
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Brush.toJavaProto(this))
       def companion = netmsg.game.WObject.Brush
   }
   
-  object Brush extends com.trueaccord.scalapb.GeneratedMessageCompanion[Brush] with com.trueaccord.scalapb.JavaProtoSupport[Brush, netmsg.Game.WObject.Brush]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Brush] with com.trueaccord.scalapb.JavaProtoSupport[Brush, netmsg.Game.WObject.Brush]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Brush): netmsg.Game.WObject.Brush = {
-      val javaPbOut = netmsg.Game.WObject.Brush.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.Brush.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Brush): netmsg.game.WObject.Brush = netmsg.game.WObject.Brush(
-      stats = netmsg.game.WObjectStats.Brush.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Brush = {
-      val javaProtoBuilder = netmsg.Game.WObject.Brush.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Brush extends com.trueaccord.scalapb.GeneratedMessageCompanion[Brush]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Brush]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Brush = netmsg.game.WObject.Brush(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.Brush],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base]
@@ -1222,29 +1030,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 3 => owned
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.WarpGate.toJavaProto(this))
       def companion = netmsg.game.WObject.WarpGate
   }
   
-  object WarpGate extends com.trueaccord.scalapb.GeneratedMessageCompanion[WarpGate] with com.trueaccord.scalapb.JavaProtoSupport[WarpGate, netmsg.Game.WObject.WarpGate]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WarpGate] with com.trueaccord.scalapb.JavaProtoSupport[WarpGate, netmsg.Game.WObject.WarpGate]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.WarpGate): netmsg.Game.WObject.WarpGate = {
-      val javaPbOut = netmsg.Game.WObject.WarpGate.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.WarpGate.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.WarpGate): netmsg.game.WObject.WarpGate = netmsg.game.WObject.WarpGate(
-      stats = netmsg.game.WObjectStats.WarpGate.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.WarpGate = {
-      val javaProtoBuilder = netmsg.Game.WObject.WarpGate.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object WarpGate extends com.trueaccord.scalapb.GeneratedMessageCompanion[WarpGate]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WarpGate]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.WarpGate = netmsg.game.WObject.WarpGate(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.WarpGate],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -1337,31 +1127,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 4 => warpable
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Extractor.toJavaProto(this))
       def companion = netmsg.game.WObject.Extractor
   }
   
-  object Extractor extends com.trueaccord.scalapb.GeneratedMessageCompanion[Extractor] with com.trueaccord.scalapb.JavaProtoSupport[Extractor, netmsg.Game.WObject.Extractor]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Extractor] with com.trueaccord.scalapb.JavaProtoSupport[Extractor, netmsg.Game.WObject.Extractor]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Extractor): netmsg.Game.WObject.Extractor = {
-      val javaPbOut = netmsg.Game.WObject.Extractor.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.Extractor.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.setWarpable(netmsg.game.WObject.Warpable.toJavaProto(scalaPbSource.warpable))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Extractor): netmsg.game.WObject.Extractor = netmsg.game.WObject.Extractor(
-      stats = netmsg.game.WObjectStats.Extractor.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned),
-      warpable = netmsg.game.WObject.Warpable.fromJavaProto(javaPbSource.getWarpable)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Extractor = {
-      val javaProtoBuilder = netmsg.Game.WObject.Extractor.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Extractor extends com.trueaccord.scalapb.GeneratedMessageCompanion[Extractor]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Extractor]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Extractor = netmsg.game.WObject.Extractor(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.Extractor],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -1458,31 +1228,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 4 => warpable
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.WarpLinker.toJavaProto(this))
       def companion = netmsg.game.WObject.WarpLinker
   }
   
-  object WarpLinker extends com.trueaccord.scalapb.GeneratedMessageCompanion[WarpLinker] with com.trueaccord.scalapb.JavaProtoSupport[WarpLinker, netmsg.Game.WObject.WarpLinker]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WarpLinker] with com.trueaccord.scalapb.JavaProtoSupport[WarpLinker, netmsg.Game.WObject.WarpLinker]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.WarpLinker): netmsg.Game.WObject.WarpLinker = {
-      val javaPbOut = netmsg.Game.WObject.WarpLinker.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.WarpLinker.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.setWarpable(netmsg.game.WObject.Warpable.toJavaProto(scalaPbSource.warpable))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.WarpLinker): netmsg.game.WObject.WarpLinker = netmsg.game.WObject.WarpLinker(
-      stats = netmsg.game.WObjectStats.WarpLinker.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned),
-      warpable = netmsg.game.WObject.Warpable.fromJavaProto(javaPbSource.getWarpable)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.WarpLinker = {
-      val javaProtoBuilder = netmsg.Game.WObject.WarpLinker.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object WarpLinker extends com.trueaccord.scalapb.GeneratedMessageCompanion[WarpLinker]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WarpLinker]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.WarpLinker = netmsg.game.WObject.WarpLinker(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.WarpLinker],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -1568,29 +1318,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 3 => owned
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Spawner.toJavaProto(this))
       def companion = netmsg.game.WObject.Spawner
   }
   
-  object Spawner extends com.trueaccord.scalapb.GeneratedMessageCompanion[Spawner] with com.trueaccord.scalapb.JavaProtoSupport[Spawner, netmsg.Game.WObject.Spawner]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Spawner] with com.trueaccord.scalapb.JavaProtoSupport[Spawner, netmsg.Game.WObject.Spawner]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Spawner): netmsg.Game.WObject.Spawner = {
-      val javaPbOut = netmsg.Game.WObject.Spawner.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.Spawner.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Spawner): netmsg.game.WObject.Spawner = netmsg.game.WObject.Spawner(
-      stats = netmsg.game.WObjectStats.Spawner.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Spawner = {
-      val javaProtoBuilder = netmsg.Game.WObject.Spawner.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Spawner extends com.trueaccord.scalapb.GeneratedMessageCompanion[Spawner]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Spawner]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Spawner = netmsg.game.WObject.Spawner(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.Spawner],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -1694,33 +1426,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 5 => fighter
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.LaserTower.toJavaProto(this))
       def companion = netmsg.game.WObject.LaserTower
   }
   
-  object LaserTower extends com.trueaccord.scalapb.GeneratedMessageCompanion[LaserTower] with com.trueaccord.scalapb.JavaProtoSupport[LaserTower, netmsg.Game.WObject.LaserTower]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[LaserTower] with com.trueaccord.scalapb.JavaProtoSupport[LaserTower, netmsg.Game.WObject.LaserTower]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.LaserTower): netmsg.Game.WObject.LaserTower = {
-      val javaPbOut = netmsg.Game.WObject.LaserTower.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.LaserTower.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.setWarpable(netmsg.game.WObject.Warpable.toJavaProto(scalaPbSource.warpable))
-      javaPbOut.setFighter(netmsg.game.WObject.Fighter.toJavaProto(scalaPbSource.fighter))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.LaserTower): netmsg.game.WObject.LaserTower = netmsg.game.WObject.LaserTower(
-      stats = netmsg.game.WObjectStats.LaserTower.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned),
-      warpable = netmsg.game.WObject.Warpable.fromJavaProto(javaPbSource.getWarpable),
-      fighter = netmsg.game.WObject.Fighter.fromJavaProto(javaPbSource.getFighter)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.LaserTower = {
-      val javaProtoBuilder = netmsg.Game.WObject.LaserTower.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object LaserTower extends com.trueaccord.scalapb.GeneratedMessageCompanion[LaserTower]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[LaserTower]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.LaserTower = netmsg.game.WObject.LaserTower(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.LaserTower],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -1843,35 +1553,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 6 => movable
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Corvette.toJavaProto(this))
       def companion = netmsg.game.WObject.Corvette
   }
   
-  object Corvette extends com.trueaccord.scalapb.GeneratedMessageCompanion[Corvette] with com.trueaccord.scalapb.JavaProtoSupport[Corvette, netmsg.Game.WObject.Corvette]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Corvette] with com.trueaccord.scalapb.JavaProtoSupport[Corvette, netmsg.Game.WObject.Corvette]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Corvette): netmsg.Game.WObject.Corvette = {
-      val javaPbOut = netmsg.Game.WObject.Corvette.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.Corvette.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.setWarpable(netmsg.game.WObject.Warpable.toJavaProto(scalaPbSource.warpable))
-      javaPbOut.setFighter(netmsg.game.WObject.Fighter.toJavaProto(scalaPbSource.fighter))
-      javaPbOut.setMovable(netmsg.game.WObject.Movable.toJavaProto(scalaPbSource.movable))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Corvette): netmsg.game.WObject.Corvette = netmsg.game.WObject.Corvette(
-      stats = netmsg.game.WObjectStats.Corvette.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned),
-      warpable = netmsg.game.WObject.Warpable.fromJavaProto(javaPbSource.getWarpable),
-      fighter = netmsg.game.WObject.Fighter.fromJavaProto(javaPbSource.getFighter),
-      movable = netmsg.game.WObject.Movable.fromJavaProto(javaPbSource.getMovable)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Corvette = {
-      val javaProtoBuilder = netmsg.Game.WObject.Corvette.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Corvette extends com.trueaccord.scalapb.GeneratedMessageCompanion[Corvette]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Corvette]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Corvette = netmsg.game.WObject.Corvette(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.Corvette],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -1998,35 +1684,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 6 => movable
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Wasp.toJavaProto(this))
       def companion = netmsg.game.WObject.Wasp
   }
   
-  object Wasp extends com.trueaccord.scalapb.GeneratedMessageCompanion[Wasp] with com.trueaccord.scalapb.JavaProtoSupport[Wasp, netmsg.Game.WObject.Wasp]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Wasp] with com.trueaccord.scalapb.JavaProtoSupport[Wasp, netmsg.Game.WObject.Wasp]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Wasp): netmsg.Game.WObject.Wasp = {
-      val javaPbOut = netmsg.Game.WObject.Wasp.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.Wasp.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.setWarpable(netmsg.game.WObject.Warpable.toJavaProto(scalaPbSource.warpable))
-      javaPbOut.setFighter(netmsg.game.WObject.Fighter.toJavaProto(scalaPbSource.fighter))
-      javaPbOut.setMovable(netmsg.game.WObject.Movable.toJavaProto(scalaPbSource.movable))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Wasp): netmsg.game.WObject.Wasp = netmsg.game.WObject.Wasp(
-      stats = netmsg.game.WObjectStats.Wasp.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned),
-      warpable = netmsg.game.WObject.Warpable.fromJavaProto(javaPbSource.getWarpable),
-      fighter = netmsg.game.WObject.Fighter.fromJavaProto(javaPbSource.getFighter),
-      movable = netmsg.game.WObject.Movable.fromJavaProto(javaPbSource.getMovable)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Wasp = {
-      val javaProtoBuilder = netmsg.Game.WObject.Wasp.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Wasp extends com.trueaccord.scalapb.GeneratedMessageCompanion[Wasp]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Wasp]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Wasp = netmsg.game.WObject.Wasp(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.Wasp],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -2142,33 +1804,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 6 => movable
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Scout.toJavaProto(this))
       def companion = netmsg.game.WObject.Scout
   }
   
-  object Scout extends com.trueaccord.scalapb.GeneratedMessageCompanion[Scout] with com.trueaccord.scalapb.JavaProtoSupport[Scout, netmsg.Game.WObject.Scout]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Scout] with com.trueaccord.scalapb.JavaProtoSupport[Scout, netmsg.Game.WObject.Scout]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Scout): netmsg.Game.WObject.Scout = {
-      val javaPbOut = netmsg.Game.WObject.Scout.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.Scout.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.setWarpable(netmsg.game.WObject.Warpable.toJavaProto(scalaPbSource.warpable))
-      javaPbOut.setMovable(netmsg.game.WObject.Movable.toJavaProto(scalaPbSource.movable))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Scout): netmsg.game.WObject.Scout = netmsg.game.WObject.Scout(
-      stats = netmsg.game.WObjectStats.Scout.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned),
-      warpable = netmsg.game.WObject.Warpable.fromJavaProto(javaPbSource.getWarpable),
-      movable = netmsg.game.WObject.Movable.fromJavaProto(javaPbSource.getMovable)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Scout = {
-      val javaProtoBuilder = netmsg.Game.WObject.Scout.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Scout extends com.trueaccord.scalapb.GeneratedMessageCompanion[Scout]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Scout]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Scout = netmsg.game.WObject.Scout(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.Scout],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -2291,35 +1931,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 6 => movable
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.RayShip.toJavaProto(this))
       def companion = netmsg.game.WObject.RayShip
   }
   
-  object RayShip extends com.trueaccord.scalapb.GeneratedMessageCompanion[RayShip] with com.trueaccord.scalapb.JavaProtoSupport[RayShip, netmsg.Game.WObject.RayShip]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[RayShip] with com.trueaccord.scalapb.JavaProtoSupport[RayShip, netmsg.Game.WObject.RayShip]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.RayShip): netmsg.Game.WObject.RayShip = {
-      val javaPbOut = netmsg.Game.WObject.RayShip.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.RayShip.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.setWarpable(netmsg.game.WObject.Warpable.toJavaProto(scalaPbSource.warpable))
-      javaPbOut.setFighter(netmsg.game.WObject.Fighter.toJavaProto(scalaPbSource.fighter))
-      javaPbOut.setMovable(netmsg.game.WObject.Movable.toJavaProto(scalaPbSource.movable))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.RayShip): netmsg.game.WObject.RayShip = netmsg.game.WObject.RayShip(
-      stats = netmsg.game.WObjectStats.RayShip.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned),
-      warpable = netmsg.game.WObject.Warpable.fromJavaProto(javaPbSource.getWarpable),
-      fighter = netmsg.game.WObject.Fighter.fromJavaProto(javaPbSource.getFighter),
-      movable = netmsg.game.WObject.Movable.fromJavaProto(javaPbSource.getMovable)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.RayShip = {
-      val javaProtoBuilder = netmsg.Game.WObject.RayShip.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object RayShip extends com.trueaccord.scalapb.GeneratedMessageCompanion[RayShip]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[RayShip]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.RayShip = netmsg.game.WObject.RayShip(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.RayShip],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -2446,35 +2062,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 6 => movable
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.RocketFrigate.toJavaProto(this))
       def companion = netmsg.game.WObject.RocketFrigate
   }
   
-  object RocketFrigate extends com.trueaccord.scalapb.GeneratedMessageCompanion[RocketFrigate] with com.trueaccord.scalapb.JavaProtoSupport[RocketFrigate, netmsg.Game.WObject.RocketFrigate]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[RocketFrigate] with com.trueaccord.scalapb.JavaProtoSupport[RocketFrigate, netmsg.Game.WObject.RocketFrigate]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.RocketFrigate): netmsg.Game.WObject.RocketFrigate = {
-      val javaPbOut = netmsg.Game.WObject.RocketFrigate.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.RocketFrigate.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.setWarpable(netmsg.game.WObject.Warpable.toJavaProto(scalaPbSource.warpable))
-      javaPbOut.setFighter(netmsg.game.WObject.Fighter.toJavaProto(scalaPbSource.fighter))
-      javaPbOut.setMovable(netmsg.game.WObject.Movable.toJavaProto(scalaPbSource.movable))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.RocketFrigate): netmsg.game.WObject.RocketFrigate = netmsg.game.WObject.RocketFrigate(
-      stats = netmsg.game.WObjectStats.RocketFrigate.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned),
-      warpable = netmsg.game.WObject.Warpable.fromJavaProto(javaPbSource.getWarpable),
-      fighter = netmsg.game.WObject.Fighter.fromJavaProto(javaPbSource.getFighter),
-      movable = netmsg.game.WObject.Movable.fromJavaProto(javaPbSource.getMovable)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.RocketFrigate = {
-      val javaProtoBuilder = netmsg.Game.WObject.RocketFrigate.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object RocketFrigate extends com.trueaccord.scalapb.GeneratedMessageCompanion[RocketFrigate]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[RocketFrigate]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.RocketFrigate = netmsg.game.WObject.RocketFrigate(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.RocketFrigate],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -2601,35 +2193,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 6 => movable
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Gunship.toJavaProto(this))
       def companion = netmsg.game.WObject.Gunship
   }
   
-  object Gunship extends com.trueaccord.scalapb.GeneratedMessageCompanion[Gunship] with com.trueaccord.scalapb.JavaProtoSupport[Gunship, netmsg.Game.WObject.Gunship]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Gunship] with com.trueaccord.scalapb.JavaProtoSupport[Gunship, netmsg.Game.WObject.Gunship]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Gunship): netmsg.Game.WObject.Gunship = {
-      val javaPbOut = netmsg.Game.WObject.Gunship.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.Gunship.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.setWarpable(netmsg.game.WObject.Warpable.toJavaProto(scalaPbSource.warpable))
-      javaPbOut.setFighter(netmsg.game.WObject.Fighter.toJavaProto(scalaPbSource.fighter))
-      javaPbOut.setMovable(netmsg.game.WObject.Movable.toJavaProto(scalaPbSource.movable))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Gunship): netmsg.game.WObject.Gunship = netmsg.game.WObject.Gunship(
-      stats = netmsg.game.WObjectStats.Gunship.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned),
-      warpable = netmsg.game.WObject.Warpable.fromJavaProto(javaPbSource.getWarpable),
-      fighter = netmsg.game.WObject.Fighter.fromJavaProto(javaPbSource.getFighter),
-      movable = netmsg.game.WObject.Movable.fromJavaProto(javaPbSource.getMovable)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Gunship = {
-      val javaProtoBuilder = netmsg.Game.WObject.Gunship.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Gunship extends com.trueaccord.scalapb.GeneratedMessageCompanion[Gunship]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Gunship]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Gunship = netmsg.game.WObject.Gunship(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.Gunship],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -2756,35 +2324,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 6 => movable
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.Fortress.toJavaProto(this))
       def companion = netmsg.game.WObject.Fortress
   }
   
-  object Fortress extends com.trueaccord.scalapb.GeneratedMessageCompanion[Fortress] with com.trueaccord.scalapb.JavaProtoSupport[Fortress, netmsg.Game.WObject.Fortress]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Fortress] with com.trueaccord.scalapb.JavaProtoSupport[Fortress, netmsg.Game.WObject.Fortress]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.Fortress): netmsg.Game.WObject.Fortress = {
-      val javaPbOut = netmsg.Game.WObject.Fortress.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.Fortress.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.setWarpable(netmsg.game.WObject.Warpable.toJavaProto(scalaPbSource.warpable))
-      javaPbOut.setFighter(netmsg.game.WObject.Fighter.toJavaProto(scalaPbSource.fighter))
-      javaPbOut.setMovable(netmsg.game.WObject.Movable.toJavaProto(scalaPbSource.movable))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.Fortress): netmsg.game.WObject.Fortress = netmsg.game.WObject.Fortress(
-      stats = netmsg.game.WObjectStats.Fortress.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned),
-      warpable = netmsg.game.WObject.Warpable.fromJavaProto(javaPbSource.getWarpable),
-      fighter = netmsg.game.WObject.Fighter.fromJavaProto(javaPbSource.getFighter),
-      movable = netmsg.game.WObject.Movable.fromJavaProto(javaPbSource.getMovable)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.Fortress = {
-      val javaProtoBuilder = netmsg.Game.WObject.Fortress.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object Fortress extends com.trueaccord.scalapb.GeneratedMessageCompanion[Fortress]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Fortress]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.Fortress = netmsg.game.WObject.Fortress(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.Fortress],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],
@@ -2878,29 +2422,11 @@ object WObject extends com.trueaccord.scalapb.GeneratedMessageCompanion[WObject]
           case 3 => owned
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WObject.VpTower.toJavaProto(this))
       def companion = netmsg.game.WObject.VpTower
   }
   
-  object VpTower extends com.trueaccord.scalapb.GeneratedMessageCompanion[VpTower] with com.trueaccord.scalapb.JavaProtoSupport[VpTower, netmsg.Game.WObject.VpTower]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[VpTower] with com.trueaccord.scalapb.JavaProtoSupport[VpTower, netmsg.Game.WObject.VpTower]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.WObject.VpTower): netmsg.Game.WObject.VpTower = {
-      val javaPbOut = netmsg.Game.WObject.VpTower.newBuilder
-      javaPbOut.setStats(netmsg.game.WObjectStats.VpTower.toJavaProto(scalaPbSource.stats))
-      javaPbOut.setBase(netmsg.game.WObject.Base.toJavaProto(scalaPbSource.base))
-      javaPbOut.setOwned(netmsg.game.WObject.OwnedObj.toJavaProto(scalaPbSource.owned))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.WObject.VpTower): netmsg.game.WObject.VpTower = netmsg.game.WObject.VpTower(
-      stats = netmsg.game.WObjectStats.VpTower.fromJavaProto(javaPbSource.getStats),
-      base = netmsg.game.WObject.Base.fromJavaProto(javaPbSource.getBase),
-      owned = netmsg.game.WObject.OwnedObj.fromJavaProto(javaPbSource.getOwned)
-    )
-    override def fromAscii(ascii: String): netmsg.game.WObject.VpTower = {
-      val javaProtoBuilder = netmsg.Game.WObject.VpTower.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object VpTower extends com.trueaccord.scalapb.GeneratedMessageCompanion[VpTower]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[VpTower]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObject.VpTower = netmsg.game.WObject.VpTower(
       stats = fieldsMap(1).asInstanceOf[netmsg.game.WObjectStats.VpTower],
       base = fieldsMap(2).asInstanceOf[netmsg.game.WObject.Base],

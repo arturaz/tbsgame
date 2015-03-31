@@ -3,7 +3,7 @@
 
 package netmsg.messages
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 object InternalFields_messages {

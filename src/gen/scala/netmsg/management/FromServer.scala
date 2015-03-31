@@ -3,7 +3,7 @@
 
 package netmsg.management
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class FromServer(
@@ -105,33 +105,11 @@ final case class FromServer(
         case 5 => gameJoinCancelled
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.management.FromServer.toJavaProto(this))
     def companion = netmsg.management.FromServer
 }
 
-object FromServer extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer] with com.trueaccord.scalapb.JavaProtoSupport[FromServer, netmsg.Management.FromServer]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer] with com.trueaccord.scalapb.JavaProtoSupport[FromServer, netmsg.Management.FromServer]  = this
-  def toJavaProto(scalaPbSource: netmsg.management.FromServer): netmsg.Management.FromServer = {
-    val javaPbOut = netmsg.Management.FromServer.newBuilder
-    scalaPbSource.checkNameAvailability.map(netmsg.management.CheckNameAvailabilityResponse.toJavaProto).foreach(javaPbOut.setCheckNameAvailability)
-    scalaPbSource.register.map(netmsg.management.RegisterResponse.toJavaProto).foreach(javaPbOut.setRegister)
-    scalaPbSource.login.map(netmsg.management.LoginResponse.toJavaProto).foreach(javaPbOut.setLogin)
-    scalaPbSource.gameJoined.map(netmsg.management.GameJoined.toJavaProto).foreach(javaPbOut.setGameJoined)
-    scalaPbSource.gameJoinCancelled.map(netmsg.management.JoinGameCancelled.toJavaProto).foreach(javaPbOut.setGameJoinCancelled)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Management.FromServer): netmsg.management.FromServer = netmsg.management.FromServer(
-    checkNameAvailability = if (javaPbSource.hasCheckNameAvailability) Some(netmsg.management.CheckNameAvailabilityResponse.fromJavaProto(javaPbSource.getCheckNameAvailability)) else None,
-    register = if (javaPbSource.hasRegister) Some(netmsg.management.RegisterResponse.fromJavaProto(javaPbSource.getRegister)) else None,
-    login = if (javaPbSource.hasLogin) Some(netmsg.management.LoginResponse.fromJavaProto(javaPbSource.getLogin)) else None,
-    gameJoined = if (javaPbSource.hasGameJoined) Some(netmsg.management.GameJoined.fromJavaProto(javaPbSource.getGameJoined)) else None,
-    gameJoinCancelled = if (javaPbSource.hasGameJoinCancelled) Some(netmsg.management.JoinGameCancelled.fromJavaProto(javaPbSource.getGameJoinCancelled)) else None
-  )
-  override def fromAscii(ascii: String): netmsg.management.FromServer = {
-    val javaProtoBuilder = netmsg.Management.FromServer.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object FromServer extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.management.FromServer = netmsg.management.FromServer(
     checkNameAvailability = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.management.CheckNameAvailabilityResponse]],
     register = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.management.RegisterResponse]],

@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class SetTurnTimerEvt(
@@ -41,25 +41,11 @@ final case class SetTurnTimerEvt(
         case 1 => turnTimeframe
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.SetTurnTimerEvt.toJavaProto(this))
     def companion = netmsg.game.SetTurnTimerEvt
 }
 
-object SetTurnTimerEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[SetTurnTimerEvt] with com.trueaccord.scalapb.JavaProtoSupport[SetTurnTimerEvt, netmsg.Game.SetTurnTimerEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[SetTurnTimerEvt] with com.trueaccord.scalapb.JavaProtoSupport[SetTurnTimerEvt, netmsg.Game.SetTurnTimerEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.SetTurnTimerEvt): netmsg.Game.SetTurnTimerEvt = {
-    val javaPbOut = netmsg.Game.SetTurnTimerEvt.newBuilder
-    javaPbOut.setTurnTimeframe(netmsg.base.Timeframe.toJavaProto(scalaPbSource.turnTimeframe))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.SetTurnTimerEvt): netmsg.game.SetTurnTimerEvt = netmsg.game.SetTurnTimerEvt(
-    turnTimeframe = netmsg.base.Timeframe.fromJavaProto(javaPbSource.getTurnTimeframe)
-  )
-  override def fromAscii(ascii: String): netmsg.game.SetTurnTimerEvt = {
-    val javaProtoBuilder = netmsg.Game.SetTurnTimerEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object SetTurnTimerEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[SetTurnTimerEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[SetTurnTimerEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.SetTurnTimerEvt = netmsg.game.SetTurnTimerEvt(
     turnTimeframe = fieldsMap(1).asInstanceOf[netmsg.base.Timeframe]
   )

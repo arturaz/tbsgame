@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MLeave(
@@ -27,23 +27,11 @@ final case class MLeave(
       )
     }
     def getField(__field: Descriptors.FieldDescriptor): Any = throw new MatchError(__field)
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MLeave.toJavaProto(this))
     def companion = netmsg.game.MLeave
 }
 
-object MLeave extends com.trueaccord.scalapb.GeneratedMessageCompanion[MLeave] with com.trueaccord.scalapb.JavaProtoSupport[MLeave, netmsg.Game.MLeave]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MLeave] with com.trueaccord.scalapb.JavaProtoSupport[MLeave, netmsg.Game.MLeave]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MLeave): netmsg.Game.MLeave = {
-    val javaPbOut = netmsg.Game.MLeave.newBuilder
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MLeave): netmsg.game.MLeave = netmsg.game.MLeave(
-  )
-  override def fromAscii(ascii: String): netmsg.game.MLeave = {
-    val javaProtoBuilder = netmsg.Game.MLeave.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MLeave extends com.trueaccord.scalapb.GeneratedMessageCompanion[MLeave]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MLeave]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MLeave = netmsg.game.MLeave(
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("MLeave", this,

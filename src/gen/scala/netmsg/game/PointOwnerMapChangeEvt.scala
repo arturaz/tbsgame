@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class PointOwnerMapChangeEvt(
@@ -71,29 +71,11 @@ final case class PointOwnerMapChangeEvt(
         case 3 => unowned
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.PointOwnerMapChangeEvt.toJavaProto(this))
     def companion = netmsg.game.PointOwnerMapChangeEvt
 }
 
-object PointOwnerMapChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[PointOwnerMapChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[PointOwnerMapChangeEvt, netmsg.Game.PointOwnerMapChangeEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[PointOwnerMapChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[PointOwnerMapChangeEvt, netmsg.Game.PointOwnerMapChangeEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.PointOwnerMapChangeEvt): netmsg.Game.PointOwnerMapChangeEvt = {
-    val javaPbOut = netmsg.Game.PointOwnerMapChangeEvt.newBuilder
-    javaPbOut.setKind(netmsg.game.PointOwnerMapChangeEvt.Kind.toJavaValue(scalaPbSource.kind))
-    javaPbOut.addAllOwned(scalaPbSource.owned.map(netmsg.base.Vect2.toJavaProto))
-    javaPbOut.addAllUnowned(scalaPbSource.unowned.map(netmsg.base.Vect2.toJavaProto))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.PointOwnerMapChangeEvt): netmsg.game.PointOwnerMapChangeEvt = netmsg.game.PointOwnerMapChangeEvt(
-    kind = netmsg.game.PointOwnerMapChangeEvt.Kind.fromJavaValue(javaPbSource.getKind),
-    owned = javaPbSource.getOwnedList.map(netmsg.base.Vect2.fromJavaProto),
-    unowned = javaPbSource.getUnownedList.map(netmsg.base.Vect2.fromJavaProto)
-  )
-  override def fromAscii(ascii: String): netmsg.game.PointOwnerMapChangeEvt = {
-    val javaProtoBuilder = netmsg.Game.PointOwnerMapChangeEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object PointOwnerMapChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[PointOwnerMapChangeEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[PointOwnerMapChangeEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.PointOwnerMapChangeEvt = netmsg.game.PointOwnerMapChangeEvt(
     kind = fieldsMap(1).asInstanceOf[netmsg.game.PointOwnerMapChangeEvt.Kind],
     owned = fieldsMap.getOrElse(2, Nil).asInstanceOf[Seq[netmsg.base.Vect2]],
@@ -130,8 +112,6 @@ object PointOwnerMapChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCom
       case 2 => VISIBILITY
     }
     lazy val descriptor = new Descriptors.EnumDescriptor(0, "Kind", this)
-    def fromJavaValue(pbJavaSource: netmsg.Game.PointOwnerMapChangeEvt.Kind): Kind = fromValue(pbJavaSource.getNumber)
-    def toJavaValue(pbScalaSource: Kind): netmsg.Game.PointOwnerMapChangeEvt.Kind = netmsg.Game.PointOwnerMapChangeEvt.Kind.valueOf(pbScalaSource.id)
   }
   implicit class PointOwnerMapChangeEvtLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, PointOwnerMapChangeEvt]) extends com.trueaccord.lenses.ObjectLens[UpperPB, PointOwnerMapChangeEvt](_l) {
     def kind: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.PointOwnerMapChangeEvt.Kind] = field(_.kind)((c_, f_) => c_.copy(kind = f_))

@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class ObjectivesUpdateEvt(
@@ -41,25 +41,11 @@ final case class ObjectivesUpdateEvt(
         case 1 => newObjectives
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.ObjectivesUpdateEvt.toJavaProto(this))
     def companion = netmsg.game.ObjectivesUpdateEvt
 }
 
-object ObjectivesUpdateEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[ObjectivesUpdateEvt] with com.trueaccord.scalapb.JavaProtoSupport[ObjectivesUpdateEvt, netmsg.Game.ObjectivesUpdateEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ObjectivesUpdateEvt] with com.trueaccord.scalapb.JavaProtoSupport[ObjectivesUpdateEvt, netmsg.Game.ObjectivesUpdateEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.ObjectivesUpdateEvt): netmsg.Game.ObjectivesUpdateEvt = {
-    val javaPbOut = netmsg.Game.ObjectivesUpdateEvt.newBuilder
-    javaPbOut.setNewObjectives(netmsg.game.Objectives.toJavaProto(scalaPbSource.newObjectives))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.ObjectivesUpdateEvt): netmsg.game.ObjectivesUpdateEvt = netmsg.game.ObjectivesUpdateEvt(
-    newObjectives = netmsg.game.Objectives.fromJavaProto(javaPbSource.getNewObjectives)
-  )
-  override def fromAscii(ascii: String): netmsg.game.ObjectivesUpdateEvt = {
-    val javaProtoBuilder = netmsg.Game.ObjectivesUpdateEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object ObjectivesUpdateEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[ObjectivesUpdateEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ObjectivesUpdateEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.ObjectivesUpdateEvt = netmsg.game.ObjectivesUpdateEvt(
     newObjectives = fieldsMap(1).asInstanceOf[netmsg.game.Objectives]
   )

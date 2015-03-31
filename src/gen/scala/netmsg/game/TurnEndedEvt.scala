@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class TurnEndedEvt(
@@ -41,25 +41,11 @@ final case class TurnEndedEvt(
         case 1 => teamId
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.TurnEndedEvt.toJavaProto(this))
     def companion = netmsg.game.TurnEndedEvt
 }
 
-object TurnEndedEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[TurnEndedEvt] with com.trueaccord.scalapb.JavaProtoSupport[TurnEndedEvt, netmsg.Game.TurnEndedEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[TurnEndedEvt] with com.trueaccord.scalapb.JavaProtoSupport[TurnEndedEvt, netmsg.Game.TurnEndedEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.TurnEndedEvt): netmsg.Game.TurnEndedEvt = {
-    val javaPbOut = netmsg.Game.TurnEndedEvt.newBuilder
-    javaPbOut.setTeamId(netmsg.game.TeamID.toJavaProto(scalaPbSource.teamId))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.TurnEndedEvt): netmsg.game.TurnEndedEvt = netmsg.game.TurnEndedEvt(
-    teamId = netmsg.game.TeamID.fromJavaProto(javaPbSource.getTeamId)
-  )
-  override def fromAscii(ascii: String): netmsg.game.TurnEndedEvt = {
-    val javaProtoBuilder = netmsg.Game.TurnEndedEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object TurnEndedEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[TurnEndedEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[TurnEndedEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.TurnEndedEvt = netmsg.game.TurnEndedEvt(
     teamId = fieldsMap(1).asInstanceOf[netmsg.game.TeamID]
   )

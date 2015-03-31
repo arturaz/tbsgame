@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MEvents(
@@ -46,25 +46,11 @@ final case class MEvents(
         case 1 => events
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MEvents.toJavaProto(this))
     def companion = netmsg.game.MEvents
 }
 
-object MEvents extends com.trueaccord.scalapb.GeneratedMessageCompanion[MEvents] with com.trueaccord.scalapb.JavaProtoSupport[MEvents, netmsg.Game.MEvents]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MEvents] with com.trueaccord.scalapb.JavaProtoSupport[MEvents, netmsg.Game.MEvents]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MEvents): netmsg.Game.MEvents = {
-    val javaPbOut = netmsg.Game.MEvents.newBuilder
-    javaPbOut.addAllEvents(scalaPbSource.events.map(netmsg.game.Event.toJavaProto))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MEvents): netmsg.game.MEvents = netmsg.game.MEvents(
-    events = javaPbSource.getEventsList.map(netmsg.game.Event.fromJavaProto)
-  )
-  override def fromAscii(ascii: String): netmsg.game.MEvents = {
-    val javaProtoBuilder = netmsg.Game.MEvents.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MEvents extends com.trueaccord.scalapb.GeneratedMessageCompanion[MEvents]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MEvents]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MEvents = netmsg.game.MEvents(
     events = fieldsMap.getOrElse(1, Nil).asInstanceOf[Seq[netmsg.game.Event]]
   )

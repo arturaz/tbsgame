@@ -1,0 +1,3 @@
+2.6.1
+
+C# generator expects the .exe name to be protoc.exe

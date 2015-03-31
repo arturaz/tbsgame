@@ -3,7 +3,7 @@
 
 package netmsg.base
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class UUID(
@@ -48,27 +48,11 @@ final case class UUID(
         case 2 => leastSignificant
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.base.UUID.toJavaProto(this))
     def companion = netmsg.base.UUID
 }
 
-object UUID extends com.trueaccord.scalapb.GeneratedMessageCompanion[UUID] with com.trueaccord.scalapb.JavaProtoSupport[UUID, netmsg.Base.UUID]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[UUID] with com.trueaccord.scalapb.JavaProtoSupport[UUID, netmsg.Base.UUID]  = this
-  def toJavaProto(scalaPbSource: netmsg.base.UUID): netmsg.Base.UUID = {
-    val javaPbOut = netmsg.Base.UUID.newBuilder
-    javaPbOut.setMostSignificant(scalaPbSource.mostSignificant)
-    javaPbOut.setLeastSignificant(scalaPbSource.leastSignificant)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Base.UUID): netmsg.base.UUID = netmsg.base.UUID(
-    mostSignificant = javaPbSource.getMostSignificant.longValue,
-    leastSignificant = javaPbSource.getLeastSignificant.longValue
-  )
-  override def fromAscii(ascii: String): netmsg.base.UUID = {
-    val javaProtoBuilder = netmsg.Base.UUID.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object UUID extends com.trueaccord.scalapb.GeneratedMessageCompanion[UUID]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[UUID]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.base.UUID = netmsg.base.UUID(
     mostSignificant = fieldsMap(1).asInstanceOf[Long],
     leastSignificant = fieldsMap(2).asInstanceOf[Long]

@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MovementChangeEvt(
@@ -50,27 +50,11 @@ final case class MovementChangeEvt(
         case 2 => newMovement
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MovementChangeEvt.toJavaProto(this))
     def companion = netmsg.game.MovementChangeEvt
 }
 
-object MovementChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[MovementChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[MovementChangeEvt, netmsg.Game.MovementChangeEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MovementChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[MovementChangeEvt, netmsg.Game.MovementChangeEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MovementChangeEvt): netmsg.Game.MovementChangeEvt = {
-    val javaPbOut = netmsg.Game.MovementChangeEvt.newBuilder
-    javaPbOut.setObjId(netmsg.game.WObjID.toJavaProto(scalaPbSource.objId))
-    javaPbOut.setNewMovement(scalaPbSource.newMovement)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MovementChangeEvt): netmsg.game.MovementChangeEvt = netmsg.game.MovementChangeEvt(
-    objId = netmsg.game.WObjID.fromJavaProto(javaPbSource.getObjId),
-    newMovement = javaPbSource.getNewMovement.intValue
-  )
-  override def fromAscii(ascii: String): netmsg.game.MovementChangeEvt = {
-    val javaProtoBuilder = netmsg.Game.MovementChangeEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MovementChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[MovementChangeEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MovementChangeEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MovementChangeEvt = netmsg.game.MovementChangeEvt(
     objId = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
     newMovement = fieldsMap(2).asInstanceOf[Int]

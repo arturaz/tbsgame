@@ -3,7 +3,7 @@
 
 package netmsg.base
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Vect2(
@@ -48,27 +48,11 @@ final case class Vect2(
         case 2 => y
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.base.Vect2.toJavaProto(this))
     def companion = netmsg.base.Vect2
 }
 
-object Vect2 extends com.trueaccord.scalapb.GeneratedMessageCompanion[Vect2] with com.trueaccord.scalapb.JavaProtoSupport[Vect2, netmsg.Base.Vect2]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Vect2] with com.trueaccord.scalapb.JavaProtoSupport[Vect2, netmsg.Base.Vect2]  = this
-  def toJavaProto(scalaPbSource: netmsg.base.Vect2): netmsg.Base.Vect2 = {
-    val javaPbOut = netmsg.Base.Vect2.newBuilder
-    javaPbOut.setX(scalaPbSource.x)
-    javaPbOut.setY(scalaPbSource.y)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Base.Vect2): netmsg.base.Vect2 = netmsg.base.Vect2(
-    x = javaPbSource.getX.intValue,
-    y = javaPbSource.getY.intValue
-  )
-  override def fromAscii(ascii: String): netmsg.base.Vect2 = {
-    val javaProtoBuilder = netmsg.Base.Vect2.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Vect2 extends com.trueaccord.scalapb.GeneratedMessageCompanion[Vect2]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Vect2]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.base.Vect2 = netmsg.base.Vect2(
     x = fieldsMap(1).asInstanceOf[Int],
     y = fieldsMap(2).asInstanceOf[Int]

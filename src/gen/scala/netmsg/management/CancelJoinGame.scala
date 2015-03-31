@@ -3,7 +3,7 @@
 
 package netmsg.management
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class CancelJoinGame(
@@ -27,23 +27,11 @@ final case class CancelJoinGame(
       )
     }
     def getField(__field: Descriptors.FieldDescriptor): Any = throw new MatchError(__field)
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.management.CancelJoinGame.toJavaProto(this))
     def companion = netmsg.management.CancelJoinGame
 }
 
-object CancelJoinGame extends com.trueaccord.scalapb.GeneratedMessageCompanion[CancelJoinGame] with com.trueaccord.scalapb.JavaProtoSupport[CancelJoinGame, netmsg.Management.CancelJoinGame]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[CancelJoinGame] with com.trueaccord.scalapb.JavaProtoSupport[CancelJoinGame, netmsg.Management.CancelJoinGame]  = this
-  def toJavaProto(scalaPbSource: netmsg.management.CancelJoinGame): netmsg.Management.CancelJoinGame = {
-    val javaPbOut = netmsg.Management.CancelJoinGame.newBuilder
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Management.CancelJoinGame): netmsg.management.CancelJoinGame = netmsg.management.CancelJoinGame(
-  )
-  override def fromAscii(ascii: String): netmsg.management.CancelJoinGame = {
-    val javaProtoBuilder = netmsg.Management.CancelJoinGame.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object CancelJoinGame extends com.trueaccord.scalapb.GeneratedMessageCompanion[CancelJoinGame]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[CancelJoinGame]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.management.CancelJoinGame = netmsg.management.CancelJoinGame(
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("CancelJoinGame", this,

@@ -1,23 +1,23 @@
 package app.models.game.world
 
+import java.util.UUID
+
 import akka.event.LoggingAdapter
 import app.models.game._
 import app.models.game.ai.GrowingSpawnerAI
 import app.models.game.events._
-import app.models.game.world.WObject.Id
-import app.models.game.world.buildings.{VPTowerStats, SpawnerStats, WarpGateStats}
+import app.models.game.world.buildings.{VPTowerStats, SpawnerStats}
 import app.models.game.world.maps.{WasVisibleMap, VisibilityMap, WarpZoneMap}
 import app.models.game.world.props.ExtractionSpeed
 import app.models.game.world.units.{FortressStats, RayShipStats, WaspStats}
 import implicits._
 import infrastructure.PrefixedLoggingAdapter
 import monocle.{Lenser, SimpleLens}
-import utils.{ValWithMax, IntValueClass}
+import utils.{IdObj, ValWithMax, IntValueClass}
 
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
 import scala.util.Random
-import scalaz.Traverse
 
 case class WorldPlayerState(resources: Resources)
 object WorldPlayerState {
@@ -30,7 +30,8 @@ case class World private (
   bounds: Bounds, objects: WorldObjs.All,
   wasVisibleMap: WasVisibleMap,
   playerStates: Map[Player, WorldPlayerState], vpsMap: Map[Team, VPS],
-  warpZoneMap: WarpZoneMap, visibilityMap: VisibilityMap
+  warpZoneMap: WarpZoneMap, visibilityMap: VisibilityMap,
+  id: World.Id = World.newId
 ) {
   import app.models.game.world.World._
 
@@ -279,6 +280,11 @@ case class World private (
 }
 
 object World {
+  case class Id(id: UUID) extends AnyVal with IdObj {
+    override protected def prefix = "WorldID"
+  }
+  @inline def newId = Id(UUID.randomUUID())
+
   def revealObjects(team: Team, evtWorld: Evented[World]): Evented[World] = {
     val newVisiblePoints = evtWorld.events.collect {
       case evt: VisibilityChangeEvt if evt.team === team => evt.visible

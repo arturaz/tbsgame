@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Objectives(
@@ -69,29 +69,11 @@ final case class Objectives(
         case 3 => destroyAllCriticalObjectsLeft
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.Objectives.toJavaProto(this))
     def companion = netmsg.game.Objectives
 }
 
-object Objectives extends com.trueaccord.scalapb.GeneratedMessageCompanion[Objectives] with com.trueaccord.scalapb.JavaProtoSupport[Objectives, netmsg.Game.Objectives]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Objectives] with com.trueaccord.scalapb.JavaProtoSupport[Objectives, netmsg.Game.Objectives]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.Objectives): netmsg.Game.Objectives = {
-    val javaPbOut = netmsg.Game.Objectives.newBuilder
-    scalaPbSource.gatherResourcesLeft.foreach(javaPbOut.setGatherResourcesLeft)
-    scalaPbSource.collectVpsLeft.foreach(javaPbOut.setCollectVpsLeft)
-    scalaPbSource.destroyAllCriticalObjectsLeft.foreach(javaPbOut.setDestroyAllCriticalObjectsLeft)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.Objectives): netmsg.game.Objectives = netmsg.game.Objectives(
-    gatherResourcesLeft = if (javaPbSource.hasGatherResourcesLeft) Some(javaPbSource.getGatherResourcesLeft.intValue) else None,
-    collectVpsLeft = if (javaPbSource.hasCollectVpsLeft) Some(javaPbSource.getCollectVpsLeft.intValue) else None,
-    destroyAllCriticalObjectsLeft = if (javaPbSource.hasDestroyAllCriticalObjectsLeft) Some(javaPbSource.getDestroyAllCriticalObjectsLeft.intValue) else None
-  )
-  override def fromAscii(ascii: String): netmsg.game.Objectives = {
-    val javaProtoBuilder = netmsg.Game.Objectives.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Objectives extends com.trueaccord.scalapb.GeneratedMessageCompanion[Objectives]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Objectives]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.Objectives = netmsg.game.Objectives(
     gatherResourcesLeft = fieldsMap.getOrElse(1, None).asInstanceOf[Option[Int]],
     collectVpsLeft = fieldsMap.getOrElse(2, None).asInstanceOf[Option[Int]],

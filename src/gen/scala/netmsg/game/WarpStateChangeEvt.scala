@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class WarpStateChangeEvt(
@@ -50,27 +50,11 @@ final case class WarpStateChangeEvt(
         case 2 => newWarpState
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WarpStateChangeEvt.toJavaProto(this))
     def companion = netmsg.game.WarpStateChangeEvt
 }
 
-object WarpStateChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[WarpStateChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[WarpStateChangeEvt, netmsg.Game.WarpStateChangeEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WarpStateChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[WarpStateChangeEvt, netmsg.Game.WarpStateChangeEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.WarpStateChangeEvt): netmsg.Game.WarpStateChangeEvt = {
-    val javaPbOut = netmsg.Game.WarpStateChangeEvt.newBuilder
-    javaPbOut.setObjId(netmsg.game.WObjID.toJavaProto(scalaPbSource.objId))
-    javaPbOut.setNewWarpState(scalaPbSource.newWarpState)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.WarpStateChangeEvt): netmsg.game.WarpStateChangeEvt = netmsg.game.WarpStateChangeEvt(
-    objId = netmsg.game.WObjID.fromJavaProto(javaPbSource.getObjId),
-    newWarpState = javaPbSource.getNewWarpState.intValue
-  )
-  override def fromAscii(ascii: String): netmsg.game.WarpStateChangeEvt = {
-    val javaProtoBuilder = netmsg.Game.WarpStateChangeEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object WarpStateChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[WarpStateChangeEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WarpStateChangeEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WarpStateChangeEvt = netmsg.game.WarpStateChangeEvt(
     objId = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
     newWarpState = fieldsMap(2).asInstanceOf[Int]

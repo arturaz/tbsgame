@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class OwnerID(
@@ -60,27 +60,11 @@ final case class OwnerID(
         case 2 => playerId
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.OwnerID.toJavaProto(this))
     def companion = netmsg.game.OwnerID
 }
 
-object OwnerID extends com.trueaccord.scalapb.GeneratedMessageCompanion[OwnerID] with com.trueaccord.scalapb.JavaProtoSupport[OwnerID, netmsg.Game.OwnerID]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[OwnerID] with com.trueaccord.scalapb.JavaProtoSupport[OwnerID, netmsg.Game.OwnerID]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.OwnerID): netmsg.Game.OwnerID = {
-    val javaPbOut = netmsg.Game.OwnerID.newBuilder
-    scalaPbSource.teamId.map(netmsg.game.TeamID.toJavaProto).foreach(javaPbOut.setTeamId)
-    scalaPbSource.playerId.map(netmsg.game.PlayerID.toJavaProto).foreach(javaPbOut.setPlayerId)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.OwnerID): netmsg.game.OwnerID = netmsg.game.OwnerID(
-    teamId = if (javaPbSource.hasTeamId) Some(netmsg.game.TeamID.fromJavaProto(javaPbSource.getTeamId)) else None,
-    playerId = if (javaPbSource.hasPlayerId) Some(netmsg.game.PlayerID.fromJavaProto(javaPbSource.getPlayerId)) else None
-  )
-  override def fromAscii(ascii: String): netmsg.game.OwnerID = {
-    val javaProtoBuilder = netmsg.Game.OwnerID.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object OwnerID extends com.trueaccord.scalapb.GeneratedMessageCompanion[OwnerID]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[OwnerID]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.OwnerID = netmsg.game.OwnerID(
     teamId = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.game.TeamID]],
     playerId = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.game.PlayerID]]

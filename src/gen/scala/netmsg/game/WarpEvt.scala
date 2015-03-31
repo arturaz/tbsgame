@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class WarpEvt(
@@ -41,25 +41,11 @@ final case class WarpEvt(
         case 1 => `object`
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WarpEvt.toJavaProto(this))
     def companion = netmsg.game.WarpEvt
 }
 
-object WarpEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[WarpEvt] with com.trueaccord.scalapb.JavaProtoSupport[WarpEvt, netmsg.Game.WarpEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WarpEvt] with com.trueaccord.scalapb.JavaProtoSupport[WarpEvt, netmsg.Game.WarpEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.WarpEvt): netmsg.Game.WarpEvt = {
-    val javaPbOut = netmsg.Game.WarpEvt.newBuilder
-    javaPbOut.setObject(netmsg.game.WObject.toJavaProto(scalaPbSource.`object`))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.WarpEvt): netmsg.game.WarpEvt = netmsg.game.WarpEvt(
-    `object` = netmsg.game.WObject.fromJavaProto(javaPbSource.getObject)
-  )
-  override def fromAscii(ascii: String): netmsg.game.WarpEvt = {
-    val javaProtoBuilder = netmsg.Game.WarpEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object WarpEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[WarpEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WarpEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WarpEvt = netmsg.game.WarpEvt(
     `object` = fieldsMap(1).asInstanceOf[netmsg.game.WObject]
   )

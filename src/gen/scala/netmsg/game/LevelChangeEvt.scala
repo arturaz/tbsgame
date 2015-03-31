@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class LevelChangeEvt(
@@ -50,27 +50,11 @@ final case class LevelChangeEvt(
         case 2 => newLevel
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.LevelChangeEvt.toJavaProto(this))
     def companion = netmsg.game.LevelChangeEvt
 }
 
-object LevelChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[LevelChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[LevelChangeEvt, netmsg.Game.LevelChangeEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[LevelChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[LevelChangeEvt, netmsg.Game.LevelChangeEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.LevelChangeEvt): netmsg.Game.LevelChangeEvt = {
-    val javaPbOut = netmsg.Game.LevelChangeEvt.newBuilder
-    javaPbOut.setObjId(netmsg.game.WObjID.toJavaProto(scalaPbSource.objId))
-    javaPbOut.setNewLevel(scalaPbSource.newLevel)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.LevelChangeEvt): netmsg.game.LevelChangeEvt = netmsg.game.LevelChangeEvt(
-    objId = netmsg.game.WObjID.fromJavaProto(javaPbSource.getObjId),
-    newLevel = javaPbSource.getNewLevel.intValue
-  )
-  override def fromAscii(ascii: String): netmsg.game.LevelChangeEvt = {
-    val javaProtoBuilder = netmsg.Game.LevelChangeEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object LevelChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[LevelChangeEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[LevelChangeEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.LevelChangeEvt = netmsg.game.LevelChangeEvt(
     objId = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
     newLevel = fieldsMap(2).asInstanceOf[Int]

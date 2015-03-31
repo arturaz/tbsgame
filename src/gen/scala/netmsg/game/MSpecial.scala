@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MSpecial(
@@ -41,25 +41,11 @@ final case class MSpecial(
         case 1 => id
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MSpecial.toJavaProto(this))
     def companion = netmsg.game.MSpecial
 }
 
-object MSpecial extends com.trueaccord.scalapb.GeneratedMessageCompanion[MSpecial] with com.trueaccord.scalapb.JavaProtoSupport[MSpecial, netmsg.Game.MSpecial]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MSpecial] with com.trueaccord.scalapb.JavaProtoSupport[MSpecial, netmsg.Game.MSpecial]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MSpecial): netmsg.Game.MSpecial = {
-    val javaPbOut = netmsg.Game.MSpecial.newBuilder
-    javaPbOut.setId(netmsg.game.WObjID.toJavaProto(scalaPbSource.id))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MSpecial): netmsg.game.MSpecial = netmsg.game.MSpecial(
-    id = netmsg.game.WObjID.fromJavaProto(javaPbSource.getId)
-  )
-  override def fromAscii(ascii: String): netmsg.game.MSpecial = {
-    val javaProtoBuilder = netmsg.Game.MSpecial.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MSpecial extends com.trueaccord.scalapb.GeneratedMessageCompanion[MSpecial]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MSpecial]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MSpecial = netmsg.game.MSpecial(
     id = fieldsMap(1).asInstanceOf[netmsg.game.WObjID]
   )

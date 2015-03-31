@@ -3,7 +3,7 @@
 
 package netmsg.messages
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class TimeSync(
@@ -27,23 +27,11 @@ final case class TimeSync(
       )
     }
     def getField(__field: Descriptors.FieldDescriptor): Any = throw new MatchError(__field)
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.messages.TimeSync.toJavaProto(this))
     def companion = netmsg.messages.TimeSync
 }
 
-object TimeSync extends com.trueaccord.scalapb.GeneratedMessageCompanion[TimeSync] with com.trueaccord.scalapb.JavaProtoSupport[TimeSync, netmsg.Messages.TimeSync]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[TimeSync] with com.trueaccord.scalapb.JavaProtoSupport[TimeSync, netmsg.Messages.TimeSync]  = this
-  def toJavaProto(scalaPbSource: netmsg.messages.TimeSync): netmsg.Messages.TimeSync = {
-    val javaPbOut = netmsg.Messages.TimeSync.newBuilder
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Messages.TimeSync): netmsg.messages.TimeSync = netmsg.messages.TimeSync(
-  )
-  override def fromAscii(ascii: String): netmsg.messages.TimeSync = {
-    val javaProtoBuilder = netmsg.Messages.TimeSync.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object TimeSync extends com.trueaccord.scalapb.GeneratedMessageCompanion[TimeSync]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[TimeSync]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.messages.TimeSync = netmsg.messages.TimeSync(
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("TimeSync", this,
@@ -87,25 +75,11 @@ object TimeSync extends com.trueaccord.scalapb.GeneratedMessageCompanion[TimeSyn
           case 1 => now
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.messages.TimeSync.FromClient.toJavaProto(this))
       def companion = netmsg.messages.TimeSync.FromClient
   }
   
-  object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromClient] with com.trueaccord.scalapb.JavaProtoSupport[FromClient, netmsg.Messages.TimeSync.FromClient]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromClient] with com.trueaccord.scalapb.JavaProtoSupport[FromClient, netmsg.Messages.TimeSync.FromClient]  = this
-    def toJavaProto(scalaPbSource: netmsg.messages.TimeSync.FromClient): netmsg.Messages.TimeSync.FromClient = {
-      val javaPbOut = netmsg.Messages.TimeSync.FromClient.newBuilder
-      javaPbOut.setNow(netmsg.base.Timestamp.toJavaProto(scalaPbSource.now))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Messages.TimeSync.FromClient): netmsg.messages.TimeSync.FromClient = netmsg.messages.TimeSync.FromClient(
-      now = netmsg.base.Timestamp.fromJavaProto(javaPbSource.getNow)
-    )
-    override def fromAscii(ascii: String): netmsg.messages.TimeSync.FromClient = {
-      val javaProtoBuilder = netmsg.Messages.TimeSync.FromClient.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromClient]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromClient]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.messages.TimeSync.FromClient = netmsg.messages.TimeSync.FromClient(
       now = fieldsMap(1).asInstanceOf[netmsg.base.Timestamp]
     )
@@ -168,27 +142,11 @@ object TimeSync extends com.trueaccord.scalapb.GeneratedMessageCompanion[TimeSyn
           case 2 => serverNow
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.messages.TimeSync.FromServer.toJavaProto(this))
       def companion = netmsg.messages.TimeSync.FromServer
   }
   
-  object FromServer extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer] with com.trueaccord.scalapb.JavaProtoSupport[FromServer, netmsg.Messages.TimeSync.FromServer]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer] with com.trueaccord.scalapb.JavaProtoSupport[FromServer, netmsg.Messages.TimeSync.FromServer]  = this
-    def toJavaProto(scalaPbSource: netmsg.messages.TimeSync.FromServer): netmsg.Messages.TimeSync.FromServer = {
-      val javaPbOut = netmsg.Messages.TimeSync.FromServer.newBuilder
-      javaPbOut.setClientNow(netmsg.base.Timestamp.toJavaProto(scalaPbSource.clientNow))
-      javaPbOut.setServerNow(netmsg.base.Timestamp.toJavaProto(scalaPbSource.serverNow))
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Messages.TimeSync.FromServer): netmsg.messages.TimeSync.FromServer = netmsg.messages.TimeSync.FromServer(
-      clientNow = netmsg.base.Timestamp.fromJavaProto(javaPbSource.getClientNow),
-      serverNow = netmsg.base.Timestamp.fromJavaProto(javaPbSource.getServerNow)
-    )
-    override def fromAscii(ascii: String): netmsg.messages.TimeSync.FromServer = {
-      val javaProtoBuilder = netmsg.Messages.TimeSync.FromServer.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object FromServer extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.messages.TimeSync.FromServer = netmsg.messages.TimeSync.FromServer(
       clientNow = fieldsMap(1).asInstanceOf[netmsg.base.Timestamp],
       serverNow = fieldsMap(2).asInstanceOf[netmsg.base.Timestamp]

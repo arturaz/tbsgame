@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class AttacksChangeEvt(
@@ -50,27 +50,11 @@ final case class AttacksChangeEvt(
         case 2 => attacksLeft
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.AttacksChangeEvt.toJavaProto(this))
     def companion = netmsg.game.AttacksChangeEvt
 }
 
-object AttacksChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[AttacksChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[AttacksChangeEvt, netmsg.Game.AttacksChangeEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[AttacksChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[AttacksChangeEvt, netmsg.Game.AttacksChangeEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.AttacksChangeEvt): netmsg.Game.AttacksChangeEvt = {
-    val javaPbOut = netmsg.Game.AttacksChangeEvt.newBuilder
-    javaPbOut.setObjId(netmsg.game.WObjID.toJavaProto(scalaPbSource.objId))
-    javaPbOut.setAttacksLeft(scalaPbSource.attacksLeft)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.AttacksChangeEvt): netmsg.game.AttacksChangeEvt = netmsg.game.AttacksChangeEvt(
-    objId = netmsg.game.WObjID.fromJavaProto(javaPbSource.getObjId),
-    attacksLeft = javaPbSource.getAttacksLeft.intValue
-  )
-  override def fromAscii(ascii: String): netmsg.game.AttacksChangeEvt = {
-    val javaProtoBuilder = netmsg.Game.AttacksChangeEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object AttacksChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[AttacksChangeEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[AttacksChangeEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.AttacksChangeEvt = netmsg.game.AttacksChangeEvt(
     objId = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
     attacksLeft = fieldsMap(2).asInstanceOf[Int]

@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MEndTurn(
@@ -27,23 +27,11 @@ final case class MEndTurn(
       )
     }
     def getField(__field: Descriptors.FieldDescriptor): Any = throw new MatchError(__field)
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MEndTurn.toJavaProto(this))
     def companion = netmsg.game.MEndTurn
 }
 
-object MEndTurn extends com.trueaccord.scalapb.GeneratedMessageCompanion[MEndTurn] with com.trueaccord.scalapb.JavaProtoSupport[MEndTurn, netmsg.Game.MEndTurn]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MEndTurn] with com.trueaccord.scalapb.JavaProtoSupport[MEndTurn, netmsg.Game.MEndTurn]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MEndTurn): netmsg.Game.MEndTurn = {
-    val javaPbOut = netmsg.Game.MEndTurn.newBuilder
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MEndTurn): netmsg.game.MEndTurn = netmsg.game.MEndTurn(
-  )
-  override def fromAscii(ascii: String): netmsg.game.MEndTurn = {
-    val javaProtoBuilder = netmsg.Game.MEndTurn.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MEndTurn extends com.trueaccord.scalapb.GeneratedMessageCompanion[MEndTurn]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MEndTurn]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MEndTurn = netmsg.game.MEndTurn(
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("MEndTurn", this,

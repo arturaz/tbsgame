@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class PopulationChangeEvt(
@@ -52,27 +52,11 @@ final case class PopulationChangeEvt(
         case 2 => newPopulation
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.PopulationChangeEvt.toJavaProto(this))
     def companion = netmsg.game.PopulationChangeEvt
 }
 
-object PopulationChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[PopulationChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[PopulationChangeEvt, netmsg.Game.PopulationChangeEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[PopulationChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[PopulationChangeEvt, netmsg.Game.PopulationChangeEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.PopulationChangeEvt): netmsg.Game.PopulationChangeEvt = {
-    val javaPbOut = netmsg.Game.PopulationChangeEvt.newBuilder
-    javaPbOut.setPlayerId(netmsg.game.PlayerID.toJavaProto(scalaPbSource.playerId))
-    javaPbOut.setNewPopulation(netmsg.base.ValWithMax.toJavaProto(scalaPbSource.newPopulation))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.PopulationChangeEvt): netmsg.game.PopulationChangeEvt = netmsg.game.PopulationChangeEvt(
-    playerId = netmsg.game.PlayerID.fromJavaProto(javaPbSource.getPlayerId),
-    newPopulation = netmsg.base.ValWithMax.fromJavaProto(javaPbSource.getNewPopulation)
-  )
-  override def fromAscii(ascii: String): netmsg.game.PopulationChangeEvt = {
-    val javaProtoBuilder = netmsg.Game.PopulationChangeEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object PopulationChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[PopulationChangeEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[PopulationChangeEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.PopulationChangeEvt = netmsg.game.PopulationChangeEvt(
     playerId = fieldsMap(1).asInstanceOf[netmsg.game.PlayerID],
     newPopulation = fieldsMap(2).asInstanceOf[netmsg.base.ValWithMax]

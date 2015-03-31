@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MError(
@@ -39,25 +39,11 @@ final case class MError(
         case 1 => error
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MError.toJavaProto(this))
     def companion = netmsg.game.MError
 }
 
-object MError extends com.trueaccord.scalapb.GeneratedMessageCompanion[MError] with com.trueaccord.scalapb.JavaProtoSupport[MError, netmsg.Game.MError]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MError] with com.trueaccord.scalapb.JavaProtoSupport[MError, netmsg.Game.MError]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MError): netmsg.Game.MError = {
-    val javaPbOut = netmsg.Game.MError.newBuilder
-    javaPbOut.setError(scalaPbSource.error)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MError): netmsg.game.MError = netmsg.game.MError(
-    error = javaPbSource.getError
-  )
-  override def fromAscii(ascii: String): netmsg.game.MError = {
-    val javaProtoBuilder = netmsg.Game.MError.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MError extends com.trueaccord.scalapb.GeneratedMessageCompanion[MError]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MError]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MError = netmsg.game.MError(
     error = fieldsMap(1).asInstanceOf[String]
   )

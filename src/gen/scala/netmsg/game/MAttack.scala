@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MAttack(
@@ -52,27 +52,11 @@ final case class MAttack(
         case 2 => targetId
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MAttack.toJavaProto(this))
     def companion = netmsg.game.MAttack
 }
 
-object MAttack extends com.trueaccord.scalapb.GeneratedMessageCompanion[MAttack] with com.trueaccord.scalapb.JavaProtoSupport[MAttack, netmsg.Game.MAttack]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MAttack] with com.trueaccord.scalapb.JavaProtoSupport[MAttack, netmsg.Game.MAttack]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MAttack): netmsg.Game.MAttack = {
-    val javaPbOut = netmsg.Game.MAttack.newBuilder
-    javaPbOut.setId(netmsg.game.WObjID.toJavaProto(scalaPbSource.id))
-    javaPbOut.setTargetId(netmsg.game.WObjID.toJavaProto(scalaPbSource.targetId))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MAttack): netmsg.game.MAttack = netmsg.game.MAttack(
-    id = netmsg.game.WObjID.fromJavaProto(javaPbSource.getId),
-    targetId = netmsg.game.WObjID.fromJavaProto(javaPbSource.getTargetId)
-  )
-  override def fromAscii(ascii: String): netmsg.game.MAttack = {
-    val javaProtoBuilder = netmsg.Game.MAttack.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MAttack extends com.trueaccord.scalapb.GeneratedMessageCompanion[MAttack]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MAttack]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MAttack = netmsg.game.MAttack(
     id = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
     targetId = fieldsMap(2).asInstanceOf[netmsg.game.WObjID]

@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Attack(
@@ -48,27 +48,11 @@ final case class Attack(
         case 2 => successful
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.Attack.toJavaProto(this))
     def companion = netmsg.game.Attack
 }
 
-object Attack extends com.trueaccord.scalapb.GeneratedMessageCompanion[Attack] with com.trueaccord.scalapb.JavaProtoSupport[Attack, netmsg.Game.Attack]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Attack] with com.trueaccord.scalapb.JavaProtoSupport[Attack, netmsg.Game.Attack]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.Attack): netmsg.Game.Attack = {
-    val javaPbOut = netmsg.Game.Attack.newBuilder
-    javaPbOut.setAttackerRoll(scalaPbSource.attackerRoll)
-    javaPbOut.setSuccessful(scalaPbSource.successful)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.Attack): netmsg.game.Attack = netmsg.game.Attack(
-    attackerRoll = javaPbSource.getAttackerRoll.intValue,
-    successful = javaPbSource.getSuccessful.booleanValue
-  )
-  override def fromAscii(ascii: String): netmsg.game.Attack = {
-    val javaProtoBuilder = netmsg.Game.Attack.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Attack extends com.trueaccord.scalapb.GeneratedMessageCompanion[Attack]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Attack]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.Attack = netmsg.game.Attack(
     attackerRoll = fieldsMap(1).asInstanceOf[Int],
     successful = fieldsMap(2).asInstanceOf[Boolean]

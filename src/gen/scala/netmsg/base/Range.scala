@@ -3,7 +3,7 @@
 
 package netmsg.base
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Range(
@@ -48,27 +48,11 @@ final case class Range(
         case 2 => end
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.base.Range.toJavaProto(this))
     def companion = netmsg.base.Range
 }
 
-object Range extends com.trueaccord.scalapb.GeneratedMessageCompanion[Range] with com.trueaccord.scalapb.JavaProtoSupport[Range, netmsg.Base.Range]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Range] with com.trueaccord.scalapb.JavaProtoSupport[Range, netmsg.Base.Range]  = this
-  def toJavaProto(scalaPbSource: netmsg.base.Range): netmsg.Base.Range = {
-    val javaPbOut = netmsg.Base.Range.newBuilder
-    javaPbOut.setStart(scalaPbSource.start)
-    javaPbOut.setEnd(scalaPbSource.end)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Base.Range): netmsg.base.Range = netmsg.base.Range(
-    start = javaPbSource.getStart.intValue,
-    end = javaPbSource.getEnd.intValue
-  )
-  override def fromAscii(ascii: String): netmsg.base.Range = {
-    val javaProtoBuilder = netmsg.Base.Range.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Range extends com.trueaccord.scalapb.GeneratedMessageCompanion[Range]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Range]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.base.Range = netmsg.base.Range(
     start = fieldsMap(1).asInstanceOf[Int],
     end = fieldsMap(2).asInstanceOf[Int]

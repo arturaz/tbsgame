@@ -3,7 +3,7 @@
 
 package netmsg.management
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Register(
@@ -57,29 +57,11 @@ final case class Register(
         case 3 => email
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.management.Register.toJavaProto(this))
     def companion = netmsg.management.Register
 }
 
-object Register extends com.trueaccord.scalapb.GeneratedMessageCompanion[Register] with com.trueaccord.scalapb.JavaProtoSupport[Register, netmsg.Management.Register]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Register] with com.trueaccord.scalapb.JavaProtoSupport[Register, netmsg.Management.Register]  = this
-  def toJavaProto(scalaPbSource: netmsg.management.Register): netmsg.Management.Register = {
-    val javaPbOut = netmsg.Management.Register.newBuilder
-    javaPbOut.setUsername(scalaPbSource.username)
-    javaPbOut.setPassword(scalaPbSource.password)
-    javaPbOut.setEmail(scalaPbSource.email)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Management.Register): netmsg.management.Register = netmsg.management.Register(
-    username = javaPbSource.getUsername,
-    password = javaPbSource.getPassword,
-    email = javaPbSource.getEmail
-  )
-  override def fromAscii(ascii: String): netmsg.management.Register = {
-    val javaProtoBuilder = netmsg.Management.Register.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Register extends com.trueaccord.scalapb.GeneratedMessageCompanion[Register]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Register]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.management.Register = netmsg.management.Register(
     username = fieldsMap(1).asInstanceOf[String],
     password = fieldsMap(2).asInstanceOf[String],

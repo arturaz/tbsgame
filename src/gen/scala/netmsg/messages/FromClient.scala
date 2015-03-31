@@ -3,7 +3,7 @@
 
 package netmsg.messages
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class FromClient(
@@ -75,29 +75,11 @@ final case class FromClient(
         case 3 => timeSync
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.messages.FromClient.toJavaProto(this))
     def companion = netmsg.messages.FromClient
 }
 
-object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromClient] with com.trueaccord.scalapb.JavaProtoSupport[FromClient, netmsg.Messages.FromClient]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromClient] with com.trueaccord.scalapb.JavaProtoSupport[FromClient, netmsg.Messages.FromClient]  = this
-  def toJavaProto(scalaPbSource: netmsg.messages.FromClient): netmsg.Messages.FromClient = {
-    val javaPbOut = netmsg.Messages.FromClient.newBuilder
-    scalaPbSource.game.map(netmsg.game.FromClient.toJavaProto).foreach(javaPbOut.setGame)
-    scalaPbSource.management.map(netmsg.management.FromClient.toJavaProto).foreach(javaPbOut.setManagement)
-    scalaPbSource.timeSync.map(netmsg.messages.TimeSync.FromClient.toJavaProto).foreach(javaPbOut.setTimeSync)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Messages.FromClient): netmsg.messages.FromClient = netmsg.messages.FromClient(
-    game = if (javaPbSource.hasGame) Some(netmsg.game.FromClient.fromJavaProto(javaPbSource.getGame)) else None,
-    management = if (javaPbSource.hasManagement) Some(netmsg.management.FromClient.fromJavaProto(javaPbSource.getManagement)) else None,
-    timeSync = if (javaPbSource.hasTimeSync) Some(netmsg.messages.TimeSync.FromClient.fromJavaProto(javaPbSource.getTimeSync)) else None
-  )
-  override def fromAscii(ascii: String): netmsg.messages.FromClient = {
-    val javaProtoBuilder = netmsg.Messages.FromClient.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromClient]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromClient]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.messages.FromClient = netmsg.messages.FromClient(
     game = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.game.FromClient]],
     management = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.management.FromClient]],
