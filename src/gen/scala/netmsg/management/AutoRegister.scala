@@ -3,7 +3,7 @@
 
 package netmsg.management
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class AutoRegister(
@@ -27,23 +27,11 @@ final case class AutoRegister(
       )
     }
     def getField(__field: Descriptors.FieldDescriptor): Any = throw new MatchError(__field)
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.management.AutoRegister.toJavaProto(this))
     def companion = netmsg.management.AutoRegister
 }
 
-object AutoRegister extends com.trueaccord.scalapb.GeneratedMessageCompanion[AutoRegister] with com.trueaccord.scalapb.JavaProtoSupport[AutoRegister, netmsg.Management.AutoRegister]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[AutoRegister] with com.trueaccord.scalapb.JavaProtoSupport[AutoRegister, netmsg.Management.AutoRegister]  = this
-  def toJavaProto(scalaPbSource: netmsg.management.AutoRegister): netmsg.Management.AutoRegister = {
-    val javaPbOut = netmsg.Management.AutoRegister.newBuilder
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Management.AutoRegister): netmsg.management.AutoRegister = netmsg.management.AutoRegister(
-  )
-  override def fromAscii(ascii: String): netmsg.management.AutoRegister = {
-    val javaProtoBuilder = netmsg.Management.AutoRegister.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object AutoRegister extends com.trueaccord.scalapb.GeneratedMessageCompanion[AutoRegister]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[AutoRegister]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.management.AutoRegister = netmsg.management.AutoRegister(
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("AutoRegister", this,

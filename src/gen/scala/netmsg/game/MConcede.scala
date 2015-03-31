@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MConcede(
@@ -27,23 +27,11 @@ final case class MConcede(
       )
     }
     def getField(__field: Descriptors.FieldDescriptor): Any = throw new MatchError(__field)
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MConcede.toJavaProto(this))
     def companion = netmsg.game.MConcede
 }
 
-object MConcede extends com.trueaccord.scalapb.GeneratedMessageCompanion[MConcede] with com.trueaccord.scalapb.JavaProtoSupport[MConcede, netmsg.Game.MConcede]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MConcede] with com.trueaccord.scalapb.JavaProtoSupport[MConcede, netmsg.Game.MConcede]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MConcede): netmsg.Game.MConcede = {
-    val javaPbOut = netmsg.Game.MConcede.newBuilder
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MConcede): netmsg.game.MConcede = netmsg.game.MConcede(
-  )
-  override def fromAscii(ascii: String): netmsg.game.MConcede = {
-    val javaProtoBuilder = netmsg.Game.MConcede.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MConcede extends com.trueaccord.scalapb.GeneratedMessageCompanion[MConcede]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MConcede]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MConcede = netmsg.game.MConcede(
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("MConcede", this,

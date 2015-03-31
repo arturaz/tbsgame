@@ -3,7 +3,7 @@
 
 package netmsg.base
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Timestamp(
@@ -39,25 +39,11 @@ final case class Timestamp(
         case 1 => timestamp
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.base.Timestamp.toJavaProto(this))
     def companion = netmsg.base.Timestamp
 }
 
-object Timestamp extends com.trueaccord.scalapb.GeneratedMessageCompanion[Timestamp] with com.trueaccord.scalapb.JavaProtoSupport[Timestamp, netmsg.Base.Timestamp]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Timestamp] with com.trueaccord.scalapb.JavaProtoSupport[Timestamp, netmsg.Base.Timestamp]  = this
-  def toJavaProto(scalaPbSource: netmsg.base.Timestamp): netmsg.Base.Timestamp = {
-    val javaPbOut = netmsg.Base.Timestamp.newBuilder
-    javaPbOut.setTimestamp(scalaPbSource.timestamp)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Base.Timestamp): netmsg.base.Timestamp = netmsg.base.Timestamp(
-    timestamp = javaPbSource.getTimestamp.longValue
-  )
-  override def fromAscii(ascii: String): netmsg.base.Timestamp = {
-    val javaProtoBuilder = netmsg.Base.Timestamp.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Timestamp extends com.trueaccord.scalapb.GeneratedMessageCompanion[Timestamp]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Timestamp]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.base.Timestamp = netmsg.base.Timestamp(
     timestamp = fieldsMap(1).asInstanceOf[Long]
   )

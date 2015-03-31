@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class ActionsChangeEvt(
@@ -50,27 +50,11 @@ final case class ActionsChangeEvt(
         case 2 => newActions
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.ActionsChangeEvt.toJavaProto(this))
     def companion = netmsg.game.ActionsChangeEvt
 }
 
-object ActionsChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[ActionsChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[ActionsChangeEvt, netmsg.Game.ActionsChangeEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ActionsChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[ActionsChangeEvt, netmsg.Game.ActionsChangeEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.ActionsChangeEvt): netmsg.Game.ActionsChangeEvt = {
-    val javaPbOut = netmsg.Game.ActionsChangeEvt.newBuilder
-    javaPbOut.setPlayerId(netmsg.game.PlayerID.toJavaProto(scalaPbSource.playerId))
-    javaPbOut.setNewActions(scalaPbSource.newActions)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.ActionsChangeEvt): netmsg.game.ActionsChangeEvt = netmsg.game.ActionsChangeEvt(
-    playerId = netmsg.game.PlayerID.fromJavaProto(javaPbSource.getPlayerId),
-    newActions = javaPbSource.getNewActions.intValue
-  )
-  override def fromAscii(ascii: String): netmsg.game.ActionsChangeEvt = {
-    val javaProtoBuilder = netmsg.Game.ActionsChangeEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object ActionsChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[ActionsChangeEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ActionsChangeEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.ActionsChangeEvt = netmsg.game.ActionsChangeEvt(
     playerId = fieldsMap(1).asInstanceOf[netmsg.game.PlayerID],
     newActions = fieldsMap(2).asInstanceOf[Int]

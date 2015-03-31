@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MInit(
@@ -212,49 +212,11 @@ final case class MInit(
         case 13 => extractionSpeedRates
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MInit.toJavaProto(this))
     def companion = netmsg.game.MInit
 }
 
-object MInit extends com.trueaccord.scalapb.GeneratedMessageCompanion[MInit] with com.trueaccord.scalapb.JavaProtoSupport[MInit, netmsg.Game.MInit]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MInit] with com.trueaccord.scalapb.JavaProtoSupport[MInit, netmsg.Game.MInit]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MInit): netmsg.Game.MInit = {
-    val javaPbOut = netmsg.Game.MInit.newBuilder
-    javaPbOut.setBounds(netmsg.base.Bounds.toJavaProto(scalaPbSource.bounds))
-    javaPbOut.addAllObjects(scalaPbSource.objects.map(netmsg.game.WObject.toJavaProto))
-    javaPbOut.addAllWarpZone(scalaPbSource.warpZone.map(netmsg.base.Vect2.toJavaProto))
-    javaPbOut.addAllVisiblePoints(scalaPbSource.visiblePoints.map(netmsg.base.Vect2.toJavaProto))
-    javaPbOut.setSelfTeam(netmsg.game.Team.toJavaProto(scalaPbSource.selfTeam))
-    javaPbOut.addAllOtherTeams(scalaPbSource.otherTeams.map(netmsg.game.Team.toJavaProto))
-    javaPbOut.setSelf(netmsg.game.PlayerState.toJavaProto(scalaPbSource.self))
-    javaPbOut.addAllOtherPlayers(scalaPbSource.otherPlayers.map(netmsg.game.InitPlayer.toJavaProto))
-    javaPbOut.setWarpableObjectStats(netmsg.game.WarpableObjectStats.toJavaProto(scalaPbSource.warpableObjectStats))
-    javaPbOut.addAllAttackMultipliers(scalaPbSource.attackMultipliers.map(netmsg.game.MInit.AttackMultiplier.toJavaProto))
-    javaPbOut.setObjectives(netmsg.game.Objectives.toJavaProto(scalaPbSource.objectives))
-    scalaPbSource.turnTimeframe.map(netmsg.base.Timeframe.toJavaProto).foreach(javaPbOut.setTurnTimeframe)
-    javaPbOut.addAllExtractionSpeedRates(scalaPbSource.extractionSpeedRates.map(netmsg.game.MInit.ExtractionSpeedRate.toJavaProto))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MInit): netmsg.game.MInit = netmsg.game.MInit(
-    bounds = netmsg.base.Bounds.fromJavaProto(javaPbSource.getBounds),
-    objects = javaPbSource.getObjectsList.map(netmsg.game.WObject.fromJavaProto),
-    warpZone = javaPbSource.getWarpZoneList.map(netmsg.base.Vect2.fromJavaProto),
-    visiblePoints = javaPbSource.getVisiblePointsList.map(netmsg.base.Vect2.fromJavaProto),
-    selfTeam = netmsg.game.Team.fromJavaProto(javaPbSource.getSelfTeam),
-    otherTeams = javaPbSource.getOtherTeamsList.map(netmsg.game.Team.fromJavaProto),
-    self = netmsg.game.PlayerState.fromJavaProto(javaPbSource.getSelf),
-    otherPlayers = javaPbSource.getOtherPlayersList.map(netmsg.game.InitPlayer.fromJavaProto),
-    warpableObjectStats = netmsg.game.WarpableObjectStats.fromJavaProto(javaPbSource.getWarpableObjectStats),
-    attackMultipliers = javaPbSource.getAttackMultipliersList.map(netmsg.game.MInit.AttackMultiplier.fromJavaProto),
-    objectives = netmsg.game.Objectives.fromJavaProto(javaPbSource.getObjectives),
-    turnTimeframe = if (javaPbSource.hasTurnTimeframe) Some(netmsg.base.Timeframe.fromJavaProto(javaPbSource.getTurnTimeframe)) else None,
-    extractionSpeedRates = javaPbSource.getExtractionSpeedRatesList.map(netmsg.game.MInit.ExtractionSpeedRate.fromJavaProto)
-  )
-  override def fromAscii(ascii: String): netmsg.game.MInit = {
-    val javaProtoBuilder = netmsg.Game.MInit.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MInit extends com.trueaccord.scalapb.GeneratedMessageCompanion[MInit]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MInit]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MInit = netmsg.game.MInit(
     bounds = fieldsMap(1).asInstanceOf[netmsg.base.Bounds],
     objects = fieldsMap.getOrElse(2, Nil).asInstanceOf[Seq[netmsg.game.WObject]],
@@ -332,29 +294,11 @@ object MInit extends com.trueaccord.scalapb.GeneratedMessageCompanion[MInit] wit
           case 3 => multiplier
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MInit.AttackMultiplier.toJavaProto(this))
       def companion = netmsg.game.MInit.AttackMultiplier
   }
   
-  object AttackMultiplier extends com.trueaccord.scalapb.GeneratedMessageCompanion[AttackMultiplier] with com.trueaccord.scalapb.JavaProtoSupport[AttackMultiplier, netmsg.Game.MInit.AttackMultiplier]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[AttackMultiplier] with com.trueaccord.scalapb.JavaProtoSupport[AttackMultiplier, netmsg.Game.MInit.AttackMultiplier]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.MInit.AttackMultiplier): netmsg.Game.MInit.AttackMultiplier = {
-      val javaPbOut = netmsg.Game.MInit.AttackMultiplier.newBuilder
-      javaPbOut.setFromKind(netmsg.game.WObjKind.toJavaValue(scalaPbSource.fromKind))
-      javaPbOut.setToKind(netmsg.game.WObjKind.toJavaValue(scalaPbSource.toKind))
-      javaPbOut.setMultiplier(scalaPbSource.multiplier)
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.MInit.AttackMultiplier): netmsg.game.MInit.AttackMultiplier = netmsg.game.MInit.AttackMultiplier(
-      fromKind = netmsg.game.WObjKind.fromJavaValue(javaPbSource.getFromKind),
-      toKind = netmsg.game.WObjKind.fromJavaValue(javaPbSource.getToKind),
-      multiplier = javaPbSource.getMultiplier.floatValue
-    )
-    override def fromAscii(ascii: String): netmsg.game.MInit.AttackMultiplier = {
-      val javaProtoBuilder = netmsg.Game.MInit.AttackMultiplier.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object AttackMultiplier extends com.trueaccord.scalapb.GeneratedMessageCompanion[AttackMultiplier]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[AttackMultiplier]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MInit.AttackMultiplier = netmsg.game.MInit.AttackMultiplier(
       fromKind = fieldsMap(1).asInstanceOf[netmsg.game.WObjKind],
       toKind = fieldsMap(2).asInstanceOf[netmsg.game.WObjKind],
@@ -421,27 +365,11 @@ object MInit extends com.trueaccord.scalapb.GeneratedMessageCompanion[MInit] wit
           case 2 => resourcesPerTurn
         }
       }
-      override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MInit.ExtractionSpeedRate.toJavaProto(this))
       def companion = netmsg.game.MInit.ExtractionSpeedRate
   }
   
-  object ExtractionSpeedRate extends com.trueaccord.scalapb.GeneratedMessageCompanion[ExtractionSpeedRate] with com.trueaccord.scalapb.JavaProtoSupport[ExtractionSpeedRate, netmsg.Game.MInit.ExtractionSpeedRate]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ExtractionSpeedRate] with com.trueaccord.scalapb.JavaProtoSupport[ExtractionSpeedRate, netmsg.Game.MInit.ExtractionSpeedRate]  = this
-    def toJavaProto(scalaPbSource: netmsg.game.MInit.ExtractionSpeedRate): netmsg.Game.MInit.ExtractionSpeedRate = {
-      val javaPbOut = netmsg.Game.MInit.ExtractionSpeedRate.newBuilder
-      javaPbOut.setExtractionSpeed(netmsg.game.WObject.Asteroid.ExtractionSpeed.toJavaValue(scalaPbSource.extractionSpeed))
-      javaPbOut.setResourcesPerTurn(scalaPbSource.resourcesPerTurn)
-      javaPbOut.build
-    }
-    def fromJavaProto(javaPbSource: netmsg.Game.MInit.ExtractionSpeedRate): netmsg.game.MInit.ExtractionSpeedRate = netmsg.game.MInit.ExtractionSpeedRate(
-      extractionSpeed = netmsg.game.WObject.Asteroid.ExtractionSpeed.fromJavaValue(javaPbSource.getExtractionSpeed),
-      resourcesPerTurn = javaPbSource.getResourcesPerTurn.intValue
-    )
-    override def fromAscii(ascii: String): netmsg.game.MInit.ExtractionSpeedRate = {
-      val javaProtoBuilder = netmsg.Game.MInit.ExtractionSpeedRate.newBuilder
-      com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-      fromJavaProto(javaProtoBuilder.build)
-    }
+  object ExtractionSpeedRate extends com.trueaccord.scalapb.GeneratedMessageCompanion[ExtractionSpeedRate]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ExtractionSpeedRate]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MInit.ExtractionSpeedRate = netmsg.game.MInit.ExtractionSpeedRate(
       extractionSpeed = fieldsMap(1).asInstanceOf[netmsg.game.WObject.Asteroid.ExtractionSpeed],
       resourcesPerTurn = fieldsMap(2).asInstanceOf[Int]

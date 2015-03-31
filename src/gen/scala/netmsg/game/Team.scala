@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Team(
@@ -41,25 +41,11 @@ final case class Team(
         case 1 => id
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.Team.toJavaProto(this))
     def companion = netmsg.game.Team
 }
 
-object Team extends com.trueaccord.scalapb.GeneratedMessageCompanion[Team] with com.trueaccord.scalapb.JavaProtoSupport[Team, netmsg.Game.Team]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Team] with com.trueaccord.scalapb.JavaProtoSupport[Team, netmsg.Game.Team]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.Team): netmsg.Game.Team = {
-    val javaPbOut = netmsg.Game.Team.newBuilder
-    javaPbOut.setId(netmsg.game.TeamID.toJavaProto(scalaPbSource.id))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.Team): netmsg.game.Team = netmsg.game.Team(
-    id = netmsg.game.TeamID.fromJavaProto(javaPbSource.getId)
-  )
-  override def fromAscii(ascii: String): netmsg.game.Team = {
-    val javaProtoBuilder = netmsg.Game.Team.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Team extends com.trueaccord.scalapb.GeneratedMessageCompanion[Team]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Team]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.Team = netmsg.game.Team(
     id = fieldsMap(1).asInstanceOf[netmsg.game.TeamID]
   )

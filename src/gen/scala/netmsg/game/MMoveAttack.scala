@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MMoveAttack(
@@ -68,29 +68,11 @@ final case class MMoveAttack(
         case 3 => targetId
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MMoveAttack.toJavaProto(this))
     def companion = netmsg.game.MMoveAttack
 }
 
-object MMoveAttack extends com.trueaccord.scalapb.GeneratedMessageCompanion[MMoveAttack] with com.trueaccord.scalapb.JavaProtoSupport[MMoveAttack, netmsg.Game.MMoveAttack]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MMoveAttack] with com.trueaccord.scalapb.JavaProtoSupport[MMoveAttack, netmsg.Game.MMoveAttack]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MMoveAttack): netmsg.Game.MMoveAttack = {
-    val javaPbOut = netmsg.Game.MMoveAttack.newBuilder
-    javaPbOut.setId(netmsg.game.WObjID.toJavaProto(scalaPbSource.id))
-    javaPbOut.addAllPath(scalaPbSource.path.map(netmsg.base.Vect2.toJavaProto))
-    javaPbOut.setTargetId(netmsg.game.WObjID.toJavaProto(scalaPbSource.targetId))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MMoveAttack): netmsg.game.MMoveAttack = netmsg.game.MMoveAttack(
-    id = netmsg.game.WObjID.fromJavaProto(javaPbSource.getId),
-    path = javaPbSource.getPathList.map(netmsg.base.Vect2.fromJavaProto),
-    targetId = netmsg.game.WObjID.fromJavaProto(javaPbSource.getTargetId)
-  )
-  override def fromAscii(ascii: String): netmsg.game.MMoveAttack = {
-    val javaProtoBuilder = netmsg.Game.MMoveAttack.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MMoveAttack extends com.trueaccord.scalapb.GeneratedMessageCompanion[MMoveAttack]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MMoveAttack]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MMoveAttack = netmsg.game.MMoveAttack(
     id = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
     path = fieldsMap.getOrElse(2, Nil).asInstanceOf[Seq[netmsg.base.Vect2]],

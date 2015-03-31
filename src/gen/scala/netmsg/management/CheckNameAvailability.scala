@@ -3,7 +3,7 @@
 
 package netmsg.management
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class CheckNameAvailability(
@@ -39,25 +39,11 @@ final case class CheckNameAvailability(
         case 1 => name
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.management.CheckNameAvailability.toJavaProto(this))
     def companion = netmsg.management.CheckNameAvailability
 }
 
-object CheckNameAvailability extends com.trueaccord.scalapb.GeneratedMessageCompanion[CheckNameAvailability] with com.trueaccord.scalapb.JavaProtoSupport[CheckNameAvailability, netmsg.Management.CheckNameAvailability]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[CheckNameAvailability] with com.trueaccord.scalapb.JavaProtoSupport[CheckNameAvailability, netmsg.Management.CheckNameAvailability]  = this
-  def toJavaProto(scalaPbSource: netmsg.management.CheckNameAvailability): netmsg.Management.CheckNameAvailability = {
-    val javaPbOut = netmsg.Management.CheckNameAvailability.newBuilder
-    javaPbOut.setName(scalaPbSource.name)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Management.CheckNameAvailability): netmsg.management.CheckNameAvailability = netmsg.management.CheckNameAvailability(
-    name = javaPbSource.getName
-  )
-  override def fromAscii(ascii: String): netmsg.management.CheckNameAvailability = {
-    val javaProtoBuilder = netmsg.Management.CheckNameAvailability.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object CheckNameAvailability extends com.trueaccord.scalapb.GeneratedMessageCompanion[CheckNameAvailability]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[CheckNameAvailability]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.management.CheckNameAvailability = netmsg.management.CheckNameAvailability(
     name = fieldsMap(1).asInstanceOf[String]
   )

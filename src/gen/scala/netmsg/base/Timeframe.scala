@@ -3,7 +3,7 @@
 
 package netmsg.base
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Timeframe(
@@ -52,27 +52,11 @@ final case class Timeframe(
         case 2 => end
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.base.Timeframe.toJavaProto(this))
     def companion = netmsg.base.Timeframe
 }
 
-object Timeframe extends com.trueaccord.scalapb.GeneratedMessageCompanion[Timeframe] with com.trueaccord.scalapb.JavaProtoSupport[Timeframe, netmsg.Base.Timeframe]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Timeframe] with com.trueaccord.scalapb.JavaProtoSupport[Timeframe, netmsg.Base.Timeframe]  = this
-  def toJavaProto(scalaPbSource: netmsg.base.Timeframe): netmsg.Base.Timeframe = {
-    val javaPbOut = netmsg.Base.Timeframe.newBuilder
-    javaPbOut.setStart(netmsg.base.Timestamp.toJavaProto(scalaPbSource.start))
-    javaPbOut.setEnd(netmsg.base.Timestamp.toJavaProto(scalaPbSource.end))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Base.Timeframe): netmsg.base.Timeframe = netmsg.base.Timeframe(
-    start = netmsg.base.Timestamp.fromJavaProto(javaPbSource.getStart),
-    end = netmsg.base.Timestamp.fromJavaProto(javaPbSource.getEnd)
-  )
-  override def fromAscii(ascii: String): netmsg.base.Timeframe = {
-    val javaProtoBuilder = netmsg.Base.Timeframe.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Timeframe extends com.trueaccord.scalapb.GeneratedMessageCompanion[Timeframe]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Timeframe]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.base.Timeframe = netmsg.base.Timeframe(
     start = fieldsMap(1).asInstanceOf[netmsg.base.Timestamp],
     end = fieldsMap(2).asInstanceOf[netmsg.base.Timestamp]

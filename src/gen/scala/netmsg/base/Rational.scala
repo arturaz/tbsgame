@@ -3,7 +3,7 @@
 
 package netmsg.base
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Rational(
@@ -48,27 +48,11 @@ final case class Rational(
         case 2 => denominator
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.base.Rational.toJavaProto(this))
     def companion = netmsg.base.Rational
 }
 
-object Rational extends com.trueaccord.scalapb.GeneratedMessageCompanion[Rational] with com.trueaccord.scalapb.JavaProtoSupport[Rational, netmsg.Base.Rational]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Rational] with com.trueaccord.scalapb.JavaProtoSupport[Rational, netmsg.Base.Rational]  = this
-  def toJavaProto(scalaPbSource: netmsg.base.Rational): netmsg.Base.Rational = {
-    val javaPbOut = netmsg.Base.Rational.newBuilder
-    javaPbOut.setNumerator(scalaPbSource.numerator)
-    javaPbOut.setDenominator(scalaPbSource.denominator)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Base.Rational): netmsg.base.Rational = netmsg.base.Rational(
-    numerator = javaPbSource.getNumerator.longValue,
-    denominator = javaPbSource.getDenominator.longValue
-  )
-  override def fromAscii(ascii: String): netmsg.base.Rational = {
-    val javaProtoBuilder = netmsg.Base.Rational.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Rational extends com.trueaccord.scalapb.GeneratedMessageCompanion[Rational]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Rational]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.base.Rational = netmsg.base.Rational(
     numerator = fieldsMap(1).asInstanceOf[Long],
     denominator = fieldsMap(2).asInstanceOf[Long]

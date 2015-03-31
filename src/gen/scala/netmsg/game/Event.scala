@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class Event(
@@ -375,69 +375,11 @@ final case class Event(
         case 1002 => gameWon
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.Event.toJavaProto(this))
     def companion = netmsg.game.Event
 }
 
-object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event] with com.trueaccord.scalapb.JavaProtoSupport[Event, netmsg.Game.Event]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Event] with com.trueaccord.scalapb.JavaProtoSupport[Event, netmsg.Game.Event]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.Event): netmsg.Game.Event = {
-    val javaPbOut = netmsg.Game.Event.newBuilder
-    scalaPbSource.turnStarted.map(netmsg.game.TurnStartedEvt.toJavaProto).foreach(javaPbOut.setTurnStarted)
-    scalaPbSource.turnEnded.map(netmsg.game.TurnEndedEvt.toJavaProto).foreach(javaPbOut.setTurnEnded)
-    scalaPbSource.pointOwnerMapChange.map(netmsg.game.PointOwnerMapChangeEvt.toJavaProto).foreach(javaPbOut.setPointOwnerMapChange)
-    scalaPbSource.warp.map(netmsg.game.WarpEvt.toJavaProto).foreach(javaPbOut.setWarp)
-    scalaPbSource.objVisible.map(netmsg.game.ObjVisibleEvt.toJavaProto).foreach(javaPbOut.setObjVisible)
-    scalaPbSource.move.map(netmsg.game.MoveEvt.toJavaProto).foreach(javaPbOut.setMove)
-    scalaPbSource.attack.map(netmsg.game.AttackEvt.toJavaProto).foreach(javaPbOut.setAttack)
-    scalaPbSource.movementChange.map(netmsg.game.MovementChangeEvt.toJavaProto).foreach(javaPbOut.setMovementChange)
-    scalaPbSource.resourceChange.map(netmsg.game.ResourceChangeEvt.toJavaProto).foreach(javaPbOut.setResourceChange)
-    scalaPbSource.actionsChange.map(netmsg.game.ActionsChangeEvt.toJavaProto).foreach(javaPbOut.setActionsChange)
-    scalaPbSource.warpChange.map(netmsg.game.WarpStateChangeEvt.toJavaProto).foreach(javaPbOut.setWarpChange)
-    scalaPbSource.attacksChange.map(netmsg.game.AttacksChangeEvt.toJavaProto).foreach(javaPbOut.setAttacksChange)
-    scalaPbSource.turnEndedChange.map(netmsg.game.TurnEndedChangeEvt.toJavaProto).foreach(javaPbOut.setTurnEndedChange)
-    scalaPbSource.objDestroyed.map(netmsg.game.ObjDestroyedEvt.toJavaProto).foreach(javaPbOut.setObjDestroyed)
-    scalaPbSource.hpChange.map(netmsg.game.HPChangeEvt.toJavaProto).foreach(javaPbOut.setHpChange)
-    scalaPbSource.levelChange.map(netmsg.game.LevelChangeEvt.toJavaProto).foreach(javaPbOut.setLevelChange)
-    scalaPbSource.ownerChange.map(netmsg.game.OwnerChangeEvt.toJavaProto).foreach(javaPbOut.setOwnerChange)
-    scalaPbSource.objectivesUpdate.map(netmsg.game.ObjectivesUpdateEvt.toJavaProto).foreach(javaPbOut.setObjectivesUpdate)
-    scalaPbSource.populationChange.map(netmsg.game.PopulationChangeEvt.toJavaProto).foreach(javaPbOut.setPopulationChange)
-    scalaPbSource.setTurnTimerEvt.map(netmsg.game.SetTurnTimerEvt.toJavaProto).foreach(javaPbOut.setSetTurnTimerEvt)
-    scalaPbSource.join.map(netmsg.game.JoinEvt.toJavaProto).foreach(javaPbOut.setJoin)
-    scalaPbSource.leave.map(netmsg.game.LeaveEvt.toJavaProto).foreach(javaPbOut.setLeave)
-    scalaPbSource.gameWon.map(netmsg.game.GameWonEvt.toJavaProto).foreach(javaPbOut.setGameWon)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.Event): netmsg.game.Event = netmsg.game.Event(
-    turnStarted = if (javaPbSource.hasTurnStarted) Some(netmsg.game.TurnStartedEvt.fromJavaProto(javaPbSource.getTurnStarted)) else None,
-    turnEnded = if (javaPbSource.hasTurnEnded) Some(netmsg.game.TurnEndedEvt.fromJavaProto(javaPbSource.getTurnEnded)) else None,
-    pointOwnerMapChange = if (javaPbSource.hasPointOwnerMapChange) Some(netmsg.game.PointOwnerMapChangeEvt.fromJavaProto(javaPbSource.getPointOwnerMapChange)) else None,
-    warp = if (javaPbSource.hasWarp) Some(netmsg.game.WarpEvt.fromJavaProto(javaPbSource.getWarp)) else None,
-    objVisible = if (javaPbSource.hasObjVisible) Some(netmsg.game.ObjVisibleEvt.fromJavaProto(javaPbSource.getObjVisible)) else None,
-    move = if (javaPbSource.hasMove) Some(netmsg.game.MoveEvt.fromJavaProto(javaPbSource.getMove)) else None,
-    attack = if (javaPbSource.hasAttack) Some(netmsg.game.AttackEvt.fromJavaProto(javaPbSource.getAttack)) else None,
-    movementChange = if (javaPbSource.hasMovementChange) Some(netmsg.game.MovementChangeEvt.fromJavaProto(javaPbSource.getMovementChange)) else None,
-    resourceChange = if (javaPbSource.hasResourceChange) Some(netmsg.game.ResourceChangeEvt.fromJavaProto(javaPbSource.getResourceChange)) else None,
-    actionsChange = if (javaPbSource.hasActionsChange) Some(netmsg.game.ActionsChangeEvt.fromJavaProto(javaPbSource.getActionsChange)) else None,
-    warpChange = if (javaPbSource.hasWarpChange) Some(netmsg.game.WarpStateChangeEvt.fromJavaProto(javaPbSource.getWarpChange)) else None,
-    attacksChange = if (javaPbSource.hasAttacksChange) Some(netmsg.game.AttacksChangeEvt.fromJavaProto(javaPbSource.getAttacksChange)) else None,
-    turnEndedChange = if (javaPbSource.hasTurnEndedChange) Some(netmsg.game.TurnEndedChangeEvt.fromJavaProto(javaPbSource.getTurnEndedChange)) else None,
-    objDestroyed = if (javaPbSource.hasObjDestroyed) Some(netmsg.game.ObjDestroyedEvt.fromJavaProto(javaPbSource.getObjDestroyed)) else None,
-    hpChange = if (javaPbSource.hasHpChange) Some(netmsg.game.HPChangeEvt.fromJavaProto(javaPbSource.getHpChange)) else None,
-    levelChange = if (javaPbSource.hasLevelChange) Some(netmsg.game.LevelChangeEvt.fromJavaProto(javaPbSource.getLevelChange)) else None,
-    ownerChange = if (javaPbSource.hasOwnerChange) Some(netmsg.game.OwnerChangeEvt.fromJavaProto(javaPbSource.getOwnerChange)) else None,
-    objectivesUpdate = if (javaPbSource.hasObjectivesUpdate) Some(netmsg.game.ObjectivesUpdateEvt.fromJavaProto(javaPbSource.getObjectivesUpdate)) else None,
-    populationChange = if (javaPbSource.hasPopulationChange) Some(netmsg.game.PopulationChangeEvt.fromJavaProto(javaPbSource.getPopulationChange)) else None,
-    setTurnTimerEvt = if (javaPbSource.hasSetTurnTimerEvt) Some(netmsg.game.SetTurnTimerEvt.fromJavaProto(javaPbSource.getSetTurnTimerEvt)) else None,
-    join = if (javaPbSource.hasJoin) Some(netmsg.game.JoinEvt.fromJavaProto(javaPbSource.getJoin)) else None,
-    leave = if (javaPbSource.hasLeave) Some(netmsg.game.LeaveEvt.fromJavaProto(javaPbSource.getLeave)) else None,
-    gameWon = if (javaPbSource.hasGameWon) Some(netmsg.game.GameWonEvt.fromJavaProto(javaPbSource.getGameWon)) else None
-  )
-  override def fromAscii(ascii: String): netmsg.game.Event = {
-    val javaProtoBuilder = netmsg.Game.Event.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.Event = netmsg.game.Event(
     turnStarted = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.game.TurnStartedEvt]],
     turnEnded = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.game.TurnEndedEvt]],

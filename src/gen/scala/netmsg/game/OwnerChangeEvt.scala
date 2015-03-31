@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class OwnerChangeEvt(
@@ -52,27 +52,11 @@ final case class OwnerChangeEvt(
         case 2 => newOwnerId
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.OwnerChangeEvt.toJavaProto(this))
     def companion = netmsg.game.OwnerChangeEvt
 }
 
-object OwnerChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[OwnerChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[OwnerChangeEvt, netmsg.Game.OwnerChangeEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[OwnerChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[OwnerChangeEvt, netmsg.Game.OwnerChangeEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.OwnerChangeEvt): netmsg.Game.OwnerChangeEvt = {
-    val javaPbOut = netmsg.Game.OwnerChangeEvt.newBuilder
-    javaPbOut.setObjId(netmsg.game.WObjID.toJavaProto(scalaPbSource.objId))
-    javaPbOut.setNewOwnerId(netmsg.game.OwnerID.toJavaProto(scalaPbSource.newOwnerId))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.OwnerChangeEvt): netmsg.game.OwnerChangeEvt = netmsg.game.OwnerChangeEvt(
-    objId = netmsg.game.WObjID.fromJavaProto(javaPbSource.getObjId),
-    newOwnerId = netmsg.game.OwnerID.fromJavaProto(javaPbSource.getNewOwnerId)
-  )
-  override def fromAscii(ascii: String): netmsg.game.OwnerChangeEvt = {
-    val javaProtoBuilder = netmsg.Game.OwnerChangeEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object OwnerChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[OwnerChangeEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[OwnerChangeEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.OwnerChangeEvt = netmsg.game.OwnerChangeEvt(
     objId = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
     newOwnerId = fieldsMap(2).asInstanceOf[netmsg.game.OwnerID]

@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MWarp(
@@ -50,27 +50,11 @@ final case class MWarp(
         case 2 => warpable
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MWarp.toJavaProto(this))
     def companion = netmsg.game.MWarp
 }
 
-object MWarp extends com.trueaccord.scalapb.GeneratedMessageCompanion[MWarp] with com.trueaccord.scalapb.JavaProtoSupport[MWarp, netmsg.Game.MWarp]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MWarp] with com.trueaccord.scalapb.JavaProtoSupport[MWarp, netmsg.Game.MWarp]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MWarp): netmsg.Game.MWarp = {
-    val javaPbOut = netmsg.Game.MWarp.newBuilder
-    javaPbOut.setPosition(netmsg.base.Vect2.toJavaProto(scalaPbSource.position))
-    javaPbOut.setWarpable(netmsg.game.WarpableKind.toJavaValue(scalaPbSource.warpable))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MWarp): netmsg.game.MWarp = netmsg.game.MWarp(
-    position = netmsg.base.Vect2.fromJavaProto(javaPbSource.getPosition),
-    warpable = netmsg.game.WarpableKind.fromJavaValue(javaPbSource.getWarpable)
-  )
-  override def fromAscii(ascii: String): netmsg.game.MWarp = {
-    val javaProtoBuilder = netmsg.Game.MWarp.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MWarp extends com.trueaccord.scalapb.GeneratedMessageCompanion[MWarp]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MWarp]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MWarp = netmsg.game.MWarp(
     position = fieldsMap(1).asInstanceOf[netmsg.base.Vect2],
     warpable = fieldsMap(2).asInstanceOf[netmsg.game.WarpableKind]

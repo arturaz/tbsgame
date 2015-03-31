@@ -30,7 +30,6 @@ object GameActor {
     case class Warp(
       human: Human, position: Vect2, warpable: WarpableCompanion.Some
     ) extends In
-    case class GetMovement(human: Human, id: WObject.Id) extends In
     /* path does not include objects position and ends in target position */
     case class Move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]) extends In
     case class Attack(human: Human, id: WObject.Id, targetId: WObject.Id) extends In
@@ -58,16 +57,6 @@ object GameActor {
     ) extends ClientOut
     case class Events(events: Vector[FinalEvent]) extends ClientOut
     case class Error(error: String) extends ClientOut
-    
-    object Movement {
-      sealed trait Response
-      /* Paths for objects that player can move */
-      case class Movable(paths: Vector[Path]) extends Response
-      /* Points where object can move to. Send for objects that cannot be moved by
-         player. */
-      case class Immovable(points: Vector[Vect2]) extends Response
-    }
-    case class Movement(id: WObject.Id, response: Movement.Response) extends ClientOut
   }
 
   private[this] def initMsg(human: Human, tbgame: TurnBasedGame)
@@ -272,19 +261,6 @@ class GameActor private (
       update(sender(), human, _.endTurn(human, DateTime.now))
     case In.Concede(human) =>
       update(sender(), human, _.concede(human))
-    case In.GetMovement(human, id) =>
-      game.game.world.objects.getCT[Movable](id)
-        .toRight(s"Can't find movable world object with $id").right
-        .map { obj => (obj, game.game.movementFor(obj)) }
-        .fold(
-          err => sender() ! Out.Error(err),
-          { case (obj, paths) =>
-            val response =
-              if (Game.canMove(human, obj)) Out.Movement.Movable(paths)
-              else Out.Movement.Immovable(paths.map(_.vects.last))
-            sender() ! Out.Movement(id, response)
-          }
-        )
   }
 
   val receive: PartialFunction[Any, Unit] = notLoggedReceive orElse loggedReceive

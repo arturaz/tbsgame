@@ -3,7 +3,7 @@
 
 package netmsg.management
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class RegisterResponse(
@@ -43,25 +43,11 @@ final case class RegisterResponse(
         case 1 => newSessionToken
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.management.RegisterResponse.toJavaProto(this))
     def companion = netmsg.management.RegisterResponse
 }
 
-object RegisterResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[RegisterResponse] with com.trueaccord.scalapb.JavaProtoSupport[RegisterResponse, netmsg.Management.RegisterResponse]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[RegisterResponse] with com.trueaccord.scalapb.JavaProtoSupport[RegisterResponse, netmsg.Management.RegisterResponse]  = this
-  def toJavaProto(scalaPbSource: netmsg.management.RegisterResponse): netmsg.Management.RegisterResponse = {
-    val javaPbOut = netmsg.Management.RegisterResponse.newBuilder
-    scalaPbSource.newSessionToken.foreach(javaPbOut.setNewSessionToken)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Management.RegisterResponse): netmsg.management.RegisterResponse = netmsg.management.RegisterResponse(
-    newSessionToken = if (javaPbSource.hasNewSessionToken) Some(javaPbSource.getNewSessionToken) else None
-  )
-  override def fromAscii(ascii: String): netmsg.management.RegisterResponse = {
-    val javaProtoBuilder = netmsg.Management.RegisterResponse.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object RegisterResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[RegisterResponse]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[RegisterResponse]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.management.RegisterResponse = netmsg.management.RegisterResponse(
     newSessionToken = fieldsMap.getOrElse(1, None).asInstanceOf[Option[String]]
   )

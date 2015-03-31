@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class TurnEndedChangeEvt(
@@ -50,27 +50,11 @@ final case class TurnEndedChangeEvt(
         case 2 => newTurnEnded
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.TurnEndedChangeEvt.toJavaProto(this))
     def companion = netmsg.game.TurnEndedChangeEvt
 }
 
-object TurnEndedChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[TurnEndedChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[TurnEndedChangeEvt, netmsg.Game.TurnEndedChangeEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[TurnEndedChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[TurnEndedChangeEvt, netmsg.Game.TurnEndedChangeEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.TurnEndedChangeEvt): netmsg.Game.TurnEndedChangeEvt = {
-    val javaPbOut = netmsg.Game.TurnEndedChangeEvt.newBuilder
-    javaPbOut.setPlayerId(netmsg.game.PlayerID.toJavaProto(scalaPbSource.playerId))
-    javaPbOut.setNewTurnEnded(scalaPbSource.newTurnEnded)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.TurnEndedChangeEvt): netmsg.game.TurnEndedChangeEvt = netmsg.game.TurnEndedChangeEvt(
-    playerId = netmsg.game.PlayerID.fromJavaProto(javaPbSource.getPlayerId),
-    newTurnEnded = javaPbSource.getNewTurnEnded.booleanValue
-  )
-  override def fromAscii(ascii: String): netmsg.game.TurnEndedChangeEvt = {
-    val javaProtoBuilder = netmsg.Game.TurnEndedChangeEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object TurnEndedChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[TurnEndedChangeEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[TurnEndedChangeEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.TurnEndedChangeEvt = netmsg.game.TurnEndedChangeEvt(
     playerId = fieldsMap(1).asInstanceOf[netmsg.game.PlayerID],
     newTurnEnded = fieldsMap(2).asInstanceOf[Boolean]

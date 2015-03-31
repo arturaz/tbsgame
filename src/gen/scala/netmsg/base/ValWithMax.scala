@@ -3,7 +3,7 @@
 
 package netmsg.base
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class ValWithMax(
@@ -48,27 +48,11 @@ final case class ValWithMax(
         case 2 => maximum
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.base.ValWithMax.toJavaProto(this))
     def companion = netmsg.base.ValWithMax
 }
 
-object ValWithMax extends com.trueaccord.scalapb.GeneratedMessageCompanion[ValWithMax] with com.trueaccord.scalapb.JavaProtoSupport[ValWithMax, netmsg.Base.ValWithMax]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ValWithMax] with com.trueaccord.scalapb.JavaProtoSupport[ValWithMax, netmsg.Base.ValWithMax]  = this
-  def toJavaProto(scalaPbSource: netmsg.base.ValWithMax): netmsg.Base.ValWithMax = {
-    val javaPbOut = netmsg.Base.ValWithMax.newBuilder
-    javaPbOut.setCurrent(scalaPbSource.current)
-    javaPbOut.setMaximum(scalaPbSource.maximum)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Base.ValWithMax): netmsg.base.ValWithMax = netmsg.base.ValWithMax(
-    current = javaPbSource.getCurrent.intValue,
-    maximum = javaPbSource.getMaximum.intValue
-  )
-  override def fromAscii(ascii: String): netmsg.base.ValWithMax = {
-    val javaProtoBuilder = netmsg.Base.ValWithMax.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object ValWithMax extends com.trueaccord.scalapb.GeneratedMessageCompanion[ValWithMax]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ValWithMax]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.base.ValWithMax = netmsg.base.ValWithMax(
     current = fieldsMap(1).asInstanceOf[Int],
     maximum = fieldsMap(2).asInstanceOf[Int]

@@ -3,7 +3,7 @@
 
 package netmsg.management
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class CheckNameAvailabilityResponse(
@@ -48,27 +48,11 @@ final case class CheckNameAvailabilityResponse(
         case 2 => available
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.management.CheckNameAvailabilityResponse.toJavaProto(this))
     def companion = netmsg.management.CheckNameAvailabilityResponse
 }
 
-object CheckNameAvailabilityResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[CheckNameAvailabilityResponse] with com.trueaccord.scalapb.JavaProtoSupport[CheckNameAvailabilityResponse, netmsg.Management.CheckNameAvailabilityResponse]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[CheckNameAvailabilityResponse] with com.trueaccord.scalapb.JavaProtoSupport[CheckNameAvailabilityResponse, netmsg.Management.CheckNameAvailabilityResponse]  = this
-  def toJavaProto(scalaPbSource: netmsg.management.CheckNameAvailabilityResponse): netmsg.Management.CheckNameAvailabilityResponse = {
-    val javaPbOut = netmsg.Management.CheckNameAvailabilityResponse.newBuilder
-    javaPbOut.setName(scalaPbSource.name)
-    javaPbOut.setAvailable(scalaPbSource.available)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Management.CheckNameAvailabilityResponse): netmsg.management.CheckNameAvailabilityResponse = netmsg.management.CheckNameAvailabilityResponse(
-    name = javaPbSource.getName,
-    available = javaPbSource.getAvailable.booleanValue
-  )
-  override def fromAscii(ascii: String): netmsg.management.CheckNameAvailabilityResponse = {
-    val javaProtoBuilder = netmsg.Management.CheckNameAvailabilityResponse.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object CheckNameAvailabilityResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[CheckNameAvailabilityResponse]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[CheckNameAvailabilityResponse]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.management.CheckNameAvailabilityResponse = netmsg.management.CheckNameAvailabilityResponse(
     name = fieldsMap(1).asInstanceOf[String],
     available = fieldsMap(2).asInstanceOf[Boolean]

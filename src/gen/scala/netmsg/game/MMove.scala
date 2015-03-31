@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MMove(
@@ -57,27 +57,11 @@ final case class MMove(
         case 2 => path
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MMove.toJavaProto(this))
     def companion = netmsg.game.MMove
 }
 
-object MMove extends com.trueaccord.scalapb.GeneratedMessageCompanion[MMove] with com.trueaccord.scalapb.JavaProtoSupport[MMove, netmsg.Game.MMove]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MMove] with com.trueaccord.scalapb.JavaProtoSupport[MMove, netmsg.Game.MMove]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MMove): netmsg.Game.MMove = {
-    val javaPbOut = netmsg.Game.MMove.newBuilder
-    javaPbOut.setId(netmsg.game.WObjID.toJavaProto(scalaPbSource.id))
-    javaPbOut.addAllPath(scalaPbSource.path.map(netmsg.base.Vect2.toJavaProto))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MMove): netmsg.game.MMove = netmsg.game.MMove(
-    id = netmsg.game.WObjID.fromJavaProto(javaPbSource.getId),
-    path = javaPbSource.getPathList.map(netmsg.base.Vect2.fromJavaProto)
-  )
-  override def fromAscii(ascii: String): netmsg.game.MMove = {
-    val javaProtoBuilder = netmsg.Game.MMove.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MMove extends com.trueaccord.scalapb.GeneratedMessageCompanion[MMove]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MMove]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MMove = netmsg.game.MMove(
     id = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
     path = fieldsMap.getOrElse(2, Nil).asInstanceOf[Seq[netmsg.base.Vect2]]

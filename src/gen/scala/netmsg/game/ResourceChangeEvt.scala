@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class ResourceChangeEvt(
@@ -69,29 +69,11 @@ final case class ResourceChangeEvt(
         case 3 => newResources
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.ResourceChangeEvt.toJavaProto(this))
     def companion = netmsg.game.ResourceChangeEvt
 }
 
-object ResourceChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[ResourceChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[ResourceChangeEvt, netmsg.Game.ResourceChangeEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ResourceChangeEvt] with com.trueaccord.scalapb.JavaProtoSupport[ResourceChangeEvt, netmsg.Game.ResourceChangeEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.ResourceChangeEvt): netmsg.Game.ResourceChangeEvt = {
-    val javaPbOut = netmsg.Game.ResourceChangeEvt.newBuilder
-    scalaPbSource.objId.map(netmsg.game.WObjID.toJavaProto).foreach(javaPbOut.setObjId)
-    scalaPbSource.playerId.map(netmsg.game.PlayerID.toJavaProto).foreach(javaPbOut.setPlayerId)
-    javaPbOut.setNewResources(scalaPbSource.newResources)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.ResourceChangeEvt): netmsg.game.ResourceChangeEvt = netmsg.game.ResourceChangeEvt(
-    objId = if (javaPbSource.hasObjId) Some(netmsg.game.WObjID.fromJavaProto(javaPbSource.getObjId)) else None,
-    playerId = if (javaPbSource.hasPlayerId) Some(netmsg.game.PlayerID.fromJavaProto(javaPbSource.getPlayerId)) else None,
-    newResources = javaPbSource.getNewResources.intValue
-  )
-  override def fromAscii(ascii: String): netmsg.game.ResourceChangeEvt = {
-    val javaProtoBuilder = netmsg.Game.ResourceChangeEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object ResourceChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[ResourceChangeEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ResourceChangeEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.ResourceChangeEvt = netmsg.game.ResourceChangeEvt(
     objId = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.game.WObjID]],
     playerId = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.game.PlayerID]],

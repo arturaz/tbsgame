@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class WarpableObjectStats(
@@ -180,43 +180,11 @@ final case class WarpableObjectStats(
         case 16 => fortress
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.WarpableObjectStats.toJavaProto(this))
     def companion = netmsg.game.WarpableObjectStats
 }
 
-object WarpableObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WarpableObjectStats] with com.trueaccord.scalapb.JavaProtoSupport[WarpableObjectStats, netmsg.Game.WarpableObjectStats]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WarpableObjectStats] with com.trueaccord.scalapb.JavaProtoSupport[WarpableObjectStats, netmsg.Game.WarpableObjectStats]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.WarpableObjectStats): netmsg.Game.WarpableObjectStats = {
-    val javaPbOut = netmsg.Game.WarpableObjectStats.newBuilder
-    scalaPbSource.extractor.map(netmsg.game.WObjectStats.Extractor.toJavaProto).foreach(javaPbOut.setExtractor)
-    scalaPbSource.warpLinker.map(netmsg.game.WObjectStats.WarpLinker.toJavaProto).foreach(javaPbOut.setWarpLinker)
-    scalaPbSource.laserTower.map(netmsg.game.WObjectStats.LaserTower.toJavaProto).foreach(javaPbOut.setLaserTower)
-    scalaPbSource.corvette.map(netmsg.game.WObjectStats.Corvette.toJavaProto).foreach(javaPbOut.setCorvette)
-    scalaPbSource.wasp.map(netmsg.game.WObjectStats.Wasp.toJavaProto).foreach(javaPbOut.setWasp)
-    scalaPbSource.scout.map(netmsg.game.WObjectStats.Scout.toJavaProto).foreach(javaPbOut.setScout)
-    scalaPbSource.rayShip.map(netmsg.game.WObjectStats.RayShip.toJavaProto).foreach(javaPbOut.setRayShip)
-    scalaPbSource.rocketFrigate.map(netmsg.game.WObjectStats.RocketFrigate.toJavaProto).foreach(javaPbOut.setRocketFrigate)
-    scalaPbSource.gunship.map(netmsg.game.WObjectStats.Gunship.toJavaProto).foreach(javaPbOut.setGunship)
-    scalaPbSource.fortress.map(netmsg.game.WObjectStats.Fortress.toJavaProto).foreach(javaPbOut.setFortress)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.WarpableObjectStats): netmsg.game.WarpableObjectStats = netmsg.game.WarpableObjectStats(
-    extractor = if (javaPbSource.hasExtractor) Some(netmsg.game.WObjectStats.Extractor.fromJavaProto(javaPbSource.getExtractor)) else None,
-    warpLinker = if (javaPbSource.hasWarpLinker) Some(netmsg.game.WObjectStats.WarpLinker.fromJavaProto(javaPbSource.getWarpLinker)) else None,
-    laserTower = if (javaPbSource.hasLaserTower) Some(netmsg.game.WObjectStats.LaserTower.fromJavaProto(javaPbSource.getLaserTower)) else None,
-    corvette = if (javaPbSource.hasCorvette) Some(netmsg.game.WObjectStats.Corvette.fromJavaProto(javaPbSource.getCorvette)) else None,
-    wasp = if (javaPbSource.hasWasp) Some(netmsg.game.WObjectStats.Wasp.fromJavaProto(javaPbSource.getWasp)) else None,
-    scout = if (javaPbSource.hasScout) Some(netmsg.game.WObjectStats.Scout.fromJavaProto(javaPbSource.getScout)) else None,
-    rayShip = if (javaPbSource.hasRayShip) Some(netmsg.game.WObjectStats.RayShip.fromJavaProto(javaPbSource.getRayShip)) else None,
-    rocketFrigate = if (javaPbSource.hasRocketFrigate) Some(netmsg.game.WObjectStats.RocketFrigate.fromJavaProto(javaPbSource.getRocketFrigate)) else None,
-    gunship = if (javaPbSource.hasGunship) Some(netmsg.game.WObjectStats.Gunship.fromJavaProto(javaPbSource.getGunship)) else None,
-    fortress = if (javaPbSource.hasFortress) Some(netmsg.game.WObjectStats.Fortress.fromJavaProto(javaPbSource.getFortress)) else None
-  )
-  override def fromAscii(ascii: String): netmsg.game.WarpableObjectStats = {
-    val javaProtoBuilder = netmsg.Game.WarpableObjectStats.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object WarpableObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WarpableObjectStats]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WarpableObjectStats]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WarpableObjectStats = netmsg.game.WarpableObjectStats(
     extractor = fieldsMap.getOrElse(6, None).asInstanceOf[Option[netmsg.game.WObjectStats.Extractor]],
     warpLinker = fieldsMap.getOrElse(7, None).asInstanceOf[Option[netmsg.game.WObjectStats.WarpLinker]],

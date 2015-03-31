@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 sealed trait WObjKind extends com.trueaccord.scalapb.GeneratedEnum {
@@ -38,6 +38,4 @@ object WObjKind extends com.trueaccord.scalapb.GeneratedEnumCompanion[WObjKind] 
     case 3 => HEAVY
   }
   lazy val descriptor = new Descriptors.EnumDescriptor(1, "WObjKind", this)
-  def fromJavaValue(pbJavaSource: netmsg.Game.WObjKind): WObjKind = fromValue(pbJavaSource.getNumber)
-  def toJavaValue(pbScalaSource: WObjKind): netmsg.Game.WObjKind = netmsg.Game.WObjKind.valueOf(pbScalaSource.id)
 }

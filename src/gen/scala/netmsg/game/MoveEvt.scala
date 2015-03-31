@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class MoveEvt(
@@ -72,31 +72,11 @@ final case class MoveEvt(
         case 4 => movesLeft
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.MoveEvt.toJavaProto(this))
     def companion = netmsg.game.MoveEvt
 }
 
-object MoveEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[MoveEvt] with com.trueaccord.scalapb.JavaProtoSupport[MoveEvt, netmsg.Game.MoveEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MoveEvt] with com.trueaccord.scalapb.JavaProtoSupport[MoveEvt, netmsg.Game.MoveEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.MoveEvt): netmsg.Game.MoveEvt = {
-    val javaPbOut = netmsg.Game.MoveEvt.newBuilder
-    javaPbOut.setObjId(netmsg.game.WObjID.toJavaProto(scalaPbSource.objId))
-    javaPbOut.setFrom(netmsg.base.Vect2.toJavaProto(scalaPbSource.from))
-    javaPbOut.setTo(netmsg.base.Vect2.toJavaProto(scalaPbSource.to))
-    javaPbOut.setMovesLeft(scalaPbSource.movesLeft)
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.MoveEvt): netmsg.game.MoveEvt = netmsg.game.MoveEvt(
-    objId = netmsg.game.WObjID.fromJavaProto(javaPbSource.getObjId),
-    from = netmsg.base.Vect2.fromJavaProto(javaPbSource.getFrom),
-    to = netmsg.base.Vect2.fromJavaProto(javaPbSource.getTo),
-    movesLeft = javaPbSource.getMovesLeft.intValue
-  )
-  override def fromAscii(ascii: String): netmsg.game.MoveEvt = {
-    val javaProtoBuilder = netmsg.Game.MoveEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object MoveEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[MoveEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MoveEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MoveEvt = netmsg.game.MoveEvt(
     objId = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
     from = fieldsMap(2).asInstanceOf[netmsg.base.Vect2],

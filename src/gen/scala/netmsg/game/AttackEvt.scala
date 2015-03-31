@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class AttackEvt(
@@ -72,31 +72,11 @@ final case class AttackEvt(
         case 4 => attack
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.AttackEvt.toJavaProto(this))
     def companion = netmsg.game.AttackEvt
 }
 
-object AttackEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[AttackEvt] with com.trueaccord.scalapb.JavaProtoSupport[AttackEvt, netmsg.Game.AttackEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[AttackEvt] with com.trueaccord.scalapb.JavaProtoSupport[AttackEvt, netmsg.Game.AttackEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.AttackEvt): netmsg.Game.AttackEvt = {
-    val javaPbOut = netmsg.Game.AttackEvt.newBuilder
-    javaPbOut.setAttackerId(netmsg.game.WObjID.toJavaProto(scalaPbSource.attackerId))
-    javaPbOut.setDefenderId(netmsg.game.WObjID.toJavaProto(scalaPbSource.defenderId))
-    javaPbOut.setHpLeft(scalaPbSource.hpLeft)
-    javaPbOut.setAttack(netmsg.game.Attack.toJavaProto(scalaPbSource.attack))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.AttackEvt): netmsg.game.AttackEvt = netmsg.game.AttackEvt(
-    attackerId = netmsg.game.WObjID.fromJavaProto(javaPbSource.getAttackerId),
-    defenderId = netmsg.game.WObjID.fromJavaProto(javaPbSource.getDefenderId),
-    hpLeft = javaPbSource.getHpLeft.intValue,
-    attack = netmsg.game.Attack.fromJavaProto(javaPbSource.getAttack)
-  )
-  override def fromAscii(ascii: String): netmsg.game.AttackEvt = {
-    val javaProtoBuilder = netmsg.Game.AttackEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object AttackEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[AttackEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[AttackEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.AttackEvt = netmsg.game.AttackEvt(
     attackerId = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
     defenderId = fieldsMap(2).asInstanceOf[netmsg.game.WObjID],

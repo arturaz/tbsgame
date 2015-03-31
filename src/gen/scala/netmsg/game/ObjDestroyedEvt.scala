@@ -3,7 +3,7 @@
 
 package netmsg.game
 
-import scala.collection.JavaConversions._
+
 import com.trueaccord.scalapb.Descriptors
 
 final case class ObjDestroyedEvt(
@@ -41,25 +41,11 @@ final case class ObjDestroyedEvt(
         case 1 => objId
       }
     }
-    override def toString: String = com.google.protobuf.TextFormat.printToString(netmsg.game.ObjDestroyedEvt.toJavaProto(this))
     def companion = netmsg.game.ObjDestroyedEvt
 }
 
-object ObjDestroyedEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[ObjDestroyedEvt] with com.trueaccord.scalapb.JavaProtoSupport[ObjDestroyedEvt, netmsg.Game.ObjDestroyedEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ObjDestroyedEvt] with com.trueaccord.scalapb.JavaProtoSupport[ObjDestroyedEvt, netmsg.Game.ObjDestroyedEvt]  = this
-  def toJavaProto(scalaPbSource: netmsg.game.ObjDestroyedEvt): netmsg.Game.ObjDestroyedEvt = {
-    val javaPbOut = netmsg.Game.ObjDestroyedEvt.newBuilder
-    javaPbOut.setObjId(netmsg.game.WObjID.toJavaProto(scalaPbSource.objId))
-    javaPbOut.build
-  }
-  def fromJavaProto(javaPbSource: netmsg.Game.ObjDestroyedEvt): netmsg.game.ObjDestroyedEvt = netmsg.game.ObjDestroyedEvt(
-    objId = netmsg.game.WObjID.fromJavaProto(javaPbSource.getObjId)
-  )
-  override def fromAscii(ascii: String): netmsg.game.ObjDestroyedEvt = {
-    val javaProtoBuilder = netmsg.Game.ObjDestroyedEvt.newBuilder
-    com.google.protobuf.TextFormat.merge(ascii, javaProtoBuilder)
-    fromJavaProto(javaProtoBuilder.build)
-  }
+object ObjDestroyedEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[ObjDestroyedEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ObjDestroyedEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.ObjDestroyedEvt = netmsg.game.ObjDestroyedEvt(
     objId = fieldsMap(1).asInstanceOf[netmsg.game.WObjID]
   )

@@ -19,10 +19,7 @@ val macrosSettings = commonSettings ++ Seq(
 
 val rootSettings = commonSettings ++ Seq(
   scalacOptions ++= Seq("-deprecation", "-Xlint", "-Xfatal-warnings"),
-  unmanagedSourceDirectories in Compile ++= {
-    val gen = baseDirectory.value / "src" / "gen"
-    Seq(gen / "java", gen / "scala")
-  },
+  unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "gen" / "scala",
   initialCommands in console := """import app.models._, world._, implicits._""",
   libraryDependencies ++= Seq(
     "com.typesafe.akka" %% "akka-actor" % "2.3.6",
