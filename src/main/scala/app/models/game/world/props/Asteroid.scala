@@ -27,5 +27,5 @@ object ExtractionSpeed extends Enum[ExtractionSpeed] {
   val values = findValues
 }
 object AsteroidStats extends WObjectStats {
-  override val blocksVisibility = true
+  override val blocksWarp = false
 }

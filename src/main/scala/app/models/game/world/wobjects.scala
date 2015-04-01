@@ -24,7 +24,6 @@ case class Rock(
   override val stats = RockStats
 }
 object RockStats extends WObjectStats {
-  override val blocksVisibility = true
   override val blocksWarp = true
 }
 
@@ -37,7 +36,7 @@ case class Brush(
   override val stats = BrushStats
 }
 object BrushStats extends WObjectStats {
-  override val blocksVisibility = true
+  override val blocksWarp = true
   override val blocksMovement = false
 }
 
@@ -50,6 +49,7 @@ case class Crystal(
   override val stats = CrystalStats
 }
 object CrystalStats extends WObjectStats {
+  override val blocksVisibility = false
   override val blocksWarp = true
 }
 
