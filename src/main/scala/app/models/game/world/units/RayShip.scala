@@ -5,7 +5,7 @@ import app.models.game.world._
 
 object RayShipStats extends WFighterUnitStats with EmptySpaceWarpableCompanion[RayShip]
 {
-  override val maxHp = HP(80)
+  override val maxHp = HP(42)
   override val attack = Atk(65)
   override val attacks = Attacks(1)
   override val attackRange = RadialDistance.Seven
