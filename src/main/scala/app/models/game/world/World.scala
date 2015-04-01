@@ -1,18 +1,19 @@
 package app.models.game.world
 
+import java.util.UUID
+
 import akka.event.LoggingAdapter
 import app.models.game._
 import app.models.game.ai.GrowingSpawnerAI
 import app.models.game.events._
-import app.models.game.world.WObject.Id
-import app.models.game.world.buildings.{VPTowerStats, SpawnerStats, WarpGateStats}
+import app.models.game.world.buildings.{VPTowerStats, SpawnerStats}
 import app.models.game.world.maps.{WasVisibleMap, VisibilityMap, WarpZoneMap}
 import app.models.game.world.props.ExtractionSpeed
 import app.models.game.world.units.{FortressStats, RayShipStats, WaspStats}
 import implicits._
 import infrastructure.PrefixedLoggingAdapter
 import monocle.{Lenser, SimpleLens}
-import utils.{ValWithMax, IntValueClass}
+import utils.{IdObj, ValWithMax, IntValueClass}
 
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
@@ -29,7 +30,8 @@ case class World private (
   bounds: Bounds, objects: WorldObjs.All,
   wasVisibleMap: WasVisibleMap,
   playerStates: Map[Player, WorldPlayerState], vpsMap: Map[Team, VPS],
-  warpZoneMap: WarpZoneMap, visibilityMap: VisibilityMap
+  warpZoneMap: WarpZoneMap, visibilityMap: VisibilityMap,
+  id: World.Id = World.newId
 ) {
   import app.models.game.world.World._
 
@@ -278,6 +280,11 @@ case class World private (
 }
 
 object World {
+  case class Id(id: UUID) extends AnyVal with IdObj {
+    override protected def prefix = "WorldID"
+  }
+  @inline def newId = Id(UUID.randomUUID())
+
   def revealObjects(team: Team, evtWorld: Evented[World]): Evented[World] = {
     val newVisiblePoints = evtWorld.events.collect {
       case evt: VisibilityChangeEvt if evt.team === team => evt.visible
@@ -373,15 +380,17 @@ object World {
   private[this] def bounds(objects: TraversableOnce[WObject]) =
     objects.map(_.bounds).reduce(_ join _)
 
+  case class Lines(count: Range, length: Range, directionChangeChance: Double)
+
   def create(
     playersTeam: Team, npcOwner: () => Bot, spawnerOwner: () => Bot,
     staticObjectsKnownAtStart: Boolean,
     startingPoint: Vect2 = Vect2(0, 0),
     endDistance: TileDistance = TileDistance(30),
     branches: Range = 4 to 6,
-    rockLines: Range = 0 to 4,
-    rockLineLength: Range = 1 to 4,
-    rockLineDirectionChangeChance: Double = 0.2,
+    rocks: Lines = Lines(0 to 4, 1 to 4, 0.2),
+    brushes: Lines = Lines(0 to 4, 1 to 4, 0.2),
+    crystals: Lines = Lines(0 to 4, 1 to 4, 0.2),
     spawners: Int = 2,
     jumpDistance: Range = 3 to 6,
     blobSize: Range = 2 to 5,
@@ -450,6 +459,7 @@ object World {
         }, already placed: $enemyResourcesInBounds", bounds
       )
 
+      var enemyPlacementFailed = false
       for (objPos <- Random.shuffle(bounds.points)) {
         // Have more space around asteroids
         lazy val asteroidFreeSpace = {
@@ -470,48 +480,52 @@ object World {
           enemyResourcesInBounds < enemyResourcesNeeded &&
           warpGate.bounds.perimeter.map(_.tileDistance(objPos)).
             forall(_ > safeDistance) &&
-          ! pTaken(objPos)
+          ! pTaken(objPos) &&
+          ! enemyPlacementFailed
         ) {
+          val enemyResourcesLeft = enemyResourcesNeeded - enemyResourcesInBounds
           val enemyOpt = tryN(10) {
-            npcPool.weightedRandom.
-              filter(_.cost <= enemyResourcesNeeded - enemyResourcesInBounds)
+            npcPool.weightedRandom.filter(_.cost <= enemyResourcesLeft)
           }
           enemyOpt.foreach { enemyWarpable =>
             objects += enemyWarpable.warp(npcOwner(), objPos).
               setWarpState(enemyWarpable.warpTime)
             enemyResourcesInBounds += enemyWarpable.cost
           }
+          if (enemyOpt.isEmpty) enemyPlacementFailed = true
           log.debug(
-            s"{} @ {}, left: ${enemyResourcesNeeded - enemyResourcesInBounds}",
+            s"enemy {} @ {}, left: $enemyResourcesLeft",
             enemyOpt, objPos
           )
         }
       }
 
-      spawnRocks(bounds)
+      spawnLines(bounds, rocks)(Rock(_))
+      spawnLines(bounds, brushes)(Brush(_))
+      spawnLines(bounds, crystals)(Crystal(_))
 
       log.debug("Blob spawn end")
     }
 
-    def spawnRocks(bounds: Bounds): Unit = {
+    def spawnLines(bounds: Bounds, lines: Lines)(spawn: Vect2 => WObject): Unit = {
       val shuffledPoints = Random.shuffle(bounds.points)
 
-      (1 to rockLines.random).foreach { _ =>
+      (1 to lines.count.random).foreach { _ =>
         val startOpt =
           shuffledPoints.collectFirst { case p if objects.nonEmptyAt(p) => p }
         startOpt.foreach { start =>
           var position = start
-          val length = rockLineLength.random
+          val length = lines.length.random
           var placed = 0
           var direction = randomHVDirection
 
           while (bounds.contains(position) && placed < length) {
             if (objects.emptyAt(position)) {
-              objects += Rock(position)
+              objects += spawn(position)
               placed += 1
             }
 
-            if (Random.chance(rockLineDirectionChangeChance))
+            if (Random.chance(lines.directionChangeChance))
               direction = randomHVDirection
             position += direction
           }

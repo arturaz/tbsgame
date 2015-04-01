@@ -19,17 +19,17 @@ val macrosSettings = commonSettings ++ Seq(
 
 val rootSettings = commonSettings ++ Seq(
   scalacOptions ++= Seq("-deprecation", "-Xlint", "-Xfatal-warnings"),
-  unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "gen" / "java",
+  unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "gen" / "scala",
   initialCommands in console := """import app.models._, world._, implicits._""",
   libraryDependencies ++= Seq(
     "com.typesafe.akka" %% "akka-actor" % "2.3.6",
     "org.scalaz" %% "scalaz-core" % "7.1.0",
     "commons-io" % "commons-io" % "2.4",
     "com.github.t3hnar" %% "scala-bcrypt" % "2.4",
-    "com.google.protobuf" % "protobuf-java" % "2.4.1",
     "com.github.nscala-time" %% "nscala-time" % "1.8.0",
     "com.beachape" %% "enumeratum" % "1.0.1",
-    "org.spire-math" %% "spire" % "0.9.0"
+    "org.spire-math" %% "spire" % "0.9.0",
+    "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.4.8"
   ) ++ Seq(
     "org.flywaydb" % "flyway-core" % "3.1",
     "com.zaxxer" % "HikariCP-java6" % "2.2.5",
@@ -47,7 +47,6 @@ val rootSettings = commonSettings ++ Seq(
     "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
   )
 )
-//libraryDependencies += "com.chuusai" %% "shapeless" % "2.0.0"
 
 lazy val macros = project.settings(macrosSettings:_*)
 

@@ -138,7 +138,7 @@ case class WorldObjs[Obj <: WObject] private (
     get(after.id).toMaybe.toRight(s"Can't find ${after.id}").map { before =>
       val beforePoints = before.bounds.points.toSet
       val afterPoints = after.bounds.points.toSet
-      val removedPositions =  beforePoints -- afterPoints
+      val removedPositions = beforePoints -- afterPoints
       val addedPositions = afterPoints -- beforePoints
       val newPositions =
         positionsMap |> removePositions(before.id, removedPositions) |>

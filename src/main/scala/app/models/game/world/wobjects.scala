@@ -115,7 +115,7 @@ case class Spawner(
   position: Vect2, owner: Bot,
   id: WObject.Id=WObject.newId,
   startingStrength: SpawnerStr=SpawnerStats.DefaultStartingStrength,
-  turnsPerStrength: SpawnerStr=SpawnerStats.DefaultTurnsPerStrength,
+  turnsPerStrength: Option[SpawnerStr]=SpawnerStats.DefaultTurnsPerStrength,
   turns: Int=0, hp: HP=SpawnerStats.maxHp
 ) extends SpawnerImpl with BotBuilding with TurnCounter with SizedWObject
 

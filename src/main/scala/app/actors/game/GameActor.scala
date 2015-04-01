@@ -30,7 +30,6 @@ object GameActor {
     case class Warp(
       human: Human, position: Vect2, warpable: WarpableCompanion.Some
     ) extends In
-    case class GetMovement(human: Human, id: WObject.Id) extends In
     /* path does not include objects position and ends in target position */
     case class Move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]) extends In
     case class Attack(human: Human, id: WObject.Id, targetId: WObject.Id) extends In
@@ -46,30 +45,18 @@ object GameActor {
   sealed trait ClientOut extends Out
   object Out {
     case class Joined(human: Human, game: ActorRef) extends Out
-    object Init {
-      case class Stats(stats: WObjectStats, showInWarpables: Boolean=false)
-    }
     case class Init(
-      bounds: Bounds, objects: WorldObjs.All,
+      id: World.Id, bounds: Bounds, objects: WorldObjs.All,
       warpZonePoints: Iterable[Vect2], visiblePoints: Iterable[Vect2],
       selfTeam: Team, otherTeams: Iterable[Team],
       self: HumanState, others: Iterable[(Player, Option[HumanState])],
-      wObjectStats: Iterable[Init.Stats], attackMultipliers: Set[(WObjKind, WObjKind)],
+      warpableObjects: Iterable[WarpableStats],
+      attackMultipliers: Set[(WObjKind, WObjKind)],
       objectives: RemainingObjectives, turnTimeframe: Option[Timeframe],
       extractionSpeeds: Set[ExtractionSpeed]
     ) extends ClientOut
     case class Events(events: Vector[FinalEvent]) extends ClientOut
     case class Error(error: String) extends ClientOut
-    
-    object Movement {
-      sealed trait Response
-      /* Paths for objects that player can move */
-      case class Movable(paths: Vector[Path]) extends Response
-      /* Points where object can move to. Send for objects that cannot be moved by
-         player. */
-      case class Immovable(points: Vector[Vect2]) extends Response
-    }
-    case class Movement(id: WObject.Id, response: Movement.Response) extends ClientOut
   }
 
   private[this] def initMsg(human: Human, tbgame: TurnBasedGame)
@@ -79,36 +66,27 @@ object GameActor {
     val states = visibleGame.states
     val resourceMap = visibleGame.world.resourcesMap
     def stateFor(p: Player): Either[String, HumanState] = for {
-      gameState <- states.get(human).
-        toRight(s"can't get game state for $human in $states").right
-      resources <- resourceMap.get(human).
-        toRight(s"can't get game state for $human in $resourceMap").right
+      gameState <- states.get(p).
+        toRight(s"can't get game state for $p in $states").right
+      resources <- resourceMap.get(p).
+        toRight(s"can't get game state for $p in $resourceMap").right
     } yield HumanState(resources, visibleGame.world.populationFor(p), gameState)
 
     stateFor(human).right.map { selfState =>
       Out.Init(
-        visibleGame.world.bounds,
+        game.world.id, visibleGame.world.bounds,
         visibleGame.world.objects ++
           game.world.noLongerVisibleImmovableObjectsFor(human.team),
         visibleGame.world.warpZoneMap.map.keys.map(_._1),
         visibleGame.world.visibilityMap.map.keys.map(_._1),
-        human.team, game.world.teams - human.team,
-        selfState, (game.world.players - human).map { player =>
-          player -> stateFor(player).right.toOption
-        }, {
-          import Out.Init.Stats
-          Vector(
-            Stats(AsteroidStats), Stats(WarpGateStats), Stats(ExtractorStats),
-            Stats(WarpLinkerStats, showInWarpables = true),
-            Stats(LaserTowerStats, showInWarpables = true),
-            Stats(CorvetteStats, showInWarpables = true),
-            Stats(RocketFrigateStats, showInWarpables = true),
-            Stats(GunshipStats, showInWarpables = true),
-            Stats(ScoutStats, showInWarpables = true),
-            Stats(SpawnerStats), Stats(WaspStats), Stats(RayShipStats),
-            Stats(FortressStats)
+        human.team, game.world.teams - human.team, selfState,
+          (game.world.players - human).map { player =>
+          player -> (
+            if (player.isFriendOf(human)) stateFor(player).right.toOption
+            else None
           )
         },
+        selfState.gameState.canWarp,
         for (from <- WObjKind.All; to <- WObjKind.All) yield from -> to,
         game.remainingObjectives(human.team),
         tbgame.turnTimeframeFor(human), ExtractionSpeed.values
@@ -283,19 +261,6 @@ class GameActor private (
       update(sender(), human, _.endTurn(human, DateTime.now))
     case In.Concede(human) =>
       update(sender(), human, _.concede(human))
-    case In.GetMovement(human, id) =>
-      game.game.world.objects.getCT[Movable](id)
-        .toRight(s"Can't find movable world object with $id").right
-        .map { obj => (obj, game.game.movementFor(obj)) }
-        .fold(
-          err => sender() ! Out.Error(err),
-          { case (obj, paths) =>
-            val response =
-              if (Game.canMove(human, obj)) Out.Movement.Movable(paths)
-              else Out.Movement.Immovable(paths.map(_.vects.last))
-            sender() ! Out.Movement(id, response)
-          }
-        )
   }
 
   val receive: PartialFunction[Any, Unit] = notLoggedReceive orElse loggedReceive
