@@ -6,7 +6,7 @@ import app.models.game.world.WorldObjs.{PositionsMap, ObjectsMap}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.{mutable, IterableLike}
 import scala.reflect.ClassTag
-import scalaz.{-\/, \/-, \/}
+import scalaz._, scalaz.syntax.std.option._
 import implicits._
 
 object WorldObjs {
@@ -62,8 +62,34 @@ case class WorldObjs[Obj <: WObject] private (
   positionsMap: PositionsMap
 ) extends IterableLike[Obj, WorldObjs[Obj]]{
   import WorldObjs._
+  checkConsistency()
 
   override def toString() = s"WorldObjs(objects: $objectsMap, positions: $positionsMap)"
+
+  private[this] def checkConsistency(): Unit = {
+    var errors = Vector.empty[String]
+
+    positionsMap.foreach { case (point, objIds) =>
+      objIds.foreach { id =>
+        objectsMap.get(id).fold2(
+          errors :+= s"Can't find $id @ $point in $objectsMap",
+          obj => {
+            if (! obj.bounds.points.contains(point))
+              errors :+= s"$point is not a part of $obj ${obj.bounds}"
+            obj.bounds.points.foreach { oPoint =>
+              val idsAt = positionsMap.getOrElse(oPoint, Set.empty)
+              if (!idsAt.contains(obj.id))
+                errors :+= s"$obj $oPoint is not at positionsMap $idsAt"
+            }
+          }
+        )
+      }
+    }
+
+    if (errors.nonEmpty) throw new IllegalStateException(
+      s"WorldObjs consistency check failed! Errors:\n${errors.mkString("\n")}"
+    )
+  }
 
   private[this] def doManyEither[A]
   (as: TraversableOnce[A])(f: (WorldObjs[Obj], A) => String \/ WorldObjs[Obj])
@@ -108,27 +134,37 @@ case class WorldObjs[Obj <: WObject] private (
   def remove_!(objs: TraversableOnce[WObject.Id]): WorldObjs[Obj] = remove(objs).right_!
   def --(objs: TraversableOnce[WObject.Id]): WorldObjs[Obj] = remove_!(objs)
 
-  def update[A <: Obj](before: A, after: A): String \/ WorldObjs[Obj] = {
-    if (before.id != after.id)
-      s"IDs don't match for [before=$before] and [after=$after]!".leftZ
-    else if (! objectsMap.contains(before.id))
-      s"$before is not in $this".leftZ
-    else {
+  def update[A <: Obj](after: A): String \/ WorldObjs[Obj] =
+    get(after.id).toMaybe.toRight(s"Can't find ${after.id}").map { before =>
       val beforePoints = before.bounds.points.toSet
       val afterPoints = after.bounds.points.toSet
       val removedPositions =  beforePoints -- afterPoints
       val addedPositions = afterPoints -- beforePoints
+      val newPositions =
+        positionsMap |> removePositions(before.id, removedPositions) |>
+        addPositions(before.id, addedPositions)
+
+      println(
+        s"""
+           |WorldObjs#update
+           |  before: $before
+           |  after: $after
+           |  beforePoints: $beforePoints
+           |  afterPoints: $afterPoints
+           |  removedPositions: $removedPositions
+           |  addedPositions: $addedPositions
+           |  positions: $positionsMap
+           |  newPositions: $newPositions
+         """.stripMargin
+      )
+
       copy(
         objectsMap = objectsMap + (before.id -> after),
-        positionsMap =
-          positionsMap |> removePositions(before.id, removedPositions) |>
-          addPositions(before.id, addedPositions)
-      ).rightZ
+        positionsMap = newPositions
+      )
     }
-  }
 
-  def update_![A <: Obj](before: A, after: A): WorldObjs[Obj] =
-    update(before, after).right_!
+  def update_![A <: Obj](after: A): WorldObjs[Obj] = update(after).right_!
 
   def objects = objectsMap.values
   override def size = objectsMap.size
