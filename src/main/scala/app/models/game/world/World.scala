@@ -153,7 +153,7 @@ case class World private (
       }
     }(before, after)(
       { case (before, after) => objToOwner(before).toSet ++ objToOwner(after).toSet },
-      { case (objs, (before, after)) => objs update_! (before, after) },
+      { case (objs, (before, after)) => objs update_! after },
       { case (newWorld, warpZoneMap, (bOO, aOO)) =>
         warpZoneMap updated ((objects, bOO), (newWorld.objects, aOO))
       },

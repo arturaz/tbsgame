@@ -73,15 +73,9 @@ class WorldObjsTest extends AppTest {
   }
 
   "updating" - {
-    "should fail if the object that is being updated has a different id" in {
-      forAll { (obj1: WObject, obj2: WObject) =>
-        (WorldObjs.empty + obj1).update(obj1, obj2).isLeft should === (true)
-      }
-    }
-
     "should fail if the object that is being updated is not in the world" in {
       forAll { (objs: WorldObjs.All, obj: WObject) =>
-        objs.update(obj, obj).isLeft should === (true)
+        objs.update(obj).isLeft should === (true)
       }
     }
 
@@ -89,7 +83,7 @@ class WorldObjsTest extends AppTest {
       forAll { (objs: WorldObjs.All, pos: Vect2) => whenever(objs.nonEmpty) {
         val obj = objs.head
         val newObj = TestWObject(pos, obj.id)
-        objs.update_!(obj, newObj).objectsMap(obj.id) should === (newObj)
+        objs.update_!(newObj).objectsMap(obj.id) should === (newObj)
       } }
     }
 
@@ -108,7 +102,7 @@ class WorldObjsTest extends AppTest {
       ) { (objs, pos, size) => whenever(objs.nonEmpty) {
         val obj = objs.head
         val newObj = SizedTestWObject(pos, SizedTestWObjectStats(size), obj.id)
-        val newObjs = objs.update_!(obj, newObj)
+        val newObjs = objs.update_!(newObj)
 
         f(ChangePoints(obj, newObj, newObjs))
       } }
