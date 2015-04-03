@@ -36,7 +36,8 @@ case class Brush(
   override val stats = BrushStats
 }
 object BrushStats extends WObjectStats {
-  override val blocksWarp = true
+  override val blocksWarp = false
+  override val blocksVisibility = true
   override val blocksMovement = false
 }
 
