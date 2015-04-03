@@ -117,7 +117,7 @@ object Game {
       human: Human, populationNeeded: Population, world: World
     )(f: Evented[World] => Game.Result): Game.Result = {
       val population = world.populationFor(human)
-      if (population.left >= populationNeeded) f(Evented(
+      if (populationNeeded.isZero || population.left >= populationNeeded) f(Evented(
         world,
         PopulationChangeEvt(human, population.withValue(_ + populationNeeded))
       ))
