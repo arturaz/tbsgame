@@ -8,7 +8,7 @@ import implicits._
 object WarpGateStats extends BuildingStats with SizedWObjectStats
 with GivingActionsStats with GivingPopulationStats with SpecialActionStats {
   override val maxHp = HP(350)
-  override val size = Vect2(6, 3)
+  override val size = Vect2(3, 3)
   override val isCritical = true
   override val actionsGiven = Actions(3)
   override val populationGiven = Population(24)
