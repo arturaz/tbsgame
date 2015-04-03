@@ -43,7 +43,8 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
       user2game.get(user).fold2(
         {
           if (waitingListUser2Mode.contains(user)) log.warning(
-            "Not joining a new game, because {} is already in a waiting list", user
+            "Not joining a new game, because {} is already in a waiting list, ref: {}",
+            user, sender()
           )
           else noExistingGame(user, mode, sender())
         },

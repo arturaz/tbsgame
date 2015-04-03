@@ -3,10 +3,11 @@ package app.actors.game
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.event.{LoggingAdapter, LoggingReceive}
 import app.actors.game.GameActor.Out.Joined
+import app.actors.game.GameActorGame.Result
 import app.algorithms.Pathfinding.Path
-import app.models.game.TurnBasedGame.WithCurrentTime
 import app.models.game._
 import app.models.game.events._
+import app.models.game.world.WObject.Id
 import app.models.game.world._
 import app.models.game.world.buildings._
 import app.models.game.world.maps.WorldMaterializer
@@ -59,7 +60,7 @@ object GameActor {
     case class Error(error: String) extends ClientOut
   }
 
-  private[this] def initMsg(human: Human, tbgame: TurnBasedGame)
+  private[this] def initMsg(human: Human, tbgame: GameActorGame)
   (implicit log: LoggingAdapter): Either[String, Out.Init] = {
     val game = tbgame.game
     val visibleGame = game.visibleBy(human)
@@ -95,13 +96,13 @@ object GameActor {
   }
 
   private def init(
-    human: Human, ref: ActorRef, tbgame: TurnBasedGame
+    human: Human, ref: ActorRef, tbgame: GameActorGame
   )(implicit log: LoggingAdapter): Unit =
     initMsg(human, tbgame).fold(
       err => throw new IllegalStateException(s"cannot init game state: $err"),
       msg => {
         ref ! msg
-        events(human, ref, Vector(TurnStartedEvt(tbgame.currentTeam)))
+        events(human, ref, Vector(TurnStartedEvt(tbgame.currentTeam(human))))
       }
     )
 
@@ -120,16 +121,16 @@ object GameActor {
     ref ! Out.Events(viewedEvents)
   }
 
-  private def nextReadyTeam(
-    game: TurnBasedGame, currentTime: DateTime
-  )(implicit log: LoggingAdapter): Evented[Winner \/ TurnBasedGame] = {
+  private def advanceTurnIfPossible(
+    game: GameActorGame, currentTime: DateTime
+  )(implicit log: LoggingAdapter): Evented[Winner \/ GameActorGame] = {
     @tailrec def rec(
-      gameOrWinner: Evented[Winner \/ TurnBasedGame]
-    ): Evented[Winner \/ TurnBasedGame] = {
-      if (gameOrWinner.value.fold(_ => true, ! _.currentTeamFinished)) gameOrWinner
+      gameOrWinner: Evented[Winner \/ GameActorGame]
+    ): Evented[Winner \/ GameActorGame] = {
+      if (gameOrWinner.value.fold(_ => true, ! _.shouldAdvanceTurn)) gameOrWinner
       else rec(gameOrWinner.flatMap {
         case left @ -\/(winner) => Evented(left)
-        case \/-(game) => game.nextTeamTurn(currentTime)
+        case \/-(game) => game.advanceTurn(currentTime)
       })
     }
 
@@ -144,6 +145,122 @@ object GameActor {
   case class StartingHuman(human: Human, resources: Resources, client: ActorRef) {
     def game = Game.StartingPlayer(human, resources)
   }
+}
+
+object GameActorGame {
+  type Result = Game.ResultT[GameActorGame]
+
+  // TODO: report IDEA bug about _: Self
+  trait CheckTurnTime[Self <: GameActorGame] { _: Self with GameActorGame =>
+    def turnTimers: Option[TurnTimers]
+    def update(game: Game, turnTimers: Option[TurnTimers]): Self
+
+    def checkTurnTimes(currentTime: DateTime)(implicit log0: LoggingAdapter)
+    : Evented[GameActorGame] = {
+      lazy val log = log0.prefixed("checkTurnTimes")
+      turnTimers match {
+        case None => Evented(this)
+        case Some(timers) =>
+          timers.map.foldLeft(Evented(this: GameActorGame)) {
+            case (evtTbg, (human, TurnTimer(_, Some(timeframe))))
+              if human.team === currentTeam(human) && timeframe.timeUsedUp(currentTime)
+                && evtTbg.value.game.states.get(human).fold2(
+                  {
+                    log.error(
+                      "cannot find {} in game player states {}", human, evtTbg.value.game.states
+                    )
+                    false
+                  },
+                  _.activity === GamePlayerState.WaitingForTurnEnd
+                ) =>
+              evtTbg.flatMap(tbg => {
+                tbg.endTurn(human, currentTime).fold(
+                  err => {
+                    log.error("TurnBasedGame#endTurn failed for {} with {}", human, err)
+                    Evented(tbg)
+                  },
+                  identity
+                )
+              })
+            case (evtTbg, _) => evtTbg
+          }
+      }
+    }
+
+    /* if turn timers are enabled returns turn timeframe for this turn. */
+    def turnTimeframeFor(human: Human)(implicit log: LoggingAdapter)
+    : Option[Timeframe] = turnTimers.flatMap { timers =>
+      if (currentTeam(human) === human.team) timers.map.get(human).fold2(
+        {
+          log.error("cannot find {} in turn timers {}", human, timers)
+          None
+        },
+        _.currentTurn
+      )
+      else timers.maxTimeframeFor(currentTeam(human))
+    }
+
+    protected[this] def endTurnCTT(human: Human, currentTime: DateTime)
+    (implicit log: LoggingAdapter): Game.ResultT[Self] =
+      game.endTurn(human).right.map { evtGame =>
+        evtGame.map(update(_, turnTimers.map(_.endTurn(human, currentTime))))
+      }
+  }
+}
+trait GameActorGame {
+  import GameActorGame._
+
+  def warp(human: Human, position: Vect2, warpable: WarpableCompanion.Some)
+  (implicit log: LoggingAdapter): Result
+
+  def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2])
+  (implicit log: LoggingAdapter): Result
+
+  def special(human: Human, id: WObject.Id)(implicit log: LoggingAdapter): Result
+
+  def attack(human: Human, id: WObject.Id, targetId: WObject.Id)
+  (implicit log: LoggingAdapter): Result
+
+  def moveAttack(human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id)
+  (implicit log: LoggingAdapter): Result
+
+  def endTurn(human: Human, currentTime: DateTime)(implicit log: LoggingAdapter): Result
+  def concede(human: Human)(implicit log: LoggingAdapter): Result
+
+  def game: Game
+  def isJoined(human: Human)(implicit log: LoggingAdapter): Boolean
+  def turnTimeframeFor(human: Human)(implicit log: LoggingAdapter): Option[Timeframe]
+  def currentTeam(human: Human): Team
+  def checkTurnTimes(time: DateTime)(implicit log: LoggingAdapter): Evented[GameActorGame]
+
+  def shouldAdvanceTurn: Boolean
+  def advanceTurn(time: DateTime)(implicit log: LoggingAdapter)
+  : Evented[Winner \/ GameActorGame]
+}
+
+trait GameActorGameStarter[GAGame <: GameActorGame] {
+  type StartedGame = Either[String, Evented[GAGame]]
+
+  def apply(
+    world: World, starting: Set[Game.StartingPlayer],
+    objectives: Game.ObjectivesMap,
+    turnTimerSettings: Option[WithCurrentTime[TurnTimers.Settings]]
+  )(implicit log: LoggingAdapter): StartedGame = {
+    val game = Game(world, starting, objectives)
+    game.right.flatMap(apply(_, turnTimerSettings))
+  }
+
+  def apply(game: Game, turnTimerSettings: Option[WithCurrentTime[TurnTimers.Settings]])
+  (implicit log: LoggingAdapter): StartedGame = {
+    val teams = game.world.teams.toVector
+    val turnTimers = turnTimerSettings.map(_.map(TurnTimers(game.world.humans, _)))
+    if (teams.isEmpty) s"No teams found in $game!".left
+    else newGameTurn(game, teams, turnTimers).right
+  }
+
+  protected[this] def newGameTurn(
+    game: Game, teams: Vector[Team], turnTimers: Option[WithCurrentTime[TurnTimers]]
+  )(implicit log: LoggingAdapter): Evented[GAGame]
 }
 
 class GameActor private (
@@ -161,7 +278,7 @@ class GameActor private (
 
   private[this] var clients = starting.map(data => data.human -> data.client).toMap
 
-  private[this] var game = {
+  private[this] var game: GameActorGame = {
     val humanTeams = starting.map(_.human.team)
     val world = worldMaterializer.materialize(humanTeams, aiTeam).right_!
     log.debug("World initialized to {}", world)
@@ -175,7 +292,7 @@ class GameActor private (
       destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
     ) }.toMap
     log.debug("Objectives initialized to {}", objectives)
-    TurnBasedGame(
+    SemiRealtimeGame(
       world, starting.map(_.game), objectives,
       turnTimerSettings.map(WithCurrentTime(_, DateTime.now))
     ).fold(
@@ -189,7 +306,7 @@ class GameActor private (
           events(data.human, data.client, evented.events)
         }
         // And then get to the state where next ready team can act
-        val turnStartedGame = evented.flatMap(nextReadyTeam(_, DateTime.now))
+        val turnStartedGame = evented.flatMap(advanceTurnIfPossible(_, DateTime.now))
         starting.foreach { data =>
           events(data.human, data.client, turnStartedGame.events)
         }
@@ -217,7 +334,7 @@ class GameActor private (
     case In.Join(human) =>
       val ref = sender()
       ref ! Out.Joined(human, self)
-      def doInit(tbg: TurnBasedGame): Unit = {
+      def doInit(tbg: GameActorGame): Unit = {
         init(human, ref, tbg)
         clients += human -> ref
       }
@@ -265,13 +382,13 @@ class GameActor private (
 
   val receive: PartialFunction[Any, Unit] = notLoggedReceive orElse loggedReceive
 
-  private[this] def updatedGame(f: => Evented[TurnBasedGame])
-  : Evented[Winner \/ TurnBasedGame] = f.flatMap(nextReadyTeam(_, DateTime.now))
+  private[this] def updatedGame(f: => Evented[GameActorGame])
+  : Evented[Winner \/ GameActorGame] = f.flatMap(advanceTurnIfPossible(_, DateTime.now))
 
   private[this] def checkedTurnTimes = updatedGame(game.checkTurnTimes(DateTime.now))
 
   private[this] def update(
-    requester: ActorRef, human: Human, f: TurnBasedGame => TurnBasedGame.Result
+    requester: ActorRef, human: Human, f: GameActorGame => GameActorGame.Result
   ): Unit = {
     log.debug("Updating game by a request from {}", requester)
 
@@ -288,7 +405,7 @@ class GameActor private (
     )
   }
 
-  private[this] def postGameChange(evented: Evented[Winner \/ TurnBasedGame]): Unit = {
+  private[this] def postGameChange(evented: Evented[Winner \/ GameActorGame]): Unit = {
     dispatchEvents(evented.events)
     evented.value.fold(
       winner => {

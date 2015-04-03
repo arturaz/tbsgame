@@ -13,12 +13,12 @@ import scalaz.\/
 sealed trait FinalEvent
 
 /* Base event class. */
-sealed trait Event extends FinalEvent {
+sealed trait Event {
   /* Some events expand into several events when viewed in prism of some owner. */
   def asViewedBy(owner: Owner): Iterable[FinalEvent]
 }
 
-sealed trait VisibleEvent extends Event {
+sealed trait VisibleEvent extends Event with FinalEvent {
   def asViewedBy(owner: Owner) =
     if (visibleBy(owner)) Iterable(this) else Iterable.empty
   def visibleBy(owner: Owner): Boolean
@@ -38,7 +38,7 @@ case class HumanState(
   resources: Resources, population: ValWithMax[Population], gameState: GamePlayerState
 )
 
-case class JoinEvt(human: Human, state: Option[HumanState]) extends Event {
+case class JoinEvt(human: Human, state: Option[HumanState]) extends Event with FinalEvent {
   override def asViewedBy(owner: Owner) =
     if (owner.isFriendOf(human)) Seq(this)
     else Seq(copy(state = None))
@@ -46,6 +46,12 @@ case class JoinEvt(human: Human, state: Option[HumanState]) extends Event {
 case class LeaveEvt(human: Human) extends AlwaysVisibleEvent
 
 case class TurnStartedEvt(team: Team) extends AlwaysVisibleEvent
+case class TurnStartedSemiRealtimeEvt(team: Team) extends Event {
+  /* Some events expand into several events when viewed in prism of some owner. */
+  override def asViewedBy(owner: Owner) =
+    if (owner.team === team) TurnStartedEvt(team).asViewedBy(owner)
+    else Iterable.empty
+}
 case class TurnEndedEvt(team: Team) extends AlwaysVisibleEvent
 
 case class SetTurnTimerEvt(whom: Human \/ Team, timeframe: Timeframe)
@@ -113,7 +119,7 @@ case class GhostObjDestroyedEvt(
 
 case class MoveEvt(
   visibilityMap: VisibilityMap, oldObj: Movable, to: Vect2, movesLeft: Movement
-) extends Event {
+) extends Event with FinalEvent {
   override def asViewedBy(owner: Owner) =
     if (visibilityMap.isVisible(owner, oldObj.position)) Iterable(this)
     else if (visibilityMap.isVisible(owner, to))
@@ -123,7 +129,7 @@ case class MoveEvt(
 
 case class AttackEvt[D <: OwnedObj](
   visibilityMap: VisibilityMap, attacker: Fighter, defender: (D, Option[D]), attack: Attack
-) extends Event {
+) extends Event with FinalEvent {
   override def asViewedBy(owner: Owner) =
     if (visibilityMap.isVisiblePartial(owner, defender._1.bounds)) {
       if (visibilityMap.isVisiblePartial(owner, attacker.bounds))

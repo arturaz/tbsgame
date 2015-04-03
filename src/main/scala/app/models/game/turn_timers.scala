@@ -10,6 +10,11 @@ import implicits._
 
 case class TurnTimer(timeLeftPool: FiniteDuration, currentTurn: Option[Timeframe])
 
+case class WithCurrentTime[+A](value: A, currentTime: DateTime) {
+  def map[B](f: A => B) = copy(value = f(value))
+  def apply[B](f: (A, DateTime) => B) = f(value, currentTime)
+}
+
 object TurnTimers {
   type HumanTurnTimersMap = Map[Human, TurnTimer]
   
@@ -18,7 +23,7 @@ object TurnTimers {
     /* Max turn time */
     upperTurnTimeLimit: FiniteDuration = 1.minute + 30.seconds,
     /* Guaranteed time given for each turn */
-    constantTimeGiven: FiniteDuration = 45.seconds
+    constantTimeGiven: FiniteDuration = 1.minute
   ) {
     val defaultTimer = TurnTimer(upperTurnTimeLimit, None)
 
