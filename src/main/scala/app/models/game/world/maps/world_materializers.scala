@@ -4,6 +4,7 @@ import akka.event.LoggingAdapter
 import app.models.game.world.maps.GameMap.NpcF
 import app.models.game._
 import app.models.game.world._
+import utils.data.NonEmptyVector
 
 import scala.util.Random
 import scalaz.\/
@@ -45,6 +46,8 @@ case class GameMap private (
     }
   }
 }
+
+case class GameMaps(pve: NonEmptyVector[GameMap], pvp: NonEmptyVector[GameMap])
 
 object SingleplayerMap {
   case class Data(humanTeam: Team, npcTeam: Team)
