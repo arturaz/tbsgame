@@ -8,11 +8,14 @@ import app.actors.NetClient.Management.In.JoinGame.Mode
 import app.actors.game.GameActor.StartingHuman
 import app.models.User
 import app.models.game.world.buildings.ExtractorStats
-import app.models.game.world.maps.{GameMap, SingleplayerMap, WorldMaterializer}
+import app.models.game.world.maps.{GameMaps, GameMap, SingleplayerMap, WorldMaterializer}
 import app.models.game.world.{Resources, World}
 import app.models.game.{TurnTimers, Bot, Human, Team}
 import implicits._
 import utils.data.NonEmptyVector
+import scalaz._, Scalaz._
+
+import scala.util.Random
 
 object GamesManagerActor {
   val StartingResources = ExtractorStats.cost * Resources(3)
@@ -22,9 +25,35 @@ object GamesManagerActor {
     case class Join(user: User, mode: NetClient.Management.In.JoinGame.Mode) extends In
     case class CancelJoinGame(user: User) extends In
   }
+
+  // TODO: proper singleplayer
+//  object PVEGame {
+//    sealed trait PresetTeam {
+//      def gameTeam: Team
+//    }
+//    object PresetTeam {
+//      object Red extends PresetTeam { val gameTeam = Team() }
+//      object Blue extends PresetTeam { val gameTeam = Team() }
+//    }
+//
+//    val empty = PVEGame(None, Set.empty, Set.empty)
+//  }
+//  case class PVEGame(ref: Option[ActorRef], redTeamPlayers: Set[User], blueTeamPlayers: Set[User]) {
+//    def giveTeam: PVEGame.PresetTeam =
+//      redTeamPlayers.size ?|? blueTeamPlayers.size match {
+//        case Ordering.LT => PVEGame.PresetTeam.Red
+//        case Ordering.GT => PVEGame.PresetTeam.Blue
+//        case Ordering.EQ => if (Random.chance(0.5)) PVEGame.PresetTeam.Red else PVEGame.PresetTeam.Blue
+//      }
+//
+//    def add(user: User, team: PresetTeam): PVEGame = team match {
+//      case PresetTeam.Red => copy(redTeamPlayers = redTeamPlayers + user)
+//      case PresetTeam.Blue => copy(blueTeamPlayers = blueTeamPlayers + user)
+//    }
+//  }
 }
 
-class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorLogging {
+class GamesManagerActor(maps: GameMaps) extends Actor with ActorLogging {
   import app.actors.game.GamesManagerActor._
 
   type WaitingList = Vector[(User, ActorRef)]
@@ -71,7 +100,9 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
 
   private[this] def noExistingGame(user: User, mode: Mode, client: ActorRef): Unit = {
     mode match {
-      case Mode.Singleplayer => launchSingleplayer(user, client)
+      case Mode.Singleplayer =>
+        //launchRandomGenerated(user, client)
+        launchPVE(user, client)
       case pvp: Mode.PvP =>
         val updatedWaitingList = waitingList(pvp) :+ ((user, client))
         waitingList += pvp -> updatedWaitingList
@@ -84,7 +115,25 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
     }
   }
 
-  private[this] def launchSingleplayer(user: User, client: ActorRef) = {
+  private[this] def launchPVE(user: User, client: ActorRef) = {
+    // TODO: proper PVE
+//    val team = pveGame.giveTeam
+//    if (pveGame.ref.isEmpty) {
+//      val game = createGame(
+//        maps.pve.random, Some(TurnTimers.Settings()), Team(),
+//        Set(StartingHuman(Human(user, team.gameTeam), StartingResources, client))
+//      )
+//      pveGame = pveGame.copy(ref = Some(game))
+//    }
+//    pveGame = pveGame.add(user, team)
+
+    createGame(
+      maps.pve.random, None, Team(),
+      Set(StartingHuman(Human(user, Team()), StartingResources, client))
+    )
+  }
+
+  private[this] def launchRandomGenerated(user: User, client: ActorRef) = {
     val materializer = SingleplayerMap { data => implicit log =>
       val npcBot = Bot(data.npcTeam)
       val spawnerBot = Bot(data.npcTeam)
@@ -111,7 +160,8 @@ class GamesManagerActor(maps: NonEmptyVector[GameMap]) extends Actor with ActorL
     log.debug(
       "Fetched {} from waiting list for mode {}, rest={}", players, mode, newWaitingList
     )
-    val map = maps.random
+    // TODO: will fail if we have more teams than any of the maps support
+    val map = maps.pvp.v.filter(_.startingPositions.size >= mode.teams).random.get
     val npcTeam = Team()
 
     createGame(map, Some(TurnTimers.Settings()), npcTeam, players)
