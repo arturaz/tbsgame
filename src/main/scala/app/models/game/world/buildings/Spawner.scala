@@ -16,7 +16,7 @@ object SpawnerStats extends BuildingStats with SizedWObjectStats {
   /* Each action from buildings that the team controls reduces spawner strength by this
      much. This makes spawner get angrier as VPTowers are taken from it. */
   val StrengthReductionPerAction = SpawnerStr(0)
-  val DefaultStartingStrength = SpawnerStr(2)
+  val DefaultStartingStrength = SpawnerStr(4)
   val DefaultTurnsPerStrength = Option.empty[SpawnerStr]
 
   val Spawnables = IndexedSeq(
