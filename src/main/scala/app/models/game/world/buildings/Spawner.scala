@@ -1,7 +1,7 @@
 package app.models.game.world.buildings
 
 import akka.event.LoggingAdapter
-import app.models.game.{Actions, Bot}
+import app.models.game.Actions
 import app.models.game.world._
 import app.models.game.world.units._
 import implicits._
@@ -45,25 +45,26 @@ trait SpawnerImpl { _: Spawner =>
 
   /* Try to spawn at position, returning Right(None) if unit was killed after spawn. */
   def spawn(world: World, position: Vect2)(implicit log: LoggingAdapter) = {
-    case class Counter(counts: Map[WObjKind, Int]=Map.empty.withDefaultValue(0)) {
-      def +(kind: WObjKind) = Counter(counts updated (kind, counts(kind) + 1))
+//    case class Counter(counts: Map[WObjKind, Int]=Map.empty.withDefaultValue(0)) {
+//      def +(kind: WObjKind) = Counter(counts updated (kind, counts(kind) + 1))
+//
+//      lazy val total = counts.values.sum
+//      lazy val warpableWeights = stats.Spawnables.map {
+//        case (kind, w) => w -> counts(kind)
+//      }
+//
+//      def randomWarpable = {
+//        if (total == 0) stats.Spawnables.random.get._2
+//        else warpableWeights.weightedRandom.get
+//      }
+//    }
+//
+//    val counts = world.objects.foldLeft(Counter()) {
+//      case (cnt, o: OwnedObj) if o.isEnemy(this) => cnt + o.stats.kind
+//      case (cnt, _) => cnt
+//    }
 
-      lazy val total = counts.values.sum
-      lazy val warpableWeights = stats.Spawnables.map {
-        case (kind, w) => w -> counts(kind)
-      }
-
-      def randomWarpable = {
-        if (total == 0) stats.Spawnables.random.get._2
-        else warpableWeights.weightedRandom.get
-      }
-    }
-
-    val counts = world.objects.foldLeft(Counter()) {
-      case (cnt, o: OwnedObj) if o.isEnemy(this) => cnt + o.stats.kind
-      case (cnt, _) => cnt
-    }
-    val warpable = counts.randomWarpable
+    val warpable = stats.Spawnables.random.get._2
     warpable.warp(world, owner, position)
   }
 }
