@@ -144,19 +144,19 @@ case class WorldObjs[Obj <: WObject] private (
         positionsMap |> removePositions(before.id, removedPositions) |>
         addPositions(before.id, addedPositions)
 
-      println(
-        s"""
-           |WorldObjs#update
-           |  before: $before
-           |  after: $after
-           |  beforePoints: $beforePoints
-           |  afterPoints: $afterPoints
-           |  removedPositions: $removedPositions
-           |  addedPositions: $addedPositions
-           |  positions: $positionsMap
-           |  newPositions: $newPositions
-         """.stripMargin
-      )
+//      println(
+//        s"""
+//           |WorldObjs#update
+//           |  before: $before
+//           |  after: $after
+//           |  beforePoints: $beforePoints
+//           |  afterPoints: $afterPoints
+//           |  removedPositions: $removedPositions
+//           |  addedPositions: $addedPositions
+//           |  positions: $positionsMap
+//           |  newPositions: $newPositions
+//         """.stripMargin
+//      )
 
       copy(
         objectsMap = objectsMap + (before.id -> after),
