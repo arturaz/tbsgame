@@ -10,6 +10,7 @@ import app.actors.NetClient.Msgs.{FromClient, FromServer}
 import app.protobuf.parsing.Parsing
 import app.protobuf.serializing.Serializing
 import utils.network.{CodedFramePipeline, IntFramedPipeline, Pipeline}
+import implicits._
 
 /**
  * Created by arturas on 2014-10-15.
@@ -120,5 +121,6 @@ extends Pipeline[ByteString, Vector[Either[String, FromClient]], FromServer, Byt
     coded.fromClient(frame).left.map(err => s"Cannot decode $frame into message: $err")
   }
 
-  override def toClient(data: FromServer) = intFramed.toClient(coded.toClient(data))
+  override def toClient(data: FromServer) =
+    data |> coded.toClient |> intFramed.toClient
 }
