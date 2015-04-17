@@ -1,5 +1,7 @@
 package utils.network
 
+import implicits._
+
 /**
  * Created by arturas on 2014-10-15.
  */
@@ -11,8 +13,8 @@ trait Pipeline[FromClientIn, FromClientOut, FromServerIn, FromServerOut] { self 
     pipeline: Pipeline[FromClientOut, FCO2, FromServerOut, FSO2]
   ) = new Pipeline[FromClientIn, FCO2, FromServerIn, FSO2] {
     override def fromClient(data: FromClientIn) =
-      pipeline.fromClient(self.fromClient(data))
+      data |> self.fromClient |> pipeline.fromClient
     override def toClient(data: FromServerIn) =
-      pipeline.toClient(self.toClient(data))
+      data |> self.toClient |> pipeline.toClient
   }
 }
