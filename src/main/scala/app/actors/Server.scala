@@ -31,6 +31,6 @@ class Server(
         connection,
         handlerRef => Props(new NetClient(handlerRef, gamesManager, db))
       )), s"${remote.getHostString}-${remote.getPort}")
-      connection ! Register(msgHandler)
+      connection ! Register(msgHandler, keepOpenOnPeerClosed = true)
   }
 }
