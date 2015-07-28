@@ -5,9 +5,8 @@ import app.models.game.world._
 import app.models.game.{Population, Actions, Player}
 import app.models.game.world.Ops._
 
-object CorvetteStats extends WFighterUnitStats with SpecialActionStats
-with EmptySpaceWarpableCompanion[Corvette]
-{
+trait CorvetteStatsImpl extends EmptySpaceWarpableCompanion[Corvette]
+{ _: CorvetteStats.type =>
   override val maxHp = HP(120)
   override val attack = Atk(45)
   override val attacks = Attacks(3)

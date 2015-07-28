@@ -7,9 +7,8 @@ import app.models.game.{Percentage, Actions, Player, Population}
 import implicits._
 import spire.math.Rational
 
-object ExtractorStats extends WBuildingStats with SpecialActionStats
-with WarpableCompanion[Extractor]
-{
+trait ExtractorStatsImpl extends WarpableCompanion[Extractor]
+{ _: ExtractorStats.type =>
   override val maxHp = HP(60)
   override val warpTime = WarpTime(1)
   override val cost = Resources(3)

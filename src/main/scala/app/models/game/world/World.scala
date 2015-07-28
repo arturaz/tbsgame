@@ -6,10 +6,8 @@ import akka.event.LoggingAdapter
 import app.models.game._
 import app.models.game.ai.GrowingSpawnerAI
 import app.models.game.events._
-import app.models.game.world.buildings.{VPTowerStats, SpawnerStats}
 import app.models.game.world.maps.{WasVisibleMap, VisibilityMap, WarpZoneMap}
 import app.models.game.world.props.ExtractionSpeed
-import app.models.game.world.units.{FortressStats, RayShipStats, WaspStats}
 import implicits._
 import infrastructure.PrefixedLoggingAdapter
 import monocle.{Lenser, SimpleLens}

@@ -21,6 +21,7 @@ trait GameProto extends BaseProto {
     case game.WarpableKind.B_EXTRACTOR => ExtractorStats
     case game.WarpableKind.B_WARP_LINKER => WarpLinkerStats
     case game.WarpableKind.B_LASER_TOWER => LaserTowerStats
+    case game.WarpableKind.B_POPULATION_TOWER => PopulationTowerStats
     case game.WarpableKind.U_CORVETTE => CorvetteStats
     case game.WarpableKind.U_WASP => WaspStats
     case game.WarpableKind.U_SCOUT => ScoutStats

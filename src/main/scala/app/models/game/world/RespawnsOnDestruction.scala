@@ -7,13 +7,13 @@ import app.models.game.world.buildings.VPTowerOps
 import scala.language.implicitConversions
 import app.models.game.world.Ops._
 
-trait RespawnsOnDestructionStats extends OwnedObjStats {
+trait RespawnsOnDestructionStatsImpl { _: RespawnsOnDestructionStats =>
   def hpAfterRespawn: HP
 }
 
 trait RespawnsOnDestructionImpl extends OwnedObjImpl {
   type OwnerType <: Owner
-  type Stats <:RespawnsOnDestructionStats
+  type Stats <: RespawnsOnDestructionStats
 
   def ownerAfterRespawn(attacker: Owner): OwnerType
 }

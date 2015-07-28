@@ -1,6 +1,6 @@
 package app.models.game.world.props
 
-import app.models.game.world.{Resources, Asteroid, WObjectStats}
+import app.models.game.world.{AsteroidStats, Resources, Asteroid, WObjectStats}
 import enumeratum.Enum
 
 trait AsteroidImpl { self: Asteroid =>
@@ -25,7 +25,4 @@ object ExtractionSpeed extends Enum[ExtractionSpeed] {
   }
 
   val values = findValues
-}
-object AsteroidStats extends WObjectStats {
-  override val blocksWarp = false
 }

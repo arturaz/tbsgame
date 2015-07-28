@@ -10,7 +10,7 @@ import Ops._
 
 import scala.language.implicitConversions
 
-trait MovableStats extends OwnedObjStats {
+trait MovableStatsImpl { _: MovableStats =>
   val movement: Movement
   val InitialMovement = Movement.fromTiles(0)
 }

@@ -62,34 +62,34 @@ case class WorldObjs[Obj <: WObject] private (
   positionsMap: PositionsMap
 ) extends IterableLike[Obj, WorldObjs[Obj]]{
   import WorldObjs._
-  checkConsistency()
+//  checkConsistency()
 
   override def toString() = s"WorldObjs(objects: $objectsMap, positions: $positionsMap)"
 
-  private[this] def checkConsistency(): Unit = {
-    var errors = Vector.empty[String]
-
-    positionsMap.foreach { case (point, objIds) =>
-      objIds.foreach { id =>
-        objectsMap.get(id).fold2(
-          errors :+= s"Can't find $id @ $point in $objectsMap",
-          obj => {
-            if (! obj.bounds.points.contains(point))
-              errors :+= s"$point is not a part of $obj ${obj.bounds}"
-            obj.bounds.points.foreach { oPoint =>
-              val idsAt = positionsMap.getOrElse(oPoint, Set.empty)
-              if (!idsAt.contains(obj.id))
-                errors :+= s"$obj $oPoint is not at positionsMap $idsAt"
-            }
-          }
-        )
-      }
-    }
-
-    if (errors.nonEmpty) throw new IllegalStateException(
-      s"WorldObjs consistency check failed! Errors:\n${errors.mkString("\n")}"
-    )
-  }
+//  private[this] def checkConsistency(): Unit = {
+//    var errors = Vector.empty[String]
+//
+//    positionsMap.foreach { case (point, objIds) =>
+//      objIds.foreach { id =>
+//        objectsMap.get(id).fold2(
+//          errors :+= s"Can't find $id @ $point in $objectsMap",
+//          obj => {
+//            if (! obj.bounds.points.contains(point))
+//              errors :+= s"$point is not a part of $obj ${obj.bounds}"
+//            obj.bounds.points.foreach { oPoint =>
+//              val idsAt = positionsMap.getOrElse(oPoint, Set.empty)
+//              if (!idsAt.contains(obj.id))
+//                errors :+= s"$obj $oPoint is not at positionsMap $idsAt"
+//            }
+//          }
+//        )
+//      }
+//    }
+//
+//    if (errors.nonEmpty) throw new IllegalStateException(
+//      s"WorldObjs consistency check failed! Errors:\n${errors.mkString("\n")}"
+//    )
+//  }
 
   private[this] def doManyEither[A]
   (as: TraversableOnce[A])(f: (WorldObjs[Obj], A) => String \/ WorldObjs[Obj])
@@ -144,19 +144,19 @@ case class WorldObjs[Obj <: WObject] private (
         positionsMap |> removePositions(before.id, removedPositions) |>
         addPositions(before.id, addedPositions)
 
-      println(
-        s"""
-           |WorldObjs#update
-           |  before: $before
-           |  after: $after
-           |  beforePoints: $beforePoints
-           |  afterPoints: $afterPoints
-           |  removedPositions: $removedPositions
-           |  addedPositions: $addedPositions
-           |  positions: $positionsMap
-           |  newPositions: $newPositions
-         """.stripMargin
-      )
+//      println(
+//        s"""
+//           |WorldObjs#update
+//           |  before: $before
+//           |  after: $after
+//           |  beforePoints: $beforePoints
+//           |  afterPoints: $afterPoints
+//           |  removedPositions: $removedPositions
+//           |  addedPositions: $addedPositions
+//           |  positions: $positionsMap
+//           |  newPositions: $newPositions
+//         """.stripMargin
+//      )
 
       copy(
         objectsMap = objectsMap + (before.id -> after),

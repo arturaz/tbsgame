@@ -3,12 +3,12 @@ package app.models.game.world.buildings
 import app.models.game.Population
 import app.models.game.world._
 
-trait BuildingStats extends OwnedObjStats {
+trait BuildingStatsImpl { _: BuildingStats =>
   override val visibility = RectDistance(3)
 }
 
 /* Warpable building */
-trait WBuildingStats extends BuildingStats with WarpableStats {
+trait WBuildingStatsImpl { _: WBuildingStats =>
   override val group = WarpableGroup.Building
   override val populationCost = Population(0)
 }

@@ -3,10 +3,7 @@ package app.models.game.world.buildings
 import app.models.game.world._
 import app.models.game.{Actions, Owner, Team}
 
-object VPTowerStats extends BuildingStats with GivingActionsStats
-with RespawnsOnDestructionStats with SizedWObjectStats
-with GivingVictoryPointsStats
-{
+trait VPTowerStatsImpl { _: VPTowerStats.type =>
   override val maxHp = HP(450)
   override val visibility = RectDistance(5)
   override val warpGiven = RectDistance(0)

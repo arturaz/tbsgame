@@ -3,7 +3,7 @@ package app.models.game.world.units
 import app.models.game.{Population, Player}
 import app.models.game.world._
 
-object ScoutStats extends WUnitStats with EmptySpaceWarpableCompanion[Scout] {
+trait ScoutStatsImpl extends EmptySpaceWarpableCompanion[Scout] { _: ScoutStats.type =>
   override val maxHp = HP(25)
   override val warpTime = WarpTime(0)
   override val cost = Resources(3)

@@ -11,7 +11,7 @@ import app.models.game.world.WObject.Id
 import app.models.game.world._
 import app.models.game.world.buildings._
 import app.models.game.world.maps.WorldMaterializer
-import app.models.game.world.props.{ExtractionSpeed, AsteroidStats}
+import app.models.game.world.props.ExtractionSpeed
 import app.models.game.world.units._
 import implicits._
 import org.joda.time.DateTime

@@ -6,9 +6,8 @@ import app.models.game.world._
 import implicits._
 import app.models.game.world.Ops._
 
-object LaserTowerStats extends WBuildingStats with SpecialActionStats with FighterStats
-with EmptySpaceWarpableCompanion[LaserTower]
-{
+trait LaserTowerStatsImpl extends EmptySpaceWarpableCompanion[LaserTower]
+{ _: LaserTowerStats.type =>
   override val maxHp = HP(550)
   override val attack = Atk(60)
   override val attacks = Attacks(3)

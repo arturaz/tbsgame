@@ -15,6 +15,9 @@ case class Asteroid(
   position: Vect2, resources: Resources, extractionSpeed: ExtractionSpeed,
   id: WObject.Id=WObject.newId
 ) extends Prop with AsteroidImpl
+object AsteroidStats extends WObjectStats {
+  override val blocksWarp = false
+}
 
 /* Rock is an immovable 1x1 obstacle that you can neither move nor see through. */
 case class Rock(
@@ -66,6 +69,23 @@ with SizedWObject with SpecialAction with SpecialAtEndOfTurn {
   override val stats = WarpGateStats
   override def endOfTurnPriority = 0
 }
+object WarpGateStats extends BuildingStats with SizedWObjectStats
+with GivingActionsStats with GivingPopulationStats with SpecialActionStats
+with WarpGateStatsImpl
+
+/* Gives population */
+case class PopulationTower(
+  position: Vect2, owner: Player,
+  warpState: WarpTime=PopulationTowerStats.InitialWarpState,
+  hp: HP=PopulationTowerStats.maxHp, id: WObject.Id=WObject.newId
+) extends PopulationTowerImpl with GivingPopulation with SizedWObject with Building
+with Warpable {
+  type Stats = PopulationTowerStats.type
+  override val stats = PopulationTowerStats
+}
+object PopulationTowerStats extends WBuildingStats
+  with SizedWObjectStats with GivingPopulationStats
+  with PopulationTowerStatsImpl
 
 /* Gives victory points each turn to its owner */
 case class VPTower(
@@ -76,6 +96,10 @@ with SizedWObject with GivingVictoryPoints {
   type Stats = VPTowerStats.type
   override val stats = VPTowerStats
 }
+object VPTowerStats extends BuildingStats with GivingActionsStats
+  with RespawnsOnDestructionStats with SizedWObjectStats
+  with GivingVictoryPointsStats
+  with VPTowerStatsImpl
 
 /* Extracts resources from asteroids */
 case class Extractor(
@@ -87,6 +111,8 @@ with SpecialAction {
   type Stats = ExtractorStats.type
   override val stats = ExtractorStats
 }
+object ExtractorStats extends WBuildingStats with SpecialActionStats
+  with ExtractorStatsImpl
 
 /* Extends warp zone for players */
 case class WarpLinker(
@@ -97,6 +123,8 @@ case class WarpLinker(
   type Stats = WarpLinkerStats.type
   override val stats = WarpLinkerStats
 }
+object WarpLinkerStats extends WBuildingStats with WarpableStats
+  with WarpLinkerStatsImpl
 
 /* Defensive tower */
 case class LaserTower(
@@ -110,6 +138,8 @@ with ReactiveFighter with SpecialAction {
   type Stats = LaserTowerStats.type
   override val stats = LaserTowerStats
 }
+object LaserTowerStats extends LaserTowerStatsImpl with WBuildingStats
+  with SpecialActionStats with FighterStats
 
 /* Enemy base */
 case class Spawner(
@@ -119,6 +149,7 @@ case class Spawner(
   turnsPerStrength: Option[SpawnerStr]=SpawnerStats.DefaultTurnsPerStrength,
   turns: Int=0, hp: HP=SpawnerStats.maxHp
 ) extends SpawnerImpl with BotBuilding with TurnCounter with SizedWObject
+object SpawnerStats extends BuildingStats with SizedWObjectStats with SpawnerStatsImpl
 
 /********************************* [ UNITS ] *********************************/
 
@@ -131,6 +162,7 @@ case class Scout(
   type Stats = ScoutStats.type
   override val stats = ScoutStats
 }
+object ScoutStats extends WUnitStats with ScoutStatsImpl
 
 case class Corvette(
   position: Vect2, owner: Player,
@@ -140,6 +172,8 @@ case class Corvette(
   movementLeft: Movement=CorvetteStats.InitialMovement,
   warpState: WarpTime=CorvetteStats.InitialWarpState
 ) extends CorvetteImpl with WUnit with Fighter with SpecialAction
+object CorvetteStats extends CorvetteStatsImpl with WFighterUnitStats
+  with SpecialActionStats
 
 case class Gunship(
   position: Vect2, owner: Player,
@@ -151,6 +185,7 @@ case class Gunship(
   type Stats = GunshipStats.type
   override val stats = GunshipStats
 }
+object GunshipStats extends GunshipStatsImpl with WFighterUnitStats
 
 case class RocketFrigate(
   position: Vect2, owner: Player,
@@ -163,6 +198,7 @@ case class RocketFrigate(
   type Stats = RocketFrigateStats.type
   override val stats = RocketFrigateStats
 }
+object RocketFrigateStats extends RocketFrigateStatsImpl with WFighterUnitStats
 
 case class Wasp(
   position: Vect2, owner: Player,
@@ -174,6 +210,7 @@ case class Wasp(
   type Stats = WaspStats.type
   override val stats = WaspStats
 }
+object WaspStats extends WaspStatsImpl with WFighterUnitStats
 
 case class RayShip(
   position: Vect2, owner: Player,
@@ -185,6 +222,7 @@ case class RayShip(
   type Stats = RayShipStats.type
   override val stats = RayShipStats
 }
+object RayShipStats extends RayShipStatsImpl with WFighterUnitStats
 
 case class Fortress(
   position: Vect2, owner: Player,
@@ -196,11 +234,13 @@ case class Fortress(
   type Stats = FortressStats.type
   override val stats = FortressStats
 }
+object FortressStats extends FortressStatsImpl with WFighterUnitStats
 
 /********************************* [ TRAITS ] *********************************/
 
 /* World object */
 sealed trait WObject extends WObjectImpl
+sealed trait WObjectStats extends WObjectStatsImpl
 object WObject extends WObjectCompanion {
   case class Id(id: UUID) extends AnyVal with IdObj {
     override protected def prefix = "WObjID"
@@ -215,6 +255,7 @@ sealed trait Prop extends WObject with PropImpl
 
 /* Object that belongs to some faction and not just a world prop */
 sealed trait OwnedObj extends WObject with OwnedObjImpl
+sealed trait OwnedObjStats extends WObjectStats with OwnedObjStatsImpl
 object OwnedObj extends OwnedObjCompanion
 
 sealed trait TeamObj extends OwnedObj { val owner: Team }
@@ -224,33 +265,42 @@ sealed trait BotObj extends PlayerObj { val owner: Bot }
 
 /* Gives actions to its owner */
 sealed trait GivingActions extends OwnedObj with GivingActionsImpl
+sealed trait GivingActionsStats extends OwnedObjStats with GivingActionsStatsImpl
 
 /* Increases population cap to its owner. */
 sealed trait GivingPopulation extends OwnedObj with GivingPopulationImpl
+sealed trait GivingPopulationStats extends OwnedObjStats with GivingPopulationStatsImpl
 
 /* Gives victory points each turn */
 sealed trait GivingVictoryPoints extends OwnedObj with GivingVictoryPointsImpl
+sealed trait GivingVictoryPointsStats extends OwnedObjStats with GivingVictoryPointsStatsImpl
 
 /* Objects that can move. All such objects have 1x1 size. */
 sealed trait Movable extends OwnedObj with MovableImpl
+sealed trait MovableStats extends OwnedObjStats with MovableStatsImpl
 
 /* Objects that can do a special action. */
 sealed trait SpecialAction extends OwnedObj with SpecialActionImpl
+sealed trait SpecialActionStats extends OwnedObjStats with SpecialActionStatsImpl
 
 /* Objects that are bigger 1x1. Such objects cannot be moved. */
 sealed trait SizedWObject extends WObject with SizedWObjectImpl
+sealed trait SizedWObjectStats extends WObjectStats with SizedWObjectStatsImpl
 
 /* Has an internal counter that increases at each game turn. */
 sealed trait TurnCounter extends WObject with TurnCounterImpl
 
 /* Can attack. */
 sealed trait Fighter extends OwnedObj with FighterImpl
+sealed trait FighterStats extends OwnedObjStats with FighterStatsImpl
 
 /* Can attack reactively not on owners turn. */
 sealed trait ReactiveFighter extends Fighter with ReactiveFighterImpl
 
 /* If destroyed this object should respawn with new owner and hp. */
 sealed trait RespawnsOnDestruction extends OwnedObj with RespawnsOnDestructionImpl
+sealed trait RespawnsOnDestructionStats extends OwnedObjStats
+  with RespawnsOnDestructionStatsImpl
 
 /* Marker that says use special action at end of turn for all the possible actions. */
 sealed trait SpecialAtEndOfTurn extends SpecialAction {
@@ -260,6 +310,7 @@ sealed trait SpecialAtEndOfTurn extends SpecialAction {
 
 /* Things that can be warped by in a player/bot. */
 sealed trait Warpable extends OwnedObj with WarpableImpl
+sealed trait WarpableStats extends OwnedObjStats with WarpableStatsImpl
 object Warpable extends ToWarpableOps {
   /* Actions needed to warp in something */
   val ActionsNeeded = Actions(1)
@@ -267,6 +318,10 @@ object Warpable extends ToWarpableOps {
 
 /* Buildings are stationary */
 sealed trait Building extends OwnedObj with BuildingImpl
+sealed trait BuildingStats extends OwnedObjStats with BuildingStatsImpl
+sealed trait WBuildingStats extends BuildingStats with WarpableStats
+  with WBuildingStatsImpl
+
 sealed trait TeamBuilding extends Building with TeamObj
 sealed trait PlayerBuilding extends Building with PlayerObj
 sealed trait HumanBuilding extends Building with HumanObj
@@ -274,3 +329,6 @@ sealed trait BotBuilding extends Building with BotObj
 
 /* World unit - player controlled movable & warpable objects. */
 sealed trait WUnit extends WUnitImpl with PlayerObj with Movable with Warpable
+sealed trait WUnitStats extends OwnedObjStats with MovableStats with WarpableStats
+  with WUnitStatsImpl
+sealed trait WFighterUnitStats extends WUnitStats with FighterStats

@@ -32,6 +32,7 @@ enum WarpableKind {
   U_RAYSHIP = 8;
   U_GUNSHIP = 9;
   U_FORTRESS = 10;
+  B_POPULATION_TOWER = 11;
 }
 
 message MWarp {
@@ -171,6 +172,7 @@ message WarpableObjectStats {
   // If stats are not sent, you cannot warp it in.
   optional WObjectStats.Extractor extractor = 6;
   optional WObjectStats.WarpLinker warp_linker = 7;
+  optional WObjectStats.PopulationTower population_tower = 8;
   optional WObjectStats.LaserTower laser_tower = 9;
   optional WObjectStats.Corvette corvette = 10;
   optional WObjectStats.Wasp wasp = 11;
@@ -253,6 +255,14 @@ message WObject { // {{{
 
   message Extractor {
     required WObjectStats.Extractor stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+  }
+
+  message PopulationTower {
+    required WObjectStats.PopulationTower stats = 1;
     required Base base = 2;
 
     required OwnedObj owned = 3;
@@ -378,6 +388,7 @@ message WObject { // {{{
   optional Gunship gunship = 15;
   optional Fortress fortress = 16;
   optional VpTower vp_tower = 17;
+  optional PopulationTower population_tower = 18;
 } // }}}
 
 message WObjectStats {
@@ -468,6 +479,14 @@ message WObjectStats {
     required uint32 special_extracts_fixed = 5;
     // [0..1]
     required base.Rational special_extracts_percentage = 6;
+  }
+
+  message PopulationTower {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Warpable warpable = 3;
+    required GivingPopulation giving_population = 4;
+    required SizedObj sized = 5;
   }
 
   message WarpLinker {
@@ -574,6 +593,7 @@ message WObjectStats {
   optional Gunship gunship = 15;
   optional Fortress fortress = 16;
   optional VpTower vp_tower = 17;
+  optional PopulationTower population_tower = 18;
 }
 
 /* Events */

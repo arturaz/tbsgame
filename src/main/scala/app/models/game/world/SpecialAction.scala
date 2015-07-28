@@ -7,7 +7,7 @@ import implicits._
 
 import scala.language.implicitConversions
 
-trait SpecialActionStats extends OwnedObjStats {
+trait SpecialActionStatsImpl { _: SpecialActionStats =>
   val specialActionsNeeded: Actions
 }
 

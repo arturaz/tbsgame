@@ -4,7 +4,7 @@ import app.models.game.world.buildings.VPTowerOps
 
 import scala.language.implicitConversions
 
-trait GivingVictoryPointsStats extends OwnedObjStats {
+trait GivingVictoryPointsStatsImpl { _: GivingVictoryPointsStats =>
   /* Victory points given each turn */
   val vpsGiven: VPS
 }

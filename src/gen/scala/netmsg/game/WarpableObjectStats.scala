@@ -9,6 +9,7 @@ import com.trueaccord.scalapb.Descriptors
 final case class WarpableObjectStats(
     extractor: Option[netmsg.game.WObjectStats.Extractor] = None,
     warpLinker: Option[netmsg.game.WObjectStats.WarpLinker] = None,
+    populationTower: Option[netmsg.game.WObjectStats.PopulationTower] = None,
     laserTower: Option[netmsg.game.WObjectStats.LaserTower] = None,
     corvette: Option[netmsg.game.WObjectStats.Corvette] = None,
     wasp: Option[netmsg.game.WObjectStats.Wasp] = None,
@@ -22,6 +23,7 @@ final case class WarpableObjectStats(
       var __size = 0
       if (extractor.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(extractor.get.serializedSize) + extractor.get.serializedSize }
       if (warpLinker.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(warpLinker.get.serializedSize) + warpLinker.get.serializedSize }
+      if (populationTower.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(populationTower.get.serializedSize) + populationTower.get.serializedSize }
       if (laserTower.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(laserTower.get.serializedSize) + laserTower.get.serializedSize }
       if (corvette.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(corvette.get.serializedSize) + corvette.get.serializedSize }
       if (wasp.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(wasp.get.serializedSize) + wasp.get.serializedSize }
@@ -40,6 +42,11 @@ final case class WarpableObjectStats(
       }
       warpLinker.foreach { v => 
         output.writeTag(7, 2)
+        output.writeRawVarint32(v.serializedSize)
+        v.writeTo(output)
+      }
+      populationTower.foreach { v => 
+        output.writeTag(8, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
@@ -87,6 +94,7 @@ final case class WarpableObjectStats(
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.WarpableObjectStats = {
       var __extractor = this.extractor
       var __warpLinker = this.warpLinker
+      var __populationTower = this.populationTower
       var __laserTower = this.laserTower
       var __corvette = this.corvette
       var __wasp = this.wasp
@@ -104,6 +112,8 @@ final case class WarpableObjectStats(
             __extractor = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __extractor.getOrElse(netmsg.game.WObjectStats.Extractor.defaultInstance)))
           case 58 =>
             __warpLinker = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __warpLinker.getOrElse(netmsg.game.WObjectStats.WarpLinker.defaultInstance)))
+          case 66 =>
+            __populationTower = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __populationTower.getOrElse(netmsg.game.WObjectStats.PopulationTower.defaultInstance)))
           case 74 =>
             __laserTower = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __laserTower.getOrElse(netmsg.game.WObjectStats.LaserTower.defaultInstance)))
           case 82 =>
@@ -126,6 +136,7 @@ final case class WarpableObjectStats(
       netmsg.game.WarpableObjectStats(
           extractor = __extractor,
           warpLinker = __warpLinker,
+          populationTower = __populationTower,
           laserTower = __laserTower,
           corvette = __corvette,
           wasp = __wasp,
@@ -142,6 +153,9 @@ final case class WarpableObjectStats(
     def getWarpLinker: netmsg.game.WObjectStats.WarpLinker = warpLinker.getOrElse(netmsg.game.WObjectStats.WarpLinker.defaultInstance)
     def clearWarpLinker: WarpableObjectStats = copy(warpLinker = None)
     def withWarpLinker(__v: netmsg.game.WObjectStats.WarpLinker): WarpableObjectStats = copy(warpLinker = Some(__v))
+    def getPopulationTower: netmsg.game.WObjectStats.PopulationTower = populationTower.getOrElse(netmsg.game.WObjectStats.PopulationTower.defaultInstance)
+    def clearPopulationTower: WarpableObjectStats = copy(populationTower = None)
+    def withPopulationTower(__v: netmsg.game.WObjectStats.PopulationTower): WarpableObjectStats = copy(populationTower = Some(__v))
     def getLaserTower: netmsg.game.WObjectStats.LaserTower = laserTower.getOrElse(netmsg.game.WObjectStats.LaserTower.defaultInstance)
     def clearLaserTower: WarpableObjectStats = copy(laserTower = None)
     def withLaserTower(__v: netmsg.game.WObjectStats.LaserTower): WarpableObjectStats = copy(laserTower = Some(__v))
@@ -170,6 +184,7 @@ final case class WarpableObjectStats(
       __field.number match {
         case 6 => extractor
         case 7 => warpLinker
+        case 8 => populationTower
         case 9 => laserTower
         case 10 => corvette
         case 11 => wasp
@@ -188,6 +203,7 @@ object WarpableObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompan
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WarpableObjectStats = netmsg.game.WarpableObjectStats(
     extractor = fieldsMap.getOrElse(6, None).asInstanceOf[Option[netmsg.game.WObjectStats.Extractor]],
     warpLinker = fieldsMap.getOrElse(7, None).asInstanceOf[Option[netmsg.game.WObjectStats.WarpLinker]],
+    populationTower = fieldsMap.getOrElse(8, None).asInstanceOf[Option[netmsg.game.WObjectStats.PopulationTower]],
     laserTower = fieldsMap.getOrElse(9, None).asInstanceOf[Option[netmsg.game.WObjectStats.LaserTower]],
     corvette = fieldsMap.getOrElse(10, None).asInstanceOf[Option[netmsg.game.WObjectStats.Corvette]],
     wasp = fieldsMap.getOrElse(11, None).asInstanceOf[Option[netmsg.game.WObjectStats.Wasp]],
@@ -208,6 +224,8 @@ object WarpableObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompan
     def optionalExtractor: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WObjectStats.Extractor]] = field(_.extractor)((c_, f_) => c_.copy(extractor = f_))
     def warpLinker: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.WarpLinker] = field(_.getWarpLinker)((c_, f_) => c_.copy(warpLinker = Some(f_)))
     def optionalWarpLinker: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WObjectStats.WarpLinker]] = field(_.warpLinker)((c_, f_) => c_.copy(warpLinker = f_))
+    def populationTower: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.PopulationTower] = field(_.getPopulationTower)((c_, f_) => c_.copy(populationTower = Some(f_)))
+    def optionalPopulationTower: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WObjectStats.PopulationTower]] = field(_.populationTower)((c_, f_) => c_.copy(populationTower = f_))
     def laserTower: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.LaserTower] = field(_.getLaserTower)((c_, f_) => c_.copy(laserTower = Some(f_)))
     def optionalLaserTower: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WObjectStats.LaserTower]] = field(_.laserTower)((c_, f_) => c_.copy(laserTower = f_))
     def corvette: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.Corvette] = field(_.getCorvette)((c_, f_) => c_.copy(corvette = Some(f_)))
@@ -227,6 +245,7 @@ object WarpableObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompan
   }
   final val EXTRACTOR_FIELD_NUMBER = 6
   final val WARP_LINKER_FIELD_NUMBER = 7
+  final val POPULATION_TOWER_FIELD_NUMBER = 8
   final val LASER_TOWER_FIELD_NUMBER = 9
   final val CORVETTE_FIELD_NUMBER = 10
   final val WASP_FIELD_NUMBER = 11

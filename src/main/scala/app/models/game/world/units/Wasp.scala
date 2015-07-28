@@ -3,7 +3,7 @@ package app.models.game.world.units
 import app.models.game.{Population, Player}
 import app.models.game.world._
 
-object WaspStats extends WFighterUnitStats with EmptySpaceWarpableCompanion[Wasp] {
+trait WaspStatsImpl extends EmptySpaceWarpableCompanion[Wasp] { _: WaspStats.type =>
   override val maxHp = HP(80)
   override val attack = Atk(56)
   override val attacks = Attacks(2)

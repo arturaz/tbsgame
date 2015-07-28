@@ -8,8 +8,6 @@ import app.models.game.GamePlayerState.CanWarp
 import app.models.game.events._
 import app.models.game.world.WObject.Id
 import app.models.game.world._
-import app.models.game.world.buildings.{ExtractorStats, LaserTowerStats, WarpLinkerStats}
-import app.models.game.world.units.{ScoutStats, GunshipStats, RocketFrigateStats, CorvetteStats}
 import implicits._
 import monocle.Lenser
 import monocle.syntax._
@@ -34,10 +32,12 @@ object Game {
       ExtractorStats,
       WarpLinkerStats,
       LaserTowerStats,
+      PopulationTowerStats,
+
+      ScoutStats,
       CorvetteStats,
       RocketFrigateStats,
-      GunshipStats,
-      ScoutStats
+      GunshipStats
     )
   }
   case class StartingPlayer(

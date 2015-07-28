@@ -154,6 +154,19 @@ trait GameWObjects { _: GameProto =>
 
   /************************************************************************************/
 
+  implicit def convert(obj: PopulationTowerStats.type): game.WObjectStats.PopulationTower =
+    game.WObjectStats.PopulationTower(
+      base = base(obj), owned = owned(obj), givingPopulation = givingPopulation(obj),
+      warpable = warpable(obj), sized = sized(obj)
+    )
+
+  implicit def convert(obj: PopulationTower): game.WObject.PopulationTower =
+    game.WObject.PopulationTower(
+      base = base(obj), stats = obj.stats, owned = owned(obj), warpable = warpable(obj)
+    )
+
+  /************************************************************************************/
+
   implicit def convert(obj: WarpLinkerStats.type): game.WObjectStats.WarpLinker =
     game.WObjectStats.WarpLinker(
       base = base(obj), owned = owned(obj), warpable = warpable(obj)
@@ -306,6 +319,7 @@ trait GameWObjects { _: GameProto =>
       case o: Brush => game.WObject(brush = Some(o))
       case o: WarpGate => game.WObject(warpGate = Some(o))
       case o: Extractor => game.WObject(extractor = Some(o))
+      case o: PopulationTower => game.WObject(populationTower = Some(o))
       case o: WarpLinker => game.WObject(warpLinker = Some(o))
       case o: Spawner => game.WObject(spawner = Some(o))
       case o: LaserTower => game.WObject(laserTower = Some(o))
@@ -325,10 +339,10 @@ trait GameWObjects { _: GameProto =>
   def convertWarpableStats(statsTO: TraversableOnce[WarpableStats])
   : game.WarpableObjectStats =
     statsTO.foldLeft(game.WarpableObjectStats()) {
-      // TODO: sealed traits would benefit us here as well.
       case (b, s: ExtractorStats.type) => b.withExtractor(s)
       case (b, s: WarpLinkerStats.type) => b.withWarpLinker(s)
       case (b, s: LaserTowerStats.type) => b.withLaserTower(s)
+      case (b, s: PopulationTowerStats.type) => b.withPopulationTower(s)
       case (b, s: CorvetteStats.type) => b.withCorvette(s)
       case (b, s: WaspStats.type) => b.withWasp(s)
       case (b, s: ScoutStats.type) => b.withScout(s)

@@ -11,7 +11,7 @@ import app.models.game.world.Ops._
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
 
-trait FighterStats extends OwnedObjStats {
+trait FighterStatsImpl { _: FighterStats =>
   val attack: Atk
   val attackSpread = AtkSpread(0.15)
   // lazy because attackSpread might be overriden

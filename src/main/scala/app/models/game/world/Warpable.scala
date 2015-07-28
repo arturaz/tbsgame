@@ -62,7 +62,7 @@ object WarpableCompanion {
   type Some = WarpableStats with WarpableCompanion[_ <: Warpable]
 }
 
-trait WarpableStats extends OwnedObjStats {
+trait WarpableStatsImpl { _: WarpableStats =>
   val InitialWarpState = WarpTime(0)
   val warpTime: WarpTime
   val cost: Resources
@@ -102,6 +102,7 @@ trait ToWarpableOps {
       case o: Extractor => ExtractorOps(o)
       case o: LaserTower => LaserTowerOps(o)
       case o: WarpLinker => WarpLinkerOps(o)
+      case o: PopulationTower => PopulationTowerOps(o)
 
       /* Units */
 

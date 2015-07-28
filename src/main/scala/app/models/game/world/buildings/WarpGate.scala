@@ -2,16 +2,16 @@ package app.models.game.world.buildings
 
 import akka.event.LoggingAdapter
 import app.models.game.world._
-import app.models.game.{Player, Actions, Population}
+import app.models.game.{Player, Actions}
 import implicits._
 
-object WarpGateStats extends BuildingStats with SizedWObjectStats
-with GivingActionsStats with GivingPopulationStats with SpecialActionStats {
+trait WarpGateStatsImpl { _: WarpGateStats.type =>
   override val maxHp = HP(350)
   override val size = Vect2(3, 3)
   override val isCritical = true
   override val actionsGiven = Actions(3)
-  override val populationGiven = Population(24)
+  override val populationGiven =
+    CorvetteStats.populationCost + ExtractorStats.populationCost
   override val visibility = RectDistance(4)
   override val warpGiven = RectDistance(2)
   override val specialActionsNeeded = Actions(1)

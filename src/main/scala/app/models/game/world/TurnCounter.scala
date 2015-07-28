@@ -15,8 +15,6 @@ object Turns {
   }
 }
 
-trait TurnCounterStats extends WObjectStats
-
 trait TurnCounterImpl extends WObjectImpl {
   val turns: Int
 }

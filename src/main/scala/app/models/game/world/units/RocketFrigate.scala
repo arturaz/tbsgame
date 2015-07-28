@@ -3,9 +3,8 @@ package app.models.game.world.units
 import app.models.game.{Population, Player}
 import app.models.game.world._
 
-object RocketFrigateStats extends WFighterUnitStats
-with EmptySpaceWarpableCompanion[RocketFrigate]
-{
+trait RocketFrigateStatsImpl extends EmptySpaceWarpableCompanion[RocketFrigate]
+{ _: RocketFrigateStats.type =>
   override val maxHp = HP(30)
   override val attack = Atk(210)
   override val attacks = Attacks(1)

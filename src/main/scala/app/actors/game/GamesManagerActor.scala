@@ -7,9 +7,8 @@ import app.actors.NetClient
 import app.actors.NetClient.Management.In.JoinGame.Mode
 import app.actors.game.GameActor.StartingHuman
 import app.models.User
-import app.models.game.world.buildings.ExtractorStats
 import app.models.game.world.maps.{GameMaps, GameMap, SingleplayerMap, WorldMaterializer}
-import app.models.game.world.{Resources, World}
+import app.models.game.world.{ExtractorStats, Resources, World}
 import app.models.game.{TurnTimers, Bot, Human, Team}
 import implicits._
 import utils.data.NonEmptyVector
@@ -18,7 +17,7 @@ import scalaz._, Scalaz._
 import scala.util.Random
 
 object GamesManagerActor {
-  val StartingResources = ExtractorStats.cost * Resources(3)
+  val StartingResources = ExtractorStats.cost * Resources(4)
 
   sealed trait In
   object In {

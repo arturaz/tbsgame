@@ -17,6 +17,7 @@ sealed trait WarpableKind extends com.trueaccord.scalapb.GeneratedEnum {
   def isURayship: Boolean = false
   def isUGunship: Boolean = false
   def isUFortress: Boolean = false
+  def isBPopulationTower: Boolean = false
 }
 
 object WarpableKind extends com.trueaccord.scalapb.GeneratedEnumCompanion[WarpableKind] {
@@ -80,7 +81,13 @@ object WarpableKind extends com.trueaccord.scalapb.GeneratedEnumCompanion[Warpab
     override def isUFortress: Boolean = true
   }
   
-  lazy val values = Seq(B_EXTRACTOR, B_WARP_LINKER, B_LASER_TOWER, U_CORVETTE, U_WASP, U_SCOUT, U_ROCKET_FRIGATE, U_RAYSHIP, U_GUNSHIP, U_FORTRESS)
+  case object B_POPULATION_TOWER extends WarpableKind {
+    val id = 11
+    val name = "B_POPULATION_TOWER"
+    override def isBPopulationTower: Boolean = true
+  }
+  
+  lazy val values = Seq(B_EXTRACTOR, B_WARP_LINKER, B_LASER_TOWER, U_CORVETTE, U_WASP, U_SCOUT, U_ROCKET_FRIGATE, U_RAYSHIP, U_GUNSHIP, U_FORTRESS, B_POPULATION_TOWER)
   def fromValue(value: Int): WarpableKind = value match {
     case 1 => B_EXTRACTOR
     case 2 => B_WARP_LINKER
@@ -92,6 +99,7 @@ object WarpableKind extends com.trueaccord.scalapb.GeneratedEnumCompanion[Warpab
     case 8 => U_RAYSHIP
     case 9 => U_GUNSHIP
     case 10 => U_FORTRESS
+    case 11 => B_POPULATION_TOWER
   }
   lazy val descriptor = new Descriptors.EnumDescriptor(0, "WarpableKind", this)
 }

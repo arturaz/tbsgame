@@ -2,7 +2,7 @@ package app.models.game.world
 
 import app.models.game.Population
 
-trait GivingPopulationStats extends OwnedObjStats {
+trait GivingPopulationStatsImpl { _: GivingPopulationStats =>
   val populationGiven: Population
 }
 

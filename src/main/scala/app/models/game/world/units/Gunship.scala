@@ -3,8 +3,8 @@ package app.models.game.world.units
 import app.models.game.{Population, Player}
 import app.models.game.world._
 
-object GunshipStats extends WFighterUnitStats with EmptySpaceWarpableCompanion[Gunship]
-{
+trait GunshipStatsImpl extends EmptySpaceWarpableCompanion[Gunship]
+{ _: GunshipStats.type =>
   override val maxHp = HP(180)
   override val attack = Atk(75)
   override val attacks = Attacks(3)

@@ -11,7 +11,7 @@ import app.models.game.world.Ops._
 
 import scala.language.implicitConversions
 
-trait OwnedObjStats extends WObjectStats {
+trait OwnedObjStatsImpl { _: OwnedObjStats =>
   val maxHp: HP
   val visibility: RectDistance
   /* If team has no critical objects it cannot do any more actions and
@@ -82,7 +82,7 @@ trait OwnedObjOps[+Self <: OwnedObj] {
 }
 
 trait ToOwnedObjOps {
-  implicit def toOwnedObjOps[A <: OwnedObj](a: A): OwnedObjOps[A] = (a match {
+  implicit def toOwnedObjOps[A <: OwnedObj](a: A): OwnedObjOps[A] = ((a: OwnedObj) match {
     /* Buildings */
 
     case o: Extractor => ExtractorOps(o)
@@ -91,6 +91,7 @@ trait ToOwnedObjOps {
     case o: VPTower => VPTowerOps(o)
     case o: WarpGate => WarpGateOps(o)
     case o: WarpLinker => WarpLinkerOps(o)
+    case o: PopulationTower => PopulationTowerOps(o)
 
     /* Units */
 

@@ -3,9 +3,8 @@ package app.models.game.world.buildings
 import app.models.game.Player
 import app.models.game.world._
 
-object WarpLinkerStats extends WBuildingStats with WarpableStats
-with WarpableCompanion[WarpLinker]
-with EmptySpaceWarpableCompanion[WarpLinker] {
+trait WarpLinkerStatsImpl extends EmptySpaceWarpableCompanion[WarpLinker] {
+_: WarpLinkerStats.type =>
   override val maxHp = HP(100)
   override val warpTime = WarpTime(1)
   override val cost = Resources(4)

@@ -6,12 +6,12 @@ import app.models.game.world._
 import app.models.game.world.units._
 import implicits._
 
-object SpawnerStats extends BuildingStats with SizedWObjectStats {
+trait SpawnerStatsImpl { _: SpawnerStats.type =>
   override val maxHp = HP(1200)
   override val size = Vect2(2, 2)
   override val isCritical = true
   override val kind = WObjKind.Heavy
-  override val warpGiven = visibility
+  override val warpGiven = RectDistance(1)
 
   /* Each action from buildings that the team controls reduces spawner strength by this
      much. This makes spawner get angrier as VPTowers are taken from it. */

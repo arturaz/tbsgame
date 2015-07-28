@@ -3,8 +3,8 @@ package app.models.game.world.units
 import app.models.game.{Population, Player}
 import app.models.game.world._
 
-object FortressStats extends WFighterUnitStats with EmptySpaceWarpableCompanion[Fortress]
-{
+trait FortressStatsImpl extends EmptySpaceWarpableCompanion[Fortress]
+{ _: FortressStats.type =>
   override val maxHp = HP(185)
   override val attack = Atk(25)
   override val attacks = Attacks(2)

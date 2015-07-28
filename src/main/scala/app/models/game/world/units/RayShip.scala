@@ -3,8 +3,8 @@ package app.models.game.world.units
 import app.models.game.{Population, Player}
 import app.models.game.world._
 
-object RayShipStats extends WFighterUnitStats with EmptySpaceWarpableCompanion[RayShip]
-{
+trait RayShipStatsImpl extends EmptySpaceWarpableCompanion[RayShip]
+{ _: RayShipStats.type =>
   override val maxHp = HP(42)
   override val attack = Atk(65)
   override val attacks = Attacks(1)

@@ -2,7 +2,7 @@ package app.models.game.world
 
 import app.models.game.Actions
 
-trait GivingActionsStats extends OwnedObjStats {
+trait GivingActionsStatsImpl { _: GivingActionsStats =>
   val actionsGiven: Actions
 }
 

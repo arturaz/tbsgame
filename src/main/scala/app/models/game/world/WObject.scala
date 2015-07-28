@@ -9,7 +9,7 @@ import app.models.game.world.Ops._
 
 import scala.reflect.ClassTag
 
-trait WObjectStats {
+trait WObjectStatsImpl {
   val size = Vect2.one
   def blocksVisibility = blocksWarp
   val blocksWarp = false
