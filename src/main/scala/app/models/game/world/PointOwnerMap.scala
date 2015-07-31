@@ -91,7 +91,7 @@ case class PointOwnerMap[Evt <: PointOwnershipChangeEvt] private (
   /* Default value = 0 */
   map: PointOwnerMap.Underlying,
   checkBlockage: PointOwnerMap.IsBlockedFactory
-) {
+) extends Traversable[Vect2] {
   import app.models.game.world.PointOwnerMap._
 
   override lazy val toString = {
@@ -114,12 +114,16 @@ case class PointOwnerMap[Evt <: PointOwnershipChangeEvt] private (
   def isVisibleFull(team: Team, bounds: Bounds): Boolean =
     bounds.points.forall(isVisible(team, _))
 
-  def filter(owner: Owner): PointOwnerMap[Evt] =
+  def filterByOwner(owner: Owner): PointOwnerMap[Evt] =
     copy(map = map.filter { case ((_, team), visibility) =>
       team === owner.team && visibility =/= 0
     })
 
-  def createIsBlocked(objects: WorldObjs.Any, obj: OwnedObj) =
+  override def filter(predicate: Vect2 => Boolean): PointOwnerMap[Evt] =
+    copy(map = map.filter { case ((point, _), _) => predicate(point) })
+
+  /* Creates a function that can be used to check if the position is blocked. */
+  def createIsBlocked(objects: WorldObjs.Any, obj: OwnedObj): IsBlocked =
     checkBlockage(objects, obj).getOrElse(PointOwnerMap.NeverBlock)
 
   def +(obj: OwnedObj, objects: WorldObjs.Any): Evented[PointOwnerMap[Evt]] =
@@ -187,5 +191,10 @@ case class PointOwnerMap[Evt <: PointOwnershipChangeEvt] private (
     }
 
     (updated(underlying), compact(updateEvents, createEvt))
+  }
+
+  override def foreach[U](f: (Vect2) => U) = map.foreach {
+    case (_, 0) => false
+    case ((point, _), _) => f(point)
   }
 }

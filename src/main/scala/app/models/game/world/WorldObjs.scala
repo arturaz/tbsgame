@@ -1,5 +1,6 @@
 package app.models.game.world
 
+import app.models.game.Player
 import app.models.game.world.WObject.Id
 import app.models.game.world.WorldObjs.{PositionsMap, ObjectsMap}
 
@@ -98,6 +99,11 @@ case class WorldObjs[Obj <: WObject] private (
       case (\/-(wo), a) => f(wo, a)
       case (left @ -\/(err), _) => left
     }
+
+  def forOwner(player: Player) = filter {
+    case o: OwnedObj => o.owner === player
+    case _ => false
+  }
 
   def add(obj: Obj): String \/ WorldObjs[Obj] = {
     if (objectsMap.contains(obj.id)) s"$obj already exists in $this".leftZ

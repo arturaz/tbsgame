@@ -29,6 +29,7 @@ trait OwnedObjImpl extends WObjectImpl {
   def maxHp = stats.maxHp
   def isWarpingIn = false
   def isWarpedIn = ! isWarpingIn
+  def goingToWarpInNextTurn = false
   def isEnemy(o: OwnedObj) = owner.team =/= o.owner.team
   def isFriend(o: OwnedObj) = ! isEnemy(o)
   def destroyReward = Option.empty[Resources]
@@ -96,6 +97,7 @@ trait ToOwnedObjOps {
     /* Units */
 
     case o: Corvette => CorvetteOps(o)
+    case o: Drone => DroneOps(o)
     case o: Fortress => FortressOps(o)
     case o: Gunship => GunshipOps(o)
     case o: RayShip => RayShipOps(o)

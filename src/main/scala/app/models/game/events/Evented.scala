@@ -23,6 +23,10 @@ case class Evented[+A](value: A, events: Events=Vector.empty) {
   def flatten[B](implicit ev: A <:< Evented[B]): Evented[B] = flatMap(ev)
   def extract[B, C](implicit ev: A <:< Either[B, C]): Either[B, Evented[C]] =
     value.fold(_.left, Evented(_, events).right)
+
+  def extractT1[B, C](implicit ev: A <:< (B, C)): (Evented[B], C) = (map(_._1), value._2)
+  def extractT2[B, C](implicit ev: A <:< (B, C)): (B, Evented[C]) = (value._1, map(_._2))
+
   def extractFlatten[B, C](
     implicit ev: A <:< Either[B, Evented[C]]
   ): Either[B, Evented[C]] =

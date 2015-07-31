@@ -17,7 +17,8 @@ final case class WarpableObjectStats(
     rayShip: Option[netmsg.game.WObjectStats.RayShip] = None,
     rocketFrigate: Option[netmsg.game.WObjectStats.RocketFrigate] = None,
     gunship: Option[netmsg.game.WObjectStats.Gunship] = None,
-    fortress: Option[netmsg.game.WObjectStats.Fortress] = None
+    fortress: Option[netmsg.game.WObjectStats.Fortress] = None,
+    drone: Option[netmsg.game.WObjectStats.Drone] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[WarpableObjectStats] with com.trueaccord.lenses.Updatable[WarpableObjectStats] {
     lazy val serializedSize: Int = {
       var __size = 0
@@ -32,6 +33,7 @@ final case class WarpableObjectStats(
       if (rocketFrigate.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(rocketFrigate.get.serializedSize) + rocketFrigate.get.serializedSize }
       if (gunship.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(gunship.get.serializedSize) + gunship.get.serializedSize }
       if (fortress.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(fortress.get.serializedSize) + fortress.get.serializedSize }
+      if (drone.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(drone.get.serializedSize) + drone.get.serializedSize }
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -90,6 +92,11 @@ final case class WarpableObjectStats(
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
+      drone.foreach { v => 
+        output.writeTag(17, 2)
+        output.writeRawVarint32(v.serializedSize)
+        v.writeTo(output)
+      }
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.WarpableObjectStats = {
       var __extractor = this.extractor
@@ -103,6 +110,7 @@ final case class WarpableObjectStats(
       var __rocketFrigate = this.rocketFrigate
       var __gunship = this.gunship
       var __fortress = this.fortress
+      var __drone = this.drone
       var _done__ = false
       while (!_done__) {
         val _tag__ = __input.readTag()
@@ -130,6 +138,8 @@ final case class WarpableObjectStats(
             __gunship = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __gunship.getOrElse(netmsg.game.WObjectStats.Gunship.defaultInstance)))
           case 130 =>
             __fortress = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __fortress.getOrElse(netmsg.game.WObjectStats.Fortress.defaultInstance)))
+          case 138 =>
+            __drone = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __drone.getOrElse(netmsg.game.WObjectStats.Drone.defaultInstance)))
           case tag => __input.skipField(tag)
         }
       }
@@ -144,7 +154,8 @@ final case class WarpableObjectStats(
           rayShip = __rayShip,
           rocketFrigate = __rocketFrigate,
           gunship = __gunship,
-          fortress = __fortress
+          fortress = __fortress,
+          drone = __drone
       )
     }
     def getExtractor: netmsg.game.WObjectStats.Extractor = extractor.getOrElse(netmsg.game.WObjectStats.Extractor.defaultInstance)
@@ -180,6 +191,9 @@ final case class WarpableObjectStats(
     def getFortress: netmsg.game.WObjectStats.Fortress = fortress.getOrElse(netmsg.game.WObjectStats.Fortress.defaultInstance)
     def clearFortress: WarpableObjectStats = copy(fortress = None)
     def withFortress(__v: netmsg.game.WObjectStats.Fortress): WarpableObjectStats = copy(fortress = Some(__v))
+    def getDrone: netmsg.game.WObjectStats.Drone = drone.getOrElse(netmsg.game.WObjectStats.Drone.defaultInstance)
+    def clearDrone: WarpableObjectStats = copy(drone = None)
+    def withDrone(__v: netmsg.game.WObjectStats.Drone): WarpableObjectStats = copy(drone = Some(__v))
     def getField(__field: Descriptors.FieldDescriptor): Any = {
       __field.number match {
         case 6 => extractor
@@ -193,6 +207,7 @@ final case class WarpableObjectStats(
         case 14 => rocketFrigate
         case 15 => gunship
         case 16 => fortress
+        case 17 => drone
       }
     }
     def companion = netmsg.game.WarpableObjectStats
@@ -211,7 +226,8 @@ object WarpableObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompan
     rayShip = fieldsMap.getOrElse(13, None).asInstanceOf[Option[netmsg.game.WObjectStats.RayShip]],
     rocketFrigate = fieldsMap.getOrElse(14, None).asInstanceOf[Option[netmsg.game.WObjectStats.RocketFrigate]],
     gunship = fieldsMap.getOrElse(15, None).asInstanceOf[Option[netmsg.game.WObjectStats.Gunship]],
-    fortress = fieldsMap.getOrElse(16, None).asInstanceOf[Option[netmsg.game.WObjectStats.Fortress]]
+    fortress = fieldsMap.getOrElse(16, None).asInstanceOf[Option[netmsg.game.WObjectStats.Fortress]],
+    drone = fieldsMap.getOrElse(17, None).asInstanceOf[Option[netmsg.game.WObjectStats.Drone]]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("WarpableObjectStats", this,
     None, m = Seq(),
@@ -242,6 +258,8 @@ object WarpableObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompan
     def optionalGunship: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WObjectStats.Gunship]] = field(_.gunship)((c_, f_) => c_.copy(gunship = f_))
     def fortress: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.Fortress] = field(_.getFortress)((c_, f_) => c_.copy(fortress = Some(f_)))
     def optionalFortress: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WObjectStats.Fortress]] = field(_.fortress)((c_, f_) => c_.copy(fortress = f_))
+    def drone: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.Drone] = field(_.getDrone)((c_, f_) => c_.copy(drone = Some(f_)))
+    def optionalDrone: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WObjectStats.Drone]] = field(_.drone)((c_, f_) => c_.copy(drone = f_))
   }
   final val EXTRACTOR_FIELD_NUMBER = 6
   final val WARP_LINKER_FIELD_NUMBER = 7
@@ -254,4 +272,5 @@ object WarpableObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompan
   final val ROCKET_FRIGATE_FIELD_NUMBER = 14
   final val GUNSHIP_FIELD_NUMBER = 15
   final val FORTRESS_FIELD_NUMBER = 16
+  final val DRONE_FIELD_NUMBER = 17
 }

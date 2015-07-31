@@ -8,7 +8,7 @@ import app.models.game.world.props.{ExtractionSpeed, AsteroidImpl, PropImpl}
 import app.models.game.world.units._
 import utils.IdObj
 
-/********************************* [ PROPS ] *********************************/
+// <editor-fold desc="PROPS">
 
 /* Asteroids can be mined for resources */
 case class Asteroid(
@@ -57,20 +57,22 @@ object CrystalStats extends WObjectStats {
   override val blocksWarp = true
 }
 
-/********************************* [ BUILDINGS ] *********************************/
+// </editor-fold>
+
+// <editor-fold desc="BUILDINGS">
 
 /* Main building of a player */
 case class WarpGate(
   position: Vect2, owner: Team,
   hp: HP=WarpGateStats.maxHp, id: WObject.Id=WObject.newId
 ) extends WarpGateImpl with TeamBuilding with GivingActions with GivingPopulation
-with SizedWObject with SpecialAction with SpecialAtEndOfTurn {
+with SizedWObject with SpecialActionGetResources with SpecialAtEndOfTurn {
   type Stats = WarpGateStats.type
   override val stats = WarpGateStats
   override def endOfTurnPriority = 0
 }
 object WarpGateStats extends BuildingStats with SizedWObjectStats
-with GivingActionsStats with GivingPopulationStats with SpecialActionStats
+with GivingActionsStats with GivingPopulationStats with SpecialActionGetResourcesStats
 with WarpGateStatsImpl
 
 /* Gives population */
@@ -142,16 +144,20 @@ object LaserTowerStats extends LaserTowerStatsImpl with WBuildingStats
   with SpecialActionStats with FighterStats
 
 /* Enemy base */
+object SpawnerStats extends BuildingStats with SizedWObjectStats with GivingActionsStats
+  with SpecialActionGetResourcesStats with SpawnerStatsImpl
 case class Spawner(
   position: Vect2, owner: Bot,
   id: WObject.Id=WObject.newId,
-  startingStrength: SpawnerStr=SpawnerStats.DefaultStartingStrength,
-  turnsPerStrength: Option[SpawnerStr]=SpawnerStats.DefaultTurnsPerStrength,
   turns: Int=0, hp: HP=SpawnerStats.maxHp
 ) extends SpawnerImpl with BotBuilding with TurnCounter with SizedWObject
-object SpawnerStats extends BuildingStats with SizedWObjectStats with SpawnerStatsImpl
+with SpecialActionGetResources with GivingActions
 
-/********************************* [ UNITS ] *********************************/
+// </editor-fold>
+
+// <editor-fold desc="UNITS">
+
+// <editor-fold desc="Player">
 
 case class Scout(
   position: Vect2, owner: Player,
@@ -200,6 +206,21 @@ case class RocketFrigate(
 }
 object RocketFrigateStats extends RocketFrigateStatsImpl with WFighterUnitStats
 
+// </editor-fold>
+
+// <editor-fold desc="Enemy">
+
+object DroneStats extends WUnitStats with DroneStatsImpl
+case class Drone(
+  position: Vect2, owner: Player,
+  id: WObject.Id=WObject.newId, hp: HP=DroneStats.maxHp,
+  movementLeft: Movement=DroneStats.InitialMovement,
+  warpState: WarpTime=DroneStats.InitialWarpState
+) extends WUnit {
+  type Stats = DroneStats.type
+  override val stats = DroneStats
+}
+
 case class Wasp(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=WaspStats.maxHp, xp: XP=WaspStats.InitialXP,
@@ -236,7 +257,11 @@ case class Fortress(
 }
 object FortressStats extends FortressStatsImpl with WFighterUnitStats
 
-/********************************* [ TRAITS ] *********************************/
+// </editor-fold>
+
+// </editor-fold>
+
+// <editor-fold desc="TRAITS">
 
 /* World object */
 sealed trait WObject extends WObjectImpl
@@ -282,6 +307,12 @@ sealed trait MovableStats extends OwnedObjStats with MovableStatsImpl
 /* Objects that can do a special action. */
 sealed trait SpecialAction extends OwnedObj with SpecialActionImpl
 sealed trait SpecialActionStats extends OwnedObjStats with SpecialActionStatsImpl
+
+/* Special action = get resources. */
+sealed trait SpecialActionGetResources extends SpecialAction
+  with SpecialActionGetResourcesImpl
+sealed trait SpecialActionGetResourcesStats extends SpecialActionStats
+  with SpecialActionGetResourcesStatsImpl
 
 /* Objects that are bigger 1x1. Such objects cannot be moved. */
 sealed trait SizedWObject extends WObject with SizedWObjectImpl
@@ -332,3 +363,5 @@ sealed trait WUnit extends WUnitImpl with PlayerObj with Movable with Warpable
 sealed trait WUnitStats extends OwnedObjStats with MovableStats with WarpableStats
   with WUnitStatsImpl
 sealed trait WFighterUnitStats extends WUnitStats with FighterStats
+
+// </editor-fold>

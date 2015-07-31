@@ -60,6 +60,7 @@ _: WObjectStats =>
 
 object WarpableCompanion {
   type Some = WarpableStats with WarpableCompanion[_ <: Warpable]
+  type Of[A <: Warpable] = WarpableStats with WarpableCompanion[A]
 }
 
 trait WarpableStatsImpl { _: WarpableStats =>
@@ -75,7 +76,8 @@ trait WarpableImpl extends OwnedObjImpl {
   type Stats <: WarpableStats
 
   override def isWarpingIn = warpState < stats.warpTime
-//  override def destroyReward = Some(Resources(
+  override def goingToWarpInNextTurn = warpState + WarpTime(1) === stats.warpTime
+  //  override def destroyReward = Some(Resources(
 //    (companion.cost.value * Random.double(0.1, 1f / 3)).round.toInt
 //  ))
 }
@@ -107,6 +109,7 @@ trait ToWarpableOps {
       /* Units */
 
       case o: Corvette => CorvetteOps(o)
+      case o: Drone => DroneOps(o)
       case o: Fortress => FortressOps(o)
       case o: Gunship => GunshipOps(o)
       case o: RayShip => RayShipOps(o)

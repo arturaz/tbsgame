@@ -24,6 +24,7 @@ trait MovableImpl extends OwnedObjImpl with MobilityMovable {
 trait ToMovableOps {
   implicit def toMovableOps[A <: Movable](a: A): MovableOps[A] = (((a: Movable) match {
     case o: Corvette => CorvetteOps(o)
+    case o: Drone => DroneOps(o)
     case o: Fortress => FortressOps(o)
     case o: Gunship => GunshipOps(o)
     case o: RayShip => RayShipOps(o)

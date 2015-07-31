@@ -216,6 +216,20 @@ trait GameWObjects { _: GameProto =>
 
   /************************************************************************************/
 
+  implicit def convert(obj: DroneStats.type): game.WObjectStats.Drone =
+    game.WObjectStats.Drone(
+      base = base(obj), owned = owned(obj),
+      warpable = warpable(obj), movable = movable(obj)
+    )
+
+  implicit def convert(obj: Drone): game.WObject.Drone =
+    game.WObject.Drone(
+      base = base(obj), stats = obj.stats, owned = owned(obj),
+      warpable = warpable(obj), movable = movable(obj)
+    )
+
+  /************************************************************************************/
+
   implicit def convert(obj: WaspStats.type): game.WObjectStats.Wasp =
     game.WObjectStats.Wasp(
       base = base(obj), owned = owned(obj), fighter = fighter(obj), 
@@ -325,6 +339,7 @@ trait GameWObjects { _: GameProto =>
       case o: LaserTower => game.WObject(laserTower = Some(o))
       case o: Corvette => game.WObject(corvette = Some(o))
       case o: Wasp => game.WObject(wasp = Some(o))
+      case o: Drone => game.WObject(drone = Some(o))
       case o: Scout => game.WObject(scout = Some(o))
       case o: RayShip => game.WObject(rayShip = Some(o))
       case o: RocketFrigate => game.WObject(rocketFrigate = Some(o))
@@ -344,6 +359,7 @@ trait GameWObjects { _: GameProto =>
       case (b, s: LaserTowerStats.type) => b.withLaserTower(s)
       case (b, s: PopulationTowerStats.type) => b.withPopulationTower(s)
       case (b, s: CorvetteStats.type) => b.withCorvette(s)
+      case (b, s: DroneStats.type) => b.withDrone(s)
       case (b, s: WaspStats.type) => b.withWasp(s)
       case (b, s: ScoutStats.type) => b.withScout(s)
       case (b, s: RayShipStats.type) => b.withRayShip(s)

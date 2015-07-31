@@ -62,7 +62,7 @@ _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
     )
   }
 
-  private[this] def findAsteroid(world: World): Either[String, Asteroid] = {
+  def findAsteroid(world: World): Either[String, Asteroid] = {
     world.objects.getCT[Asteroid](position).fold2(
       s"Cannot find asteroid for $this!".left,
       _.right

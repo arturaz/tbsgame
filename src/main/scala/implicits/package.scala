@@ -79,6 +79,11 @@ package object implicits {
     def max(other: A): A = if (o >= other) o else other
   }
 
+  implicit class Tuple2Exts[A, B](val t: (A, B)) extends AnyVal {
+    @inline def map1[C](f: A => C): (C, B) = (f(t._1), t._2)
+    @inline def map2[C](f: B => C): (A, C) = (t._1, f(t._2))
+  }
+
   type WeightedIS[+A] = IndexedSeq[(A, Int)]
 
   implicit class WeightedISExts[A](val is: WeightedIS[A])

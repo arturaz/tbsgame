@@ -3,6 +3,8 @@ package app.models.game.world
 import java.util.UUID
 
 import akka.event.LoggingAdapter
+import app.algorithms.behaviour_trees.AI.BotAI
+import app.algorithms.behaviour_trees.BehaviourTree.NodeResult
 import app.models.game._
 import app.models.game.ai.GrowingSpawnerAI
 import app.models.game.events._
@@ -58,8 +60,7 @@ case class World private (
     Evented(this, Vector(TurnStartedEvt(team))) |>
     teamTurnX(team, log.prefixed("started|")) {
       implicit log => obj => world => OwnedObj.teamTurnStarted(obj, world).map(_._1)
-    } |>
-    runAI(team)
+    }
   }
   def teamTurnFinished(team: Team)(implicit log: LoggingAdapter) = ifTeamExists(team) {
     Evented(this, Vector(TurnEndedEvt(team))) |>
@@ -183,6 +184,22 @@ case class World private (
     playerStates.getOrElse(player, WorldPlayerState.empty)
   def resources(player: Player) = state(player).resources
 
+  def resourceExtractionNextTurn(player: Player)(implicit log: LoggingAdapter) = {
+    objects.forOwner(player).collect {
+      case e: Extractor if e.isWarpedIn || e.goingToWarpInNextTurn =>
+        val asteroidOpt =
+          objects.objectsIn(e.position).collectFirst { case a: Asteroid => a }
+        asteroidOpt.fold2(
+          {
+            log.error("No asteroid below {}!", e)
+            Resources(0)
+          },
+          asteroid =>
+            asteroid.extractionSpeed.resourcesPerTurn min asteroid.resources
+        )
+    }.sum
+  }
+
   def addPlayerState[Res <: IntValueClass[Res]](
     player: Player, count: Res, lens: SimpleLens[WorldPlayerState, Res]
   )(events: Res => Vector[Event]): Either[String, Evented[World]] = {
@@ -225,12 +242,13 @@ case class World private (
     updatedVps(vpsMap updated (owner.team, vps(owner) + count))
 
   def canWarp(b: Bounds) = bounds.contains(b) && ! objects.exists(_.bounds.intersects(b))
+  def canWarp(v: Vect2) = bounds.contains(v) && objects.emptyAt(v)
 
   def visibleBy(owner: Owner): World = copy(
     objects = objects.filter(o => isVisiblePartial(owner, o.bounds)),
     playerStates = playerStates.filter { case (player, _) => owner.isFriendOf(player) },
-    warpZoneMap = warpZoneMap.filter(owner),
-    visibilityMap = visibilityMap.filter(owner)
+    warpZoneMap = warpZoneMap.filterByOwner(owner),
+    visibilityMap = visibilityMap.filterByOwner(owner)
   )
 
   /* Is any part of the bounds visible to owner */
@@ -352,14 +370,6 @@ object World {
     f: LoggingAdapter => OwnedObj => World => Evented[World]
   )(world: Evented[World]) =
     xTurnX[OwnedObj](log.prefixed("team|"), _.owner.team === team, f)(world)
-
-  private def runAI(team: Team)(e: Evented[World])(implicit log: LoggingAdapter) = {
-    val scopedLog = log.prefixed("runAI|")
-    val bots = e.value.bots.filter(_.team === team)
-    bots.foldLeft(e) { case (fEvtWorld, bot) =>
-      fEvtWorld.flatMap { fWorld => GrowingSpawnerAI.act(fWorld, bot)(scopedLog) }
-    }
-  }
 
   private[this] def randomDirectionAll(includeDiagonals: Boolean) = {
     def rDir = Random.nextInt(3) - 1

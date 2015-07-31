@@ -181,6 +181,7 @@ message WarpableObjectStats {
   optional WObjectStats.RocketFrigate rocket_frigate = 14;
   optional WObjectStats.Gunship gunship = 15;
   optional WObjectStats.Fortress fortress = 16;
+  optional WObjectStats.Drone drone = 17;
 }
 
 message Objectives {
@@ -303,6 +304,15 @@ message WObject { // {{{
     required Movable movable = 6;
   }
 
+  message Drone {
+    required WObjectStats.Drone stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+    required Movable movable = 5;
+  }
+
   message Wasp {
     required WObjectStats.Wasp stats = 1;
     required Base base = 2;
@@ -389,6 +399,7 @@ message WObject { // {{{
   optional Fortress fortress = 16;
   optional VpTower vp_tower = 17;
   optional PopulationTower population_tower = 18;
+  optional Drone drone = 19;
 } // }}}
 
 message WObjectStats {
@@ -520,6 +531,13 @@ message WObjectStats {
     required uint32 special_movement_added = 10;
   }
 
+  message Drone {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Movable movable = 3;
+    required Warpable warpable = 4;
+  }
+
   message Wasp {
     required Base base = 1;
     required OwnedObj owned = 2;
@@ -594,6 +612,7 @@ message WObjectStats {
   optional Fortress fortress = 16;
   optional VpTower vp_tower = 17;
   optional PopulationTower population_tower = 18;
+  optional Drone drone = 19;
 }
 
 /* Events */
