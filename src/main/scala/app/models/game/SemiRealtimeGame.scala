@@ -29,14 +29,18 @@ object SemiRealtimeGame extends GameActorGameStarter[SemiRealtimeGame] {
   override def newGameTurn(
     game: Game, teams: Vector[Team], turnTimers: Option[WithCurrentTime[TurnTimers]]
   )(implicit log: LoggingAdapter) = {
-    gameTurnStarted(game).map(SemiRealtimeGame.apply)
+    gameTurnStarted(game).map { game =>
+
+      turnTimers.map(_ { (tt, currentTime) => tt.turnStarted(human, currentTime) })
+      SemiRealtimeGame(game, )
+    }
   }
 }
 
 // TODO: add turn timers
 case class SemiRealtimeGame(
-  game: Game//, turnTimers: Option[TurnTimers]
-) extends GameActorGame// with GameActorGame.CheckTurnTime[SemiRealtimeGame]
+  game: Game, currentlyControlling: Human, turnTimers: Option[TurnTimers]
+) extends GameActorGame with GameActorGame.CheckTurnTime[SemiRealtimeGame]
 {
   def update(f: Game.Result) = f.right.map(_.map(updated))
   def updated(game: Game) = copy(game = game)
@@ -49,6 +53,22 @@ case class SemiRealtimeGame(
 
   override def move(human: Human, id: Id, path: NonEmptyVector[Vect2])
   (implicit log: LoggingAdapter) = game.move(human, id, path) |> update
+
+  override def special(human: Human, id: Id)(implicit log: LoggingAdapter) =
+    game.special(human, id) |> update
+
+  override def attack(human: Human, id: Id, targetId: Id)(implicit log: LoggingAdapter) =
+    game.attack(human, id, targetId) |> update
+
+  override def moveAttack(human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id)
+    (implicit log: LoggingAdapter) = game.moveAttack(human, id, path, targetId) |> update
+
+  override def endTurn(human: Human, currentTime: DateTime)
+    (implicit log: LoggingAdapter) = game.endTurn(human) |> update
+  //endTurnCTT(human, currentTime)
+
+  override def concede(human: Human)(implicit log: LoggingAdapter) =
+    game.concede(human) |> update
 
   override def shouldAdvanceTurn = game.world.teams.forall(game.allPlayersTurnEnded)
 
@@ -71,27 +91,7 @@ case class SemiRealtimeGame(
     teamTurnsStarted.map(_.map(SemiRealtimeGame.apply))
   }
 
-  override def special(human: Human, id: Id)(implicit log: LoggingAdapter) =
-    game.special(human, id) |> update
-
   override def currentTeam(human: Human) = human.team
 
-  override def attack(human: Human, id: Id, targetId: Id)(implicit log: LoggingAdapter) =
-    game.attack(human, id, targetId) |> update
-
   override def isJoined(human: Human)(implicit log: LoggingAdapter) = game.isJoined(human)
-
-  override def moveAttack(human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id)
-  (implicit log: LoggingAdapter) = game.moveAttack(human, id, path, targetId) |> update
-
-  override def endTurn(human: Human, currentTime: DateTime)
-  (implicit log: LoggingAdapter) = game.endTurn(human) |> update
-    //endTurnCTT(human, currentTime)
-
-  override def concede(human: Human)(implicit log: LoggingAdapter) =
-    game.concede(human) |> update
-
-  // TODO: add turn timers
-  override def turnTimeframeFor(human: Human)(implicit log: LoggingAdapter) = None
-  override def checkTurnTimes(time: DateTime)(implicit log: LoggingAdapter) = Evented(this)
 }
