@@ -1,7 +1,7 @@
 package app.models.game.world.buildings
 
 import akka.event.LoggingAdapter
-import app.models.game.{Actions, Bot}
+import app.models.game.Actions
 import app.models.game.world._
 import app.models.game.world.units._
 import implicits._

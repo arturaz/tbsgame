@@ -26,12 +26,11 @@ class Server(
 
     case Connected(remote, local) =>
       log.info(s"Client connected from $remote.")
-      implicit val logger = log
       val connection = sender()
       val msgHandler = context.actorOf(Props(new MsgHandler(
         connection,
         handlerRef => Props(new NetClient(handlerRef, gamesManager, db))
       )), s"${remote.getHostString}-${remote.getPort}")
-      connection ! Register(msgHandler)
+      connection ! Register(msgHandler, keepOpenOnPeerClosed = true)
   }
 }
