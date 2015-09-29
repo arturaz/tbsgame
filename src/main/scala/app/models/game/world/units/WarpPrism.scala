@@ -36,7 +36,9 @@ trait WarpPrismImpl { _: WarpPrism =>
   (world: World, invokedBy: Player)(implicit log: LoggingAdapter) = {
     val evtEither = for {
       world <- world remove this
-      eitherWorld <- WarpLinkerStats.warpW(world, owner, position).extract
+      eitherWorld <- WarpLinkerStats.warpW(
+        world, owner, position, checkVisibility = false
+      ).extract
     } yield eitherWorld
     val res = evtEither.extract
     res

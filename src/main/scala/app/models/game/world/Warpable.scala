@@ -22,27 +22,28 @@ trait WarpableCompanion[Self <: Warpable] { _: WObjectStats =>
   ): Either[String, Self]
 
   private[this] def warpWOReaction(
-    world: World, owner: Player, position: Vect2
+    world: World, owner: Player, position: Vect2, checkVisibility: Boolean
   ): Either[String, Self] = {
     val b = bounds(position)
-    if (world.isVisibleFull(owner, b)) warpWOReactionImpl(world, owner, position)
+    if (!checkVisibility || world.isVisibleFull(owner, b))
+      warpWOReactionImpl(world, owner, position)
     else s"$b is not fully visible for $owner".left
   }
 
   /* Warp with reactions applied. */
   def warp(
-    world: World, player: Player, position: Vect2
+    world: World, player: Player, position: Vect2, checkVisibility: Boolean = true
   )(implicit log: LoggingAdapter): Either[String, WObject.WorldObjOptUpdate[Self]] =
-    warpWOReaction(world, player, position).right.map { warpedIn =>
+    warpWOReaction(world, player, position, checkVisibility).right.map { warpedIn =>
       World.revealObjects(
         player.team, WarpEvt(world.visibilityMap, warpedIn) +: world.add(warpedIn)
       ).flatMap(_.reactTo(warpedIn))
     }
 
   def warpW(
-    world: World, player: Player, position: Vect2
+    world: World, player: Player, position: Vect2, checkVisibility: Boolean = true
   )(implicit log: LoggingAdapter): Either[String, Evented[World]] =
-    warp(world, player, position).right.map { _.map(_._1) }
+    warp(world, player, position, checkVisibility).right.map { _.map(_._1) }
 }
 
 trait EmptySpaceWarpableCompanion[Self <: Warpable] extends WarpableCompanion[Self] {
