@@ -33,6 +33,8 @@ enum WarpableKind {
   U_GUNSHIP = 9;
   U_FORTRESS = 10;
   B_POPULATION_TOWER = 11;
+  B_ACTION_TOWER = 12;
+  U_WARP_PRISM = 13;
 }
 
 message MWarp {

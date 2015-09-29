@@ -22,6 +22,7 @@ trait GameProto extends BaseProto {
     case game.WarpableKind.B_WARP_LINKER => WarpLinkerStats
     case game.WarpableKind.B_LASER_TOWER => LaserTowerStats
     case game.WarpableKind.B_POPULATION_TOWER => PopulationTowerStats
+    case game.WarpableKind.B_ACTION_TOWER => ActionTowerStats
     case game.WarpableKind.U_CORVETTE => CorvetteStats
     case game.WarpableKind.U_WASP => WaspStats
     case game.WarpableKind.U_SCOUT => ScoutStats
@@ -29,6 +30,7 @@ trait GameProto extends BaseProto {
     case game.WarpableKind.U_RAYSHIP => RayShipStats
     case game.WarpableKind.U_GUNSHIP => GunshipStats
     case game.WarpableKind.U_FORTRESS => FortressStats
+    case game.WarpableKind.U_WARP_PRISM => WarpPrismStats
   }
 
   def parse(msg: game.FromClient): Either[String, GameInMsg] = {
