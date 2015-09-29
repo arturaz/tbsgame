@@ -80,14 +80,26 @@ case class PopulationTower(
   position: Vect2, owner: Player,
   warpState: WarpTime=PopulationTowerStats.InitialWarpState,
   hp: HP=PopulationTowerStats.maxHp, id: WObject.Id=WObject.newId
-) extends PopulationTowerImpl with GivingPopulation with SizedWObject with Building
-with Warpable {
+) extends PopulationTowerImpl with GivingPopulation with Building with Warpable {
   type Stats = PopulationTowerStats.type
   override val stats = PopulationTowerStats
 }
 object PopulationTowerStats extends WBuildingStats
-  with SizedWObjectStats with GivingPopulationStats
+  with GivingPopulationStats
   with PopulationTowerStatsImpl
+
+/* Gives population */
+case class ActionTower(
+  position: Vect2, owner: Player,
+  warpState: WarpTime=ActionTowerStats.InitialWarpState,
+  hp: HP=ActionTowerStats.maxHp, id: WObject.Id=WObject.newId
+) extends ActionTowerImpl with GivingActions with Building with Warpable {
+  type Stats = ActionTowerStats.type
+  override val stats = ActionTowerStats
+}
+object ActionTowerStats extends WBuildingStats
+  with GivingActionsStats
+  with ActionTowerStatsImpl
 
 /* Gives victory points each turn to its owner */
 case class VPTower(
@@ -169,6 +181,15 @@ case class Scout(
   override val stats = ScoutStats
 }
 object ScoutStats extends WUnitStats with ScoutStatsImpl
+
+case class WarpPrism(
+  position: Vect2, owner: Player,
+  id: WObject.Id=WObject.newId, hp: HP=WarpPrismStats.maxHp,
+  movementLeft: Movement=WarpPrismStats.InitialMovement,
+  warpState: WarpTime=WarpPrismStats.InitialWarpState
+) extends WarpPrismImpl with WUnit with SpecialAction
+object WarpPrismStats extends WUnitStats with SpecialActionStats
+  with WarpPrismStatsImpl
 
 case class Corvette(
   position: Vect2, owner: Player,
@@ -274,6 +295,7 @@ object WObject extends WObjectCompanion {
 
 /* Because WObject is sealed we cannot extend it in tests :| */
 trait WObjectTestRoot extends WObject
+trait WObjectStatsTestRoot extends WObjectStats
 
 /* A property in the world */
 sealed trait Prop extends WObject with PropImpl

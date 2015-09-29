@@ -17,10 +17,9 @@ import scalaz.{-\/, \/, \/-}
 package object implicits {
   implicit class OptionExts[A](val o: Option[A]) extends AnyVal {
     @inline def fold2[B](ifEmpty: => B, ifSome: A => B) = o.fold(ifEmpty)(ifSome)
-  }
 
-  implicit class OptionEventedExts[A](val o: Option[Evented[A]]) extends AnyVal {
-    def extract: Evented[Option[A]] = o.fold2(Evented(None), _.map(Some(_)))
+    def extract[B](implicit ev: A <:< Evented[B]): Evented[Option[B]] =
+      o.fold2(Evented(None), _.map(Some(_)))
   }
 
   implicit class TryExts[A](val t: Try[A]) extends AnyVal {
@@ -42,6 +41,11 @@ package object implicits {
     def +(fd: FiniteDuration): DateTime = dt.plus(fd.toMillis)
     def -(other: DateTime): FiniteDuration = (dt.getMillis - other.getMillis).millis
     override def compare(that: DateTime) = dt.compareTo(that)
+  }
+
+  implicit class EitherExts[A, B](val either: Either[A, B]) extends AnyVal {
+    def extract[C](implicit ev: B <:< Evented[C]): Evented[Either[A, C]] =
+      either.fold(a => Evented(a.left), b => b.map(c => c.right))
   }
 
   implicit class EitherZExts[A, B](val either: A \/ B) extends AnyVal {

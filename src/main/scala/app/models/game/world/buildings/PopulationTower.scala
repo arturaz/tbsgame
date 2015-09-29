@@ -12,7 +12,6 @@ _: PopulationTowerStats.type =>
   override val cost = Resources(9)
   override val group = WarpableGroup.Building
   override val populationCost = Population(0)
-  override val size = Vect2(2, 2)
 
   override def warp(owner: Player, position: Vect2) = PopulationTower(position, owner)
 }

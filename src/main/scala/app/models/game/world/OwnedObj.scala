@@ -93,6 +93,7 @@ trait ToOwnedObjOps {
     case o: WarpGate => WarpGateOps(o)
     case o: WarpLinker => WarpLinkerOps(o)
     case o: PopulationTower => PopulationTowerOps(o)
+    case o: ActionTower => ActionTowerOps(o)
 
     /* Units */
 
@@ -100,6 +101,7 @@ trait ToOwnedObjOps {
     case o: Drone => DroneOps(o)
     case o: Fortress => FortressOps(o)
     case o: Gunship => GunshipOps(o)
+    case o: WarpPrism => WarpPrismOps(o)
     case o: RayShip => RayShipOps(o)
     case o: RocketFrigate => RocketFrigateOps(o)
     case o: Scout => ScoutOps(o)

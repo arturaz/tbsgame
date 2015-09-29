@@ -10,7 +10,7 @@ trait CorvetteStatsImpl extends EmptySpaceWarpableCompanion[Corvette]
   override val maxHp = HP(120)
   override val attack = Atk(45)
   override val attacks = Attacks(3)
-  override val attackRange = RadialDistance.Five
+  override val attackRange = RadialDistance.Four
   override val movement = Movement.fromTiles(10)
   override val visibility = RectDistance(4)
   override val cost = Resources(6)

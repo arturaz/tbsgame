@@ -18,7 +18,9 @@ final case class WarpableObjectStats(
     rocketFrigate: Option[netmsg.game.WObjectStats.RocketFrigate] = None,
     gunship: Option[netmsg.game.WObjectStats.Gunship] = None,
     fortress: Option[netmsg.game.WObjectStats.Fortress] = None,
-    drone: Option[netmsg.game.WObjectStats.Drone] = None
+    drone: Option[netmsg.game.WObjectStats.Drone] = None,
+    warpPrism: Option[netmsg.game.WObjectStats.WarpPrism] = None,
+    actionTower: Option[netmsg.game.WObjectStats.ActionTower] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[WarpableObjectStats] with com.trueaccord.lenses.Updatable[WarpableObjectStats] {
     lazy val serializedSize: Int = {
       var __size = 0
@@ -34,6 +36,8 @@ final case class WarpableObjectStats(
       if (gunship.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(gunship.get.serializedSize) + gunship.get.serializedSize }
       if (fortress.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(fortress.get.serializedSize) + fortress.get.serializedSize }
       if (drone.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(drone.get.serializedSize) + drone.get.serializedSize }
+      if (warpPrism.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(warpPrism.get.serializedSize) + warpPrism.get.serializedSize }
+      if (actionTower.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(actionTower.get.serializedSize) + actionTower.get.serializedSize }
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -97,6 +101,16 @@ final case class WarpableObjectStats(
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
+      warpPrism.foreach { v => 
+        output.writeTag(18, 2)
+        output.writeRawVarint32(v.serializedSize)
+        v.writeTo(output)
+      }
+      actionTower.foreach { v => 
+        output.writeTag(19, 2)
+        output.writeRawVarint32(v.serializedSize)
+        v.writeTo(output)
+      }
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.WarpableObjectStats = {
       var __extractor = this.extractor
@@ -111,6 +125,8 @@ final case class WarpableObjectStats(
       var __gunship = this.gunship
       var __fortress = this.fortress
       var __drone = this.drone
+      var __warpPrism = this.warpPrism
+      var __actionTower = this.actionTower
       var _done__ = false
       while (!_done__) {
         val _tag__ = __input.readTag()
@@ -140,6 +156,10 @@ final case class WarpableObjectStats(
             __fortress = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __fortress.getOrElse(netmsg.game.WObjectStats.Fortress.defaultInstance)))
           case 138 =>
             __drone = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __drone.getOrElse(netmsg.game.WObjectStats.Drone.defaultInstance)))
+          case 146 =>
+            __warpPrism = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __warpPrism.getOrElse(netmsg.game.WObjectStats.WarpPrism.defaultInstance)))
+          case 154 =>
+            __actionTower = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __actionTower.getOrElse(netmsg.game.WObjectStats.ActionTower.defaultInstance)))
           case tag => __input.skipField(tag)
         }
       }
@@ -155,7 +175,9 @@ final case class WarpableObjectStats(
           rocketFrigate = __rocketFrigate,
           gunship = __gunship,
           fortress = __fortress,
-          drone = __drone
+          drone = __drone,
+          warpPrism = __warpPrism,
+          actionTower = __actionTower
       )
     }
     def getExtractor: netmsg.game.WObjectStats.Extractor = extractor.getOrElse(netmsg.game.WObjectStats.Extractor.defaultInstance)
@@ -194,6 +216,12 @@ final case class WarpableObjectStats(
     def getDrone: netmsg.game.WObjectStats.Drone = drone.getOrElse(netmsg.game.WObjectStats.Drone.defaultInstance)
     def clearDrone: WarpableObjectStats = copy(drone = None)
     def withDrone(__v: netmsg.game.WObjectStats.Drone): WarpableObjectStats = copy(drone = Some(__v))
+    def getWarpPrism: netmsg.game.WObjectStats.WarpPrism = warpPrism.getOrElse(netmsg.game.WObjectStats.WarpPrism.defaultInstance)
+    def clearWarpPrism: WarpableObjectStats = copy(warpPrism = None)
+    def withWarpPrism(__v: netmsg.game.WObjectStats.WarpPrism): WarpableObjectStats = copy(warpPrism = Some(__v))
+    def getActionTower: netmsg.game.WObjectStats.ActionTower = actionTower.getOrElse(netmsg.game.WObjectStats.ActionTower.defaultInstance)
+    def clearActionTower: WarpableObjectStats = copy(actionTower = None)
+    def withActionTower(__v: netmsg.game.WObjectStats.ActionTower): WarpableObjectStats = copy(actionTower = Some(__v))
     def getField(__field: Descriptors.FieldDescriptor): Any = {
       __field.number match {
         case 6 => extractor
@@ -208,6 +236,8 @@ final case class WarpableObjectStats(
         case 15 => gunship
         case 16 => fortress
         case 17 => drone
+        case 18 => warpPrism
+        case 19 => actionTower
       }
     }
     def companion = netmsg.game.WarpableObjectStats
@@ -227,7 +257,9 @@ object WarpableObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompan
     rocketFrigate = fieldsMap.getOrElse(14, None).asInstanceOf[Option[netmsg.game.WObjectStats.RocketFrigate]],
     gunship = fieldsMap.getOrElse(15, None).asInstanceOf[Option[netmsg.game.WObjectStats.Gunship]],
     fortress = fieldsMap.getOrElse(16, None).asInstanceOf[Option[netmsg.game.WObjectStats.Fortress]],
-    drone = fieldsMap.getOrElse(17, None).asInstanceOf[Option[netmsg.game.WObjectStats.Drone]]
+    drone = fieldsMap.getOrElse(17, None).asInstanceOf[Option[netmsg.game.WObjectStats.Drone]],
+    warpPrism = fieldsMap.getOrElse(18, None).asInstanceOf[Option[netmsg.game.WObjectStats.WarpPrism]],
+    actionTower = fieldsMap.getOrElse(19, None).asInstanceOf[Option[netmsg.game.WObjectStats.ActionTower]]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("WarpableObjectStats", this,
     None, m = Seq(),
@@ -260,6 +292,10 @@ object WarpableObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompan
     def optionalFortress: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WObjectStats.Fortress]] = field(_.fortress)((c_, f_) => c_.copy(fortress = f_))
     def drone: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.Drone] = field(_.getDrone)((c_, f_) => c_.copy(drone = Some(f_)))
     def optionalDrone: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WObjectStats.Drone]] = field(_.drone)((c_, f_) => c_.copy(drone = f_))
+    def warpPrism: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.WarpPrism] = field(_.getWarpPrism)((c_, f_) => c_.copy(warpPrism = Some(f_)))
+    def optionalWarpPrism: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WObjectStats.WarpPrism]] = field(_.warpPrism)((c_, f_) => c_.copy(warpPrism = f_))
+    def actionTower: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.ActionTower] = field(_.getActionTower)((c_, f_) => c_.copy(actionTower = Some(f_)))
+    def optionalActionTower: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WObjectStats.ActionTower]] = field(_.actionTower)((c_, f_) => c_.copy(actionTower = f_))
   }
   final val EXTRACTOR_FIELD_NUMBER = 6
   final val WARP_LINKER_FIELD_NUMBER = 7
@@ -273,4 +309,6 @@ object WarpableObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompan
   final val GUNSHIP_FIELD_NUMBER = 15
   final val FORTRESS_FIELD_NUMBER = 16
   final val DRONE_FIELD_NUMBER = 17
+  final val WARP_PRISM_FIELD_NUMBER = 18
+  final val ACTION_TOWER_FIELD_NUMBER = 19
 }

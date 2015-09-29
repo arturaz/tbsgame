@@ -2,14 +2,14 @@ package app.models.game.world.buildings
 
 import akka.event.LoggingAdapter
 import app.models.game.world._
-import app.models.game.{Player, Actions}
+import app.models.game.{Population, Player, Actions}
 import implicits._
 
 trait WarpGateStatsImpl { _: WarpGateStats.type =>
-  override val maxHp = HP(350)
+  override val maxHp = HP(450)
   override val size = Vect2(3, 3)
   override val isCritical = true
-  override val actionsGiven = Actions(3)
+  override val actionsGiven = Actions(5)
   override val populationGiven =
     CorvetteStats.populationCost + ExtractorStats.populationCost
   override val visibility = RectDistance(4)

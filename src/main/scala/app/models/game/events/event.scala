@@ -46,12 +46,6 @@ case class JoinEvt(human: Human, state: Option[HumanState]) extends Event with F
 case class LeaveEvt(human: Human) extends AlwaysVisibleEvent
 
 case class TurnStartedEvt(team: Team) extends AlwaysVisibleEvent
-case class TurnStartedSemiRealtimeEvt(team: Team) extends Event {
-  /* Some events expand into several events when viewed in prism of some owner. */
-  override def asViewedBy(owner: Owner) =
-    if (owner.team === team) TurnStartedEvt(team).asViewedBy(owner)
-    else Iterable.empty
-}
 case class TurnEndedEvt(team: Team) extends AlwaysVisibleEvent
 
 case class SetTurnTimerEvt(whom: Human \/ Team, timeframe: Timeframe)

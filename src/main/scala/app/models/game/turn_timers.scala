@@ -20,11 +20,11 @@ object TurnTimers {
   case class TurnTime(value: FiniteDuration) extends AnyVal
   
   case class Settings(
-    maxTurnPoolSize: FiniteDuration = 15.minutes,
+    maxTurnPoolSize: FiniteDuration = 35.seconds,
     /* Max turn time */
-    upperTurnTimeLimit: FiniteDuration = 1.minute + 30.seconds,
+    upperTurnTimeLimit: FiniteDuration = 20.seconds,
     /* Guaranteed time given for each turn */
-    constantTimeGiven: FiniteDuration = 1.minute
+    constantTimeGiven: FiniteDuration = 8.seconds
   ) {
     val defaultTimer = TurnTimer(upperTurnTimeLimit, None)
 

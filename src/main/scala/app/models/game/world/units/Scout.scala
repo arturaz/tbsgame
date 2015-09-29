@@ -8,8 +8,8 @@ trait ScoutStatsImpl extends EmptySpaceWarpableCompanion[Scout] { _: ScoutStats.
   override val warpTime = WarpTime(0)
   override val cost = Resources(3)
   override val populationCost = Population(1)
-  override val movement = Movement.fromTiles(20)
-  override val visibility = RectDistance(6)
+  override val movement = Movement.fromTiles(10)
+  override val visibility = RectDistance(7)
   override val kind = WObjKind.Light
   override val InitialMovement = movement
 

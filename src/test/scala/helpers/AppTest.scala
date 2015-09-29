@@ -13,9 +13,9 @@ case class TestWObject(
   type Stats = TestWObjectStats.type
   val stats = TestWObjectStats
 }
-case object TestWObjectStats extends WObjectStats
+case object TestWObjectStats extends WObjectStatsTestRoot
 
-case class SizedTestWObjectStats(override val size: Vect2) extends SizedWObjectStats
+case class SizedTestWObjectStats(override val size: Vect2) extends WObjectStatsTestRoot with SizedWObjectStatsImpl
 
 object SizedTestWObject {
   def apply(position: Vect2, size: Vect2): SizedTestWObject =

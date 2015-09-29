@@ -182,6 +182,8 @@ message WarpableObjectStats {
   optional WObjectStats.Gunship gunship = 15;
   optional WObjectStats.Fortress fortress = 16;
   optional WObjectStats.Drone drone = 17;
+  optional WObjectStats.WarpPrism warp_prism = 18;
+  optional WObjectStats.ActionTower action_tower = 19;
 }
 
 message Objectives {
@@ -270,6 +272,14 @@ message WObject { // {{{
     required Warpable warpable = 4;
   }
 
+  message ActionTower {
+    required WObjectStats.ActionTower stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+  }
+
   message WarpLinker {
     required WObjectStats.WarpLinker stats = 1;
     required Base base = 2;
@@ -302,6 +312,15 @@ message WObject { // {{{
     required Warpable warpable = 4;
     required Fighter fighter = 5;
     required Movable movable = 6;
+  }
+
+  message WarpPrism {
+    required WObjectStats.WarpPrism stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Warpable warpable = 4;
+    required Movable movable = 5;
   }
 
   message Drone {
@@ -400,6 +419,8 @@ message WObject { // {{{
   optional VpTower vp_tower = 17;
   optional PopulationTower population_tower = 18;
   optional Drone drone = 19;
+  optional WarpPrism warp_prism = 20;
+  optional ActionTower action_tower = 21;
 } // }}}
 
 message WObjectStats {
@@ -497,7 +518,13 @@ message WObjectStats {
     required OwnedObj owned = 2;
     required Warpable warpable = 3;
     required GivingPopulation giving_population = 4;
-    required SizedObj sized = 5;
+  }
+
+  message ActionTower {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Warpable warpable = 3;
+    required GivingActions giving_actions = 4;
   }
 
   message WarpLinker {
@@ -529,6 +556,14 @@ message WObjectStats {
     required Warpable warpable = 6;
 
     required uint32 special_movement_added = 10;
+  }
+
+  message WarpPrism {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Movable movable = 3;
+    required SpecialAction special_action = 4;
+    required Warpable warpable = 5;
   }
 
   message Drone {
@@ -613,6 +648,8 @@ message WObjectStats {
   optional VpTower vp_tower = 17;
   optional PopulationTower population_tower = 18;
   optional Drone drone = 19;
+  optional WarpPrism warp_prism = 20;
+  optional ActionTower action_tower = 21;
 }
 
 /* Events */

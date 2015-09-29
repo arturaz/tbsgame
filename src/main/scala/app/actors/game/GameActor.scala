@@ -153,7 +153,7 @@ object GameActorGame {
   // TODO: report IDEA bug about _: Self
   trait CheckTurnTime[Self <: GameActorGame] { _: Self with GameActorGame =>
     def turnTimers: Option[TurnTimers]
-    def update(game: Game, turnTimers: Option[TurnTimers]): Self
+    def update(game: Game, turnTimers: Option[TurnTimers]): Evented[Self]
 
     def checkTurnTimes(currentTime: DateTime)(implicit log0: LoggingAdapter)
     : Evented[GameActorGame] = {
@@ -202,9 +202,14 @@ object GameActorGame {
 
     protected[this] def endTurnCTT(human: Human, currentTime: DateTime)
     (implicit log: LoggingAdapter): Game.ResultT[Self] =
-      game.endTurn(human).right.map { evtGame =>
-        evtGame.map(update(_, turnTimers.map(_.endTurn(human, currentTime))))
+      updateCTT(human, currentTime)(game.endTurn(human))
+
+    def updateCTT(human: Human, currentTime: DateTime)(result: Game.Result)
+    : Game.ResultT[Self] = {
+      result.right.map { evtGame =>
+        evtGame.flatMap(update(_, turnTimers.map(_.endTurn(human, currentTime))))
       }
+    }
   }
 }
 trait GameActorGame {

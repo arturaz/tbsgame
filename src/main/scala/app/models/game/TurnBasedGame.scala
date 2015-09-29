@@ -127,5 +127,5 @@ case class TurnBasedGame private (
   def shouldAdvanceTurn = game.allPlayersTurnEnded(currentTeam)
 
   override def update(game: Game, turnTimers: Option[TurnTimers]) =
-    copy(game = game, turnTimers = turnTimers)
+    Evented(copy(game = game, turnTimers = turnTimers))
 }

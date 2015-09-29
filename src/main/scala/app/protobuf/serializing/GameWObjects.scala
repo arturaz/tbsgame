@@ -157,11 +157,24 @@ trait GameWObjects { _: GameProto =>
   implicit def convert(obj: PopulationTowerStats.type): game.WObjectStats.PopulationTower =
     game.WObjectStats.PopulationTower(
       base = base(obj), owned = owned(obj), givingPopulation = givingPopulation(obj),
-      warpable = warpable(obj), sized = sized(obj)
+      warpable = warpable(obj)
     )
 
   implicit def convert(obj: PopulationTower): game.WObject.PopulationTower =
     game.WObject.PopulationTower(
+      base = base(obj), stats = obj.stats, owned = owned(obj), warpable = warpable(obj)
+    )
+
+  /************************************************************************************/
+
+  implicit def convert(obj: ActionTowerStats.type): game.WObjectStats.ActionTower =
+    game.WObjectStats.ActionTower(
+      base = base(obj), owned = owned(obj), givingActions = givingActions(obj),
+      warpable = warpable(obj)
+    )
+
+  implicit def convert(obj: ActionTower): game.WObject.ActionTower =
+    game.WObject.ActionTower(
       base = base(obj), stats = obj.stats, owned = owned(obj), warpable = warpable(obj)
     )
 
@@ -239,6 +252,20 @@ trait GameWObjects { _: GameProto =>
   implicit def convert(obj: Wasp): game.WObject.Wasp =
     game.WObject.Wasp(
       base = base(obj), stats = obj.stats, owned = owned(obj), fighter = fighter(obj), 
+      warpable = warpable(obj), movable = movable(obj)
+    )
+
+  /************************************************************************************/
+
+  implicit def convert(obj: WarpPrismStats.type): game.WObjectStats.WarpPrism =
+    game.WObjectStats.WarpPrism(
+      base = base(obj), owned = owned(obj),
+      warpable = warpable(obj), movable = movable(obj), specialAction = specialAction(obj)
+    )
+
+  implicit def convert(obj: WarpPrism): game.WObject.WarpPrism =
+    game.WObject.WarpPrism(
+      base = base(obj), stats = obj.stats, owned = owned(obj),
       warpable = warpable(obj), movable = movable(obj)
     )
 
@@ -334,10 +361,12 @@ trait GameWObjects { _: GameProto =>
       case o: WarpGate => game.WObject(warpGate = Some(o))
       case o: Extractor => game.WObject(extractor = Some(o))
       case o: PopulationTower => game.WObject(populationTower = Some(o))
+      case o: ActionTower => game.WObject(actionTower = Some(o))
       case o: WarpLinker => game.WObject(warpLinker = Some(o))
       case o: Spawner => game.WObject(spawner = Some(o))
       case o: LaserTower => game.WObject(laserTower = Some(o))
       case o: Corvette => game.WObject(corvette = Some(o))
+      case o: WarpPrism => game.WObject(warpPrism = Some(o))
       case o: Wasp => game.WObject(wasp = Some(o))
       case o: Drone => game.WObject(drone = Some(o))
       case o: Scout => game.WObject(scout = Some(o))
@@ -358,9 +387,11 @@ trait GameWObjects { _: GameProto =>
       case (b, s: WarpLinkerStats.type) => b.withWarpLinker(s)
       case (b, s: LaserTowerStats.type) => b.withLaserTower(s)
       case (b, s: PopulationTowerStats.type) => b.withPopulationTower(s)
+      case (b, s: ActionTowerStats.type) => b.withActionTower(s)
       case (b, s: CorvetteStats.type) => b.withCorvette(s)
       case (b, s: DroneStats.type) => b.withDrone(s)
       case (b, s: WaspStats.type) => b.withWasp(s)
+      case (b, s: WarpPrismStats.type) => b.withWarpPrism(s)
       case (b, s: ScoutStats.type) => b.withScout(s)
       case (b, s: RayShipStats.type) => b.withRayShip(s)
       case (b, s: RocketFrigateStats.type) => b.withRocketFrigate(s)

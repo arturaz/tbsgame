@@ -6,9 +6,9 @@ import app.models.game.world._
 trait WarpLinkerStatsImpl extends EmptySpaceWarpableCompanion[WarpLinker] {
 _: WarpLinkerStats.type =>
   override val maxHp = HP(100)
-  override val warpTime = WarpTime(1)
-  override val cost = Resources(4)
-  override val visibility = RectDistance(5)
+  override val warpTime = WarpTime(2)
+  override val cost = Resources(6)
+  override val visibility = RectDistance(2)
   override val warpGiven = visibility
   override val kind = WObjKind.Light
 

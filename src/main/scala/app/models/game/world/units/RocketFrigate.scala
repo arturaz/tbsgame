@@ -8,7 +8,7 @@ trait RocketFrigateStatsImpl extends EmptySpaceWarpableCompanion[RocketFrigate]
   override val maxHp = HP(30)
   override val attack = Atk(210)
   override val attacks = Attacks(1)
-  override val attackRange = RadialDistance.Eight
+  override val attackRange = RadialDistance.Six
   override val movement = Movement.fromTiles(8)
   override val visibility = RectDistance(2)
   override val cost = Resources(8)

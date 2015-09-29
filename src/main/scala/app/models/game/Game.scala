@@ -36,10 +36,12 @@ object Game {
       WarpLinkerStats,
       LaserTowerStats,
       PopulationTowerStats,
+      ActionTowerStats,
 
       ScoutStats,
       CorvetteStats,
       RocketFrigateStats,
+      WarpPrismStats,
       GunshipStats
     )
   }
@@ -272,6 +274,9 @@ case class Game private (
   def actionsLeftFor(team: Team) = teamStates(team).map(_._2.actions).sum
   /* Checks if all players have sent the turn ended flag. */
   def allPlayersTurnEnded(team: Team) = teamStates(team).forall(!_._2.activity.canAct)
+  def allPlayersTurnEnded = states.forall(!_._2.activity.canAct)
+  def turnEnded(player: Player) = !states(player).activity.canAct
+
   def otherTeamsConceded(team: Team): Boolean =
     states.filter(_._1.team =/= team).forall(_._2.activity === GamePlayerState.Conceded)
 
@@ -335,24 +340,28 @@ case class Game private (
     player: Player, id: WObject.Id, to: NonEmptyVector[Vect2]
   )(implicit log: LoggingAdapter): Game.Result =
     checkObjectives(player.team) {
+    withState(player) { state =>
+    withActions(player, Actions(1), state) { state =>
     withMoveObj(player, id) { obj =>
     withVisibility(player, to.v.last) {
       obj.moveTo(world, to).right.map { _.map { case (w, _) =>
         updated(w)
       } }
-    } } }
+    } } } } }
 
   def attack(
     player: Player, id: WObject.Id, targetId: WObject.Id
   )(implicit log: LoggingAdapter): Game.Result =
     checkObjectives(player.team) {
+    withState(player) { state =>
+    withActions(player, Actions(1), state) { state =>
     withAttackObj(player, id) { obj =>
     withTargetObj(player, targetId) { targetObj =>
     withVisibility(player, targetObj) {
       obj.attackW(targetObj, world).right.map { _.map { world =>
         updated(world)
       } }
-    } } } }
+    } } } } } }
 
   def moveAttack(
     player: Player, id: Id, path: NonEmptyVector[Vect2], targetId: Id
@@ -404,11 +413,6 @@ case class Game private (
         ).right
       }
     } }
-
-  def movementFor(obj: Movable): Vector[Path] =
-    Pathfinding.movement(
-      obj, world.bounds, world.objects
-    ).filter(_.vects.forall(world.visibilityMap.isVisible(obj.owner, _)))
 
   def visibleBy(owner: Owner) =
     copy(world = world.visibleBy(owner), states = states.filterKeys(_.isFriendOf(owner)))
