@@ -71,7 +71,7 @@ case class World private (
 
   def actionsFor(player: Player): Actions = {
     val actions = objects.collect {
-      case obj: GivingActions if obj.owner.isFriendOf(player) =>
+      case obj: GivingActions if obj.owner.isFriendOf(player) && obj.isWarpedIn =>
         obj.stats.actionsGiven
     }
     val total = actions.sum
