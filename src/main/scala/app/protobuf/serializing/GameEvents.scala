@@ -8,11 +8,11 @@ import implicits._
 import scala.language.implicitConversions
 
 trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
-  implicit def convert(evt: TurnStartedEvt): game.TurnStartedEvt =
-    game.TurnStartedEvt(evt.team.id)
+  implicit def convert(evt: RoundStartedEvt.type): game.RoundStartedEvt =
+    game.RoundStartedEvt()
 
-  implicit def convert(evt: TurnEndedEvt): game.TurnEndedEvt =
-    game.TurnEndedEvt(evt.team.id)
+  implicit def convert(evt: TurnStartedEvt): game.TurnStartedEvt =
+    game.TurnStartedEvt(evt.player.id, evt.timeframe.map(convert))
 
   implicit def convert(evt: PointOwnershipChangeEvt): game.PointOwnerMapChangeEvt =
     game.PointOwnerMapChangeEvt(
@@ -85,9 +85,6 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
   implicit def convert(evt: PopulationChangeEvt): game.PopulationChangeEvt =
     game.PopulationChangeEvt(evt.player.id, evt.population)
 
-  implicit def convert(evt: SetTurnTimerEvt): game.SetTurnTimerEvt =
-    game.SetTurnTimerEvt(evt.timeframe)
-
   implicit def convert(evt: JoinEvt): game.JoinEvt =
     game.JoinEvt(convert(evt.human, evt.state))
 
@@ -96,8 +93,8 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
 
   implicit def convert(event: FinalEvent): game.Event =
     event match {
+      case evt: RoundStartedEvt.type => game.Event(roundStarted = Some(evt))
       case evt: TurnStartedEvt => game.Event(turnStarted = Some(evt))
-      case evt: TurnEndedEvt => game.Event(turnEnded = Some(evt))
       case evt: PointOwnershipChangeEvt => game.Event(pointOwnerMapChange = Some(evt))
       case evt: WarpEvt => game.Event(warp = Some(evt))
       case evt: ObjVisibleEvt => game.Event(objVisible = Some(evt))
@@ -118,6 +115,5 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
       case evt: ObjectivesUpdatedEvt => game.Event(objectivesUpdate = Some(evt))
       case evt: GameWonEvt => game.Event(gameWon = Some(evt))
       case evt: PopulationChangeEvt => game.Event(populationChange = Some(evt))
-      case evt: SetTurnTimerEvt => game.Event(setTurnTimerEvt = Some(evt))
     }
 }

@@ -24,7 +24,7 @@ trait TurnCounterOps[+Self <: TurnCounter] {
   def withTurns(turns: Int): Self
   def incTurns = withTurns(self.turns + 1)
 
-  def gameTurnStarted(world: World)(implicit log: LoggingAdapter) = {
+  def roundStarted(world: World)(implicit log: LoggingAdapter) = {
     val newSelf = incTurns
     world.updated(self, newSelf).map((_, newSelf))
   }

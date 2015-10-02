@@ -8,6 +8,7 @@ import app.models.game.{Actions, Player, Population}
 import implicits._
 
 import scala.language.implicitConversions
+import scalaz.\/
 
 sealed trait WarpableGroup
 object WarpableGroup {
@@ -19,22 +20,22 @@ trait WarpableCompanion[Self <: Warpable] { _: WObjectStats =>
   /* Create Warpable at given position. */
   protected def warpWOReactionImpl(
     world: World, owner: Player, position: Vect2
-  ): Either[String, Self]
+  ): String \/ Self
 
   private[this] def warpWOReaction(
     world: World, owner: Player, position: Vect2, checkVisibility: Boolean
-  ): Either[String, Self] = {
+  ): String \/ Self = {
     val b = bounds(position)
     if (!checkVisibility || world.isVisibleFull(owner, b))
       warpWOReactionImpl(world, owner, position)
-    else s"$b is not fully visible for $owner".left
+    else s"$b is not fully visible for $owner".leftZ
   }
 
   /* Warp with reactions applied. */
   def warp(
     world: World, player: Player, position: Vect2, checkVisibility: Boolean = true
-  )(implicit log: LoggingAdapter): Either[String, WObject.WorldObjOptUpdate[Self]] =
-    warpWOReaction(world, player, position, checkVisibility).right.map { warpedIn =>
+  )(implicit log: LoggingAdapter): String \/ WObject.WorldObjOptUpdate[Self] =
+    warpWOReaction(world, player, position, checkVisibility).map { warpedIn =>
       World.revealObjects(
         player.team, WarpEvt(world.visibilityMap, warpedIn) +: world.add(warpedIn)
       ).flatMap(_.reactTo(warpedIn))
@@ -42,8 +43,8 @@ trait WarpableCompanion[Self <: Warpable] { _: WObjectStats =>
 
   def warpW(
     world: World, player: Player, position: Vect2, checkVisibility: Boolean = true
-  )(implicit log: LoggingAdapter): Either[String, Evented[World]] =
-    warp(world, player, position, checkVisibility).right.map { _.map(_._1) }
+  )(implicit log: LoggingAdapter): String \/ Evented[World] =
+    warp(world, player, position, checkVisibility).map { _.map(_._1) }
 }
 
 trait EmptySpaceWarpableCompanion[Self <: Warpable] extends WarpableCompanion[Self] {
@@ -52,10 +53,10 @@ _: WObjectStats =>
 
   override def warpWOReactionImpl(
     world: World, owner: Player, position: Vect2
-  ): Either[String, Self] = {
+  ): String \/ Self = {
     val b = bounds(position)
-    if (! world.canWarp(b)) s"Can't warp in because $b is taken in $world".left
-    else warp(owner, position).right
+    if (! world.canWarp(b)) s"Can't warp in because $b is taken in $world".leftZ
+    else warp(owner, position).rightZ
   }
 }
 

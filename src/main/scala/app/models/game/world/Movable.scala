@@ -9,6 +9,7 @@ import utils.data.NonEmptyVector
 import Ops._
 
 import scala.language.implicitConversions
+import scalaz.\/
 
 trait MovableStatsImpl { _: MovableStats =>
   val movement: Movement
@@ -40,28 +41,28 @@ trait MovableOps[Self <: Movable] extends OwnedObjOps[Self] {
 
   def moveTo(
     world: World, path: Path
-  )(implicit log: LoggingAdapter): Either[String, WObject.WorldObjOptUpdate[Self]] = {
+  )(implicit log: LoggingAdapter): String \/ WObject.WorldObjOptUpdate[Self] = {
     if (path.movementNeeded > self.movementLeft)
       s"$this needed ${path.movementNeeded} movement for $path, had ${self.movementLeft
-      }".left
+      }".leftZ
     else if (path.vects.head =/= self.position)
-      s"Starting $path vect =/= $this position".left
+      s"Starting $path vect =/= $this position".leftZ
     else if (self.isWarpingIn)
-      s"$this is still warping in!".left
+      s"$this is still warping in!".leftZ
     else if (path.movementNeeded.isZero)
       // If we don't need to go anywhere, don't go.
-      Evented((world, Some(self))).right
+      Evented((world, Some(self))).rightZ
     else
       // The first vect is self position
-      travel(path.vects.tail, Evented((world, Some(self)))).right
+      travel(path.vects.tail, Evented((world, Some(self)))).rightZ
   }
 
   def moveTo(
     world: World, path: NonEmptyVector[Vect2]
-  )(implicit log: LoggingAdapter): Either[String, WObject.WorldObjOptUpdate[Self]] =
-    Path.validate(world, self.position, path).left.map(err =>
+  )(implicit log: LoggingAdapter): String \/ WObject.WorldObjOptUpdate[Self] =
+    Path.validate(world, self.position, path).leftMap(err =>
       s"Can't validate path: ${self.position}, $path: $err"
-    ).right.flatMap(moveTo(world, _))
+    ).flatMap(moveTo(world, _))
 
   private[this] def travel(
     vects: Seq[Vect2], current: WObject.WorldObjOptUpdate[Self]

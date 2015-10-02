@@ -10,6 +10,7 @@ import app.models.game.world.Ops._
 
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
+import scalaz.\/
 
 trait FighterStatsImpl { _: FighterStats =>
   val attack: Atk
@@ -27,6 +28,7 @@ trait FighterStatsImpl { _: FighterStats =>
   val critical = Chance(0.05)
   val criticalMultiplier = 2d
   val InitialAttacks = Attacks(0)
+  val retaliates = false
 
   val LevelMultiplierTable = Map(
     Level(1) -> 1.15, Level(2) -> 1.45, Level(3) -> 2.0
@@ -99,7 +101,7 @@ trait FighterOps[Self <: Fighter] {
 
   private[this] def attackSimple[Target <: OwnedObj]
   (obj: Target, world: World)(implicit log: LoggingAdapter)
-  : Either[String, (Attack, Evented[Self], Option[Target])] =
+  : String \/ (Attack, Evented[Self], Option[Target]) =
     self.cantAttackReason(obj, world).fold2({
       val attack = Attack(self, obj)
       val newObj = attack(obj)
@@ -118,13 +120,13 @@ trait FighterOps[Self <: Fighter] {
           )(world)
         } yield newSelf,
         newObj
-      ).right
-    }, _.left)
+      ).rightZ
+    }, _.leftZ)
 
   def attack[Target <: OwnedObj]
   (obj: Target, world: World, invokeRetaliation: Boolean=true)(implicit log: LoggingAdapter)
-  : Either[String, Evented[(World, Option[Self], Attack, Option[Target])]] = {
-    val origAtkEvtE = attackSimple(obj, world).right.map {
+  : String \/ Evented[(World, Option[Self], Attack, Option[Target])] = {
+    val origAtkEvtE = attackSimple(obj, world).map {
       case (attack, attackedEvt, newObjOpt) =>
         for {
           attacked <- attackedEvt
@@ -148,7 +150,7 @@ trait FighterOps[Self <: Fighter] {
           newWorld <- self.owner.cast[Player].flatMap { p =>
             newObjOpt.fold2(obj.destroyReward.map((p, _)), _ => None)
           }.fold2(Evented(newWorld), { case (player, resources) =>
-            newWorld.addResources(player, resources).right.get
+            newWorld.addResources(player, resources).right_!
           })
         } yield (newWorld, attacked, attack, newObjOpt)
     }
@@ -156,9 +158,10 @@ trait FighterOps[Self <: Fighter] {
     def toRet(t: (World, Self, Attack, Option[Target])) = (t._1, Some(t._2), t._3, t._4)
     def toRetE(t: (World, Self, Attack, Option[Target])) = Evented(toRet(t))
     // Do retaliation if possible.
-    origAtkEvtE.right.map { _.flatMap {
+    origAtkEvtE.map { _.flatMap {
       case orig @ (world, self, attack, Some(targetFighter: Fighter))
-      if invokeRetaliation && targetFighter.canAttack(self, world) =>
+      if targetFighter.stats.retaliates && invokeRetaliation &&
+      targetFighter.canAttack(self, world) =>
         val target = targetFighter.asInstanceOf[Target with Fighter]
         target.attack(self, world, invokeRetaliation = false).fold(
           err => {
@@ -174,12 +177,12 @@ trait FighterOps[Self <: Fighter] {
   }
 
   def attackWS(obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
-  : Either[String, WObject.WorldObjUpdate[Option[Self]]] =
-    attack(obj, world).right.map(_.map { t => (t._1, t._2) })
+  : String \/ WObject.WorldObjUpdate[Option[Self]] =
+    attack(obj, world).map(_.map { t => (t._1, t._2) })
 
   def attackW(obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
-  : Either[String, Evented[World]] =
-    attack(obj, world).right.map(_.map(_._1))
+  : String \/ Evented[World] =
+    attack(obj, world).map(_.map(_._1))
 
   protected def withAttacksLeft(value: Attacks): Self
 

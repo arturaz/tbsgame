@@ -46,17 +46,24 @@ trait WObjectCompanion {
   type WorldObjOptUpdate[+Obj] = WorldObjUpdate[Option[Obj]]
   @inline def newId = WObject.Id(UUID.randomUUID())
 
-  final def gameTurnStarted
+  final def roundStarted
   (world: World, obj: WObject)(implicit log: LoggingAdapter)
-  : Evented[(World, WObject)] = {
+  : Evented[(World, Option[WObject])] = {
     Evented((world, obj)) |>
-      ifIs[TurnCounter].evt((w, o) => o.gameTurnStarted(w))
+      ifIs[TurnCounter].evt((w, o) => o.roundStarted(w)) |>
+      ifIs[Warpable].evt((w, o) => o.warpableTeamTurnStarted(w)) |>
+      ifIs[GivingVictoryPoints].rawWorld((w, o) => o.givingVPsTeamTurnStarted(w)) |>
+      ifIs[Extractor].evtWorld((w, o) => o.extractorTeamTurnStarted(w)) |>
+      ifIs[Movable].evt((w, o) => o.movableTeamTurnStarted(w)) |>
+      ifIs[Fighter].evt((w, o) => o.fighterTeamTurnStarted(w)) |>
+      (_.map { case (newWorld, newObj) => (newWorld, Some(newObj)) })
   }
 
-  final def gameTurnFinished
+  final def roundEnded
   (world: World, obj: WObject)(implicit log: LoggingAdapter)
-  : Evented[(World, WObject)] = {
-    Evented((world, obj))
+  : Evented[(World, Option[WObject])] = {
+    Evented((world, obj)) |>
+      ifIs[ReactiveFighter].evtOpt((w, o) => o.reactiveFighterTeamTurnFinished(w))
   }
 
   def selfEventedUpdate[Self <: WObject]

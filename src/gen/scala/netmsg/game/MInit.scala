@@ -18,7 +18,7 @@ final case class MInit(
     warpableObjectStats: netmsg.game.WarpableObjectStats,
     attackMultipliers: Seq[netmsg.game.MInit.AttackMultiplier] = Nil,
     objectives: netmsg.game.Objectives,
-    turnTimeframe: Option[netmsg.base.Timeframe] = None,
+    turnStarted: netmsg.game.TurnStartedEvt,
     extractionSpeedRates: Seq[netmsg.game.MInit.ExtractionSpeedRate] = Nil,
     id: netmsg.game.WorldID
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[MInit] with com.trueaccord.lenses.Updatable[MInit] {
@@ -35,7 +35,7 @@ final case class MInit(
       __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(warpableObjectStats.serializedSize) + warpableObjectStats.serializedSize
       attackMultipliers.foreach(attackMultipliers => __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(attackMultipliers.serializedSize) + attackMultipliers.serializedSize)
       __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(objectives.serializedSize) + objectives.serializedSize
-      if (turnTimeframe.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(turnTimeframe.get.serializedSize) + turnTimeframe.get.serializedSize }
+      __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(turnStarted.serializedSize) + turnStarted.serializedSize
       extractionSpeedRates.foreach(extractionSpeedRates => __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(extractionSpeedRates.serializedSize) + extractionSpeedRates.serializedSize)
       __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(id.serializedSize) + id.serializedSize
       __size
@@ -86,11 +86,9 @@ final case class MInit(
       output.writeTag(11, 2)
       output.writeRawVarint32(objectives.serializedSize)
       objectives.writeTo(output)
-      turnTimeframe.foreach { v => 
-        output.writeTag(12, 2)
-        output.writeRawVarint32(v.serializedSize)
-        v.writeTo(output)
-      }
+      output.writeTag(12, 2)
+      output.writeRawVarint32(turnStarted.serializedSize)
+      turnStarted.writeTo(output)
       extractionSpeedRates.foreach { v => 
         output.writeTag(13, 2)
         output.writeRawVarint32(v.serializedSize)
@@ -112,7 +110,7 @@ final case class MInit(
       var __warpableObjectStats = this.warpableObjectStats
       val __attackMultipliers = (scala.collection.immutable.Vector.newBuilder[netmsg.game.MInit.AttackMultiplier] ++= this.attackMultipliers)
       var __objectives = this.objectives
-      var __turnTimeframe = this.turnTimeframe
+      var __turnStarted = this.turnStarted
       val __extractionSpeedRates = (scala.collection.immutable.Vector.newBuilder[netmsg.game.MInit.ExtractionSpeedRate] ++= this.extractionSpeedRates)
       var __id = this.id
       var _done__ = false
@@ -143,7 +141,7 @@ final case class MInit(
           case 90 =>
             __objectives = com.trueaccord.scalapb.LiteParser.readMessage(__input, __objectives)
           case 98 =>
-            __turnTimeframe = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __turnTimeframe.getOrElse(netmsg.base.Timeframe.defaultInstance)))
+            __turnStarted = com.trueaccord.scalapb.LiteParser.readMessage(__input, __turnStarted)
           case 106 =>
             __extractionSpeedRates += com.trueaccord.scalapb.LiteParser.readMessage(__input, netmsg.game.MInit.ExtractionSpeedRate.defaultInstance)
           case 114 =>
@@ -163,7 +161,7 @@ final case class MInit(
           warpableObjectStats = __warpableObjectStats,
           attackMultipliers = __attackMultipliers.result(),
           objectives = __objectives,
-          turnTimeframe = __turnTimeframe,
+          turnStarted = __turnStarted,
           extractionSpeedRates = __extractionSpeedRates.result(),
           id = __id
       )
@@ -197,9 +195,7 @@ final case class MInit(
     def addAllAttackMultipliers(__vs: TraversableOnce[netmsg.game.MInit.AttackMultiplier]): MInit = copy(attackMultipliers = attackMultipliers ++ __vs)
     def withAttackMultipliers(__v: Seq[netmsg.game.MInit.AttackMultiplier]): MInit = copy(attackMultipliers = __v)
     def withObjectives(__v: netmsg.game.Objectives): MInit = copy(objectives = __v)
-    def getTurnTimeframe: netmsg.base.Timeframe = turnTimeframe.getOrElse(netmsg.base.Timeframe.defaultInstance)
-    def clearTurnTimeframe: MInit = copy(turnTimeframe = None)
-    def withTurnTimeframe(__v: netmsg.base.Timeframe): MInit = copy(turnTimeframe = Some(__v))
+    def withTurnStarted(__v: netmsg.game.TurnStartedEvt): MInit = copy(turnStarted = __v)
     def clearExtractionSpeedRates = copy(extractionSpeedRates = Nil)
     def addExtractionSpeedRates(__vs: netmsg.game.MInit.ExtractionSpeedRate*): MInit = addAllExtractionSpeedRates(__vs)
     def addAllExtractionSpeedRates(__vs: TraversableOnce[netmsg.game.MInit.ExtractionSpeedRate]): MInit = copy(extractionSpeedRates = extractionSpeedRates ++ __vs)
@@ -218,7 +214,7 @@ final case class MInit(
         case 9 => warpableObjectStats
         case 10 => attackMultipliers
         case 11 => objectives
-        case 12 => turnTimeframe
+        case 12 => turnStarted
         case 13 => extractionSpeedRates
         case 14 => id
       }
@@ -240,7 +236,7 @@ object MInit extends com.trueaccord.scalapb.GeneratedMessageCompanion[MInit]  {
     warpableObjectStats = fieldsMap(9).asInstanceOf[netmsg.game.WarpableObjectStats],
     attackMultipliers = fieldsMap.getOrElse(10, Nil).asInstanceOf[Seq[netmsg.game.MInit.AttackMultiplier]],
     objectives = fieldsMap(11).asInstanceOf[netmsg.game.Objectives],
-    turnTimeframe = fieldsMap.getOrElse(12, None).asInstanceOf[Option[netmsg.base.Timeframe]],
+    turnStarted = fieldsMap(12).asInstanceOf[netmsg.game.TurnStartedEvt],
     extractionSpeedRates = fieldsMap.getOrElse(13, Nil).asInstanceOf[Seq[netmsg.game.MInit.ExtractionSpeedRate]],
     id = fieldsMap(14).asInstanceOf[netmsg.game.WorldID]
   )
@@ -254,6 +250,7 @@ object MInit extends com.trueaccord.scalapb.GeneratedMessageCompanion[MInit]  {
     self = netmsg.game.PlayerState.defaultInstance,
     warpableObjectStats = netmsg.game.WarpableObjectStats.defaultInstance,
     objectives = netmsg.game.Objectives.defaultInstance,
+    turnStarted = netmsg.game.TurnStartedEvt.defaultInstance,
     id = netmsg.game.WorldID.defaultInstance
   )
   final case class AttackMultiplier(
@@ -415,8 +412,7 @@ object MInit extends com.trueaccord.scalapb.GeneratedMessageCompanion[MInit]  {
     def warpableObjectStats: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WarpableObjectStats] = field(_.warpableObjectStats)((c_, f_) => c_.copy(warpableObjectStats = f_))
     def attackMultipliers: com.trueaccord.lenses.Lens[UpperPB, Seq[netmsg.game.MInit.AttackMultiplier]] = field(_.attackMultipliers)((c_, f_) => c_.copy(attackMultipliers = f_))
     def objectives: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.Objectives] = field(_.objectives)((c_, f_) => c_.copy(objectives = f_))
-    def turnTimeframe: com.trueaccord.lenses.Lens[UpperPB, netmsg.base.Timeframe] = field(_.getTurnTimeframe)((c_, f_) => c_.copy(turnTimeframe = Some(f_)))
-    def optionalTurnTimeframe: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.base.Timeframe]] = field(_.turnTimeframe)((c_, f_) => c_.copy(turnTimeframe = f_))
+    def turnStarted: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.TurnStartedEvt] = field(_.turnStarted)((c_, f_) => c_.copy(turnStarted = f_))
     def extractionSpeedRates: com.trueaccord.lenses.Lens[UpperPB, Seq[netmsg.game.MInit.ExtractionSpeedRate]] = field(_.extractionSpeedRates)((c_, f_) => c_.copy(extractionSpeedRates = f_))
     def id: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WorldID] = field(_.id)((c_, f_) => c_.copy(id = f_))
   }
@@ -431,7 +427,7 @@ object MInit extends com.trueaccord.scalapb.GeneratedMessageCompanion[MInit]  {
   final val WARPABLE_OBJECT_STATS_FIELD_NUMBER = 9
   final val ATTACK_MULTIPLIERS_FIELD_NUMBER = 10
   final val OBJECTIVES_FIELD_NUMBER = 11
-  final val TURN_TIMEFRAME_FIELD_NUMBER = 12
+  final val TURN_STARTED_FIELD_NUMBER = 12
   final val EXTRACTION_SPEED_RATES_FIELD_NUMBER = 13
   final val ID_FIELD_NUMBER = 14
 }

@@ -45,20 +45,10 @@ case class JoinEvt(human: Human, state: Option[HumanState]) extends Event with F
 }
 case class LeaveEvt(human: Human) extends AlwaysVisibleEvent
 
-case class TurnStartedEvt(team: Team) extends AlwaysVisibleEvent
-case class TurnEndedEvt(team: Team) extends AlwaysVisibleEvent
-
-case class SetTurnTimerEvt(whom: Human \/ Team, timeframe: Timeframe)
-extends VisibleEvent {
-  override def visibleBy(owner: Owner) = true /*whom.fold(
-    // If this is a turn timer for human, send it only if it directly belongs to that
-    // human.
-    human => owner === human,
-    // If this is a turn timer for team, it is for enemy team and only send it if owner
-    // does not belong to this team.
-    team => owner.team =/= team
-  )*/
-}
+case object RoundStartedEvt extends AlwaysVisibleEvent
+case class TurnStartedEvt(
+  player: Player, timeframe: Option[Timeframe]
+) extends AlwaysVisibleEvent
 
 sealed trait PointOwnershipChangeEvt extends VisibleEvent {
   def team: Team
@@ -189,12 +179,6 @@ case class PopulationChangeEvt(
   player: Player, population: ValWithMax[Population]
 ) extends VisibleEvent {
   override def visibleBy(owner: Owner) = owner.isFriendOf(player)
-}
-
-case class TurnEndedChangeEvt(
-  player: Player, turnEnded: Boolean
-) extends VisibleEvent {
-  override def visibleBy(owner: Owner) = player.isFriendOf(owner)
 }
 
 case class ObjectivesUpdatedEvt(

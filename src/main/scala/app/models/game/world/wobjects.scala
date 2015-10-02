@@ -66,7 +66,7 @@ case class WarpGate(
   position: Vect2, owner: Team,
   hp: HP=WarpGateStats.maxHp, id: WObject.Id=WObject.newId
 ) extends WarpGateImpl with TeamBuilding with GivingActions with GivingPopulation
-with SizedWObject with SpecialActionGetResources with SpecialAtEndOfTurn {
+with SizedWObject with SpecialActionGetResources with AutoSpecial {
   type Stats = WarpGateStats.type
   override val stats = WarpGateStats
   override def endOfTurnPriority = 0
@@ -355,10 +355,11 @@ sealed trait RespawnsOnDestruction extends OwnedObj with RespawnsOnDestructionIm
 sealed trait RespawnsOnDestructionStats extends OwnedObjStats
   with RespawnsOnDestructionStatsImpl
 
-/* Marker that says use special action at end of turn for all the possible actions. */
-sealed trait SpecialAtEndOfTurn extends SpecialAction {
-  /* Lowest is first */
-  def endOfTurnPriority: Int
+/* If you mix this in into an object, its special action will be used when player misses
+ * his turn time limit. Cost of this special action is always 1. */
+sealed trait AutoSpecial extends SpecialAction
+sealed trait AutoSpecialStats extends SpecialActionStats {
+  val specialActionsNeeded = Actions(1)
 }
 
 /* Things that can be warped by in a player/bot. */

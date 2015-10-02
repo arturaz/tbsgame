@@ -27,7 +27,7 @@ trait ReactiveFighterImpl extends FighterImpl { self: Fighter =>
     obj: A, world: World
   )(implicit log: LoggingAdapter): Option[Reaction[WObject.WorldObjOptUpdate[A]]] = {
     if (shouldReact(obj))
-      toFighterOps(this).attack(obj, world, invokeRetaliation = false).right.toOption
+      toFighterOps(this).attack(obj, world, invokeRetaliation = false).toOption
       .map {
         case evt @ Evented((newWorld, newSelfOpt, attack, newObjOpt), _) =>
           def thisReaction = Reaction(

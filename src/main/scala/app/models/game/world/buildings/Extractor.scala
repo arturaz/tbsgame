@@ -7,6 +7,8 @@ import app.models.game.{Percentage, Actions, Player, Population}
 import implicits._
 import spire.math.Rational
 
+import scalaz.\/
+
 trait ExtractorStatsImpl extends WarpableCompanion[Extractor]
 { _: ExtractorStats.type =>
   override val maxHp = HP(60)
@@ -25,9 +27,9 @@ trait ExtractorStatsImpl extends WarpableCompanion[Extractor]
     val objects = world.objects.objectsIn(b)
     val isAsteroid = objects.exists(_.isInstanceOf[Asteroid])
     if (! isAsteroid || objects.size =/= 1)
-      Left(s"Warping in: expected $b to only have asteroid, but there were $objects")
+      s"Warping in: expected $b to only have asteroid, but there were $objects".leftZ
     else
-      Right(Extractor(position, owner))
+      Extractor(position, owner).rightZ
   }
 }
 
@@ -62,18 +64,18 @@ _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
     )
   }
 
-  def findAsteroid(world: World): Either[String, Asteroid] = {
+  def findAsteroid(world: World): String \/ Asteroid = {
     world.objects.getCT[Asteroid](position).fold2(
-      s"Cannot find asteroid for $this!".left,
-      _.right
+      s"Cannot find asteroid for $this!".leftZ,
+      _.rightZ
     )
   }
 
   private[this] def extractResources(
     world: World, howMuch: Resources
-  )(asteroid: Asteroid): Either[String, Evented[World]] = {
-    if (howMuch < Resources(0)) s"howMuch ($howMuch) has to be positive!".left
-    else if (asteroid.resources.isZero) s"No resources left in $asteroid!".left
+  )(asteroid: Asteroid): String \/ Evented[World] = {
+    if (howMuch < Resources(0)) s"howMuch ($howMuch) has to be positive!".leftZ
+    else if (asteroid.resources.isZero) s"No resources left in $asteroid!".leftZ
     else {
       val res = asteroid.resources min howMuch
 
@@ -90,17 +92,17 @@ _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
 
   override def specialImpl
   (world: World, invokedBy: Player)(implicit log: LoggingAdapter) = {
-    findAsteroid(world).right.flatMap { asteroid =>
+    findAsteroid(world).flatMap { asteroid =>
       val percentageResources = Resources(
         (asteroid.resources.value * stats.specialExtractsPercentage.value).ceil.toInt
       )
       val fixedResources = stats.specialExtractsFixed
       val resources = percentageResources + fixedResources
       (for {
-        world <- world.addResources(owner, resources).right.get
+        world <- world.addResources(owner, resources).right_!
         world <- world.removeEvt(this)
         world <- world.removeEvt(asteroid)
-      } yield world).right
+      } yield world).rightZ
     }
   }
 }

@@ -47,9 +47,13 @@ package object implicits {
   implicit class EitherExts[A, B](val either: Either[A, B]) extends AnyVal {
     def extract[C](implicit ev: B <:< Evented[C]): Evented[Either[A, C]] =
       either.fold(a => Evented(a.left), b => b.map(c => c.right))
+    def toZEither = either.fold(_.leftZ, _.rightZ)
   }
 
   implicit class EitherZExts[A, B](val either: A \/ B) extends AnyVal {
+    def extract[C](implicit ev: B <:< Evented[C]): Evented[A \/ C] =
+      either.fold(a => Evented(a.leftZ), b => b.map(c => c.rightZ))
+
     def right_! = either.fold(
       err => throw new LeftSideException(s"Left where right: $err"),
       identity

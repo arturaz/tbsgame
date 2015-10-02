@@ -37,8 +37,8 @@ object TurnTimers {
     new TurnTimers(humans.map(_ -> settings.defaultTimer)(collection.breakOut), settings)
 }
 
-class TurnTimers(
-  val map: HumanTurnTimersMap, val settings: TurnTimers.Settings
+case class TurnTimers(
+  map: HumanTurnTimersMap, settings: TurnTimers.Settings
 ) {
   private[this] def withMap(map: HumanTurnTimersMap) = new TurnTimers(map, settings)
 
@@ -54,47 +54,18 @@ class TurnTimers(
     }.map(timer => withMap(map + (human -> timer))).getOrElse(this)
   }
 
-  /* Find all humans that belong to this team, set their end turn timers to some time,
-   * reduce their pools and emit events for the client. */
-  def teamTurnStarted(team: Team, currentTime: DateTime): Evented[TurnTimers] = {
-    val (evtNewTimers, longestTeamTurnTimeOpt) = map.keys.foldLeft(
-      (Evented(this), Option.empty[FiniteDuration])
-    ) {
-      case ((evented, longestTeamTurnTimeOpt), human) if human.team === team =>
-        val (newEvented, turnTime) = {
-          val e = evented.flatMap(_.turnStartedWithTurnTime(human, currentTime))
-          (e.map(_._1), e.value._2)
-        }
-        val newLongestTeamTurnTimeOpt =
-          longestTeamTurnTimeOpt.map(_ max turnTime.value).orElse(Some(turnTime.value))
-        (newEvented, newLongestTeamTurnTimeOpt)
-      case (orig, _) =>
-        orig
-    }
-    val teamTurnTimerEvt = longestTeamTurnTimeOpt.fold2(
-      Vector.empty,
-      longestTeamTurnTime => Vector(SetTurnTimerEvt(
-        team.rightZ, Timeframe(currentTime, currentTime + longestTeamTurnTime)
-      ))
-    )
-    evtNewTimers :++ teamTurnTimerEvt
-  }
-
   /* Like teamTurnStarted, but for one human. */
-  def turnStarted(human: Human, currentTime: DateTime): Evented[TurnTimers] =
-    turnStartedWithTurnTime(human, currentTime).map(_._1)
+  def turnStarted(human: Human, currentTime: DateTime): TurnTimers =
+    turnStartedWithTurnTime(human, currentTime)._1
 
   /* Like turnStarted, but returns the turn time for the human as well. */
   def turnStartedWithTurnTime(human: Human, currentTime: DateTime)
-  : (Evented[(TurnTimers, TurnTime)]) = {
+  : (TurnTimers, TurnTime) = {
     val timer = map(human)
     val turnTime = timer.timeLeftPool min settings.upperTurnTimeLimit
     val timeframe = Timeframe(currentTime, currentTime + turnTime)
     val newTimer = TurnTimer(timer.timeLeftPool - turnTime, Some(timeframe))
-    Evented(
-      (withMap(map + (human -> newTimer)), TurnTime(turnTime)),
-      SetTurnTimerEvt(human.leftZ, timeframe)
-    )
+    (withMap(map + (human -> newTimer)), TurnTime(turnTime))
   }
 
   def maxTimeframeFor(team: Team): Option[Timeframe] =
@@ -108,19 +79,4 @@ class TurnTimers(
     }
 
   override def toString = s"TurnTimers($settings, timers=$map)"
-
-  def canEqual(other: Any): Boolean = other.isInstanceOf[TurnTimers]
-
-  override def equals(other: Any): Boolean = other match {
-    case that: TurnTimers =>
-      (that canEqual this) &&
-        map == that.map &&
-        settings == that.settings
-    case _ => false
-  }
-
-  override lazy val hashCode: Int = {
-    val state = Seq(map, settings)
-    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
-  }
 }

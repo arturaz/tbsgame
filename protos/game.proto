@@ -105,8 +105,7 @@ message MInit {
   required WarpableObjectStats warpable_object_stats = 9;
   repeated AttackMultiplier attack_multipliers = 10;
   required Objectives objectives = 11;
-  /* Might not have a turn timer */
-  optional base.Timeframe turn_timeframe = 12;
+  required TurnStartedEvt turn_started = 12;
   repeated ExtractionSpeedRate extraction_speed_rates = 13;
   required WorldID id = 14;
 }
@@ -657,8 +656,8 @@ message WObjectStats {
 /* Events */
 
 message Event { // {{{
-  optional TurnStartedEvt turn_started = 1;
-  optional TurnEndedEvt turn_ended = 2;
+  optional RoundStartedEvt round_started = 1;
+  optional TurnStartedEvt turn_started = 2;
   optional PointOwnerMapChangeEvt point_owner_map_change = 3;
   optional WarpEvt warp = 4;
   optional ObjVisibleEvt obj_visible = 5;
@@ -677,7 +676,6 @@ message Event { // {{{
   optional OwnerChangeEvt owner_change = 18;
   optional ObjectivesUpdateEvt objectives_update = 19;
   optional PopulationChangeEvt population_change = 20;
-  optional SetTurnTimerEvt set_turn_timer_evt = 21;
 
   optional JoinEvt join = 1000;
   optional LeaveEvt leave = 1001;
@@ -692,12 +690,11 @@ message LeaveEvt {
   required PlayerID player_id = 1;
 }
 
-message TurnStartedEvt {
-  required TeamID team_id = 1;
-}
+message RoundStartedEvt {}
 
-message TurnEndedEvt {
-  required TeamID team_id = 1;
+message TurnStartedEvt {
+  required PlayerID player_id = 1;
+  optional base.Timeframe turn_timeframe = 2;
 }
 
 message PointOwnerMapChangeEvt {
@@ -800,8 +797,4 @@ message GameWonEvt {
 message PopulationChangeEvt {
   required PlayerID player_id = 1;
   required base.ValWithMax new_population = 2;
-}
-
-message SetTurnTimerEvt {
-  required base.Timeframe turn_timeframe = 1;
 }

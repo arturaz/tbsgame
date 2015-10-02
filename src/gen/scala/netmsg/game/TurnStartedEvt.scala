@@ -7,38 +7,53 @@ package netmsg.game
 import com.trueaccord.scalapb.Descriptors
 
 final case class TurnStartedEvt(
-    teamId: netmsg.game.TeamID
+    playerId: netmsg.game.PlayerID,
+    turnTimeframe: Option[netmsg.base.Timeframe] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[TurnStartedEvt] with com.trueaccord.lenses.Updatable[TurnStartedEvt] {
     lazy val serializedSize: Int = {
       var __size = 0
-      __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(teamId.serializedSize) + teamId.serializedSize
+      __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(playerId.serializedSize) + playerId.serializedSize
+      if (turnTimeframe.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(turnTimeframe.get.serializedSize) + turnTimeframe.get.serializedSize }
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
       output.writeTag(1, 2)
-      output.writeRawVarint32(teamId.serializedSize)
-      teamId.writeTo(output)
+      output.writeRawVarint32(playerId.serializedSize)
+      playerId.writeTo(output)
+      turnTimeframe.foreach { v => 
+        output.writeTag(2, 2)
+        output.writeRawVarint32(v.serializedSize)
+        v.writeTo(output)
+      }
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.TurnStartedEvt = {
-      var __teamId = this.teamId
+      var __playerId = this.playerId
+      var __turnTimeframe = this.turnTimeframe
       var _done__ = false
       while (!_done__) {
         val _tag__ = __input.readTag()
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __teamId = com.trueaccord.scalapb.LiteParser.readMessage(__input, __teamId)
+            __playerId = com.trueaccord.scalapb.LiteParser.readMessage(__input, __playerId)
+          case 18 =>
+            __turnTimeframe = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __turnTimeframe.getOrElse(netmsg.base.Timeframe.defaultInstance)))
           case tag => __input.skipField(tag)
         }
       }
       netmsg.game.TurnStartedEvt(
-          teamId = __teamId
+          playerId = __playerId,
+          turnTimeframe = __turnTimeframe
       )
     }
-    def withTeamId(__v: netmsg.game.TeamID): TurnStartedEvt = copy(teamId = __v)
+    def withPlayerId(__v: netmsg.game.PlayerID): TurnStartedEvt = copy(playerId = __v)
+    def getTurnTimeframe: netmsg.base.Timeframe = turnTimeframe.getOrElse(netmsg.base.Timeframe.defaultInstance)
+    def clearTurnTimeframe: TurnStartedEvt = copy(turnTimeframe = None)
+    def withTurnTimeframe(__v: netmsg.base.Timeframe): TurnStartedEvt = copy(turnTimeframe = Some(__v))
     def getField(__field: Descriptors.FieldDescriptor): Any = {
       __field.number match {
-        case 1 => teamId
+        case 1 => playerId
+        case 2 => turnTimeframe
       }
     }
     def companion = netmsg.game.TurnStartedEvt
@@ -47,17 +62,21 @@ final case class TurnStartedEvt(
 object TurnStartedEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[TurnStartedEvt]  {
   implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[TurnStartedEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.TurnStartedEvt = netmsg.game.TurnStartedEvt(
-    teamId = fieldsMap(1).asInstanceOf[netmsg.game.TeamID]
+    playerId = fieldsMap(1).asInstanceOf[netmsg.game.PlayerID],
+    turnTimeframe = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.base.Timeframe]]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("TurnStartedEvt", this,
     None, m = Seq(),
     e = Seq(),
     f = netmsg.game.InternalFields_game.internalFieldsFor("netmsg.game.TurnStartedEvt"))
   lazy val defaultInstance = netmsg.game.TurnStartedEvt(
-    teamId = netmsg.game.TeamID.defaultInstance
+    playerId = netmsg.game.PlayerID.defaultInstance
   )
   implicit class TurnStartedEvtLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, TurnStartedEvt]) extends com.trueaccord.lenses.ObjectLens[UpperPB, TurnStartedEvt](_l) {
-    def teamId: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.TeamID] = field(_.teamId)((c_, f_) => c_.copy(teamId = f_))
+    def playerId: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.PlayerID] = field(_.playerId)((c_, f_) => c_.copy(playerId = f_))
+    def turnTimeframe: com.trueaccord.lenses.Lens[UpperPB, netmsg.base.Timeframe] = field(_.getTurnTimeframe)((c_, f_) => c_.copy(turnTimeframe = Some(f_)))
+    def optionalTurnTimeframe: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.base.Timeframe]] = field(_.turnTimeframe)((c_, f_) => c_.copy(turnTimeframe = f_))
   }
-  final val TEAM_ID_FIELD_NUMBER = 1
+  final val PLAYER_ID_FIELD_NUMBER = 1
+  final val TURN_TIMEFRAME_FIELD_NUMBER = 2
 }

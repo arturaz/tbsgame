@@ -7,8 +7,8 @@ package netmsg.game
 import com.trueaccord.scalapb.Descriptors
 
 final case class Event(
+    roundStarted: Option[netmsg.game.RoundStartedEvt] = None,
     turnStarted: Option[netmsg.game.TurnStartedEvt] = None,
-    turnEnded: Option[netmsg.game.TurnEndedEvt] = None,
     pointOwnerMapChange: Option[netmsg.game.PointOwnerMapChangeEvt] = None,
     warp: Option[netmsg.game.WarpEvt] = None,
     objVisible: Option[netmsg.game.ObjVisibleEvt] = None,
@@ -26,15 +26,14 @@ final case class Event(
     ownerChange: Option[netmsg.game.OwnerChangeEvt] = None,
     objectivesUpdate: Option[netmsg.game.ObjectivesUpdateEvt] = None,
     populationChange: Option[netmsg.game.PopulationChangeEvt] = None,
-    setTurnTimerEvt: Option[netmsg.game.SetTurnTimerEvt] = None,
     join: Option[netmsg.game.JoinEvt] = None,
     leave: Option[netmsg.game.LeaveEvt] = None,
     gameWon: Option[netmsg.game.GameWonEvt] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[Event] with com.trueaccord.lenses.Updatable[Event] {
     lazy val serializedSize: Int = {
       var __size = 0
+      if (roundStarted.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(roundStarted.get.serializedSize) + roundStarted.get.serializedSize }
       if (turnStarted.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(turnStarted.get.serializedSize) + turnStarted.get.serializedSize }
-      if (turnEnded.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(turnEnded.get.serializedSize) + turnEnded.get.serializedSize }
       if (pointOwnerMapChange.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(pointOwnerMapChange.get.serializedSize) + pointOwnerMapChange.get.serializedSize }
       if (warp.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(warp.get.serializedSize) + warp.get.serializedSize }
       if (objVisible.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(objVisible.get.serializedSize) + objVisible.get.serializedSize }
@@ -52,19 +51,18 @@ final case class Event(
       if (ownerChange.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(ownerChange.get.serializedSize) + ownerChange.get.serializedSize }
       if (objectivesUpdate.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(objectivesUpdate.get.serializedSize) + objectivesUpdate.get.serializedSize }
       if (populationChange.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(populationChange.get.serializedSize) + populationChange.get.serializedSize }
-      if (setTurnTimerEvt.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(setTurnTimerEvt.get.serializedSize) + setTurnTimerEvt.get.serializedSize }
       if (join.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(join.get.serializedSize) + join.get.serializedSize }
       if (leave.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(leave.get.serializedSize) + leave.get.serializedSize }
       if (gameWon.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(gameWon.get.serializedSize) + gameWon.get.serializedSize }
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
-      turnStarted.foreach { v => 
+      roundStarted.foreach { v => 
         output.writeTag(1, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
-      turnEnded.foreach { v => 
+      turnStarted.foreach { v => 
         output.writeTag(2, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
@@ -154,11 +152,6 @@ final case class Event(
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
-      setTurnTimerEvt.foreach { v => 
-        output.writeTag(21, 2)
-        output.writeRawVarint32(v.serializedSize)
-        v.writeTo(output)
-      }
       join.foreach { v => 
         output.writeTag(1000, 2)
         output.writeRawVarint32(v.serializedSize)
@@ -176,8 +169,8 @@ final case class Event(
       }
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.Event = {
+      var __roundStarted = this.roundStarted
       var __turnStarted = this.turnStarted
-      var __turnEnded = this.turnEnded
       var __pointOwnerMapChange = this.pointOwnerMapChange
       var __warp = this.warp
       var __objVisible = this.objVisible
@@ -195,7 +188,6 @@ final case class Event(
       var __ownerChange = this.ownerChange
       var __objectivesUpdate = this.objectivesUpdate
       var __populationChange = this.populationChange
-      var __setTurnTimerEvt = this.setTurnTimerEvt
       var __join = this.join
       var __leave = this.leave
       var __gameWon = this.gameWon
@@ -205,9 +197,9 @@ final case class Event(
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __turnStarted = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __turnStarted.getOrElse(netmsg.game.TurnStartedEvt.defaultInstance)))
+            __roundStarted = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __roundStarted.getOrElse(netmsg.game.RoundStartedEvt.defaultInstance)))
           case 18 =>
-            __turnEnded = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __turnEnded.getOrElse(netmsg.game.TurnEndedEvt.defaultInstance)))
+            __turnStarted = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __turnStarted.getOrElse(netmsg.game.TurnStartedEvt.defaultInstance)))
           case 26 =>
             __pointOwnerMapChange = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __pointOwnerMapChange.getOrElse(netmsg.game.PointOwnerMapChangeEvt.defaultInstance)))
           case 34 =>
@@ -242,8 +234,6 @@ final case class Event(
             __objectivesUpdate = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __objectivesUpdate.getOrElse(netmsg.game.ObjectivesUpdateEvt.defaultInstance)))
           case 162 =>
             __populationChange = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __populationChange.getOrElse(netmsg.game.PopulationChangeEvt.defaultInstance)))
-          case 170 =>
-            __setTurnTimerEvt = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __setTurnTimerEvt.getOrElse(netmsg.game.SetTurnTimerEvt.defaultInstance)))
           case 8002 =>
             __join = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __join.getOrElse(netmsg.game.JoinEvt.defaultInstance)))
           case 8010 =>
@@ -254,8 +244,8 @@ final case class Event(
         }
       }
       netmsg.game.Event(
+          roundStarted = __roundStarted,
           turnStarted = __turnStarted,
-          turnEnded = __turnEnded,
           pointOwnerMapChange = __pointOwnerMapChange,
           warp = __warp,
           objVisible = __objVisible,
@@ -273,18 +263,17 @@ final case class Event(
           ownerChange = __ownerChange,
           objectivesUpdate = __objectivesUpdate,
           populationChange = __populationChange,
-          setTurnTimerEvt = __setTurnTimerEvt,
           join = __join,
           leave = __leave,
           gameWon = __gameWon
       )
     }
+    def getRoundStarted: netmsg.game.RoundStartedEvt = roundStarted.getOrElse(netmsg.game.RoundStartedEvt.defaultInstance)
+    def clearRoundStarted: Event = copy(roundStarted = None)
+    def withRoundStarted(__v: netmsg.game.RoundStartedEvt): Event = copy(roundStarted = Some(__v))
     def getTurnStarted: netmsg.game.TurnStartedEvt = turnStarted.getOrElse(netmsg.game.TurnStartedEvt.defaultInstance)
     def clearTurnStarted: Event = copy(turnStarted = None)
     def withTurnStarted(__v: netmsg.game.TurnStartedEvt): Event = copy(turnStarted = Some(__v))
-    def getTurnEnded: netmsg.game.TurnEndedEvt = turnEnded.getOrElse(netmsg.game.TurnEndedEvt.defaultInstance)
-    def clearTurnEnded: Event = copy(turnEnded = None)
-    def withTurnEnded(__v: netmsg.game.TurnEndedEvt): Event = copy(turnEnded = Some(__v))
     def getPointOwnerMapChange: netmsg.game.PointOwnerMapChangeEvt = pointOwnerMapChange.getOrElse(netmsg.game.PointOwnerMapChangeEvt.defaultInstance)
     def clearPointOwnerMapChange: Event = copy(pointOwnerMapChange = None)
     def withPointOwnerMapChange(__v: netmsg.game.PointOwnerMapChangeEvt): Event = copy(pointOwnerMapChange = Some(__v))
@@ -336,9 +325,6 @@ final case class Event(
     def getPopulationChange: netmsg.game.PopulationChangeEvt = populationChange.getOrElse(netmsg.game.PopulationChangeEvt.defaultInstance)
     def clearPopulationChange: Event = copy(populationChange = None)
     def withPopulationChange(__v: netmsg.game.PopulationChangeEvt): Event = copy(populationChange = Some(__v))
-    def getSetTurnTimerEvt: netmsg.game.SetTurnTimerEvt = setTurnTimerEvt.getOrElse(netmsg.game.SetTurnTimerEvt.defaultInstance)
-    def clearSetTurnTimerEvt: Event = copy(setTurnTimerEvt = None)
-    def withSetTurnTimerEvt(__v: netmsg.game.SetTurnTimerEvt): Event = copy(setTurnTimerEvt = Some(__v))
     def getJoin: netmsg.game.JoinEvt = join.getOrElse(netmsg.game.JoinEvt.defaultInstance)
     def clearJoin: Event = copy(join = None)
     def withJoin(__v: netmsg.game.JoinEvt): Event = copy(join = Some(__v))
@@ -350,8 +336,8 @@ final case class Event(
     def withGameWon(__v: netmsg.game.GameWonEvt): Event = copy(gameWon = Some(__v))
     def getField(__field: Descriptors.FieldDescriptor): Any = {
       __field.number match {
-        case 1 => turnStarted
-        case 2 => turnEnded
+        case 1 => roundStarted
+        case 2 => turnStarted
         case 3 => pointOwnerMapChange
         case 4 => warp
         case 5 => objVisible
@@ -369,7 +355,6 @@ final case class Event(
         case 18 => ownerChange
         case 19 => objectivesUpdate
         case 20 => populationChange
-        case 21 => setTurnTimerEvt
         case 1000 => join
         case 1001 => leave
         case 1002 => gameWon
@@ -381,8 +366,8 @@ final case class Event(
 object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
   implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.Event = netmsg.game.Event(
-    turnStarted = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.game.TurnStartedEvt]],
-    turnEnded = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.game.TurnEndedEvt]],
+    roundStarted = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.game.RoundStartedEvt]],
+    turnStarted = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.game.TurnStartedEvt]],
     pointOwnerMapChange = fieldsMap.getOrElse(3, None).asInstanceOf[Option[netmsg.game.PointOwnerMapChangeEvt]],
     warp = fieldsMap.getOrElse(4, None).asInstanceOf[Option[netmsg.game.WarpEvt]],
     objVisible = fieldsMap.getOrElse(5, None).asInstanceOf[Option[netmsg.game.ObjVisibleEvt]],
@@ -400,7 +385,6 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
     ownerChange = fieldsMap.getOrElse(18, None).asInstanceOf[Option[netmsg.game.OwnerChangeEvt]],
     objectivesUpdate = fieldsMap.getOrElse(19, None).asInstanceOf[Option[netmsg.game.ObjectivesUpdateEvt]],
     populationChange = fieldsMap.getOrElse(20, None).asInstanceOf[Option[netmsg.game.PopulationChangeEvt]],
-    setTurnTimerEvt = fieldsMap.getOrElse(21, None).asInstanceOf[Option[netmsg.game.SetTurnTimerEvt]],
     join = fieldsMap.getOrElse(1000, None).asInstanceOf[Option[netmsg.game.JoinEvt]],
     leave = fieldsMap.getOrElse(1001, None).asInstanceOf[Option[netmsg.game.LeaveEvt]],
     gameWon = fieldsMap.getOrElse(1002, None).asInstanceOf[Option[netmsg.game.GameWonEvt]]
@@ -412,10 +396,10 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
   lazy val defaultInstance = netmsg.game.Event(
   )
   implicit class EventLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, Event]) extends com.trueaccord.lenses.ObjectLens[UpperPB, Event](_l) {
+    def roundStarted: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.RoundStartedEvt] = field(_.getRoundStarted)((c_, f_) => c_.copy(roundStarted = Some(f_)))
+    def optionalRoundStarted: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.RoundStartedEvt]] = field(_.roundStarted)((c_, f_) => c_.copy(roundStarted = f_))
     def turnStarted: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.TurnStartedEvt] = field(_.getTurnStarted)((c_, f_) => c_.copy(turnStarted = Some(f_)))
     def optionalTurnStarted: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.TurnStartedEvt]] = field(_.turnStarted)((c_, f_) => c_.copy(turnStarted = f_))
-    def turnEnded: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.TurnEndedEvt] = field(_.getTurnEnded)((c_, f_) => c_.copy(turnEnded = Some(f_)))
-    def optionalTurnEnded: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.TurnEndedEvt]] = field(_.turnEnded)((c_, f_) => c_.copy(turnEnded = f_))
     def pointOwnerMapChange: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.PointOwnerMapChangeEvt] = field(_.getPointOwnerMapChange)((c_, f_) => c_.copy(pointOwnerMapChange = Some(f_)))
     def optionalPointOwnerMapChange: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.PointOwnerMapChangeEvt]] = field(_.pointOwnerMapChange)((c_, f_) => c_.copy(pointOwnerMapChange = f_))
     def warp: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WarpEvt] = field(_.getWarp)((c_, f_) => c_.copy(warp = Some(f_)))
@@ -450,8 +434,6 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
     def optionalObjectivesUpdate: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.ObjectivesUpdateEvt]] = field(_.objectivesUpdate)((c_, f_) => c_.copy(objectivesUpdate = f_))
     def populationChange: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.PopulationChangeEvt] = field(_.getPopulationChange)((c_, f_) => c_.copy(populationChange = Some(f_)))
     def optionalPopulationChange: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.PopulationChangeEvt]] = field(_.populationChange)((c_, f_) => c_.copy(populationChange = f_))
-    def setTurnTimerEvt: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.SetTurnTimerEvt] = field(_.getSetTurnTimerEvt)((c_, f_) => c_.copy(setTurnTimerEvt = Some(f_)))
-    def optionalSetTurnTimerEvt: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.SetTurnTimerEvt]] = field(_.setTurnTimerEvt)((c_, f_) => c_.copy(setTurnTimerEvt = f_))
     def join: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.JoinEvt] = field(_.getJoin)((c_, f_) => c_.copy(join = Some(f_)))
     def optionalJoin: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.JoinEvt]] = field(_.join)((c_, f_) => c_.copy(join = f_))
     def leave: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.LeaveEvt] = field(_.getLeave)((c_, f_) => c_.copy(leave = Some(f_)))
@@ -459,8 +441,8 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
     def gameWon: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.GameWonEvt] = field(_.getGameWon)((c_, f_) => c_.copy(gameWon = Some(f_)))
     def optionalGameWon: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.GameWonEvt]] = field(_.gameWon)((c_, f_) => c_.copy(gameWon = f_))
   }
-  final val TURN_STARTED_FIELD_NUMBER = 1
-  final val TURN_ENDED_FIELD_NUMBER = 2
+  final val ROUND_STARTED_FIELD_NUMBER = 1
+  final val TURN_STARTED_FIELD_NUMBER = 2
   final val POINT_OWNER_MAP_CHANGE_FIELD_NUMBER = 3
   final val WARP_FIELD_NUMBER = 4
   final val OBJ_VISIBLE_FIELD_NUMBER = 5
@@ -478,7 +460,6 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
   final val OWNER_CHANGE_FIELD_NUMBER = 18
   final val OBJECTIVES_UPDATE_FIELD_NUMBER = 19
   final val POPULATION_CHANGE_FIELD_NUMBER = 20
-  final val SET_TURN_TIMER_EVT_FIELD_NUMBER = 21
   final val JOIN_FIELD_NUMBER = 1000
   final val LEAVE_FIELD_NUMBER = 1001
   final val GAME_WON_FIELD_NUMBER = 1002

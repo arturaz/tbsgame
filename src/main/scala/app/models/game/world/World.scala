@@ -18,6 +18,7 @@ import utils.{IdObj, ValWithMax, IntValueClass}
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
 import scala.util.Random
+import scalaz.\/
 
 case class WorldPlayerState(resources: Resources)
 object WorldPlayerState {
@@ -38,36 +39,16 @@ case class World private (
   val resourcesMap = playerStates.mapValues(_.resources)
   override def toString = s"World($bounds, objects: ${objects.size})"
 
-  def gameTurnStarted(implicit log: LoggingAdapter) =
+  def roundStarted(implicit log: LoggingAdapter) =
+    Evented(this, RoundStartedEvt) |>
+    roundX(log.prefixed("started|")) {
+      implicit log => obj => world => WObject.roundStarted(world, obj).map(_._1)
+    }
+  def roundEnded(implicit log: LoggingAdapter) =
     Evented(this) |>
-    gameTurnX(log.prefixed("started|")) {
-      implicit log => obj => world => WObject.gameTurnStarted(world, obj).map(_._1)
+    roundX(log.prefixed("finished|")) {
+      implicit log => obj => world => WObject.roundEnded(world, obj).map(_._1)
     }
-  def gameTurnFinished(implicit log: LoggingAdapter) =
-    Evented(this) |>
-    gameTurnX(log.prefixed("finished|")) {
-      implicit log => obj => world => WObject.gameTurnFinished(world, obj).map(_._1)
-    }
-
-  /* If team does not have any objects, there is nothing it can do thus it should be
-     skipped. For example this can happen when playing 1v1 pvp and all NPC objects are
-     eradicated. */
-  def ifTeamExists(team: Team)(f: => Evented[World]) =
-    if (teams.contains(team)) f else Evented(this)
-
-  def teamTurnStarted(team: Team)(implicit log: LoggingAdapter) = ifTeamExists(team) {
-    /* Run only if this team has objects */
-    Evented(this, Vector(TurnStartedEvt(team))) |>
-    teamTurnX(team, log.prefixed("started|")) {
-      implicit log => obj => world => OwnedObj.teamTurnStarted(obj, world).map(_._1)
-    }
-  }
-  def teamTurnFinished(team: Team)(implicit log: LoggingAdapter) = ifTeamExists(team) {
-    Evented(this, Vector(TurnEndedEvt(team))) |>
-    teamTurnX(team, log.prefixed("finished|")) {
-      implicit log => obj => world => OwnedObj.teamTurnFinished(obj, world).map(_._1)
-    }
-  }
 
   def actionsFor(player: Player): Actions = {
     val actions = objects.collect {
@@ -202,27 +183,27 @@ case class World private (
 
   def addPlayerState[Res <: IntValueClass[Res]](
     player: Player, count: Res, lens: SimpleLens[WorldPlayerState, Res]
-  )(events: Res => Vector[Event]): Either[String, Evented[World]] = {
+  )(events: Res => Vector[Event]): String \/ Evented[World] = {
     val curState = state(player)
     val curS = lens.get(curState)
     if (count.isNegative && curS < -count)
-      s"Had $curS, wanted to subtract ${-count}!".left
+      s"Had $curS, wanted to subtract ${-count}!".leftZ
     else {
       val newRes = curS + count
       val newState = lens.set(curState, newRes)
       Evented(
         updatedPlayerStates(playerStates updated (player, newState)),
         events(newRes)
-      ).right
+      ).rightZ
     }
   }
 
-  def addResources(player: Player, count: Resources): Either[String, Evented[World]] =
+  def addResources(player: Player, count: Resources): String \/ Evented[World] =
     addPlayerState(player, count, WorldPlayerState.resources) { newRes =>
       player.asHuman.fold2(Vector.empty, h => Vector(ResourceChangeEvt(h.right, newRes)))
     }
 
-  def subResources(player: Player, count: Resources): Either[String, Evented[World]] =
+  def subResources(player: Player, count: Resources): String \/ Evented[World] =
     addResources(player, -count)
 
   def populationFor(owner: Owner): ValWithMax[Population] = objects.foldLeft(
@@ -353,23 +334,13 @@ object World {
     }
   }
 
-  private def xTurnX[A : ClassTag](
-    log: LoggingAdapter, filter: A => Boolean,
-    f: LoggingAdapter => A => World => Evented[World]
-  )(world: Evented[World]) = world.value.objects.foldLeft(world) {
-    case (w, o: A) if filter(o) => w.flatMap(f(log.prefixed(o.toString))(o))
-    case (w, o) => w
-  }
-
-  private def gameTurnX(log: LoggingAdapter)(
+  private def roundX(log: LoggingAdapter)(
     f: LoggingAdapter => WObject => World => Evented[World]
-  )(world: Evented[World]) =
-    xTurnX[WObject](log.prefixed("game|"), _ => true, f)(world)
-
-  private def teamTurnX(team: Team, log: LoggingAdapter)(
-    f: LoggingAdapter => OwnedObj => World => Evented[World]
-  )(world: Evented[World]) =
-    xTurnX[OwnedObj](log.prefixed("team|"), _.owner.team === team, f)(world)
+  )(world: Evented[World]) = {
+    world.value.objects.foldLeft(world) {
+      (w, o) => w.flatMap(f(log.prefixed(o.toString))(o))
+    }
+  }
 
   private[this] def randomDirectionAll(includeDiagonals: Boolean) = {
     def rDir = Random.nextInt(3) - 1

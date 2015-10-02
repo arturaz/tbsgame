@@ -13,20 +13,23 @@ import app.models.game.world._
 import implicits._
 import monocle.Lenser
 import monocle.syntax._
+import spire.algebra.Action
 import utils.data.NonEmptyVector
 import app.models.game.world.Ops._
 
 import scala.annotation.tailrec
+import scala.language.implicitConversions
 import scala.reflect.ClassTag
-import scalaz.\/
+import scalaz.{\/-, -\/, \/}
 
 object Game {
   private[this] def lenser = Lenser[Game]
   val worldL = lenser(_.world)
   val statesL = lenser(_.states)
 
-  type ResultT[A] = Either[String, Evented[A]]
+  type ResultT[A] = String \/ Evented[A]
   type Result = ResultT[Game]
+  type ResultOrWinner = ResultT[Winner \/ Game]
   type States = Map[Player, GamePlayerState]
   type ObjectivesMap = Map[Team, Objectives]
 
@@ -52,15 +55,15 @@ object Game {
 
   def apply(
     world: World, starting: Set[StartingPlayer], objectives: ObjectivesMap
-  ): Either[String, Game] = {
+  ): String \/ Game = {
     val startingPlayersWarpMap: Map[Player, CanWarp] =
       starting.map(sp => sp.player -> sp.canWarp)(collection.breakOut)
 
-    starting.foldLeft(Evented(world).right[String]) {
-      case (left: Left[_, _], _) => left
-      case (Right(eWorld), data) =>
+    starting.foldLeft(Evented(world).rightZ[String]) {
+      case (left: -\/[_], _) => left
+      case (\/-(eWorld), data) =>
         eWorld.map(_.addResources(data.player, data.resources)).extractFlatten
-    }.right.map { evtWorld =>
+    }.map { evtWorld =>
       val world = evtWorld.value
       apply(
         world, startingStates(
@@ -95,7 +98,7 @@ object Game {
       f: GamePlayerState => Game.ResultT[A]
     ): Game.ResultT[A] = {
       if (state.actions < actionsNeeded)
-        s"Not enough actions: needed $actionsNeeded, had $state".left
+        s"Not enough actions: needed $actionsNeeded, had $state".leftZ
       else {
         val newState =
           state |-> GamePlayerState.actions modify (_ - actionsNeeded)
@@ -104,7 +107,7 @@ object Game {
             Vector(ActionsChangeEvt(player, newState.actions))
           else
             Vector.empty
-        f(newState).right.map(events ++: _)
+        f(newState).map(events ++: _)
       }
     }
 
@@ -116,7 +119,7 @@ object Game {
     def withResources[A](
       player: Player, resourcesNeeded: Resources, world: World
     )(f: Evented[World] => Game.ResultT[A]): Game.ResultT[A] =
-      world.subResources(player, resourcesNeeded).right.flatMap(f)
+      world.subResources(player, resourcesNeeded).flatMap(f)
 
     def withPopulation[A](
       player: Player, populationNeeded: Population, world: World
@@ -127,14 +130,14 @@ object Game {
         PopulationChangeEvt(player, population.withValue(_ + populationNeeded))
       ))
       else
-        s"Needed $populationNeeded, but $player only had $population!".left
+        s"Needed $populationNeeded, but $player only had $population!".leftZ
     }
 
     def withAbilityToWarp[A](
       player: Player, canWarp: GamePlayerState.CanWarp, warpable: WarpableCompanion.Some
     )(f: => Game.ResultT[A]): Game.ResultT[A] = {
       if (canWarp.contains(warpable)) f
-      else s"$player cannot warp $warpable! (allowed=$canWarp)".left
+      else s"$player cannot warp $warpable! (allowed=$canWarp)".leftZ
     }
 
     def withWarpable[A](
@@ -149,8 +152,8 @@ object Game {
     }
   }
 
-  private def recalculatePlayerStatesOnTeamTurnStart
-  (team: Team)(g: Evented[Game]): Evented[Game] =
+  private def recalculatePlayerStatesOnRoundStart
+  (g: Evented[Game], team: Team): Evented[Game] =
     g.flatMap { game =>
       val teamStates = game.states.filterKeys(_.team === team)
       teamStates.foldLeft(Evented(game.states)) { case (e, (player, state)) =>
@@ -166,54 +169,47 @@ object Game {
       }.map(game.updated)
     }
 
-  private def doAutoSpecials(team: Team)(g: Evented[Game])(implicit log: LoggingAdapter)
-  : Evented[Game] = {
+  private def recalculatePlayerStatesOnRoundStart
+  (g: Evented[Game]): Evented[Game] =
+    g.value.world.teams.foldLeft(g)(recalculatePlayerStatesOnRoundStart)
+
+  /* Do one auto special action for given player. */
+  def doAutoSpecial(game: Game, player: Player)(implicit log: LoggingAdapter)
+  : Game.Result = {
     def forPlayer(
-      teamObjects: Vector[SpecialAtEndOfTurn], player: Player, state: GamePlayerState,
+      obj: AutoSpecial, player: Player, state: GamePlayerState,
       startingWorld: World
-    ): Evented[(World, GamePlayerState)] = {
-      val objects =
-        teamObjects.filter(_.canDoSpecial(player)).sortBy(_.endOfTurnPriority)
-      var evented = Evented(startingWorld)
-      var actions = state.actions
-      def retEvt = evented.map(world => (world, state.copy(actions = actions)))
+    ): String \/ Evented[(World, GamePlayerState)] = {
+      def newState(actionsUsed: Actions) =
+        state.copy(actions = state.actions - actionsUsed)
 
-      objects.foreach { obj =>
-        while (actions >= obj.stats.specialActionsNeeded) {
-          obj.special(evented.value, player).fold(
-            err => {
-              log.error(
-                "Failed to do auto special for {} on {} with state {}",
-                player, obj, state
-              )
-              return retEvt
-            },
-            newEvtWorld => evented = evented.events ++: newEvtWorld
-          )
-
-          actions -= obj.stats.specialActionsNeeded
-        }
-      }
-
-      retEvt
+      obj.special(startingWorld, player).fold(
+        err =>
+          s"Failed to do auto special for $player on $obj with state $state: $err".leftZ,
+        _.map { world =>
+          (world, newState(obj.stats.specialActionsNeeded))
+        }.rightZ
+      )
     }
 
-    g.flatMap { game =>
-      val teamStates =
-        game.states.filterKeys(_.team === team).filter(_._2.actions.isPositive)
-      val teamObjects = game.world.objects.collect {
-        case obj: SpecialAtEndOfTurn if obj.owner.isFriendOf(team) => obj
+    val team = player.team
+    val playerState = game.states(player)
+    if (playerState.actions.isZero)
+      s"Player actions is zero ($playerState), can't do auto special.".leftZ
+    else {
+      val objOpt = game.world.objects.collectFirst {
+        case obj: AutoSpecial
+          if obj.owner.isFriendOf(team) && obj.canDoSpecial(player) => obj
       }
-      teamStates.foldLeft(Evented(game)) { case (evtGame, (player, state)) =>
-        evtGame.flatMap { game =>
-          forPlayer(teamObjects, player, state, game.world).flatMap {
-            case (world, newState) => Evented(
-              game.copy(world = world, states = game.states + (player -> newState)),
-              ActionsChangeEvt(player, newState.actions)
-            )
-          }
-        }
-      }
+      objOpt.fold2(
+        Evented(game).rightZ,
+        obj => forPlayer(obj, player, playerState, game.world).map(_.flatMap {
+          case (world, newState) => Evented(
+            game.copy(world = world, states = game.states + (player -> newState)),
+            ActionsChangeEvt(player, newState.actions)
+          )
+        })
+      )
     }
   }
 }
@@ -225,19 +221,11 @@ case class Game private (
 
   private[this] def fromWorld(w: Evented[World]) = w.map(updated)
 
-  def gameTurnStarted(implicit log: LoggingAdapter) = world.gameTurnStarted |> fromWorld
-  def gameTurnFinished(implicit log: LoggingAdapter) = world.gameTurnFinished |> fromWorld
-  def teamTurnStarted(team: Team)(implicit log: LoggingAdapter) =
-    checkObjectivesSafe(team) {
-      world.teamTurnStarted(team) |> fromWorld |>
-      Game.recalculatePlayerStatesOnTeamTurnStart(team) |>
-      runAI(team)
-    }
-  def teamTurnFinished(team: Team)(implicit log: LoggingAdapter)
-  : Evented[Winner \/ Game] = (
-    world.teamTurnFinished(team) |> fromWorld |> Game.doAutoSpecials(team) |>
-    checkObjectivesSafe(team)
-  ).flatMap(checkObjectivesForWinner)
+  def roundStarted(implicit log: LoggingAdapter) =
+    // TODO: runAI ?
+    world.roundStarted |> fromWorld |>
+    Game.recalculatePlayerStatesOnRoundStart
+  def roundEnded(implicit log: LoggingAdapter) = world.roundEnded |> fromWorld
 
   private[this] def runAI(team: Team)(e: Evented[Game])(implicit log: LoggingAdapter) = {
     val scopedLog = log.prefixed("runAI|")
@@ -258,23 +246,9 @@ case class Game private (
     }
   }
 
-  private[this] def checkObjectivesForWinner(game: Game): Evented[Winner \/ Game] = {
-    val winningTeamOpt = world.teams.find { team =>
-      val remaining = game.remainingObjectives(team)
-      remaining.someCompleted
-    }
-    winningTeamOpt.fold2(
-      Evented(game.rightZ),
-      winnerTeam => Evented(Winner(winnerTeam).leftZ, GameWonEvt(winnerTeam))
-    )
-  }
-
   private[this] def teamStates(team: Team) = states.view.filter(_._1.team === team)
 
-  def actionsLeftFor(team: Team) = teamStates(team).map(_._2.actions).sum
-  /* Checks if all players have sent the turn ended flag. */
-  def allPlayersTurnEnded(team: Team) = teamStates(team).forall(!_._2.activity.canAct)
-  def allPlayersTurnEnded = states.forall(!_._2.activity.canAct)
+  def allPlayersTurnEnded = !states.exists(_._2.activity.canAct)
   def turnEnded(player: Player) = !states(player).activity.canAct
 
   def otherTeamsConceded(team: Team): Boolean =
@@ -311,118 +285,116 @@ case class Game private (
 
   def warp(
     player: Player, position: Vect2, warpable: WarpableCompanion.Some
-  )(implicit log: LoggingAdapter): Game.Result =
-    checkObjectives(player.team) {
-    withState(player) { state =>
-    withActions(player, Warpable.ActionsNeeded, state) { state =>
-    withWarpable(player, state.canWarp, warpable, world) { evtWorld =>
-    withWarpZone(player, position) {
-      evtWorld.map { warpable.warpW(_, player, position).right.map { _.map {
-        updated(_, player -> state)
-      } } }.extract.right.map(_.flatten)
-    } } } } }
+  )(implicit log: LoggingAdapter): Game.ResultOrWinner =
+    warpW(player, position, warpable).map(_.map(_.map(_._1)))
 
   def warpW[A <: Warpable](
     player: Player, position: Vect2, warpable: WarpableCompanion.Of[A]
-  )(implicit log: LoggingAdapter): Game.ResultT[(Game, Option[A])] =
-    checkObjectivesGeneric(player.team) {
-      withState(player) { state =>
-      withActions(player, Warpable.ActionsNeeded, state) { state =>
-      withWarpable(player, state.canWarp, warpable, world) { evtWorld =>
-      withWarpZone(player, position) {
-        evtWorld.map { warpable.warp(_, player, position).right.map { _.map {
-          case (world, optUnit) => (updated(world, player -> state), optUnit)
-        } } }.extract.right.map(_.flatten)
-      } } } }
+  )(implicit log: LoggingAdapter): Game.ResultT[Winner \/ (Game, Option[A])] =
+    checkObjectives(player.team) {
+      val res =
+        withState(player) { state =>
+        withActions(player, Warpable.ActionsNeeded, state) { state =>
+        withWarpable(player, state.canWarp, warpable, world) { evtWorld =>
+        withWarpZone(player, position) {
+          evtWorld.map { warpable.warp(_, player, position).map { _.map {
+            case (world, optUnit) => (updated(world, player -> state), optUnit)
+          } } }.extract.map(_.flatten)
+        } } } }
+      res
     } (_._1)
 
   def move(
     player: Player, id: WObject.Id, to: NonEmptyVector[Vect2]
-  )(implicit log: LoggingAdapter): Game.Result =
+  )(implicit log: LoggingAdapter): Game.ResultOrWinner =
     checkObjectives(player.team) {
-    withState(player) { state =>
-    withActions(player, Actions(1), state) { state =>
-    withMoveObj(player, id) { obj =>
-    withVisibility(player, to.v.last) {
-      obj.moveTo(world, to).right.map { _.map { case (w, _) =>
-        updated(w, player -> state)
-      } }
-    } } } } }
+      val res =
+        withState(player) { state =>
+        withActions(player, Actions(1), state) { state =>
+        withMoveObj(player, id) { obj =>
+        withVisibility(player, to.v.last) {
+          obj.moveTo(world, to).map { _.map { case (w, _) =>
+            updated(w, player -> state)
+          } }
+        } } } }
+      res
+    }
 
   def attack(
     player: Player, id: WObject.Id, targetId: WObject.Id
-  )(implicit log: LoggingAdapter): Game.Result =
+  )(implicit log: LoggingAdapter): Game.ResultOrWinner =
     checkObjectives(player.team) {
-    withAttackObj(player, id) { obj =>
-    withTargetObj(player, targetId) { targetObj =>
-    withVisibility(player, targetObj) {
-      obj.attackW(targetObj, world).right.map { _.map { world =>
-        updated(world)
-      } }
-    } } } }
+      val res =
+        withAttackObj(player, id) { obj =>
+        withTargetObj(player, targetId) { targetObj =>
+        withVisibility(player, targetObj) {
+          obj.attackW(targetObj, world).map { _.map { world =>
+            updated(world)
+          } }
+        } } }
+      res
+    }
 
   def moveAttack(
     player: Player, id: Id, path: NonEmptyVector[Vect2], targetId: Id
-  )(implicit log: LoggingAdapter) = {
-    // TODO: this needs to be rewritten to handle the case where you don't see the object
-    // after moving, but you should still shoot it.
-    checkObjectives(player.team) {
-    move(player, id, path).right.flatMap { evtMovedGame =>
-      // The object might get killed after the move.
-      if (evtMovedGame.value.world.objects.contains(id)) {
-        evtMovedGame.value.attack(player, id, targetId).right.map { evtAttackedGame =>
-          evtMovedGame.events ++: evtAttackedGame
-        }
-      }
-      else evtMovedGame.right
-    } }
-  }
+  )(implicit log: LoggingAdapter): Game.ResultOrWinner = ???
+//    // TODO: this needs to be rewritten to handle the case where you don't see the object
+//    // after moving, but you should still shoot it.
+//    checkObjectives(player.team) {
+//    move(player, id, path).flatMap { evtMovedGame =>
+//      // The object might get killed after the move.
+//      if (evtMovedGame.value.world.objects.contains(id)) {
+//        evtMovedGame.value.attack(player, id, targetId).right.map { evtAttackedGame =>
+//          evtMovedGame.events ++: evtAttackedGame
+//        }
+//      }
+//      else evtMovedGame.rightZ
+//    } }
+//  }
 
-  def turnTimeEnded(player: Player)(implicit log: LoggingAdapter): Game.Result =
+  def turnTimeEnded(player: Player)(implicit log: LoggingAdapter): Game.ResultOrWinner =
     checkObjectives(player.team) {
     withState(player) { state =>
       if (state.actions.isNotZero)
-        withActions(player, Actions(1), state) { state =>
-          Evented(updated(world, player -> state)).right
-        }
-      else endTurn(player)
+        Game.doAutoSpecial(this, player)
+      else
+        endRoundWithoutCheckingObjectives(player)
     } }
 
   def special(
     player: Player, id: WObject.Id
-  )(implicit log: LoggingAdapter): Game.Result =
+  )(implicit log: LoggingAdapter): Game.ResultOrWinner =
     checkObjectives(player.team) {
     withState(player) { state =>
     withSpecialObj(player, id) {
     withSpecialAction(player, state) { obj => state =>
-      obj.special(world, player).right.map(_.map(world => updated(world, player -> state)))
-    } } } }
+      obj.special(world, player).map(_.map(world => updated(world, player -> state)))
+    } } }
+    }
 
-  def endTurn(player: Player)(implicit log: LoggingAdapter): Game.Result =
-    checkObjectives(player.team) {
+  def endRound(player: Player)(implicit log: LoggingAdapter): Game.ResultOrWinner =
+    checkObjectives(player.team) { endRoundWithoutCheckingObjectives(player) }
+
+  def endRoundWithoutCheckingObjectives(player: Player)(implicit log: LoggingAdapter):
+  Game.Result =
     withState(player) { state =>
       if (state.activity =/= GamePlayerState.WaitingForTurnEnd)
-        s"Can't end turn: $player has state $state!".left
-      else {
-        Evented(
-          updated(world, player -> state.onTurnEnd),
-          TurnEndedChangeEvt(player, turnEnded = true)
-        ).right
-      }
-    } }
+        s"Can't end turn: $player has state $state!".leftZ
+      else
+        Evented(updated(world, player -> state.onTurnEnd)).rightZ
+    }
 
-  def concede(human: Human)(implicit log: LoggingAdapter): Game.Result =
+  def concede(human: Human)(implicit log: LoggingAdapter): Game.ResultOrWinner =
     checkObjectives(human.team) {
-    withState(human) { state =>
-      if (state.activity === GamePlayerState.Conceded)
-        s"Can't concede: $human has already conceded!".left
-      else {
-        Evented(
-          updated(world, human -> GamePlayerState.conceded),
-          TurnEndedChangeEvt(human, turnEnded = true)
-        ).right
-      }
-    } }
+      val res =
+        withState(human) { state =>
+          if (state.activity === GamePlayerState.Conceded)
+            s"Can't concede: $human has already conceded!".leftZ
+          else
+            Evented(updated(world, human -> GamePlayerState.conceded)).rightZ
+        }
+      res
+    }
 
   def visibleBy(owner: Owner) =
     copy(world = world.visibleBy(owner), states = states.filterKeys(_.isFriendOf(owner)))
@@ -437,54 +409,57 @@ case class Game private (
   def updated(world: World, player: (Player, GamePlayerState)): Game =
     copy(world = world, states = states + player)
 
-  private[this] def checkObjectivesGeneric[A](team: Team)(f: Game.ResultT[A])
-  (implicit getGame: A => Game): Game.ResultT[A] = {
+  private[this] implicit def gameResultToCheckObjectivesResult[A](r: Game.ResultT[A])
+  : Game.ResultT[Winner \/ A] = r.map(_.map(_.rightZ))
+  private[this] implicit def gameIdentity(game: Game): Game = game
+
+  private[this] def checkObjectives[A](team: Team)(f: Game.ResultT[A])
+  (implicit getGame: A => Game): Game.ResultT[Winner \/ A] = {
     val currentObjectives = remainingObjectives(team)
-    f.right.map(_.flatMap { a =>
-      val game = getGame(a)
-      val newObjectives = game.remainingObjectives(team)
-      Evented(
-        a,
-        if (currentObjectives =/= newObjectives)
-          Vector(ObjectivesUpdatedEvt(team, newObjectives))
-        else Vector.empty
-      )
-    })
+    f.map { evtA =>
+      evtA.flatMap { a =>
+        val game = getGame(a)
+        val newObjectives = game.remainingObjectives(team)
+        val won = newObjectives.someCompleted
+        Evented(
+          if (won) Winner(team).leftZ else a.rightZ,
+          if (currentObjectives =/= newObjectives)
+            Vector(ObjectivesUpdatedEvt(team, newObjectives)) ++
+            (if (won) Vector(GameWonEvt(team)) else Vector.empty)
+          else Vector.empty
+        )
+      }
+    }
   }
 
-  private[this] def checkObjectives(team: Team)(f: Game.Result): Game.Result =
-    checkObjectivesGeneric(team)(f)(identity)
-
-  private[this] def checkObjectivesSafe(team: Team)(f: Evented[Game]): Evented[Game] =
-    checkObjectives(team)(f.right).right.get
-
-  private[this] def withState[A](player: Player)(f: GamePlayerState => Game.ResultT[A]) =
-    states.get(player).fold2(Left(s"No state for $player: $states"), f)
+  private[this] def withState[A](player: Player)(f: GamePlayerState => Game.ResultT[A])
+  : Game.ResultT[A] =
+    states.get(player).fold2(s"No state for $player: $states".leftZ, f)
 
   private[this] def withVisibility(
     player: Player, position: Vect2
   )(f: => Game.Result): Game.Result =
     if (world.isVisibleFor(player, position)) f
-    else s"$player does not see $position".left
+    else s"$player does not see $position".leftZ
 
   private[this] def withVisibility(
     player: Player, obj: OwnedObj
   )(f: => Game.Result): Game.Result =
     if (world.isVisiblePartial(player, obj.bounds)) f
-    else s"$player does not see $obj".left
+    else s"$player does not see $obj".leftZ
 
   private[this] def withWarpZone[A](
     player: Player, position: Vect2
   )(f: => Game.ResultT[A]): Game.ResultT[A] =
     if (world.isValidForWarp(player, position)) f
-    else s"$player cannot warp into $position".left
+    else s"$player cannot warp into $position".leftZ
 
   private[this] type ObjFn[A] = A => Game.Result
 
   private[this] def withObj[A <: OwnedObj : ClassTag](
     id: WObject.Id
   )(f: ObjFn[A]): Game.Result = {
-    world.objects.getCT[A](id).fold2(s"Cannot find object with id $id".left, f)
+    world.objects.getCT[A](id).fold2(s"Cannot find object with id $id".leftZ, f)
   }
 
   private[this] def withCheckedObj[A <: OwnedObj](
@@ -496,7 +471,7 @@ case class Game private (
         f(obj),
         err => {
           log.info(s"$obj does not pass checker of type ${ct.runtimeClass}}: $err")
-          s"Obj $id does not pass the checker: $err".left
+          s"Obj $id does not pass the checker: $err".leftZ
         }
       )
     }
@@ -524,6 +499,6 @@ case class Game private (
     f: ObjFn[OwnedObj]
   )(implicit log: LoggingAdapter): Game.Result = withObj[OwnedObj](id) { obj =>
     if (player.isEnemyOf(obj.owner)) f(obj)
-    else s"Cannot target friendly $obj for attack!".left
+    else s"Cannot target friendly $obj for attack!".leftZ
   }
 }

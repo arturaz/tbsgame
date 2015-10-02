@@ -6,6 +6,7 @@ import utils.data.NonEmptyVector
 
 import scala.annotation.tailrec
 import scala.collection.mutable
+import scalaz.\/
 
 object Pathfinding {
   case class SearchRes[+A](value: A, path: Path) {
@@ -48,18 +49,18 @@ object Pathfinding {
     /* Validates whether all vects in the path forms a valid path in the world. */
     def validate(
       world: World, startingPosition: Vect2, path: NonEmptyVector[Vect2]
-    ): Either[String, Path] = {
+    ): String \/ Path = {
       path.v.foldLeft(startingPosition) { case (p, nextP) =>
         if (! world.bounds.contains(nextP))
-          return s"$nextP is not within world bounds ${world.bounds}!".left
+          return s"$nextP is not within world bounds ${world.bounds}!".leftZ
         else if (! p.isNextTo(nextP))
-          return s"$p is not next to $nextP!".left
+          return s"$p is not next to $nextP!".leftZ
         else if (obstructed(nextP, world.objects))
-          return s"$nextP is taken by object blocking movement in the world".left
+          return s"$nextP is taken by object blocking movement in the world".leftZ
         nextP
       }
 
-      Path(startingPosition +: path.v).right
+      Path(startingPosition +: path.v).rightZ
     }
   }
 

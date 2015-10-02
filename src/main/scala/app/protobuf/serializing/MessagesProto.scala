@@ -31,7 +31,7 @@ trait MessagesProto extends Helpers { _: GameProto =>
         attackMultiplier(from, to)
       }(collection.breakOut),
       objectives = msg.objectives,
-      turnTimeframe = msg.turnTimeframe.map(convert),
+      turnStarted = msg.currentTurn,
       extractionSpeedRates = convertSeq(msg.extractionSpeeds)(convertInit)
     )
 
