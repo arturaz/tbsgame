@@ -9,6 +9,7 @@ import utils.{IntValueClass, Base36, CompositeOrdering}
 
 import scala.reflect.ClassTag
 import scala.util.{Random, Try}
+import scalaz.effect.IO
 import scalaz.{-\/, \/, \/-}
 
 /**
@@ -75,6 +76,7 @@ package object implicits {
 
   implicit class IndexedSeqExts[A](val is: IndexedSeq[A]) extends AnyVal {
     def random = if (is.isEmpty) None else Some(is(Random.nextInt(is.size)))
+    def randomIO = IO { random }
     @inline def wrapped(idx: Int) = is(idx % is.size)
   }
 

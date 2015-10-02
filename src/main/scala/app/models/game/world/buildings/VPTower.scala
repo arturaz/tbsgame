@@ -5,9 +5,9 @@ import app.models.game.{Actions, Owner, Team}
 
 trait VPTowerStatsImpl { _: VPTowerStats.type =>
   override val maxHp = HP(450)
-  override val visibility = RectDistance(5)
+  override val visibility = RectDistance(3)
   override val warpGiven = RectDistance(0)
-  override val actionsGiven = Actions(3)
+  override val actionsGiven = Actions(2)
   override val kind = WObjKind.Medium
   override val size = Vect2(2, 2)
   override val vpsGiven = VPS(0)

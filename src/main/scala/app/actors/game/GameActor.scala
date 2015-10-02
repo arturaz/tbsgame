@@ -215,22 +215,22 @@ object GameActorGame {
 trait GameActorGame {
   import GameActorGame._
 
-  def warp(human: Human, position: Vect2, warpable: WarpableCompanion.Some)
+  def warp(human: Human, position: Vect2, warpable: WarpableCompanion.Some, now: DateTime)
   (implicit log: LoggingAdapter): Result
 
-  def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2])
+  def move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2], now: DateTime)
   (implicit log: LoggingAdapter): Result
 
-  def special(human: Human, id: WObject.Id)(implicit log: LoggingAdapter): Result
+  def special(human: Human, id: WObject.Id, now: DateTime)(implicit log: LoggingAdapter): Result
 
-  def attack(human: Human, id: WObject.Id, targetId: WObject.Id)
+  def attack(human: Human, id: WObject.Id, targetId: WObject.Id, now: DateTime)
   (implicit log: LoggingAdapter): Result
 
-  def moveAttack(human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id)
+  def moveAttack(human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id, now: DateTime)
   (implicit log: LoggingAdapter): Result
 
-  def endTurn(human: Human, currentTime: DateTime)(implicit log: LoggingAdapter): Result
-  def concede(human: Human)(implicit log: LoggingAdapter): Result
+  def endTurn(human: Human, now: DateTime)(implicit log: LoggingAdapter): Result
+  def concede(human: Human, now: DateTime)(implicit log: LoggingAdapter): Result
 
   def game: Game
   def isJoined(human: Human)(implicit log: LoggingAdapter): Boolean
@@ -370,19 +370,19 @@ class GameActor private (
 //        sender ! Out.Error(s"No human $human is joined.")
 //      }
     case In.Warp(human, position, warpable) =>
-      update(sender(), human, _.warp(human, position, warpable))
+      update(sender(), human, _.warp(human, position, warpable, DateTime.now))
     case In.Move(human, id, path) =>
-      update(sender(), human, _.move(human, id, path))
+      update(sender(), human, _.move(human, id, path, DateTime.now))
     case In.Attack(human, id, target) =>
-      update(sender(), human, _.attack(human, id, target))
+      update(sender(), human, _.attack(human, id, target, DateTime.now))
     case In.MoveAttack(human, id, path, target) =>
-      update(sender(), human, _.moveAttack(human, id, path, target))
+      update(sender(), human, _.moveAttack(human, id, path, target, DateTime.now))
     case In.Special(human, id) =>
-      update(sender(), human, _.special(human, id))
+      update(sender(), human, _.special(human, id, DateTime.now))
     case In.EndTurn(human) =>
       update(sender(), human, _.endTurn(human, DateTime.now))
     case In.Concede(human) =>
-      update(sender(), human, _.concede(human))
+      update(sender(), human, _.concede(human, DateTime.now))
   }
 
   val receive: PartialFunction[Any, Unit] = notLoggedReceive orElse loggedReceive

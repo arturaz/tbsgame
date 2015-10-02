@@ -160,7 +160,7 @@ class GamesManagerActor(maps: GameMaps) extends Actor with ActorLogging {
       "Fetched {} from waiting list for mode {}, rest={}", players, mode, newWaitingList
     )
     // TODO: will fail if we have more teams than any of the maps support
-    val map = maps.pvp.v.filter(_.startingPositions.size >= mode.teams).random.get
+    val map = maps.pvpMapFor(mode.playersNeeded).right_!.unsafePerformIO()
     val npcTeam = Team()
 
     createGame(map, Some(TurnTimers.Settings()), npcTeam, players)

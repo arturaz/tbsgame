@@ -53,7 +53,11 @@ object Main {
       NonEmptyVector.create(readMapsFromDir(s"$path/$name"))
       .toSuccess(s"No $name maps found").toValidationNel
 
-    (read("pve") |@| read("pvp"))(GameMaps.apply)
+    (read("pve") |@| read("pvp")) { (pve, pvp) =>
+      val pvpByPlayers =
+        pvp.v.groupBy(_.startingPositions.size).mapValues(NonEmptyVector.apply)
+      GameMaps(pve, pvpByPlayers)
+    }
   }
 
   def readMapsFromDir(path: String): Vector[GameMap] = {

@@ -50,14 +50,14 @@ case class TurnEndedEvt(team: Team) extends AlwaysVisibleEvent
 
 case class SetTurnTimerEvt(whom: Human \/ Team, timeframe: Timeframe)
 extends VisibleEvent {
-  override def visibleBy(owner: Owner) = whom.fold(
+  override def visibleBy(owner: Owner) = true /*whom.fold(
     // If this is a turn timer for human, send it only if it directly belongs to that
     // human.
     human => owner === human,
     // If this is a turn timer for team, it is for enemy team and only send it if owner
     // does not belong to this team.
     team => owner.team =/= team
-  )
+  )*/
 }
 
 sealed trait PointOwnershipChangeEvt extends VisibleEvent {

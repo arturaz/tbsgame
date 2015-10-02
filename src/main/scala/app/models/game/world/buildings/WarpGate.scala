@@ -9,9 +9,8 @@ trait WarpGateStatsImpl { _: WarpGateStats.type =>
   override val maxHp = HP(450)
   override val size = Vect2(3, 3)
   override val isCritical = true
-  override val actionsGiven = Actions(5)
-  override val populationGiven =
-    CorvetteStats.populationCost + ExtractorStats.populationCost
+  override val actionsGiven = Actions(4)
+  override val populationGiven = Population(6)
   override val visibility = RectDistance(4)
   override val warpGiven = RectDistance(2)
   override val specialActionsNeeded = Actions(1)

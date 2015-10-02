@@ -15,7 +15,7 @@ trait WarpPrismStatsImpl extends EmptySpaceWarpableCompanion[WarpPrism]
   override val populationCost = Population(3)
   override val kind = WObjKind.Light
 
-  override val specialActionsNeeded = Actions(2)
+  override val specialActionsNeeded = Actions(1)
 
   override def warp(owner: Player, position: Vect2) = WarpPrism(position, owner)
 }

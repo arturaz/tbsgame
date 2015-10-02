@@ -9,7 +9,7 @@ resolvers += Resolver.sonatypeRepo("releases")
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 val commonSettings = Seq(
-  scalaVersion := "2.11.6",
+  scalaVersion := "2.11.7",
   scalacOptions := Seq("-feature", "-unchecked")
 )
 
@@ -17,13 +17,16 @@ val macrosSettings = commonSettings ++ Seq(
   libraryDependencies <+= scalaVersion("org.scala-lang" % "scala-reflect" % _)
 )
 
+val scalazVersion = "7.1.4"
+
 val rootSettings = commonSettings ++ Seq(
   scalacOptions ++= Seq("-deprecation", "-Xlint", "-Xfatal-warnings"),
   unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "gen" / "scala",
   initialCommands in console := """import app.models._, world._, implicits._""",
   libraryDependencies ++= Seq(
     "com.typesafe.akka" %% "akka-actor" % "2.3.6",
-    "org.scalaz" %% "scalaz-core" % "7.1.0",
+    "org.scalaz" %% "scalaz-core" % scalazVersion,
+    "org.scalaz" %% "scalaz-effect" % scalazVersion,
     "commons-io" % "commons-io" % "2.4",
     "com.github.t3hnar" %% "scala-bcrypt" % "2.4",
     "com.github.nscala-time" %% "nscala-time" % "1.8.0",

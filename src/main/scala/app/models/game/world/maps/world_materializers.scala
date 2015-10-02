@@ -7,7 +7,7 @@ import app.models.game.world._
 import utils.data.NonEmptyVector
 
 import scala.util.Random
-import scalaz.\/
+import scalaz.\/, scalaz.effect._
 import implicits._
 
 trait WorldMaterializer {
@@ -47,7 +47,23 @@ case class GameMap private (
   }
 }
 
-case class GameMaps(pve: NonEmptyVector[GameMap], pvp: NonEmptyVector[GameMap])
+case class GameMaps(pve: NonEmptyVector[GameMap], pvp: Map[Int, NonEmptyVector[GameMap]]) {
+  val maxPvpPlayers = pvp.keys.max
+
+  def pvpMapFor(playerCount: Int): GameMaps.NoMapsForXPlayers \/ IO[GameMap] = {
+    (playerCount to maxPvpPlayers).foreach { count =>
+      pvp.get(count).foreach { maps =>
+        return maps.v.randomIO.map(_.get).rightZ
+      }
+    }
+    GameMaps.NoMapsForXPlayers(playerCount, maxPvpPlayers).leftZ
+  }
+}
+object GameMaps {
+  case class NoMapsForXPlayers(needed: Int, max: Int) {
+    override def toString = s"No maps for $needed players, max supported: $max"
+  }
+}
 
 object SingleplayerMap {
   case class Data(humanTeam: Team, npcTeam: Team)

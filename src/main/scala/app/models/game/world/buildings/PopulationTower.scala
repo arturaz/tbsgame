@@ -7,8 +7,8 @@ trait PopulationTowerStatsImpl extends EmptySpaceWarpableCompanion[PopulationTow
 _: PopulationTowerStats.type =>
   override val populationGiven = Population(5)
   override val kind = WObjKind.Light
-  override val maxHp = HP(250)
-  override val warpTime = WarpTime(2)
+  override val maxHp = HP(35)
+  override val warpTime = WarpTime(1)
   override val cost = Resources(9)
   override val group = WarpableGroup.Building
   override val populationCost = Population(0)

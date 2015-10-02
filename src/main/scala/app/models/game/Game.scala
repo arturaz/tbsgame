@@ -345,7 +345,7 @@ case class Game private (
     withMoveObj(player, id) { obj =>
     withVisibility(player, to.v.last) {
       obj.moveTo(world, to).right.map { _.map { case (w, _) =>
-        updated(w)
+        updated(w, player -> state)
       } }
     } } } } }
 
@@ -353,19 +353,19 @@ case class Game private (
     player: Player, id: WObject.Id, targetId: WObject.Id
   )(implicit log: LoggingAdapter): Game.Result =
     checkObjectives(player.team) {
-    withState(player) { state =>
-    withActions(player, Actions(1), state) { state =>
     withAttackObj(player, id) { obj =>
     withTargetObj(player, targetId) { targetObj =>
     withVisibility(player, targetObj) {
       obj.attackW(targetObj, world).right.map { _.map { world =>
         updated(world)
       } }
-    } } } } } }
+    } } } }
 
   def moveAttack(
     player: Player, id: Id, path: NonEmptyVector[Vect2], targetId: Id
   )(implicit log: LoggingAdapter) = {
+    // TODO: this needs to be rewritten to handle the case where you don't see the object
+    // after moving, but you should still shoot it.
     checkObjectives(player.team) {
     move(player, id, path).right.flatMap { evtMovedGame =>
       // The object might get killed after the move.
@@ -377,6 +377,16 @@ case class Game private (
       else evtMovedGame.right
     } }
   }
+
+  def turnTimeEnded(player: Player)(implicit log: LoggingAdapter): Game.Result =
+    checkObjectives(player.team) {
+    withState(player) { state =>
+      if (state.actions.isNotZero)
+        withActions(player, Actions(1), state) { state =>
+          Evented(updated(world, player -> state)).right
+        }
+      else endTurn(player)
+    } }
 
   def special(
     player: Player, id: WObject.Id
