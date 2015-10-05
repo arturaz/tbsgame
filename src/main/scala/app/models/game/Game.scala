@@ -308,49 +308,51 @@ case class Game private (
     player: Player, id: WObject.Id, to: NonEmptyVector[Vect2]
   )(implicit log: LoggingAdapter): Game.ResultOrWinner =
     checkObjectives(player.team) {
-      val res =
-        withState(player) { state =>
-        withActions(player, Actions(1), state) { state =>
-        withMoveObj(player, id) { obj =>
-        withVisibility(player, to.v.last) {
-          obj.moveTo(world, to).map { _.map { case (w, _) =>
-            updated(w, player -> state)
-          } }
-        } } } }
-      res
+      withState(player) { state =>
+      withActions(player, Actions(1), state) { state =>
+      withMoveObj(player, id) { obj =>
+      withVisibility(player, to.v.last) {
+        obj.moveTo(world, to).map { _.map { case (w, _) =>
+          updated(w, player -> state)
+        } }
+      } } } }
     }
 
   def attack(
     player: Player, id: WObject.Id, targetId: WObject.Id
   )(implicit log: LoggingAdapter): Game.ResultOrWinner =
     checkObjectives(player.team) {
-      val res =
-        withAttackObj(player, id) { obj =>
-        withTargetObj(player, targetId) { targetObj =>
-        withVisibility(player, targetObj) {
-          obj.attackW(targetObj, world).map { _.map { world =>
-            updated(world)
-          } }
-        } } }
-      res
+      withAttackObj(player, id) { obj =>
+      withTargetObj(player, targetId) { targetObj =>
+      withVisibility(player, targetObj) {
+        obj.attackW(targetObj, world).map { _.map { world =>
+          updated(world)
+        } }
+      } } }
     }
 
   def moveAttack(
     player: Player, id: Id, path: NonEmptyVector[Vect2], targetId: Id
-  )(implicit log: LoggingAdapter): Game.ResultOrWinner = ???
-//    // TODO: this needs to be rewritten to handle the case where you don't see the object
-//    // after moving, but you should still shoot it.
-//    checkObjectives(player.team) {
-//    move(player, id, path).flatMap { evtMovedGame =>
-//      // The object might get killed after the move.
-//      if (evtMovedGame.value.world.objects.contains(id)) {
-//        evtMovedGame.value.attack(player, id, targetId).right.map { evtAttackedGame =>
-//          evtMovedGame.events ++: evtAttackedGame
-//        }
-//      }
-//      else evtMovedGame.rightZ
-//    } }
-//  }
+  )(implicit log: LoggingAdapter): Game.ResultOrWinner =
+    checkObjectives(player.team) {
+      withState(player) { state =>
+      withActions(player, Actions(1), state) { state =>
+      withMoveAttackObj(player, id) { obj =>
+      withVisibility(player, path.v.last) {
+      withTargetObj(player, targetId) { targetObj =>
+      withVisibility(player, targetObj) {
+        val evtFinal = obj.moveTo(world, path).flatMap {
+          // We were destroyed after moving, do nothing
+          case Evented((world, None), events) => Evented(world, events).right
+          case Evented((world, Some(afterMoveObj)), events) =>
+            afterMoveObj.attackW(targetObj, world).map { evtAfterAttack =>
+              events ++: evtAfterAttack
+            }
+        }
+
+        evtFinal.map { _.map { world => updated(world, player -> state) } }
+      } } } } } }
+    }
 
   def turnTimeEnded(player: Player)(implicit log: LoggingAdapter): Game.ResultOrWinner =
     checkObjectives(player.team) {
@@ -487,6 +489,13 @@ case class Game private (
   private[this] def withAttackObj(player: Player, id: WObject.Id)(
     f: ObjFn[OwnedObj with Fighter]
   )(implicit log: LoggingAdapter): Game.Result = withCheckedObj(id, f) { obj =>
+    (!Game.canAttack(player, obj)).opt(s"$player can't attack with $obj")
+  }
+
+  private[this] def withMoveAttackObj(player: Player, id: WObject.Id)(
+    f: ObjFn[OwnedObj with Movable with Fighter]
+  )(implicit log: LoggingAdapter): Game.Result = withCheckedObj(id, f) { obj =>
+    (!Game.canMove(player, obj)).opt(s"$player can't move $obj") orElse
     (!Game.canAttack(player, obj)).opt(s"$player can't attack with $obj")
   }
 
