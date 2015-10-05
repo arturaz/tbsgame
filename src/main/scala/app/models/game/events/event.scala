@@ -7,7 +7,7 @@ import implicits._
 import utils.ValWithMax
 import utils.data.Timeframe
 
-import scalaz.\/
+import scalaz._, Scalaz._
 
 /* Event that cannot be viewed anymore. */
 sealed trait FinalEvent
@@ -26,6 +26,11 @@ sealed trait VisibleEvent extends Event with FinalEvent {
 
 sealed trait AlwaysVisibleEvent extends VisibleEvent {
   override def visibleBy(owner: Owner) = true
+}
+
+sealed trait OwnerEvent extends VisibleEvent {
+  def owner: Owner
+  override def visibleBy(owner: Owner) = owner === this.owner
 }
 
 sealed trait BoundedEvent extends VisibleEvent {
@@ -161,7 +166,7 @@ case class MovementChangeEvt(
 }
 
 case class ResourceChangeEvt(
-  obj: Either[(World, WObject), Human], newValue: Resources
+  obj: (World, WObject) \/ Human, newValue: Resources
 ) extends VisibleEvent {
   override def visibleBy(owner: Owner) = obj.fold(
     { case (world, wObj) => world.isVisiblePartial(owner, wObj.bounds) },
@@ -188,3 +193,8 @@ case class ObjectivesUpdatedEvt(
 }
 
 case class GameWonEvt(team: Team) extends AlwaysVisibleEvent
+
+case class WaitingForRoundEndChangeEvt(player: Player, canAct: Boolean)
+extends OwnerEvent {
+  def owner = player
+}

@@ -9,7 +9,7 @@ import utils.data.NonEmptyVector
 import Ops._
 
 import scala.language.implicitConversions
-import scalaz.\/
+import scalaz._, Scalaz._
 
 trait MovableStatsImpl { _: MovableStats =>
   val movement: Movement
@@ -44,17 +44,17 @@ trait MovableOps[Self <: Movable] extends OwnedObjOps[Self] {
   )(implicit log: LoggingAdapter): String \/ WObject.WorldObjOptUpdate[Self] = {
     if (path.movementNeeded > self.movementLeft)
       s"$this needed ${path.movementNeeded} movement for $path, had ${self.movementLeft
-      }".leftZ
+      }".left
     else if (path.vects.head =/= self.position)
-      s"Starting $path vect =/= $this position".leftZ
+      s"Starting $path vect =/= $this position".left
     else if (self.isWarpingIn)
-      s"$this is still warping in!".leftZ
+      s"$this is still warping in!".left
     else if (path.movementNeeded.isZero)
       // If we don't need to go anywhere, don't go.
-      Evented((world, Some(self))).rightZ
+      Evented((world, Some(self))).right
     else
       // The first vect is self position
-      travel(path.vects.tail, Evented((world, Some(self)))).rightZ
+      travel(path.vects.tail, Evented((world, Some(self)))).right
   }
 
   def moveTo(

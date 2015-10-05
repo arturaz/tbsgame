@@ -1,6 +1,7 @@
 package utils.network
 
 import implicits._
+import scalaz._, Scalaz._
 
 /**
  * Created by arturas on 2014-10-15.

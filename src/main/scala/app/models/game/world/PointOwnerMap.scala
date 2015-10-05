@@ -5,6 +5,7 @@ import app.models.game.world.PointOwnerMap.{EvtFn, PointsFn}
 import app.models.game.{Owner, Team}
 import app.models.game.events.{Evented, PointOwnershipChangeEvt}
 import implicits._
+import scalaz._, Scalaz._
 
 object PointOwnerMap {
   type Underlying = Map[(Vect2, Team), Int]

@@ -10,8 +10,7 @@ import implicits._
 
 import scala.util.{Random, Try}
 import scala.xml.{XML, Node}
-import scalaz.{ValidationNel, \/}
-import scalaz.syntax.all._
+import scalaz._, Scalaz._
 
 /**
 * Created by arturas on 2015-01-29.
@@ -50,14 +49,14 @@ object TMXReader {
   def read(root: Node): String \/ GameMap = {
     val worldBoundsE = parseBounds(root)
     val renderOrderE = parseStrAttr(root, "renderorder") {
-      case "right-down" => RenderOrder.RightDown.rightZ
-      case other => s"unknown render order: $other".leftZ
+      case "right-down" => RenderOrder.RightDown.right
+      case other => s"unknown render order: $other".left
     }
 
     worldBoundsE.flatMap { worldBounds =>
       renderOrderE.flatMap { renderOrder =>
         (root \ "layer").foldLeft(
-          GameMap.empty(worldBounds).rightZ[String]
+          GameMap.empty(worldBounds).right[String]
         ) { (gameMapE, layer) =>
           gameMapE.flatMap { gameMap => parseLayer(renderOrder, layer, gameMap) }
         }
@@ -69,7 +68,7 @@ object TMXReader {
     renderOrder: RenderOrder, layer: Node, current: GameMap
   ): String \/ GameMap = {
     parseSize(layer).flatMap { layerSize =>
-      (layer \ "data" \ "tile").view.zipWithIndex.foldLeft(current.rightZ[String]) {
+      (layer \ "data" \ "tile").view.zipWithIndex.foldLeft(current.right[String]) {
         case (gameMapE, (tileNode, idx)) =>
           gameMapE.flatMap { gameMap => parseTile(
             renderOrder, layerSize, tileNode, idx, gameMap
@@ -85,7 +84,7 @@ object TMXReader {
     val gidE =
       parseStrAttrT(tileNode, "gid")(_.parseLong.map(l => (l & ClearFlags).toInt))
     gidE.flatMap { gid =>
-      if (gid === 0) current.rightZ
+      if (gid === 0) current.right
       else {
         val position = renderOrder.translate(idx, layerSize, current.bounds)
         update(gid, position, current)
@@ -106,12 +105,12 @@ object TMXReader {
   : String \/ A =
     node.attribute(attr).map(_.head.text)
       .map(parser(_).leftMap(e => s"bad attribute '$attr' for node $node: $e"))
-      .getOrElse(s"no $attr set".leftZ)
+      .getOrElse(s"no $attr set".left)
 
-  def parseStrAttrT[A](node: Node, attr: String)(parser: String => Try[A])
+  def parseStrAttrT[A](node: Node, attr: String)(parser: String => Validation[Exception, A])
   : String \/ A =
     parseStrAttr(node, attr)(s =>
-      parser(s).fold(e => e.toString.leftZ, _.rightZ)
+      parser(s).fold(e => e.toString.left, _.right)
     )
 
   def update(
@@ -126,14 +125,14 @@ object TMXReader {
           case 4 => MinResource
         }
         current add Asteroid(position, resources(field.range), field.extractionSpeed)
-      case 5 => current.addNpc(npc => Spawner(position, npc)).rightZ
-      case 6 => current.addNpc(npc => VPTower(position, npc.team)).rightZ
-      case 7 => current.addStarting(position).rightZ
+      case 5 => current.addNpc(npc => Spawner(position, npc)).right
+      case 6 => current.addNpc(npc => VPTower(position, npc.team)).right
+      case 7 => current.addStarting(position).right
       case 8 => current add Brush(position)
       case 9 => current add Crystal(position)
-      case 10 => current.addNpc(npc => Fortress(position, npc)).rightZ
-      case 11 => current.addNpc(npc => RayShip(position, npc)).rightZ
-      case 12 => current.addNpc(npc => Wasp(position, npc)).rightZ
+      case 10 => current.addNpc(npc => Fortress(position, npc)).right
+      case 11 => current.addNpc(npc => RayShip(position, npc)).right
+      case 12 => current.addNpc(npc => Wasp(position, npc)).right
     }
   }
 

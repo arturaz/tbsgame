@@ -5,6 +5,7 @@ import app.models.game.{Actions, Player}
 import app.models.game.world._
 import implicits._
 import app.models.game.world.Ops._
+import scalaz._, Scalaz._
 
 trait LaserTowerStatsImpl extends EmptySpaceWarpableCompanion[LaserTower]
 { _: LaserTowerStats.type =>

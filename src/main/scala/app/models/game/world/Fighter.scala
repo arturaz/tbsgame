@@ -10,7 +10,7 @@ import app.models.game.world.Ops._
 
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
-import scalaz.\/
+import scalaz._, Scalaz._
 
 trait FighterStatsImpl { _: FighterStats =>
   val attack: Atk
@@ -120,8 +120,8 @@ trait FighterOps[Self <: Fighter] {
           )(world)
         } yield newSelf,
         newObj
-      ).rightZ
-    }, _.leftZ)
+      ).right
+    }, _.left)
 
   def attack[Target <: OwnedObj]
   (obj: Target, world: World, invokeRetaliation: Boolean=true)(implicit log: LoggingAdapter)

@@ -10,6 +10,7 @@ import app.models._
 import app.models.game.{TurnTimers, Human}
 import app.persistence.tables.Tables
 import implicits._
+import scalaz._, Scalaz._
 import app.persistence.DBDriver._
 import org.joda.time.DateTime
 

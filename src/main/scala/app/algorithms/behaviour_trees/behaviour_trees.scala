@@ -8,7 +8,7 @@ import app.models.game.{Player, Game}
 import app.models.game.events.Evented
 
 import scala.util.control.NonFatal
-import scalaz._
+import scalaz._, Scalaz._
 import implicits._
 
 object BehaviourTree {
@@ -211,12 +211,13 @@ trait BehaviourTreeGameNodes {
      errors out if warping in failed. */
   def WarpInFor[A <: Warpable](
     player: Player, what: WarpableCompanion.Of[A], position: Vect2
-  )(implicit log: LoggingAdapter) = BehaviourTree { (_: St).flatMap { game =>
-    game.warpW(player, position, what).fold(
-      err => Evented((game, NodeResult.failure(err))),
-      _.map(_.map2(NodeResult.success))
-    )
-  }.extractT1 }
+  )(implicit log: LoggingAdapter) = ???
+//    BehaviourTree { (_: St).flatMap { game =>
+//      game.warpW(player, position, what).fold(
+//        err => Evented((game, NodeResult.failure(err))),
+//        _.map(_.map2(NodeResult.success))
+//      )
+//    }.extractT1 }
 
   def WarpInInRandomPosition[A <: Warpable](
     player: Player, what: WarpableCompanion.Of[A]

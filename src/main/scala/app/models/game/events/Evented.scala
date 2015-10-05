@@ -1,8 +1,7 @@
 package app.models.game.events
 
 import implicits._
-
-import scalaz.\/
+import scalaz._, Scalaz._
 
 object Evented {
   def fromTuple[A](t: (A, Events)): Evented[A] = Evented(t._1, t._2)
@@ -25,7 +24,7 @@ case class Evented[+A](value: A, events: Events=Vector.empty) {
 
   def flatten[B](implicit ev: A <:< Evented[B]): Evented[B] = flatMap(ev)
   def extract[B, C](implicit ev: A <:< (B \/ C)): B \/ Evented[C] =
-    value.fold(_.leftZ, Evented(_, events).rightZ)
+    value.fold(_.left, Evented(_, events).right)
 
   def extractT1[B, C](implicit ev: A <:< (B, C)): (Evented[B], C) = (map(_._1), value._2)
   def extractT2[B, C](implicit ev: A <:< (B, C)): (B, Evented[C]) = (value._1, map(_._2))

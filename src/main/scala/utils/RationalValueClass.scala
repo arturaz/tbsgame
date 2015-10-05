@@ -2,6 +2,7 @@ package utils
 
 import spire.math.Rational
 import implicits._
+import scalaz._, Scalaz._
 
 object RationalValueClass {
   trait Numeric[A <: RationalValueClass[A]] extends scala.Numeric[A] {
@@ -27,7 +28,7 @@ trait RationalValueClass[A <: RationalValueClass[A]] extends Any with Ordered[A]
   def /(v: A) = self(value / v.value)
   def unary_- = self(-value)
 
-  def isZero = value === 0
+  def isZero = value == Rational(0)
   def isNotZero = ! isZero
 
   def min(v: A) = self(value min v.value)

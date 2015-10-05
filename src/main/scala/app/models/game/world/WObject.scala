@@ -6,6 +6,7 @@ import akka.event.LoggingAdapter
 import app.models.game.events.Evented
 import implicits._
 import app.models.game.world.Ops._
+import scalaz._, Scalaz._
 
 import scala.reflect.ClassTag
 

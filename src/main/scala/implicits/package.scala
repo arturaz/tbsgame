@@ -10,7 +10,8 @@ import utils.{IntValueClass, Base36, CompositeOrdering}
 import scala.reflect.ClassTag
 import scala.util.{Random, Try}
 import scalaz.effect.IO
-import scalaz.{-\/, \/, \/-}
+import scalaz._, Scalaz._
+import scala.language.implicitConversions
 
 /**
  * Created by arturas on 2014-09-11.
@@ -30,14 +31,8 @@ package object implicits {
     }
   }
 
-  implicit class StringExts(val s: String) extends AnyVal {
-    @inline def parseInt: Try[Int] = Try(s.toInt)
-    @inline def parseLong: Try[Long] = Try(s.toLong)
-    @inline def parseDouble: Try[Double] = Try(s.toDouble)
-  }
-
   implicit class DateTimeExts(val dt: DateTime) extends AnyVal with Ordered[DateTime] {
-    import concurrent.duration._
+    import scala.concurrent.duration._
 
     def +(fd: FiniteDuration): DateTime = dt.plus(fd.toMillis)
     def -(other: DateTime): FiniteDuration = (dt.getMillis - other.getMillis).millis
@@ -45,14 +40,12 @@ package object implicits {
   }
 
   implicit class EitherExts[A, B](val either: Either[A, B]) extends AnyVal {
-    def extract[C](implicit ev: B <:< Evented[C]): Evented[Either[A, C]] =
-      either.fold(a => Evented(a.left), b => b.map(c => c.right))
-    def toZEither = either.fold(_.leftZ, _.rightZ)
+    def toZEither = either.fold(_.left, _.right)
   }
 
   implicit class EitherZExts[A, B](val either: A \/ B) extends AnyVal {
     def extract[C](implicit ev: B <:< Evented[C]): Evented[A \/ C] =
-      either.fold(a => Evented(a.leftZ), b => b.map(c => c.rightZ))
+      either.fold(a => Evented(a.left), b => b.map(c => c.right))
 
     def right_! = either.fold(
       err => throw new LeftSideException(s"Left where right: $err"),
@@ -99,7 +92,7 @@ package object implicits {
   implicit class WeightedISExts[A](val is: WeightedIS[A])
   extends AnyVal {
     /** http://stackoverflow.com/a/2149533/1513157 **/
-    def weightedSample(itemCount: Int): Either[String, IndexedSeq[A]] = {
+    def weightedSample(itemCount: Int): String \/ IndexedSeq[A] = {
       if (is.size < itemCount)
         return s"Expected collection to have at least $itemCount items, but it had ${
           is.size} items.".left
@@ -128,21 +121,16 @@ package object implicits {
       sample.right
     }
 
-    def weightedRandom: Option[A] = weightedSample(1).right.toOption.map(_.head)
+    def weightedRandom: Option[A] = weightedSample(1).toOption.map(_.head)
   }
 
-  implicit class OrderingOps[T](val ord: Ordering[T]) extends AnyVal {
-    def orElse(ord2: Ordering[T]) = new CompositeOrdering[T](ord, ord2)
+  implicit class OrderingOps[T](val ord: scala.Ordering[T]) extends AnyVal {
+    def orElse(ord2: scala.Ordering[T]) = new CompositeOrdering[T](ord, ord2)
   }
+
+  implicit def anyEquals[A]: Equal[A] = Equal.equal((a, b) => a == b)
 
   implicit class AnyExts[A](val a: A) extends AnyVal {
-    @inline def ===(a1: A) = a == a1
-    @inline def =/=(a1: A) = a != a1
-    @inline def |>[B](f: A => B) = f(a)
-    @inline def left[B]: Either[A, B] = Left(a)
-    @inline def leftZ[B]: A \/ B = -\/(a)
-    @inline def right[B]: Either[B, A] = Right(a)
-    @inline def rightZ[B]: B \/ A = \/-(a)
     @inline def mapVal[B](f: A => B) = f(a)
     @inline def tap(f: A => Unit) = { f(a); a }
     @inline def cast[B : ClassTag]: Option[B] =
@@ -170,10 +158,10 @@ package object implicits {
   }
 
   def parseUUID(arr: Array[Byte]): String \/ UUID = {
-    if (arr.size != 16) s"Expected array size 16, but was ${arr.size}".leftZ
+    if (arr.size != 16) s"Expected array size 16, but was ${arr.size}".left
     else {
       val bb = ByteBuffer.wrap(arr)
-      new UUID(bb.getLong, bb.getLong).rightZ
+      new UUID(bb.getLong, bb.getLong).right
     }
   }
 }

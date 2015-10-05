@@ -6,7 +6,7 @@ import utils.data.NonEmptyVector
 
 import scala.annotation.tailrec
 import scala.collection.mutable
-import scalaz.\/
+import scalaz._, Scalaz._
 
 object Pathfinding {
   case class SearchRes[+A](value: A, path: Path) {
@@ -52,15 +52,15 @@ object Pathfinding {
     ): String \/ Path = {
       path.v.foldLeft(startingPosition) { case (p, nextP) =>
         if (! world.bounds.contains(nextP))
-          return s"$nextP is not within world bounds ${world.bounds}!".leftZ
+          return s"$nextP is not within world bounds ${world.bounds}!".left
         else if (! p.isNextTo(nextP))
-          return s"$p is not next to $nextP!".leftZ
+          return s"$p is not next to $nextP!".left
         else if (obstructed(nextP, world.objects))
-          return s"$nextP is taken by object blocking movement in the world".leftZ
+          return s"$nextP is taken by object blocking movement in the world".left
         nextP
       }
 
-      Path(startingPosition +: path.v).rightZ
+      Path(startingPosition +: path.v).right
     }
   }
 
@@ -169,7 +169,7 @@ object Pathfinding {
   private[this] def bfs(
     originNode: Node, worldBounds: Bounds, obstacles: WorldObjs.Any
   )(abortSearch: Node => Boolean, onNodeVisited: Node => Unit): Unit = {
-    implicit val ord = Ordering[Movement].on((n: Node) => n.distance).reverse
+    implicit val ord = scala.Ordering[Movement].on((n: Node) => n.distance).reverse
     val queue = mutable.PriorityQueue(originNode)
     var visited = Set.empty[Vect2]
 
@@ -241,7 +241,7 @@ object Pathfinding {
     var fScore = Map(start -> estimate(start))
 
     // The set of tentative nodes to be evaluated, initially containing the start node
-    implicit val ord = Ordering[Movement].on((v: Vect2) => estimate(v)).reverse
+    implicit val ord = scala.Ordering[Movement].on((v: Vect2) => estimate(v)).reverse
     val openSet = mutable.PriorityQueue(start)
 
     while (openSet.nonEmpty) {

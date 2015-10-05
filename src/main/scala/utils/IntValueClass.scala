@@ -1,6 +1,7 @@
 package utils
 
 import implicits._
+import scalaz._, Scalaz._
 
 object IntValueClass {
   trait Numeric[A <: IntValueClass[A]] extends scala.Numeric[A] {

@@ -7,7 +7,7 @@ import app.models.game.{Percentage, Actions, Player, Population}
 import implicits._
 import spire.math.Rational
 
-import scalaz.\/
+import scalaz._, Scalaz._
 
 trait ExtractorStatsImpl extends WarpableCompanion[Extractor]
 { _: ExtractorStats.type =>
@@ -27,9 +27,9 @@ trait ExtractorStatsImpl extends WarpableCompanion[Extractor]
     val objects = world.objects.objectsIn(b)
     val isAsteroid = objects.exists(_.isInstanceOf[Asteroid])
     if (! isAsteroid || objects.size =/= 1)
-      s"Warping in: expected $b to only have asteroid, but there were $objects".leftZ
+      s"Warping in: expected $b to only have asteroid, but there were $objects".left
     else
-      Extractor(position, owner).rightZ
+      Extractor(position, owner).right
   }
 }
 
@@ -66,16 +66,16 @@ _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
 
   def findAsteroid(world: World): String \/ Asteroid = {
     world.objects.getCT[Asteroid](position).fold2(
-      s"Cannot find asteroid for $this!".leftZ,
-      _.rightZ
+      s"Cannot find asteroid for $this!".left,
+      _.right
     )
   }
 
   private[this] def extractResources(
     world: World, howMuch: Resources
   )(asteroid: Asteroid): String \/ Evented[World] = {
-    if (howMuch < Resources(0)) s"howMuch ($howMuch) has to be positive!".leftZ
-    else if (asteroid.resources.isZero) s"No resources left in $asteroid!".leftZ
+    if (howMuch < Resources(0)) s"howMuch ($howMuch) has to be positive!".left
+    else if (asteroid.resources.isZero) s"No resources left in $asteroid!".left
     else {
       val res = asteroid.resources min howMuch
 
@@ -102,7 +102,7 @@ _: Extractor with BuildingImpl with WarpableImpl with SpecialActionImpl =>
         world <- world.addResources(owner, resources).right_!
         world <- world.removeEvt(this)
         world <- world.removeEvt(asteroid)
-      } yield world).rightZ
+      } yield world).right
     }
   }
 }

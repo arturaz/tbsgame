@@ -8,6 +8,7 @@ import app.models.game.world.maps.WarpZoneMap
 import app.models.game.world.units._
 import implicits._
 import app.models.game.world.Ops._
+import scalaz._, Scalaz._
 
 import scala.language.implicitConversions
 

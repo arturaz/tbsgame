@@ -4,9 +4,9 @@ import akka.event.LoggingAdapter
 import app.models.game.{Player, Actions}
 import app.models.game.events.Evented
 import implicits._
+import scalaz._, Scalaz._
 
 import scala.language.implicitConversions
-import scalaz.\/
 
 trait SpecialActionStatsImpl { _: SpecialActionStats =>
   val specialActionsNeeded: Actions
@@ -18,7 +18,7 @@ trait SpecialActionImpl extends OwnedObjImpl {
   def special(world: World, invokedBy: Player)(implicit log: LoggingAdapter)
   : String \/ Evented[World] =
     if (isWarpedIn) specialImpl(world, invokedBy)
-    else s"Can't do special for $this while warping in!".leftZ
+    else s"Can't do special for $this while warping in!".left
 
   protected def specialImpl(world: World, invokedBy: Player)(implicit log: LoggingAdapter)
   : String \/ Evented[World]

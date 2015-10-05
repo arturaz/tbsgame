@@ -3,10 +3,7 @@ package app.models.game.world
 import java.util.UUID
 
 import akka.event.LoggingAdapter
-import app.algorithms.behaviour_trees.AI.BotAI
-import app.algorithms.behaviour_trees.BehaviourTree.NodeResult
 import app.models.game._
-import app.models.game.ai.GrowingSpawnerAI
 import app.models.game.events._
 import app.models.game.world.maps.{WasVisibleMap, VisibilityMap, WarpZoneMap}
 import app.models.game.world.props.ExtractionSpeed
@@ -16,9 +13,8 @@ import monocle.{Lenser, SimpleLens}
 import utils.{IdObj, ValWithMax, IntValueClass}
 
 import scala.annotation.tailrec
-import scala.reflect.ClassTag
 import scala.util.Random
-import scalaz.\/
+import scalaz._, Scalaz._
 
 case class WorldPlayerState(resources: Resources)
 object WorldPlayerState {
@@ -187,14 +183,14 @@ case class World private (
     val curState = state(player)
     val curS = lens.get(curState)
     if (count.isNegative && curS < -count)
-      s"Had $curS, wanted to subtract ${-count}!".leftZ
+      s"Had $curS, wanted to subtract ${-count}!".left
     else {
       val newRes = curS + count
       val newState = lens.set(curState, newRes)
       Evented(
         updatedPlayerStates(playerStates updated (player, newState)),
         events(newRes)
-      ).rightZ
+      ).right
     }
   }
 

@@ -7,8 +7,8 @@ import app.models.game.world.units._
 import app.models.game.{Actions, Player, Population}
 import implicits._
 
-import scala.language.implicitConversions
-import scalaz.\/
+import scala.language.{existentials, implicitConversions}
+import scalaz._, Scalaz._
 
 sealed trait WarpableGroup
 object WarpableGroup {
@@ -16,7 +16,7 @@ object WarpableGroup {
   case object Unit extends WarpableGroup
 }
 
-trait WarpableCompanion[Self <: Warpable] { _: WObjectStats =>
+trait WarpableCompanion[+Self <: Warpable] { _: WObjectStats =>
   /* Create Warpable at given position. */
   protected def warpWOReactionImpl(
     world: World, owner: Player, position: Vect2
@@ -28,7 +28,7 @@ trait WarpableCompanion[Self <: Warpable] { _: WObjectStats =>
     val b = bounds(position)
     if (!checkVisibility || world.isVisibleFull(owner, b))
       warpWOReactionImpl(world, owner, position)
-    else s"$b is not fully visible for $owner".leftZ
+    else s"$b is not fully visible for $owner".left
   }
 
   /* Warp with reactions applied. */
@@ -55,14 +55,14 @@ _: WObjectStats =>
     world: World, owner: Player, position: Vect2
   ): String \/ Self = {
     val b = bounds(position)
-    if (! world.canWarp(b)) s"Can't warp in because $b is taken in $world".leftZ
-    else warp(owner, position).rightZ
+    if (! world.canWarp(b)) s"Can't warp in because $b is taken in $world".left
+    else warp(owner, position).right
   }
 }
 
 object WarpableCompanion {
-  type Some = WarpableStats with WarpableCompanion[_ <: Warpable]
   type Of[A <: Warpable] = WarpableStats with WarpableCompanion[A]
+  type Some = Of[Warpable]
 }
 
 trait WarpableStatsImpl { _: WarpableStats =>

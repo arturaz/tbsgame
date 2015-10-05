@@ -19,7 +19,7 @@ final case class Event(
     actionsChange: Option[netmsg.game.ActionsChangeEvt] = None,
     warpChange: Option[netmsg.game.WarpStateChangeEvt] = None,
     attacksChange: Option[netmsg.game.AttacksChangeEvt] = None,
-    turnEndedChange: Option[netmsg.game.TurnEndedChangeEvt] = None,
+    roundEndedChange: Option[netmsg.game.RoundEndedChangeEvt] = None,
     objDestroyed: Option[netmsg.game.ObjDestroyedEvt] = None,
     hpChange: Option[netmsg.game.HPChangeEvt] = None,
     levelChange: Option[netmsg.game.LevelChangeEvt] = None,
@@ -44,7 +44,7 @@ final case class Event(
       if (actionsChange.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(actionsChange.get.serializedSize) + actionsChange.get.serializedSize }
       if (warpChange.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(warpChange.get.serializedSize) + warpChange.get.serializedSize }
       if (attacksChange.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(attacksChange.get.serializedSize) + attacksChange.get.serializedSize }
-      if (turnEndedChange.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(turnEndedChange.get.serializedSize) + turnEndedChange.get.serializedSize }
+      if (roundEndedChange.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(roundEndedChange.get.serializedSize) + roundEndedChange.get.serializedSize }
       if (objDestroyed.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(objDestroyed.get.serializedSize) + objDestroyed.get.serializedSize }
       if (hpChange.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(hpChange.get.serializedSize) + hpChange.get.serializedSize }
       if (levelChange.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(levelChange.get.serializedSize) + levelChange.get.serializedSize }
@@ -117,7 +117,7 @@ final case class Event(
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
-      turnEndedChange.foreach { v => 
+      roundEndedChange.foreach { v => 
         output.writeTag(14, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
@@ -181,7 +181,7 @@ final case class Event(
       var __actionsChange = this.actionsChange
       var __warpChange = this.warpChange
       var __attacksChange = this.attacksChange
-      var __turnEndedChange = this.turnEndedChange
+      var __roundEndedChange = this.roundEndedChange
       var __objDestroyed = this.objDestroyed
       var __hpChange = this.hpChange
       var __levelChange = this.levelChange
@@ -221,7 +221,7 @@ final case class Event(
           case 106 =>
             __attacksChange = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __attacksChange.getOrElse(netmsg.game.AttacksChangeEvt.defaultInstance)))
           case 114 =>
-            __turnEndedChange = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __turnEndedChange.getOrElse(netmsg.game.TurnEndedChangeEvt.defaultInstance)))
+            __roundEndedChange = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __roundEndedChange.getOrElse(netmsg.game.RoundEndedChangeEvt.defaultInstance)))
           case 122 =>
             __objDestroyed = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __objDestroyed.getOrElse(netmsg.game.ObjDestroyedEvt.defaultInstance)))
           case 130 =>
@@ -256,7 +256,7 @@ final case class Event(
           actionsChange = __actionsChange,
           warpChange = __warpChange,
           attacksChange = __attacksChange,
-          turnEndedChange = __turnEndedChange,
+          roundEndedChange = __roundEndedChange,
           objDestroyed = __objDestroyed,
           hpChange = __hpChange,
           levelChange = __levelChange,
@@ -304,9 +304,9 @@ final case class Event(
     def getAttacksChange: netmsg.game.AttacksChangeEvt = attacksChange.getOrElse(netmsg.game.AttacksChangeEvt.defaultInstance)
     def clearAttacksChange: Event = copy(attacksChange = None)
     def withAttacksChange(__v: netmsg.game.AttacksChangeEvt): Event = copy(attacksChange = Some(__v))
-    def getTurnEndedChange: netmsg.game.TurnEndedChangeEvt = turnEndedChange.getOrElse(netmsg.game.TurnEndedChangeEvt.defaultInstance)
-    def clearTurnEndedChange: Event = copy(turnEndedChange = None)
-    def withTurnEndedChange(__v: netmsg.game.TurnEndedChangeEvt): Event = copy(turnEndedChange = Some(__v))
+    def getRoundEndedChange: netmsg.game.RoundEndedChangeEvt = roundEndedChange.getOrElse(netmsg.game.RoundEndedChangeEvt.defaultInstance)
+    def clearRoundEndedChange: Event = copy(roundEndedChange = None)
+    def withRoundEndedChange(__v: netmsg.game.RoundEndedChangeEvt): Event = copy(roundEndedChange = Some(__v))
     def getObjDestroyed: netmsg.game.ObjDestroyedEvt = objDestroyed.getOrElse(netmsg.game.ObjDestroyedEvt.defaultInstance)
     def clearObjDestroyed: Event = copy(objDestroyed = None)
     def withObjDestroyed(__v: netmsg.game.ObjDestroyedEvt): Event = copy(objDestroyed = Some(__v))
@@ -348,7 +348,7 @@ final case class Event(
         case 11 => actionsChange
         case 12 => warpChange
         case 13 => attacksChange
-        case 14 => turnEndedChange
+        case 14 => roundEndedChange
         case 15 => objDestroyed
         case 16 => hpChange
         case 17 => levelChange
@@ -378,7 +378,7 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
     actionsChange = fieldsMap.getOrElse(11, None).asInstanceOf[Option[netmsg.game.ActionsChangeEvt]],
     warpChange = fieldsMap.getOrElse(12, None).asInstanceOf[Option[netmsg.game.WarpStateChangeEvt]],
     attacksChange = fieldsMap.getOrElse(13, None).asInstanceOf[Option[netmsg.game.AttacksChangeEvt]],
-    turnEndedChange = fieldsMap.getOrElse(14, None).asInstanceOf[Option[netmsg.game.TurnEndedChangeEvt]],
+    roundEndedChange = fieldsMap.getOrElse(14, None).asInstanceOf[Option[netmsg.game.RoundEndedChangeEvt]],
     objDestroyed = fieldsMap.getOrElse(15, None).asInstanceOf[Option[netmsg.game.ObjDestroyedEvt]],
     hpChange = fieldsMap.getOrElse(16, None).asInstanceOf[Option[netmsg.game.HPChangeEvt]],
     levelChange = fieldsMap.getOrElse(17, None).asInstanceOf[Option[netmsg.game.LevelChangeEvt]],
@@ -420,8 +420,8 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
     def optionalWarpChange: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WarpStateChangeEvt]] = field(_.warpChange)((c_, f_) => c_.copy(warpChange = f_))
     def attacksChange: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.AttacksChangeEvt] = field(_.getAttacksChange)((c_, f_) => c_.copy(attacksChange = Some(f_)))
     def optionalAttacksChange: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.AttacksChangeEvt]] = field(_.attacksChange)((c_, f_) => c_.copy(attacksChange = f_))
-    def turnEndedChange: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.TurnEndedChangeEvt] = field(_.getTurnEndedChange)((c_, f_) => c_.copy(turnEndedChange = Some(f_)))
-    def optionalTurnEndedChange: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.TurnEndedChangeEvt]] = field(_.turnEndedChange)((c_, f_) => c_.copy(turnEndedChange = f_))
+    def roundEndedChange: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.RoundEndedChangeEvt] = field(_.getRoundEndedChange)((c_, f_) => c_.copy(roundEndedChange = Some(f_)))
+    def optionalRoundEndedChange: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.RoundEndedChangeEvt]] = field(_.roundEndedChange)((c_, f_) => c_.copy(roundEndedChange = f_))
     def objDestroyed: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.ObjDestroyedEvt] = field(_.getObjDestroyed)((c_, f_) => c_.copy(objDestroyed = Some(f_)))
     def optionalObjDestroyed: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.ObjDestroyedEvt]] = field(_.objDestroyed)((c_, f_) => c_.copy(objDestroyed = f_))
     def hpChange: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.HPChangeEvt] = field(_.getHpChange)((c_, f_) => c_.copy(hpChange = Some(f_)))
@@ -453,7 +453,7 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
   final val ACTIONS_CHANGE_FIELD_NUMBER = 11
   final val WARP_CHANGE_FIELD_NUMBER = 12
   final val ATTACKS_CHANGE_FIELD_NUMBER = 13
-  final val TURN_ENDED_CHANGE_FIELD_NUMBER = 14
+  final val ROUND_ENDED_CHANGE_FIELD_NUMBER = 14
   final val OBJ_DESTROYED_FIELD_NUMBER = 15
   final val HP_CHANGE_FIELD_NUMBER = 16
   final val LEVEL_CHANGE_FIELD_NUMBER = 17

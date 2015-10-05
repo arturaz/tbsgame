@@ -5,6 +5,7 @@ import java.util.UUID
 import app.models.User
 import app.models.game.world.OwnedObj
 import implicits._
+import scalaz._, Scalaz._
 import utils.IdObj
 
 object Owner {

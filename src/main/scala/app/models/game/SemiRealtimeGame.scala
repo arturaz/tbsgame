@@ -9,25 +9,22 @@ import app.models.game.world.WarpableCompanion.Some
 import org.joda.time.DateTime
 import utils.data.NonEmptyVector
 import implicits._
-
-import scalaz.{\/, \/-, -\/}
+import scalaz._, Scalaz._
 
 object SemiRealtimeGame extends GameActorGameStarter[SemiRealtimeGame] {
   override def startNewGame(
     game: Game, turnTimers: Option[WithCurrentTime[TurnTimers]]
   )(implicit log: LoggingAdapter) = {
     if (game.world.teams.size < 2) {
-      s"Need at least 2 teams, but had ${game.world.teams}!".leftZ
+      s"Need at least 2 teams, but had ${game.world.teams}!".left
     }
-    else game.roundStarted.flatMap { game =>
+    else game.roundStarted.map { game =>
       val spinner = TurnSpinner(playerOrder(game))
-      val evtOptTurnTimers = turnTimers.map(_ { (tt, currentTime) =>
+      val optTurnTimers = turnTimers.map(_ { (tt, currentTime) =>
         tt.turnStarted(spinner.current, currentTime)
-      }).extract
-      evtOptTurnTimers.flatMap { optTurnTimers =>
-        Evented(SemiRealtimeGame(game, spinner, optTurnTimers))
-      }
-    }.rightZ
+      })
+      SemiRealtimeGame(game, spinner, optTurnTimers)
+    }.right
   }
 
   def playerOrder(game: Game): Vector[Human] = {
@@ -43,18 +40,22 @@ object SemiRealtimeGame extends GameActorGameStarter[SemiRealtimeGame] {
     order.toVector
   }
 
-  type Result = Game.ResultT[SemiRealtimeGame]
+  type Result = Game.ResultT[Winner \/ SemiRealtimeGame]
 }
 
 case class SemiRealtimeGame(
   game: Game, turnSpinner: TurnSpinner[Human], turnTimers: Option[TurnTimers]
 ) extends GameActorGame
 {
-  def update(human: Human, currentTime: DateTime, result: Game.Result)
-  : Game.ResultT[SemiRealtimeGame] =
-    result.map { evtGame => evtGame.flatMap(update(_, currentTime)) }
+  def update(result: Game.ResultOrWinner, now: DateTime)
+  : SemiRealtimeGame.Result =
+    result.map { evtGame =>
+      evtGame.flatMap { winnerOrGame =>
+        winnerOrGame.map(update(_, now)).extract
+      }
+    }
 
-  def update(game: Game, now: DateTime) = {
+  def update(game: Game, now: DateTime): Evented[SemiRealtimeGame] = {
     def rec(curSpin: TurnSpinner[Human]): TurnSpinner[Human] = {
       if (game.turnEnded(curSpin.current)) rec(curSpin.next)
       else curSpin
@@ -63,28 +64,22 @@ case class SemiRealtimeGame(
     val newSpinner =
       if (game.allPlayersTurnEnded) turnSpinner.next
       else rec(turnSpinner.next)
-    val evtTT = turnTimers.map {
+    val newTT = turnTimers.map {
       _.endTurn(turnSpinner.current, now).turnStarted(newSpinner.current, now)
-    }.extract
-    val evtGame = evtTT.flatMap { tt =>
-      val newGame = copy(game = game, turnSpinner = newSpinner, turnTimers = tt)
-      Evented(
-        newGame,
-        Vector(newGame.currentTurnStartedEvt)
-      )
     }
-    evtGame
+    val newGame = copy(game = game, turnSpinner = newSpinner, turnTimers = newTT)
+    Evented(
+      newGame,
+      Vector(newGame.currentTurnStartedEvt)
+    )
   }
 
   def canAct(human: Human) = human === turnSpinner.current
 
-  def humanDo(human: Human, now: DateTime)(f: Human => Game.Result) =
-    humanDoTBG(human) { human => update(human, now, f(human)) }
-
-  def humanDoTBG(human: Human)(f: Human => SemiRealtimeGame.Result)
-  : SemiRealtimeGame.Result =
-    if (canAct(human)) f(human)
+  def humanDo(human: Human, now: DateTime)(f: Human => Game.ResultOrWinner) = {
+    if (canAct(human)) update(f(human), now)
     else s"$human cannot act, because current is ${turnSpinner.current}".left
+  }
 
   override def warp(human: Human, position: Vect2, warpable: Some, now: DateTime)
   (implicit log: LoggingAdapter) =
@@ -108,16 +103,16 @@ case class SemiRealtimeGame(
   )(implicit log: LoggingAdapter) =
     humanDo(human, now)(game.moveAttack(_, id, path, targetId))
 
-  def turnTimeEnded(human: Human, currentTime: DateTime)
-    (implicit log: LoggingAdapter) = update(human, currentTime, game.turnTimeEnded(human))
+  def turnTimeEnded(human: Human, now: DateTime)
+    (implicit log: LoggingAdapter) = update(game.turnTimeEnded(human), now)
 
-  override def endTurn(
+  override def endRound(
     human: Human, now: DateTime
   )(implicit log: LoggingAdapter) =
-    update(human, now, game.endRound(human))
+    update(game.endRound(human), now)
 
   override def concede(human: Human, now: DateTime)(implicit log: LoggingAdapter) =
-    update(human, now, game.concede(human))
+    update(game.concede(human), now)
 
   override def shouldGoToNextRound = game.allPlayersTurnEnded
 
@@ -135,30 +130,31 @@ case class SemiRealtimeGame(
   override def checkTurnTimes(currentTime: DateTime)(implicit log0: LoggingAdapter) = {
     lazy val log = log0.prefixed("checkTurnTimes")
     turnTimers match {
-      case None => Evented(this)
+      case None => Evented(this.right)
       case Some(timers) =>
-        timers.map.foldLeft(Evented(this)) {
-          case (evtSRGame, (human, TurnTimer(_, Some(timeframe))))
-            if human === turnSpinner.current && timeframe.timeUsedUp(currentTime)
-              && evtSRGame.value.game.states.get(human).fold2(
-                {
-                  log.error(
-                    "cannot find {} in game player states {}",
-                    human, evtSRGame.value.game.states
-                  )
-                  false
-                },
-                _.activity === GamePlayerState.WaitingForTurnEnd
-              ) =>
-            evtSRGame.flatMap { srGame =>
-              srGame.turnTimeEnded(human, currentTime).fold(
-                err => {
-                  log.error("TurnBasedGame#turnTimeEnded failed for {} with {}", human, err)
-                  Evented(srGame)
-                },
-                identity
-              )
-            }
+        timers.map.foldLeft(Evented(this.right[Winner])) {
+          case (
+            Evented(\/-(srGame), prevEvents),
+            (human, TurnTimer(_, Some(timeframe)))
+          ) if human === turnSpinner.current && timeframe.timeUsedUp(currentTime)
+            && srGame.game.states.get(human).fold2(
+              {
+                log.error(
+                  "cannot find {} in game player states {}",
+                  human, srGame.game.states
+                )
+                false
+              },
+              _.activity === GamePlayerState.Active
+            )
+          =>
+            prevEvents ++: srGame.turnTimeEnded(human, currentTime).fold(
+              err => {
+                log.error("TurnBasedGame#turnTimeEnded failed for {} with {}", human, err)
+                Evented(srGame.right)
+              },
+              identity
+            )
           case (evtTbg, _) => evtTbg
         }
     }

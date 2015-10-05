@@ -3,6 +3,7 @@ package app.models.game
 import app.models.game.world._
 import implicits._
 import utils.IntValueClass
+import scalaz._, Scalaz._
 
 sealed trait Objective {
   type Remaining <: IntValueClass[Remaining]

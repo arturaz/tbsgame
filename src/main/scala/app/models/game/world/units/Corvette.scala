@@ -5,6 +5,9 @@ import app.models.game.world._
 import app.models.game.{Population, Actions, Player}
 import app.models.game.world.Ops._
 
+import implicits._
+import scalaz._, Scalaz._
+
 trait CorvetteStatsImpl extends EmptySpaceWarpableCompanion[Corvette]
 { _: CorvetteStats.type =>
   override val maxHp = HP(120)
@@ -38,17 +41,16 @@ trait CorvetteImpl { _: Corvette =>
   override val stats = CorvetteStats
 
   override def specialImpl
-  (world: World, invokedBy: Player)(implicit log: LoggingAdapter) = Either.cond(
-    ! noAttacksLeft,
-    {
-      for {
+  (world: World, invokedBy: Player)(implicit log: LoggingAdapter) =
+    if (noAttacksLeft) s"Cannot toggle special action for $this: already attacked!".left
+    else {
+      val evtWorld = for {
         self <- toFighterOps(this).withAttacksLeftEvt(attacksLeft - Attacks(1))(world)
         self <- toMovableOps(self).setMoveValues(
           world, movementLeft + stats.specialMovementAdded
         )
         world <- world.updated(this, self)
       } yield world
-    },
-    s"Cannot toggle special action for $this: already attacked!"
-  )
+      evtWorld.right
+    }
 }

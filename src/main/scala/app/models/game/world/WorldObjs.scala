@@ -7,7 +7,7 @@ import app.models.game.world.WorldObjs.{PositionsMap, ObjectsMap}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.{mutable, IterableLike}
 import scala.reflect.ClassTag
-import scalaz._, scalaz.syntax.std.option._
+import scalaz._, Scalaz._
 import implicits._
 
 object WorldObjs {
@@ -95,7 +95,7 @@ case class WorldObjs[Obj <: WObject] private (
   private[this] def doManyEither[A]
   (as: TraversableOnce[A])(f: (WorldObjs[Obj], A) => String \/ WorldObjs[Obj])
   : String \/ WorldObjs[Obj] =
-    as.foldLeft(this.rightZ[String]) {
+    as.foldLeft(this.right[String]) {
       case (\/-(wo), a) => f(wo, a)
       case (left @ -\/(err), _) => left
     }
@@ -106,11 +106,11 @@ case class WorldObjs[Obj <: WObject] private (
   }
 
   def add(obj: Obj): String \/ WorldObjs[Obj] = {
-    if (objectsMap.contains(obj.id)) s"$obj already exists in $this".leftZ
+    if (objectsMap.contains(obj.id)) s"$obj already exists in $this".left
     else copy(
       objectsMap = objectsMap + (obj.id -> obj),
       positionsMap = positionsMap |> addPositions(obj.id, obj.bounds.points)
-    ).rightZ
+    ).right
   }
 
   def add(objs: TraversableOnce[Obj]): String \/ WorldObjs[Obj] =
@@ -124,11 +124,11 @@ case class WorldObjs[Obj <: WObject] private (
 
   def remove(objId: WObject.Id): String \/ WorldObjs[Obj] = {
     objectsMap.get(objId).fold2(
-      s"$objId is not in $this".leftZ,
+      s"$objId is not in $this".left,
       obj => copy(
         objectsMap = objectsMap - obj.id,
         positionsMap = positionsMap |> removePositions(obj.id, obj.bounds.points)
-      ).rightZ
+      ).right
     )
   }
   def remove(objs: TraversableOnce[WObject.Id]): String \/ WorldObjs[Obj] =

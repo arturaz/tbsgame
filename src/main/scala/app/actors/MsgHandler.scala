@@ -11,6 +11,7 @@ import app.protobuf.parsing.Parsing
 import app.protobuf.serializing.Serializing
 import utils.network.{CodedFramePipeline, IntFramedPipeline, Pipeline}
 import implicits._
+import scalaz._, Scalaz._
 
 /**
  * Created by arturas on 2014-10-15.
@@ -44,8 +45,8 @@ extends Actor with ActorLogging {
 
   private[this] val fromClient: Receive = {
     case Received(data) => pipeline.fromClient(data).foreach {
-      case Left(err) => log.error(err)
-      case Right(msg) => netClient ! msg
+      case -\/(err) => log.error(err)
+      case \/-(msg) => netClient ! msg
     }
   }
 
@@ -113,12 +114,12 @@ extends Actor with ActorLogging {
 }
 
 class MsgHandlerPipeline(implicit byteOrder: ByteOrder, log: LoggingAdapter)
-extends Pipeline[ByteString, Vector[Either[String, FromClient]], FromServer, ByteString] {
+extends Pipeline[ByteString, Vector[String \/ FromClient], FromServer, ByteString] {
   private[this] val intFramed = new IntFramedPipeline()
   private[this] val coded = new CodedFramePipeline(Parsing.parse, Serializing.serialize)
 
   override def fromClient(data: ByteString) = intFramed.fromClient(data).map { frame =>
-    coded.fromClient(frame).left.map(err => s"Cannot decode $frame into message: $err")
+    coded.fromClient(frame).leftMap(err => s"Cannot decode $frame into message: $err")
   }
 
   override def toClient(data: FromServer) =

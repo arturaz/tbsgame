@@ -7,6 +7,7 @@ import app.models.game.world.units._
 import app.models.game.world.buildings._
 import netmsg._
 import implicits._
+import scalaz._, Scalaz._
 
 import scala.language.implicitConversions
 
@@ -33,27 +34,27 @@ trait GameProto extends BaseProto {
     case game.WarpableKind.U_WARP_PRISM => WarpPrismStats
   }
 
-  def parse(msg: game.FromClient): Either[String, GameInMsg] = {
+  def parse(msg: game.FromClient): String \/ GameInMsg = {
     import app.actors.game.GameActor.In._
 
     msg match {
       case game.FromClient(Some(m), _, _, _, _, _, _, _) =>
-        Right(Warp(_: Human, m.position, m.warpable))
+        \/-(Warp(_: Human, m.position, m.warpable))
       case game.FromClient(_, Some(m), _, _, _, _, _, _) =>
-        for (path <- parsePath(m.path).right) yield Move(_: Human, m.id, path)
+        for (path <- parsePath(m.path)) yield Move(_: Human, m.id, path)
       case game.FromClient(_, _, Some(m), _, _, _, _, _) =>
-        Right(Attack(_: Human, id = m.id, targetId = m.targetId))
+        \/-(Attack(_: Human, id = m.id, targetId = m.targetId))
       case game.FromClient(_, _, _, Some(m), _, _, _, _) =>
-        Right(Special(_: Human, m.id))
+        \/-(Special(_: Human, m.id))
       case game.FromClient(_, _, _, _, Some(m), _, _, _) =>
-        for (path <- parsePath(m.path).right)
+        for (path <- parsePath(m.path))
           yield MoveAttack(_: Human, id = m.id, path, targetId = m.targetId)
       case game.FromClient(_, _, _, _, _, Some(m), _, _) =>
-        Right(Leave.apply(_: Human))
+        \/-(Leave.apply(_: Human))
       case game.FromClient(_, _, _, _, _, _, Some(m), _) =>
-        Right(EndTurn.apply(_: Human))
+        \/-(EndTurn.apply(_: Human))
       case game.FromClient(_, _, _, _, _, _, _, Some(m)) =>
-        Right(Concede.apply(_: Human))
+        \/-(Concede.apply(_: Human))
       case game.FromClient(None, None, None, None, None, None, None, None) =>
         s"Empty message: $msg!".left
     }

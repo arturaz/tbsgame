@@ -7,7 +7,7 @@ import app.models.game.world._
 import utils.data.NonEmptyVector
 
 import scala.util.Random
-import scalaz.\/, scalaz.effect._
+import scalaz._, Scalaz._, scalaz.effect._
 import implicits._
 
 trait WorldMaterializer {
@@ -31,10 +31,10 @@ case class GameMap private (
   def materialize(teams: Iterable[Team], npcTeam: Team)(implicit log: LoggingAdapter) = {
     if (teams.size > startingPositions.size)
       s"Needed ${teams.size} starting positions, but only had ${startingPositions.size}."
-      .leftZ
+      .left
     else {
       val npcOwner = Bot(npcTeam)
-      val objectsE = npcs.foldLeft(objects.rightZ[String]) { (objectsE, materializer) =>
+      val objectsE = npcs.foldLeft(objects.right[String]) { (objectsE, materializer) =>
         objectsE.flatMap { objects => objects.add(materializer(npcOwner))}
       }
       val shuffledStartPositions = Random.shuffle(startingPositions.toVector)
@@ -53,10 +53,10 @@ case class GameMaps(pve: NonEmptyVector[GameMap], pvp: Map[Int, NonEmptyVector[G
   def pvpMapFor(playerCount: Int): GameMaps.NoMapsForXPlayers \/ IO[GameMap] = {
     (playerCount to maxPvpPlayers).foreach { count =>
       pvp.get(count).foreach { maps =>
-        return maps.v.randomIO.map(_.get).rightZ
+        return maps.v.randomIO.map(_.get).right
       }
     }
-    GameMaps.NoMapsForXPlayers(playerCount, maxPvpPlayers).leftZ
+    GameMaps.NoMapsForXPlayers(playerCount, maxPvpPlayers).left
   }
 }
 object GameMaps {
@@ -72,10 +72,10 @@ case class SingleplayerMap(createWorld: SingleplayerMap.Data => LoggingAdapter =
 extends WorldMaterializer {
   override def materialize(teams: Iterable[Team], npcTeam: Team)
   (implicit log: LoggingAdapter) = {
-    if (teams.size != 1) s"Singleplayer teams != 1! $teams".leftZ
+    if (teams.size != 1) s"Singleplayer teams != 1! $teams".left
     else {
       val team = teams.head
-      createWorld(SingleplayerMap.Data(team, npcTeam))(log).rightZ
+      createWorld(SingleplayerMap.Data(team, npcTeam))(log).right
     }
   }
 }

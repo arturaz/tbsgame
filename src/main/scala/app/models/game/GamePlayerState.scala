@@ -2,6 +2,8 @@ package app.models.game
 
 import app.models.game.world.WarpableCompanion
 import monocle.Lenser
+import implicits._
+import scalaz._, Scalaz._
 
 object GamePlayerState {
   type CanWarp = Set[WarpableCompanion.Some]
@@ -13,10 +15,10 @@ object GamePlayerState {
   sealed trait Activity {
     def canAct: Boolean
   }
-  case object WaitingForTurnEnd extends Activity {
+  case object Active extends Activity {
     override val canAct = true
   }
-  case object TurnEnded extends Activity {
+  case object WaitingForNextRound extends Activity {
     override val canAct = false
   }
   case object Conceded extends Activity {
@@ -29,20 +31,25 @@ object GamePlayerState {
 case class GamePlayerState(
   actions: Actions, activity: GamePlayerState.Activity, canWarp: GamePlayerState.CanWarp
 ) {
-  def onTurnStart(player: Player, newActions: Actions) = activity match {
+  def onRoundStart(player: Player, newActions: Actions) = activity match {
     case GamePlayerState.Conceded =>
       GamePlayerState.conceded
-    case GamePlayerState.WaitingForTurnEnd | GamePlayerState.TurnEnded
+    case GamePlayerState.Active | GamePlayerState.WaitingForNextRound
     if player.isBot =>
-      copy(actions = newActions, activity = GamePlayerState.TurnEnded)
-    case GamePlayerState.WaitingForTurnEnd | GamePlayerState.TurnEnded =>
-      copy(actions = newActions, activity = GamePlayerState.WaitingForTurnEnd)
+      copy(actions = newActions, activity = GamePlayerState.WaitingForNextRound)
+    case GamePlayerState.Active | GamePlayerState.WaitingForNextRound =>
+      copy(actions = newActions, activity = GamePlayerState.Active)
   }
 
-  def onTurnEnd = activity match {
+  def waitForNextRound(toggled: Boolean) = activity match {
     case GamePlayerState.Conceded =>
       GamePlayerState.conceded
-    case GamePlayerState.WaitingForTurnEnd | GamePlayerState.TurnEnded =>
-      copy(activity = GamePlayerState.TurnEnded)
+    case GamePlayerState.Active | GamePlayerState.WaitingForNextRound =>
+      copy(
+        activity =
+          if (toggled) GamePlayerState.WaitingForNextRound else GamePlayerState.Active
+      )
   }
+
+  def toggleWaitForNextRound = waitForNextRound(activity.canAct)
 }

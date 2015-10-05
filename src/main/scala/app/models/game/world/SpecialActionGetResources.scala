@@ -3,6 +3,7 @@ package app.models.game.world
 import akka.event.LoggingAdapter
 import app.models.game.Player
 import implicits._
+import scalaz._, Scalaz._
 
 trait SpecialActionGetResourcesStatsImpl { _: SpecialActionGetResourcesStats =>
   def specialResourcesGiven: Resources

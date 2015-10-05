@@ -5,18 +5,20 @@ import app.actors.NetClient
 import netmsg._
 import implicits._
 
+import scalaz._, Scalaz._
+
 trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
   def parse(m: messages.TimeSync.FromClient): NetClient.Msgs.FromClient.TimeSync =
     NetClient.Msgs.FromClient.TimeSync(parse(m.now))
 
-  def parse(msg: messages.FromClient): Either[String, NetClient.Msgs.FromClient] = {
+  def parse(msg: messages.FromClient): String \/ NetClient.Msgs.FromClient = {
     import messages.FromClient
 
     msg match {
       case FromClient(Some(m), _, _) =>
-        parse(m).right.map(NetClient.Msgs.FromClient.Game)
+        parse(m).map(NetClient.Msgs.FromClient.Game)
       case FromClient(_, Some(m), _) =>
-        parse(m).right.map(NetClient.Msgs.FromClient.Management)
+        parse(m).map(NetClient.Msgs.FromClient.Management)
       case FromClient(_, _, Some(m)) =>
         parse(m).right
       case FromClient(None, None, None) =>
@@ -24,7 +26,7 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
     }
   }
 
-  def parse(data: ByteString): Either[String, NetClient.Msgs.FromClient] = {
+  def parse(data: ByteString): String \/ NetClient.Msgs.FromClient = {
     try {
       val protoMsg = messages.FromClient.parseFrom(data.iterator.asInputStream)
       parse(protoMsg)

@@ -9,20 +9,21 @@ import netmsg._
 import implicits._
 
 import scala.language.implicitConversions
+import scalaz._, Scalaz._
 
 trait ManagementProto extends BaseProto {
-  implicit def parse(c: management.Credentials): Either[String, Credentials] =
+  implicit def parse(c: management.Credentials): String \/ Credentials =
     c.password.map(PlainPassword.apply)
       .orElse(c.sessionToken.map(SessionToken.apply))
       .map(Credentials(c.name, _))
-      .toRight(s"No credentials provided in $c!")
+      .toRightDisjunction(s"No credentials provided in $c!")
 
   implicit def parse(mode: management.JoinGame.Mode): JoinGame.Mode = {
     if (mode.teams <= 1) JoinGame.Mode.Singleplayer
     else JoinGame.Mode.PvP(teams = mode.teams, playersPerTeam = mode.playersPerTeam)
   }
 
-  def parse(msg: management.FromClient): Either[String, NetClient.Management.In] = {
+  def parse(msg: management.FromClient): String \/ NetClient.Management.In = {
     import management.FromClient
     import app.actors.NetClient.Management.In._
 
@@ -34,7 +35,7 @@ trait ManagementProto extends BaseProto {
       case FromClient(_, _, Some(m), _, _, _) =>
         Register(m.username, PlainPassword(m.password), m.email).right
       case FromClient(_, _, _, Some(m), _, _) =>
-        for (credentials <- parse(m.credentials).right) yield Login(credentials)
+        for (credentials <- parse(m.credentials)) yield Login(credentials)
       case FromClient(_, _, _, _, Some(m), _) =>
         JoinGame(m.mode).right
       case FromClient(_, _, _, _, _, Some(m)) =>

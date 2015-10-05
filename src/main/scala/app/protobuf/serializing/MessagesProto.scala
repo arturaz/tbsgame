@@ -5,6 +5,7 @@ import app.actors.NetClient
 import app.actors.game.GameActor
 import netmsg._
 import implicits._
+import scalaz._, Scalaz._
 
 import scala.language.implicitConversions
 

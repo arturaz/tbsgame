@@ -6,6 +6,7 @@ import app.models.game.events.Evented
 import app.models.game.world._
 import app.models.game.world.Ops._
 import implicits._
+import scalaz._, Scalaz._
 import utils.ErrOpt
 
 object Combat {
@@ -36,7 +37,7 @@ object Combat {
       else
         movePath
 
-    unit.moveTo(world, moveTarget).right.flatMap { movedEvtWorldSelf =>
+    unit.moveTo(world, moveTarget).flatMap { movedEvtWorldSelf =>
       movedEvtWorldSelf.value match {
         case (newWorld, Some(movedUnit)) => andThen(newWorld, movedUnit).fold(
           err => if (! strict) movedEvtWorldSelf.right else err.left,

@@ -67,8 +67,8 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
   implicit def convert(evt: AttacksChangedEvt): game.AttacksChangeEvt =
     game.AttacksChangeEvt(evt.newObj.id, evt.newObj.attacksLeft)
 
-  implicit def convert(evt: TurnEndedChangeEvt): game.TurnEndedChangeEvt =
-    game.TurnEndedChangeEvt(evt.player.id, evt.turnEnded)
+  implicit def convert(evt: WaitingForRoundEndChangeEvt): game.RoundEndedChangeEvt =
+    game.RoundEndedChangeEvt(evt.player.id, !evt.canAct)
 
   implicit def convert(evt: ObjDestroyedEvt): game.ObjDestroyedEvt =
     game.ObjDestroyedEvt(evt.obj.id)
@@ -109,7 +109,7 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
       case evt: LeaveEvt => game.Event(leave = Some(evt))
       case evt: WarpStateChangeEvt => game.Event(warpChange = Some(evt))
       case evt: AttacksChangedEvt => game.Event(attacksChange = Some(evt))
-      case evt: TurnEndedChangeEvt => game.Event(turnEndedChange = Some(evt))
+      case evt: WaitingForRoundEndChangeEvt => game.Event(roundEndedChange = Some(evt))
       case evt: ObjDestroyedEvt => game.Event(objDestroyed = Some(evt))
       case evt: OwnerChangeEvt => game.Event(ownerChange = Some(evt))
       case evt: ObjectivesUpdatedEvt => game.Event(objectivesUpdate = Some(evt))

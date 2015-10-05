@@ -20,7 +20,7 @@ import utils.data.{Timeframe, NonEmptyVector}
 import scala.annotation.tailrec
 import scala.concurrent.duration._
 import scala.language.existentials
-import scalaz.{\/-, -\/, \/}
+import scalaz._, Scalaz._
 
 object GameActor {
   sealed trait In
@@ -120,20 +120,25 @@ object GameActor {
   }
 
   private def advanceTurnIfPossible(
-    game: GameActorGame, currentTime: DateTime
-  )(implicit log: LoggingAdapter): Evented[Winner \/ GameActorGame] = {
-    @tailrec def rec(
-      gameOrWinner: Evented[Winner \/ GameActorGame]
-    ): Evented[Winner \/ GameActorGame] = {
-      if (gameOrWinner.value.fold(_ => true, ! _.shouldGoToNextRound)) gameOrWinner
-      else rec(gameOrWinner.flatMap {
-        case left @ -\/(winner) => Evented(left)
-        case \/-(game) => game.nextRound(currentTime)
-      })
+    game: GameActorGame, now: DateTime
+  )(implicit log: LoggingAdapter): Evented[GameActorGame] = {
+    @tailrec def rec(evtGame: Evented[GameActorGame]): Evented[GameActorGame] = {
+      if (! evtGame.value.shouldGoToNextRound) evtGame
+      else rec(evtGame.flatMap(_.nextRound(now)))
     }
 
-    rec(Evented(game.rightZ))
+    rec(Evented(game))
   }
+
+  private def updatedGame(
+    now: DateTime,
+    f: => Evented[Winner \/ GameActorGame]
+  )(implicit log: LoggingAdapter): Evented[Winner \/ GameActorGame] =
+    f.flatMap {
+      case left @ -\/(_) => Evented(left)
+      case \/-(game) =>
+        advanceTurnIfPossible(game, now).map(_.right)
+    }
 
   def props(
     worldMaterializer: WorldMaterializer, turnTimerSettings: Option[TurnTimers.Settings],
@@ -146,7 +151,7 @@ object GameActor {
 }
 
 object GameActorGame {
-  type Result = Game.ResultT[GameActorGame]
+  type Result = Game.ResultT[Winner \/ GameActorGame]
 }
 trait GameActorGame {
   import GameActorGame._
@@ -165,7 +170,7 @@ trait GameActorGame {
   def moveAttack(human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id, now: DateTime)
   (implicit log: LoggingAdapter): Result
 
-  def endTurn(human: Human, now: DateTime)(implicit log: LoggingAdapter): Result
+  def endRound(human: Human, now: DateTime)(implicit log: LoggingAdapter): Result
   def concede(human: Human, now: DateTime)(implicit log: LoggingAdapter): Result
 
   def game: Game
@@ -174,7 +179,8 @@ trait GameActorGame {
   def currentTurnTimeframe: Option[Timeframe]
   def currentTurnStartedEvt = TurnStartedEvt(currentPlayer, currentTurnTimeframe)
 
-  def checkTurnTimes(time: DateTime)(implicit log: LoggingAdapter): Evented[GameActorGame]
+  def checkTurnTimes(time: DateTime)(implicit log: LoggingAdapter)
+  : Evented[Winner \/ GameActorGame]
 
   def shouldGoToNextRound: Boolean
   def nextRound(time: DateTime)(implicit log: LoggingAdapter): Evented[GameActorGame]
@@ -250,8 +256,7 @@ class GameActor private (
         starting.foreach { data =>
           events(data.human, data.client, turnStartedGame.events)
         }
-        // TODO: what to do if the game is won from the beginning?
-        turnStartedGame.value.right_!
+        turnStartedGame.value
       }
     )
   }
@@ -315,17 +320,15 @@ class GameActor private (
     case In.Special(human, id) =>
       update(sender(), human, _.special(human, id, DateTime.now))
     case In.EndTurn(human) =>
-      update(sender(), human, _.endTurn(human, DateTime.now))
+      update(sender(), human, _.endRound(human, DateTime.now))
     case In.Concede(human) =>
       update(sender(), human, _.concede(human, DateTime.now))
   }
 
   val receive: PartialFunction[Any, Unit] = notLoggedReceive orElse loggedReceive
 
-  private[this] def updatedGame(f: => Evented[GameActorGame])
-  : Evented[Winner \/ GameActorGame] = f.flatMap(advanceTurnIfPossible(_, DateTime.now))
-
-  private[this] def checkedTurnTimes = updatedGame(game.checkTurnTimes(DateTime.now))
+  private[this] def checkedTurnTimes =
+    updatedGame(DateTime.now, game.checkTurnTimes(DateTime.now))
 
   private[this] def update(
     requester: ActorRef, human: Human, f: GameActorGame => GameActorGame.Result
@@ -335,7 +338,9 @@ class GameActor private (
     val afterTimeCheck = checkedTurnTimes
     afterTimeCheck.value.fold(
       _ => postGameChange(afterTimeCheck),
-      tbg => f(tbg).right.map(evt => updatedGame(afterTimeCheck.events ++: evt)).fold(
+      tbg => f(tbg).map(evt =>
+        updatedGame(DateTime.now, afterTimeCheck.events ++: evt)
+      ).fold(
         err => {
           log.error(err)
           requester ! Out.Error(err)

@@ -1,12 +1,12 @@
 package app.models.game
 
 import app.models.game.TurnTimers.{TurnTime, HumanTurnTimersMap}
-import app.models.game.events.{SetTurnTimerEvt, Evented}
 import org.joda.time.DateTime
 import utils.data.Timeframe
 
 import scala.concurrent.duration._
 import implicits._
+import scalaz._, Scalaz._
 
 case class TurnTimer(timeLeftPool: FiniteDuration, currentTurn: Option[Timeframe])
 

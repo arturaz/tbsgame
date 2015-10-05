@@ -69,7 +69,6 @@ case class WarpGate(
 with SizedWObject with SpecialActionGetResources with AutoSpecial {
   type Stats = WarpGateStats.type
   override val stats = WarpGateStats
-  override def endOfTurnPriority = 0
 }
 object WarpGateStats extends BuildingStats with SizedWObjectStats
 with GivingActionsStats with GivingPopulationStats with SpecialActionGetResourcesStats

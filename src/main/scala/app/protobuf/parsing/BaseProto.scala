@@ -6,6 +6,7 @@ import app.models.game.world.Vect2
 import netmsg._
 import org.joda.time.DateTime
 import utils.data.NonEmptyVector
+import scalaz._, Scalaz._
 
 import scala.language.{higherKinds, implicitConversions}
 
@@ -19,7 +20,7 @@ trait BaseProto {
 
   def parsePath(
     pathList: Seq[base.Vect2]
-  ): Either[String, NonEmptyVector[Vect2]] =
+  ): String \/ NonEmptyVector[Vect2] =
     NonEmptyVector.create(pathList.view.map(parseVect2).toVector)
-    .toRight("Can't create path from empty list!")
+    .toRightDisjunction("Can't create path from empty list!")
 }

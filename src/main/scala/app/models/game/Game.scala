@@ -20,7 +20,7 @@ import app.models.game.world.Ops._
 import scala.annotation.tailrec
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
-import scalaz.{\/-, -\/, \/}
+import scalaz._, Scalaz._
 
 object Game {
   private[this] def lenser = Lenser[Game]
@@ -59,7 +59,7 @@ object Game {
     val startingPlayersWarpMap: Map[Player, CanWarp] =
       starting.map(sp => sp.player -> sp.canWarp)(collection.breakOut)
 
-    starting.foldLeft(Evented(world).rightZ[String]) {
+    starting.foldLeft(Evented(world).right[String]) {
       case (left: -\/[_], _) => left
       case (\/-(eWorld), data) =>
         eWorld.map(_.addResources(data.player, data.resources)).extractFlatten
@@ -80,7 +80,7 @@ object Game {
   def startingState(world: World, player: Player, canWarp: GamePlayerState.CanWarp) =
     GamePlayerState(
       world.actionsFor(player),
-      if (player.isHuman) GamePlayerState.WaitingForTurnEnd else GamePlayerState.TurnEnded,
+      if (player.isHuman) GamePlayerState.Active else GamePlayerState.WaitingForNextRound,
       canWarp
     )
 
@@ -98,7 +98,7 @@ object Game {
       f: GamePlayerState => Game.ResultT[A]
     ): Game.ResultT[A] = {
       if (state.actions < actionsNeeded)
-        s"Not enough actions: needed $actionsNeeded, had $state".leftZ
+        s"Not enough actions: needed $actionsNeeded, had $state".left
       else {
         val newState =
           state |-> GamePlayerState.actions modify (_ - actionsNeeded)
@@ -130,14 +130,14 @@ object Game {
         PopulationChangeEvt(player, population.withValue(_ + populationNeeded))
       ))
       else
-        s"Needed $populationNeeded, but $player only had $population!".leftZ
+        s"Needed $populationNeeded, but $player only had $population!".left
     }
 
     def withAbilityToWarp[A](
       player: Player, canWarp: GamePlayerState.CanWarp, warpable: WarpableCompanion.Some
     )(f: => Game.ResultT[A]): Game.ResultT[A] = {
       if (canWarp.contains(warpable)) f
-      else s"$player cannot warp $warpable! (allowed=$canWarp)".leftZ
+      else s"$player cannot warp $warpable! (allowed=$canWarp)".left
     }
 
     def withWarpable[A](
@@ -157,14 +157,14 @@ object Game {
     g.flatMap { game =>
       val teamStates = game.states.filterKeys(_.team === team)
       teamStates.foldLeft(Evented(game.states)) { case (e, (player, state)) =>
-        val newState = state.onTurnStart(player, game.world.actionsFor(player))
+        val newState = state.onRoundStart(player, game.world.actionsFor(player))
         if (state === newState) e
         else e.flatMap { curStates => Evented(
           curStates + (player -> newState),
-          Vector(
-            TurnEndedChangeEvt(player, ! newState.activity.canAct),
-            ActionsChangeEvt(player, newState.actions)
-          )
+          player.asHuman.fold2(
+            Vector.empty,
+            human => Vector(WaitingForRoundEndChangeEvt(human, ! newState.activity.canAct))
+          ) :+ ActionsChangeEvt(player, newState.actions)
         ) }
       }.map(game.updated)
     }
@@ -185,24 +185,24 @@ object Game {
 
       obj.special(startingWorld, player).fold(
         err =>
-          s"Failed to do auto special for $player on $obj with state $state: $err".leftZ,
+          s"Failed to do auto special for $player on $obj with state $state: $err".left,
         _.map { world =>
           (world, newState(obj.stats.specialActionsNeeded))
-        }.rightZ
+        }.right
       )
     }
 
     val team = player.team
     val playerState = game.states(player)
     if (playerState.actions.isZero)
-      s"Player actions is zero ($playerState), can't do auto special.".leftZ
+      s"Player actions is zero ($playerState), can't do auto special.".left
     else {
       val objOpt = game.world.objects.collectFirst {
         case obj: AutoSpecial
           if obj.owner.isFriendOf(team) && obj.canDoSpecial(player) => obj
       }
       objOpt.fold2(
-        Evented(game).rightZ,
+        Evented(game).right,
         obj => forPlayer(obj, player, playerState, game.world).map(_.flatMap {
           case (world, newState) => Evented(
             game.copy(world = world, states = game.states + (player -> newState)),
@@ -286,7 +286,7 @@ case class Game private (
   def warp(
     player: Player, position: Vect2, warpable: WarpableCompanion.Some
   )(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    warpW(player, position, warpable).map(_.map(_.map(_._1)))
+    warpW[Warpable](player, position, warpable).map(_.map(_.map(_._1)))
 
   def warpW[A <: Warpable](
     player: Player, position: Vect2, warpable: WarpableCompanion.Of[A]
@@ -358,7 +358,7 @@ case class Game private (
       if (state.actions.isNotZero)
         Game.doAutoSpecial(this, player)
       else
-        endRoundWithoutCheckingObjectives(player)
+        toggleEndRoundWithoutChecking(player)
     } }
 
   def special(
@@ -373,15 +373,16 @@ case class Game private (
     }
 
   def endRound(player: Player)(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    checkObjectives(player.team) { endRoundWithoutCheckingObjectives(player) }
+    checkObjectives(player.team) { toggleEndRoundWithoutChecking(player) }
 
-  def endRoundWithoutCheckingObjectives(player: Player)(implicit log: LoggingAdapter):
+  def toggleEndRoundWithoutChecking(player: Player)(implicit log: LoggingAdapter):
   Game.Result =
     withState(player) { state =>
-      if (state.activity =/= GamePlayerState.WaitingForTurnEnd)
-        s"Can't end turn: $player has state $state!".leftZ
-      else
-        Evented(updated(world, player -> state.onTurnEnd)).rightZ
+      val newState = state.toggleWaitForNextRound
+      Evented(
+        updated(world, player -> newState),
+        Vector(WaitingForRoundEndChangeEvt(player, newState.activity.canAct))
+      ).right
     }
 
   def concede(human: Human)(implicit log: LoggingAdapter): Game.ResultOrWinner =
@@ -389,9 +390,9 @@ case class Game private (
       val res =
         withState(human) { state =>
           if (state.activity === GamePlayerState.Conceded)
-            s"Can't concede: $human has already conceded!".leftZ
+            s"Can't concede: $human has already conceded!".left
           else
-            Evented(updated(world, human -> GamePlayerState.conceded)).rightZ
+            Evented(updated(world, human -> GamePlayerState.conceded)).right
         }
       res
     }
@@ -410,7 +411,7 @@ case class Game private (
     copy(world = world, states = states + player)
 
   private[this] implicit def gameResultToCheckObjectivesResult[A](r: Game.ResultT[A])
-  : Game.ResultT[Winner \/ A] = r.map(_.map(_.rightZ))
+  : Game.ResultT[Winner \/ A] = r.map(_.map(_.right))
   private[this] implicit def gameIdentity(game: Game): Game = game
 
   private[this] def checkObjectives[A](team: Team)(f: Game.ResultT[A])
@@ -422,7 +423,7 @@ case class Game private (
         val newObjectives = game.remainingObjectives(team)
         val won = newObjectives.someCompleted
         Evented(
-          if (won) Winner(team).leftZ else a.rightZ,
+          if (won) Winner(team).left else a.right,
           if (currentObjectives =/= newObjectives)
             Vector(ObjectivesUpdatedEvt(team, newObjectives)) ++
             (if (won) Vector(GameWonEvt(team)) else Vector.empty)
@@ -434,32 +435,32 @@ case class Game private (
 
   private[this] def withState[A](player: Player)(f: GamePlayerState => Game.ResultT[A])
   : Game.ResultT[A] =
-    states.get(player).fold2(s"No state for $player: $states".leftZ, f)
+    states.get(player).fold2(s"No state for $player: $states".left, f)
 
   private[this] def withVisibility(
     player: Player, position: Vect2
   )(f: => Game.Result): Game.Result =
     if (world.isVisibleFor(player, position)) f
-    else s"$player does not see $position".leftZ
+    else s"$player does not see $position".left
 
   private[this] def withVisibility(
     player: Player, obj: OwnedObj
   )(f: => Game.Result): Game.Result =
     if (world.isVisiblePartial(player, obj.bounds)) f
-    else s"$player does not see $obj".leftZ
+    else s"$player does not see $obj".left
 
   private[this] def withWarpZone[A](
     player: Player, position: Vect2
   )(f: => Game.ResultT[A]): Game.ResultT[A] =
     if (world.isValidForWarp(player, position)) f
-    else s"$player cannot warp into $position".leftZ
+    else s"$player cannot warp into $position".left
 
   private[this] type ObjFn[A] = A => Game.Result
 
   private[this] def withObj[A <: OwnedObj : ClassTag](
     id: WObject.Id
   )(f: ObjFn[A]): Game.Result = {
-    world.objects.getCT[A](id).fold2(s"Cannot find object with id $id".leftZ, f)
+    world.objects.getCT[A](id).fold2(s"Cannot find object with id $id".left, f)
   }
 
   private[this] def withCheckedObj[A <: OwnedObj](
@@ -471,7 +472,7 @@ case class Game private (
         f(obj),
         err => {
           log.info(s"$obj does not pass checker of type ${ct.runtimeClass}}: $err")
-          s"Obj $id does not pass the checker: $err".leftZ
+          s"Obj $id does not pass the checker: $err".left
         }
       )
     }
@@ -499,6 +500,6 @@ case class Game private (
     f: ObjFn[OwnedObj]
   )(implicit log: LoggingAdapter): Game.Result = withObj[OwnedObj](id) { obj =>
     if (player.isEnemyOf(obj.owner)) f(obj)
-    else s"Cannot target friendly $obj for attack!".leftZ
+    else s"Cannot target friendly $obj for attack!".left
   }
 }

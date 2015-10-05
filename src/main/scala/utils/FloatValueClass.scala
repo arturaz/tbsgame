@@ -1,6 +1,7 @@
 package utils
 
 import implicits._
+import scalaz._, Scalaz._
 
 object FloatValueClass {
   trait Numeric[A <: FloatValueClass[A]] extends scala.Numeric[A] {
