@@ -311,7 +311,7 @@ case class Game private (
       withState(player) { state =>
       withActions(player, Actions(1), state) { state =>
       withMoveObj(player, id) { obj =>
-      withVisibility(player, to.v) {
+      withVisibility(player, to) {
         obj.moveTo(world, to).map { _.map { case (w, _) =>
           updated(w, player -> state)
         } }
@@ -338,7 +338,7 @@ case class Game private (
       withState(player) { state =>
       withActions(player, Actions(1), state) { state =>
       withMoveAttackObj(player, id) { obj =>
-      withVisibility(player, path.v) {
+      withVisibility(player, path) {
       withTargetObj(player, targetId) { targetObj =>
       withVisibility(player, targetObj) {
         val evtFinal = obj.moveTo(world, path).flatMap {
