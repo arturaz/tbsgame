@@ -311,7 +311,7 @@ case class Game private (
       withState(player) { state =>
       withActions(player, Actions(1), state) { state =>
       withMoveObj(player, id) { obj =>
-      withVisibility(player, to.v.last) {
+      withVisibility(player, to.v) {
         obj.moveTo(world, to).map { _.map { case (w, _) =>
           updated(w, player -> state)
         } }
@@ -338,7 +338,7 @@ case class Game private (
       withState(player) { state =>
       withActions(player, Actions(1), state) { state =>
       withMoveAttackObj(player, id) { obj =>
-      withVisibility(player, path.v.last) {
+      withVisibility(player, path.v) {
       withTargetObj(player, targetId) { targetObj =>
       withVisibility(player, targetObj) {
         val evtFinal = obj.moveTo(world, path).flatMap {
@@ -444,6 +444,14 @@ case class Game private (
   )(f: => Game.Result): Game.Result =
     if (world.isVisibleFor(player, position)) f
     else s"$player does not see $position".left
+
+  private[this] def withVisibility(
+    player: Player, path: NonEmptyVector[Vect2]
+  )(f: => Game.Result): Game.Result = {
+    val invisiblePositions = path.v.filterNot(world.isVisibleFor(player, _))
+    if (invisiblePositions.isEmpty) f
+    else s"$player does not see path positions $invisiblePositions".left
+  }
 
   private[this] def withVisibility(
     player: Player, obj: OwnedObj
