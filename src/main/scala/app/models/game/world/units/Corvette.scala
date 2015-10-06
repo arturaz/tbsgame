@@ -11,8 +11,8 @@ import scalaz._, Scalaz._
 trait CorvetteStatsImpl extends EmptySpaceWarpableCompanion[Corvette]
 { _: CorvetteStats.type =>
   override val maxHp = HP(120)
-  override val attack = Atk(45)
-  override val attacks = Attacks(3)
+  override val attack = Atk(68)
+  override val attacks = Attacks(2)
   override val attackRange = RadialDistance.Four
   override val movement = Movement.fromTiles(10)
   override val visibility = RectDistance(4)
@@ -20,7 +20,7 @@ trait CorvetteStatsImpl extends EmptySpaceWarpableCompanion[Corvette]
   override val populationCost = Population(2)
   override val kind = WObjKind.Medium
 
-  val specialMovementAdded = Movement.fromTiles(5)
+  val specialMovementAdded = Movement.fromTiles(8)
   override val specialActionsNeeded = Actions(0)
 
   override def warp(owner: Player, position: Vect2) = Corvette(position, owner)
