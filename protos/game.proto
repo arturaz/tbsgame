@@ -669,7 +669,7 @@ message Event { // {{{
   optional WarpStateChangeEvt warp_change = 12;
   optional AttacksChangeEvt attacks_change = 13;
   // Player state
-  optional RoundEndedChangeEvt round_ended_change = 14;
+  optional WaitingForRoundEndChangeEvt waiting_for_round_end_change = 14;
   optional ObjDestroyedEvt obj_destroyed = 15;
   optional HPChangeEvt hp_change = 16;
   optional LevelChangeEvt level_change = 17;
@@ -772,7 +772,7 @@ message AttacksChangeEvt {
   required uint32 attacks_left = 2;
 }
 
-message RoundEndedChangeEvt {
+message WaitingForRoundEndChangeEvt {
   required PlayerID player_id = 1;
   required bool toggled = 2;
 }

@@ -6,10 +6,10 @@ package netmsg.game
 
 import com.trueaccord.scalapb.Descriptors
 
-final case class RoundEndedChangeEvt(
+final case class WaitingForRoundEndChangeEvt(
     playerId: netmsg.game.PlayerID,
     toggled: Boolean
-    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[RoundEndedChangeEvt] with com.trueaccord.lenses.Updatable[RoundEndedChangeEvt] {
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[WaitingForRoundEndChangeEvt] with com.trueaccord.lenses.Updatable[WaitingForRoundEndChangeEvt] {
     lazy val serializedSize: Int = {
       var __size = 0
       __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(playerId.serializedSize) + playerId.serializedSize
@@ -22,7 +22,7 @@ final case class RoundEndedChangeEvt(
       playerId.writeTo(output)
       output.writeBool(2, toggled)
     }
-    def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.RoundEndedChangeEvt = {
+    def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.WaitingForRoundEndChangeEvt = {
       var __playerId = this.playerId
       var __toggled = this.toggled
       var _done__ = false
@@ -37,37 +37,37 @@ final case class RoundEndedChangeEvt(
           case tag => __input.skipField(tag)
         }
       }
-      netmsg.game.RoundEndedChangeEvt(
+      netmsg.game.WaitingForRoundEndChangeEvt(
           playerId = __playerId,
           toggled = __toggled
       )
     }
-    def withPlayerId(__v: netmsg.game.PlayerID): RoundEndedChangeEvt = copy(playerId = __v)
-    def withToggled(__v: Boolean): RoundEndedChangeEvt = copy(toggled = __v)
+    def withPlayerId(__v: netmsg.game.PlayerID): WaitingForRoundEndChangeEvt = copy(playerId = __v)
+    def withToggled(__v: Boolean): WaitingForRoundEndChangeEvt = copy(toggled = __v)
     def getField(__field: Descriptors.FieldDescriptor): Any = {
       __field.number match {
         case 1 => playerId
         case 2 => toggled
       }
     }
-    def companion = netmsg.game.RoundEndedChangeEvt
+    def companion = netmsg.game.WaitingForRoundEndChangeEvt
 }
 
-object RoundEndedChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[RoundEndedChangeEvt]  {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[RoundEndedChangeEvt]  = this
-  def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.RoundEndedChangeEvt = netmsg.game.RoundEndedChangeEvt(
+object WaitingForRoundEndChangeEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[WaitingForRoundEndChangeEvt]  {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[WaitingForRoundEndChangeEvt]  = this
+  def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WaitingForRoundEndChangeEvt = netmsg.game.WaitingForRoundEndChangeEvt(
     playerId = fieldsMap(1).asInstanceOf[netmsg.game.PlayerID],
     toggled = fieldsMap(2).asInstanceOf[Boolean]
   )
-  lazy val descriptor = new Descriptors.MessageDescriptor("RoundEndedChangeEvt", this,
+  lazy val descriptor = new Descriptors.MessageDescriptor("WaitingForRoundEndChangeEvt", this,
     None, m = Seq(),
     e = Seq(),
-    f = netmsg.game.InternalFields_game.internalFieldsFor("netmsg.game.RoundEndedChangeEvt"))
-  lazy val defaultInstance = netmsg.game.RoundEndedChangeEvt(
+    f = netmsg.game.InternalFields_game.internalFieldsFor("netmsg.game.WaitingForRoundEndChangeEvt"))
+  lazy val defaultInstance = netmsg.game.WaitingForRoundEndChangeEvt(
     playerId = netmsg.game.PlayerID.defaultInstance,
     toggled = false
   )
-  implicit class RoundEndedChangeEvtLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, RoundEndedChangeEvt]) extends com.trueaccord.lenses.ObjectLens[UpperPB, RoundEndedChangeEvt](_l) {
+  implicit class WaitingForRoundEndChangeEvtLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, WaitingForRoundEndChangeEvt]) extends com.trueaccord.lenses.ObjectLens[UpperPB, WaitingForRoundEndChangeEvt](_l) {
     def playerId: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.PlayerID] = field(_.playerId)((c_, f_) => c_.copy(playerId = f_))
     def toggled: com.trueaccord.lenses.Lens[UpperPB, Boolean] = field(_.toggled)((c_, f_) => c_.copy(toggled = f_))
   }
