@@ -48,13 +48,23 @@ case class SemiRealtimeGame(
   game: Game, turnSpinner: TurnSpinner[Human], turnTimers: Option[TurnTimers]
 ) extends GameActorGame
 {
-  def update(result: Game.ResultOrWinner, now: DateTime)(implicit log: LoggingAdapter)
+  def updateF(result: Game.ResultOrWinner)(
+    f: Game => Evented[SemiRealtimeGame]
+  )(implicit log: LoggingAdapter)
   : SemiRealtimeGame.Result =
     result.map { evtGame =>
       evtGame.flatMap { winnerOrGame =>
-        winnerOrGame.map(update(_, now)).extract
+        winnerOrGame.map(f).extract
       }
     }
+
+  def update(result: Game.ResultOrWinner)(implicit log: LoggingAdapter)
+  : SemiRealtimeGame.Result = updateF(result)(game => Evented(updated(game)))
+
+  def updated(game: Game) = copy(game = game)
+
+  def update(result: Game.ResultOrWinner, now: DateTime)(implicit log: LoggingAdapter)
+  : SemiRealtimeGame.Result = updateF(result)(update(_, now))
 
   def update(game: Game, now: DateTime)(implicit log: LoggingAdapter)
   : Evented[SemiRealtimeGame] = {
@@ -74,18 +84,7 @@ case class SemiRealtimeGame(
         val curState = game.states(player)
         if (!curState.activity.canAct) {
           val newEvtGame = current.flatMap { _ =>
-            if (curState.actions.isNotZero) {
-              val autoSpecialResult = Game.doAutoSpecial(game, player)
-              autoSpecialResult.fold(
-                err => {
-                  log.error(
-                    "auto special failed on waiting for next round for {}: {}", player, err
-                  )
-                  Evented(game)
-                },
-                identity
-              )
-            }
+            if (curState.actions.isNotZero) Game.doAutoSpecialIgnoreErrors(game, player)
             else Evented(game)
           }.map((_, curSpin.next))
           rec(newEvtGame)
@@ -143,8 +142,21 @@ case class SemiRealtimeGame(
 
   override def toggleWaitingForRoundEnd(
     human: Human, now: DateTime
-  )(implicit log: LoggingAdapter) =
-    update(game.toggleWaitForNextRound(human), now)
+  )(implicit log: LoggingAdapter) = {
+    val state = game.states(human)
+    val result =
+      if (turnSpinner.current === human) update(
+        if (state.actions.isNotZero && state.activity.canAct)
+          Game.doAutoSpecialIgnoreErrors(game, human)
+            .map(_.toggleWaitForNextRound(human)).extractFlatten
+        else
+          game.toggleWaitForNextRound(human),
+        now
+      )
+      else
+        update(game.toggleWaitForNextRound(human))
+    result
+  }
 
   override def concede(human: Human, now: DateTime)(implicit log: LoggingAdapter) =
     update(game.concede(human), now)

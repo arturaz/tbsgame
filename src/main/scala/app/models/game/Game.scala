@@ -168,6 +168,17 @@ object Game {
       }.map(game.updated)
     }
 
+  def doAutoSpecialIgnoreErrors(game: Game, player: Player)(implicit log: LoggingAdapter)
+  : Evented[Game] = doAutoSpecial(game, player).fold(
+    err => {
+      log.error(
+        "Game.doAutoSpecialIgnoreErrors failed for {}: {}", player, err
+      )
+      Evented(game)
+    },
+    identity
+  )
+
   /* Do one auto special action for given player. */
   def doAutoSpecial(game: Game, player: Player)(implicit log: LoggingAdapter)
   : Game.Result = {
@@ -358,8 +369,10 @@ case class Game private (
     withState(player) { state =>
       if (state.actions.isNotZero)
         Game.doAutoSpecial(this, player)
-      else
+      else if (state.activity.canAct)
         toggleWaitForNextRoundWithoutCheckingObjectives(player)
+      else
+        Evented(this).right
     } }
 
   def special(
@@ -435,7 +448,7 @@ case class Game private (
     }
   }
 
-  private[this] def withState[A](player: Player)(f: GamePlayerState => Game.ResultT[A])
+  private def withState[A](player: Player)(f: GamePlayerState => Game.ResultT[A])
   : Game.ResultT[A] =
     states.get(player).fold2(s"No state for $player: $states".left, f)
 
