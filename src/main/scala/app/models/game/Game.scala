@@ -1,8 +1,6 @@
 package app.models.game
 
 import akka.event.LoggingAdapter
-import app.algorithms.Pathfinding
-import app.algorithms.Pathfinding.Path
 import app.algorithms.behaviour_trees.AI.BotAI
 import app.algorithms.behaviour_trees.BehaviourTree.NodeResult
 import app.models.game.Game.States
@@ -13,7 +11,6 @@ import app.models.game.world._
 import implicits._
 import monocle.Lenser
 import monocle.syntax._
-import spire.algebra.Action
 import utils.data.NonEmptyVector
 import app.models.game.world.Ops._
 
@@ -301,7 +298,7 @@ case class Game private (
   def warpW[A <: Warpable](
     player: Player, position: Vect2, warpable: WarpableCompanion.Of[A]
   )(implicit log: LoggingAdapter): Game.ResultT[Winner \/ (Game, Option[A])] =
-    checkObjectives(player.team) {
+    checkObjectives {
       val res =
         withState(player) { state =>
         withActions(player, Warpable.ActionsNeeded, state) { state =>
@@ -317,7 +314,7 @@ case class Game private (
   def move(
     player: Player, id: WObject.Id, to: NonEmptyVector[Vect2]
   )(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    checkObjectives(player.team) {
+    checkObjectives {
       withState(player) { state =>
       withActions(player, Actions(1), state) { state =>
       withMoveObj(player, id) { obj =>
@@ -331,7 +328,7 @@ case class Game private (
   def attack(
     player: Player, id: WObject.Id, targetId: WObject.Id
   )(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    checkObjectives(player.team) {
+    checkObjectives {
       withAttackObj(player, id) { obj =>
       withTargetObj(player, targetId) { targetObj =>
       withVisibility(player, targetObj) {
@@ -344,7 +341,7 @@ case class Game private (
   def moveAttack(
     player: Player, id: Id, path: NonEmptyVector[Vect2], targetId: Id
   )(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    checkObjectives(player.team) {
+    checkObjectives {
       withState(player) { state =>
       withActions(player, Actions(1), state) { state =>
       withMoveAttackObj(player, id) { obj =>
@@ -365,7 +362,7 @@ case class Game private (
     }
 
   def turnTimeEnded(player: Player)(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    checkObjectives(player.team) {
+    checkObjectives {
     withState(player) { state =>
       if (state.actions.isNotZero)
         Game.doAutoSpecial(this, player)
@@ -378,7 +375,7 @@ case class Game private (
   def special(
     player: Player, id: WObject.Id
   )(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    checkObjectives(player.team) {
+    checkObjectives {
     withState(player) { state =>
     withSpecialObj(player, id) {
     withSpecialAction(player, state) { obj => state =>
@@ -387,7 +384,7 @@ case class Game private (
     }
 
   def toggleWaitForNextRound(player: Player)(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    checkObjectives(player.team) { toggleWaitForNextRoundWithoutCheckingObjectives(player) }
+    checkObjectives { toggleWaitForNextRoundWithoutCheckingObjectives(player) }
 
   def toggleWaitForNextRoundWithoutCheckingObjectives(
     player: Player
@@ -401,7 +398,7 @@ case class Game private (
     }
 
   def concede(human: Human)(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    checkObjectives(human.team) {
+    checkObjectives {
       val res =
         withState(human) { state =>
           if (state.activity === GamePlayerState.Conceded)
@@ -429,20 +426,31 @@ case class Game private (
   : Game.ResultT[Winner \/ A] = r.map(_.map(_.right))
   private[this] implicit def gameIdentity(game: Game): Game = game
 
-  private[this] def checkObjectives[A](team: Team)(f: Game.ResultT[A])
+  private[this] def checkObjectives[A](f: Game.ResultT[A])
   (implicit getGame: A => Game): Game.ResultT[Winner \/ A] = {
-    val currentObjectives = remainingObjectives(team)
+    def getObjectives(game: Game) =
+      game.world.teams.map { team => team -> game.remainingObjectives(team) }.toMap
+
+    val currentObjectives = getObjectives(this)
     f.map { evtA =>
       evtA.flatMap { a =>
         val game = getGame(a)
-        val newObjectives = game.remainingObjectives(team)
-        val won = newObjectives.someCompleted
-        Evented(
-          if (won) Winner(team).left else a.right,
-          if (currentObjectives =/= newObjectives)
-            Vector(ObjectivesUpdatedEvt(team, newObjectives)) ++
-            (if (won) Vector(GameWonEvt(team)) else Vector.empty)
-          else Vector.empty
+        val newObjectives = getObjectives(game)
+        val differentObjectives = game.world.teams.foldLeft(
+          Map.empty[Team, RemainingObjectives]
+        ) { (m, team) =>
+          val curObj = currentObjectives(team)
+          val newObj = newObjectives(team)
+          if (curObj === newObj) m else m updated (team, newObj)
+        }
+        val wonTeamOpt = differentObjectives.find(_._2.someCompleted)
+        val objectiveUpdates = differentObjectives.map { case (team, obj) =>
+          ObjectivesUpdatedEvt(team, obj)
+        }.toVector
+
+        wonTeamOpt.map(_._1).fold2(
+          Evented(a.right, objectiveUpdates),
+          team => Evented(Winner(team).left, objectiveUpdates :+ GameWonEvt(team))
         )
       }
     }
