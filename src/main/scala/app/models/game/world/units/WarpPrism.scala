@@ -35,7 +35,7 @@ trait WarpPrismImpl { _: WarpPrism =>
   override def specialImpl
   (world: World, invokedBy: Player)(implicit log: LoggingAdapter) = {
     val evtEither = for {
-      world <- world remove this
+      world <- world removeEvt this
       eitherWorld <- WarpLinkerStats.warpW(
         world, owner, position, checkVisibility = false
       ).extract
