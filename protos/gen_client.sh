@@ -15,5 +15,6 @@ cwd="$(pwd)"
 cd "$thisdir"
 echo "Exporting to $targetdir"
 mkdir -p "$targetdir"
+rm -rf "$targetdir"/*.cs
 tools/ProtoGen.exe *.proto -namespace="game_general.Networking.Messages" -output_directory="$targetdir" -nest_classes=true
 cd "$cwd"

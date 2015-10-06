@@ -10,5 +10,6 @@ protoc="tools/protoc.exe"
 
 cd "$thisdir"
 echo "Exporting to $targetdir."
+rm -rf "$targetdir"/*
 $protoc --plugin=protoc-gen-scala=tools/scalapb-0.4.9.exe *.proto --scala_out="$targetdir"
 cd "$cwd"
