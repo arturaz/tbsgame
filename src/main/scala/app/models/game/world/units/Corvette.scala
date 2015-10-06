@@ -18,7 +18,7 @@ trait CorvetteStatsImpl extends EmptySpaceWarpableCompanion[Corvette]
   override val visibility = RectDistance(4)
   override val cost = Resources(6)
   override val populationCost = Population(2)
-  override val kind = WObjKind.Medium
+  override val kind = WObjKind.Light
 
   val specialMovementAdded = Movement.fromTiles(8)
   override val specialActionsNeeded = Actions(0)

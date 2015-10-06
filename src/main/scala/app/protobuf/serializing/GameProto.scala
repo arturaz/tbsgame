@@ -54,13 +54,9 @@ trait GameProto extends BaseProto with GameWObjects with GameEvents {
   implicit def convert(kind: WObjKind): game.WObjKind = kind match {
     case WObjKind.Light => game.WObjKind.LIGHT
     case WObjKind.Medium => game.WObjKind.MEDIUM
-    case WObjKind.Heavy => game.WObjKind.HEAVY
+    case WObjKind.Armored => game.WObjKind.ARMORED
+    case WObjKind.Structure => game.WObjKind.STRUCTURE
   }
-
-  def attackMultiplier(from: WObjKind, to: WObjKind): game.MInit.AttackMultiplier =
-    game.MInit.AttackMultiplier(
-      fromKind = from, toKind = to, multiplier = from.multiplierAt(to).toFloat
-    )
 
   def convertInit(extractionSpeed: ExtractionSpeed): game.MInit.ExtractionSpeedRate =
     game.MInit.ExtractionSpeedRate(

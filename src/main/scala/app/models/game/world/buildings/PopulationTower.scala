@@ -6,7 +6,6 @@ import app.models.game.world._
 trait PopulationTowerStatsImpl extends EmptySpaceWarpableCompanion[PopulationTower] {
 _: PopulationTowerStats.type =>
   override val populationGiven = Population(5)
-  override val kind = WObjKind.Light
   override val maxHp = HP(35)
   override val warpTime = WarpTime(1)
   override val cost = Resources(9)

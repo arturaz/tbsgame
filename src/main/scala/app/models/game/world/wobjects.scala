@@ -211,7 +211,7 @@ case class Gunship(
   type Stats = GunshipStats.type
   override val stats = GunshipStats
 }
-object GunshipStats extends GunshipStatsImpl with WFighterUnitStats
+object GunshipStats extends WFighterUnitStats with GunshipStatsImpl
 
 case class RocketFrigate(
   position: Vect2, owner: Player,
@@ -224,7 +224,7 @@ case class RocketFrigate(
   type Stats = RocketFrigateStats.type
   override val stats = RocketFrigateStats
 }
-object RocketFrigateStats extends RocketFrigateStatsImpl with WFighterUnitStats
+object RocketFrigateStats extends WFighterUnitStats with RocketFrigateStatsImpl
 
 // </editor-fold>
 

@@ -77,7 +77,11 @@ trait GameWObjects { _: GameProto =>
 
   def fighter(obj: FighterStats): game.WObjectStats.Fighter =
     game.WObjectStats.Fighter(
-      attack = obj.attackDamageRange, attackRange = obj.attackRange, attacks = obj.attacks
+      attack = obj.attackDamageRange(obj.attack),
+      attackOverrides = obj.attackOverrides.map { case (kind, atk) =>
+        game.WObjectStats.Fighter.AttackOverride(kind, obj.attackDamageRange(atk))
+      }(collection.breakOut),
+      attackRange = obj.attackRange, attacks = obj.attacks
     )
 
   def fighter(obj: Fighter): game.WObject.Fighter =

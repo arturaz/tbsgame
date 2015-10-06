@@ -8,7 +8,6 @@ trait VPTowerStatsImpl { _: VPTowerStats.type =>
   override val visibility = RectDistance(3)
   override val warpGiven = RectDistance(0)
   override val actionsGiven = Actions(2)
-  override val kind = WObjKind.Medium
   override val size = Vect2(2, 2)
   override val vpsGiven = VPS(0)
 

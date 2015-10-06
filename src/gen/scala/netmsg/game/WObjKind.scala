@@ -9,7 +9,8 @@ import com.trueaccord.scalapb.Descriptors
 sealed trait WObjKind extends com.trueaccord.scalapb.GeneratedEnum {
   def isLight: Boolean = false
   def isMedium: Boolean = false
-  def isHeavy: Boolean = false
+  def isArmored: Boolean = false
+  def isStructure: Boolean = false
 }
 
 object WObjKind extends com.trueaccord.scalapb.GeneratedEnumCompanion[WObjKind] {
@@ -25,17 +26,24 @@ object WObjKind extends com.trueaccord.scalapb.GeneratedEnumCompanion[WObjKind] 
     override def isMedium: Boolean = true
   }
   
-  case object HEAVY extends WObjKind {
+  case object ARMORED extends WObjKind {
     val id = 3
-    val name = "HEAVY"
-    override def isHeavy: Boolean = true
+    val name = "ARMORED"
+    override def isArmored: Boolean = true
   }
   
-  lazy val values = Seq(LIGHT, MEDIUM, HEAVY)
+  case object STRUCTURE extends WObjKind {
+    val id = 4
+    val name = "STRUCTURE"
+    override def isStructure: Boolean = true
+  }
+  
+  lazy val values = Seq(LIGHT, MEDIUM, ARMORED, STRUCTURE)
   def fromValue(value: Int): WObjKind = value match {
     case 1 => LIGHT
     case 2 => MEDIUM
-    case 3 => HEAVY
+    case 3 => ARMORED
+    case 4 => STRUCTURE
   }
   lazy val descriptor = new Descriptors.EnumDescriptor(1, "WObjKind", this)
 }

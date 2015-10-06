@@ -81,12 +81,6 @@ message MJoined {
 }
 
 message MInit {
-  message AttackMultiplier {
-    required WObjKind from_kind = 1;
-    required WObjKind to_kind = 2;
-    required float multiplier = 3;
-  }
-
   message ExtractionSpeedRate {
     required WObject.Asteroid.ExtractionSpeed extraction_speed = 1;
     required uint32 resources_per_turn = 2;
@@ -103,7 +97,6 @@ message MInit {
   required PlayerState self = 7;
   repeated InitPlayer other_players = 8;
   required WarpableObjectStats warpable_object_stats = 9;
-  repeated AttackMultiplier attack_multipliers = 10;
   required Objectives objectives = 11;
   required TurnStartedEvt turn_started = 12;
   repeated ExtractionSpeedRate extraction_speed_rates = 13;
@@ -113,7 +106,8 @@ message MInit {
 enum WObjKind {
   LIGHT = 1;
   MEDIUM = 2;
-  HEAVY = 3;
+  ARMORED = 3;
+  STRUCTURE = 4;
 }
 
 message MEvents {
@@ -464,9 +458,15 @@ message WObjectStats {
   }
 
   message Fighter {
+    message AttackOverride {
+      required WObjKind kind = 1;
+      required base.Range attack = 2;
+    }
+
     required base.Range attack = 1;
-    required float attack_range = 2;
-    required uint32 attacks = 3;
+    repeated AttackOverride attack_overrides = 2;
+    required float attack_range = 3;
+    required uint32 attacks = 4;
   }
 
   message Movable {

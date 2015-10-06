@@ -7,13 +7,14 @@ trait RocketFrigateStatsImpl extends EmptySpaceWarpableCompanion[RocketFrigate]
 { _: RocketFrigateStats.type =>
   override val maxHp = HP(30)
   override val attack = Atk(210)
+  override val attackOverrides = Map(WObjKind.light -> Atk(95))
   override val attacks = Attacks(1)
   override val attackRange = RadialDistance.Six
   override val movement = Movement.fromTiles(8)
   override val visibility = RectDistance(2)
   override val cost = Resources(8)
   override val populationCost = Population(3)
-  override val kind = WObjKind.Light
+  override val kind = WObjKind.Medium
 
   override def warp(owner: Player, position: Vect2) = RocketFrigate(position, owner)
 }

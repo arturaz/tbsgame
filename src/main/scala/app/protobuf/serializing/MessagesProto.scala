@@ -28,9 +28,6 @@ trait MessagesProto extends Helpers { _: GameProto =>
       selfTeam = msg.selfTeam, otherTeams = convertSeq(msg.otherTeams),
       self = msg.self, otherPlayers = convertSeq(msg.others)(convert),
       warpableObjectStats = convertWarpableStats(msg.warpableObjects),
-      attackMultipliers = msg.attackMultipliers.map { case (from, to) =>
-        attackMultiplier(from, to)
-      }(collection.breakOut),
       objectives = msg.objectives,
       turnStarted = msg.currentTurn,
       extractionSpeedRates = convertSeq(msg.extractionSpeeds)(convertInit)

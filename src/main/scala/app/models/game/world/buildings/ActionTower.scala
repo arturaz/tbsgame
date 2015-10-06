@@ -11,7 +11,6 @@ _: ActionTowerStats.type =>
   override val cost = Resources(10)
   override val warpTime = WarpTime(1)
   override val actionsGiven = Actions(1)
-  override val kind = WObjKind.Medium
 
   override def warp(owner: Player, position: Vect2) = ActionTower(position, owner)
 }

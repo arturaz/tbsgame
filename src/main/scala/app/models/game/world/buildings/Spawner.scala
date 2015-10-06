@@ -10,7 +10,6 @@ trait SpawnerStatsImpl { _: SpawnerStats.type =>
   override val maxHp = HP(1200)
   override val size = Vect2(2, 2)
   override val isCritical = true
-  override val kind = WObjKind.Heavy
   override val warpGiven = RectDistance(1)
   override val actionsGiven = Actions(2)
   override val specialResourcesGiven = Resources(2)

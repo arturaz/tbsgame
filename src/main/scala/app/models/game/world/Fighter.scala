@@ -14,14 +14,19 @@ import scalaz._, Scalaz._
 
 trait FighterStatsImpl { _: FighterStats =>
   val attack: Atk
+  val attackOverrides = Map.empty[WObjKind, Atk]
   val attackSpread = AtkSpread(0.15)
-  // lazy because attackSpread might be overriden
-  lazy val attackDamageRange = {
-    val from = Atk((attack.value * (1 - attackSpread.value)).round.toInt)
-    val to = Atk((attack.value * (1 + attackSpread.value)).round.toInt)
+
+  def attackTo(kind: WObjKind) = attackOverrides.getOrElse(kind, attack)
+
+  def attackDamageRange(base: Atk) = {
+    val from = Atk((base.value * (1 - attackSpread.value)).round.toInt)
+    val to = Atk((base.value * (1 + attackSpread.value)).round.toInt)
     AtkRange(from, to)
   }
-  def randomAttack = Atk(attackDamageRange.random)
+
+  def attackDamageRangeTo(kind: WObjKind) = attackDamageRange(attackTo(kind))
+  def randomAttackTo(kind: WObjKind) = Atk(attackDamageRangeTo(kind).random)
 
   val attackRange: RadialDistance
   val attacks: Attacks
@@ -78,8 +83,8 @@ trait FighterImpl extends OwnedObjImpl {
   def canAttack(obj: OwnedObj, world: World) =
     cantAttackReason(obj, world).isEmpty
 
-  def randomAttack: Atk =
-    Atk((stats.randomAttack.value * attackMultiplier).round.toInt)
+  def randomAttackTo(kind: WObjKind): Atk =
+    Atk((stats.randomAttackTo(kind).value * attackMultiplier).round.toInt)
 }
 
 trait FighterOps[Self <: Fighter] {

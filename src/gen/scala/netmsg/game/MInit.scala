@@ -16,7 +16,6 @@ final case class MInit(
     self: netmsg.game.PlayerState,
     otherPlayers: Seq[netmsg.game.InitPlayer] = Nil,
     warpableObjectStats: netmsg.game.WarpableObjectStats,
-    attackMultipliers: Seq[netmsg.game.MInit.AttackMultiplier] = Nil,
     objectives: netmsg.game.Objectives,
     turnStarted: netmsg.game.TurnStartedEvt,
     extractionSpeedRates: Seq[netmsg.game.MInit.ExtractionSpeedRate] = Nil,
@@ -33,7 +32,6 @@ final case class MInit(
       __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(self.serializedSize) + self.serializedSize
       otherPlayers.foreach(otherPlayers => __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(otherPlayers.serializedSize) + otherPlayers.serializedSize)
       __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(warpableObjectStats.serializedSize) + warpableObjectStats.serializedSize
-      attackMultipliers.foreach(attackMultipliers => __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(attackMultipliers.serializedSize) + attackMultipliers.serializedSize)
       __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(objectives.serializedSize) + objectives.serializedSize
       __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(turnStarted.serializedSize) + turnStarted.serializedSize
       extractionSpeedRates.foreach(extractionSpeedRates => __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(extractionSpeedRates.serializedSize) + extractionSpeedRates.serializedSize)
@@ -78,11 +76,6 @@ final case class MInit(
       output.writeTag(9, 2)
       output.writeRawVarint32(warpableObjectStats.serializedSize)
       warpableObjectStats.writeTo(output)
-      attackMultipliers.foreach { v => 
-        output.writeTag(10, 2)
-        output.writeRawVarint32(v.serializedSize)
-        v.writeTo(output)
-      }
       output.writeTag(11, 2)
       output.writeRawVarint32(objectives.serializedSize)
       objectives.writeTo(output)
@@ -108,7 +101,6 @@ final case class MInit(
       var __self = this.self
       val __otherPlayers = (scala.collection.immutable.Vector.newBuilder[netmsg.game.InitPlayer] ++= this.otherPlayers)
       var __warpableObjectStats = this.warpableObjectStats
-      val __attackMultipliers = (scala.collection.immutable.Vector.newBuilder[netmsg.game.MInit.AttackMultiplier] ++= this.attackMultipliers)
       var __objectives = this.objectives
       var __turnStarted = this.turnStarted
       val __extractionSpeedRates = (scala.collection.immutable.Vector.newBuilder[netmsg.game.MInit.ExtractionSpeedRate] ++= this.extractionSpeedRates)
@@ -136,8 +128,6 @@ final case class MInit(
             __otherPlayers += com.trueaccord.scalapb.LiteParser.readMessage(__input, netmsg.game.InitPlayer.defaultInstance)
           case 74 =>
             __warpableObjectStats = com.trueaccord.scalapb.LiteParser.readMessage(__input, __warpableObjectStats)
-          case 82 =>
-            __attackMultipliers += com.trueaccord.scalapb.LiteParser.readMessage(__input, netmsg.game.MInit.AttackMultiplier.defaultInstance)
           case 90 =>
             __objectives = com.trueaccord.scalapb.LiteParser.readMessage(__input, __objectives)
           case 98 =>
@@ -159,7 +149,6 @@ final case class MInit(
           self = __self,
           otherPlayers = __otherPlayers.result(),
           warpableObjectStats = __warpableObjectStats,
-          attackMultipliers = __attackMultipliers.result(),
           objectives = __objectives,
           turnStarted = __turnStarted,
           extractionSpeedRates = __extractionSpeedRates.result(),
@@ -190,10 +179,6 @@ final case class MInit(
     def addAllOtherPlayers(__vs: TraversableOnce[netmsg.game.InitPlayer]): MInit = copy(otherPlayers = otherPlayers ++ __vs)
     def withOtherPlayers(__v: Seq[netmsg.game.InitPlayer]): MInit = copy(otherPlayers = __v)
     def withWarpableObjectStats(__v: netmsg.game.WarpableObjectStats): MInit = copy(warpableObjectStats = __v)
-    def clearAttackMultipliers = copy(attackMultipliers = Nil)
-    def addAttackMultipliers(__vs: netmsg.game.MInit.AttackMultiplier*): MInit = addAllAttackMultipliers(__vs)
-    def addAllAttackMultipliers(__vs: TraversableOnce[netmsg.game.MInit.AttackMultiplier]): MInit = copy(attackMultipliers = attackMultipliers ++ __vs)
-    def withAttackMultipliers(__v: Seq[netmsg.game.MInit.AttackMultiplier]): MInit = copy(attackMultipliers = __v)
     def withObjectives(__v: netmsg.game.Objectives): MInit = copy(objectives = __v)
     def withTurnStarted(__v: netmsg.game.TurnStartedEvt): MInit = copy(turnStarted = __v)
     def clearExtractionSpeedRates = copy(extractionSpeedRates = Nil)
@@ -212,7 +197,6 @@ final case class MInit(
         case 7 => self
         case 8 => otherPlayers
         case 9 => warpableObjectStats
-        case 10 => attackMultipliers
         case 11 => objectives
         case 12 => turnStarted
         case 13 => extractionSpeedRates
@@ -234,14 +218,13 @@ object MInit extends com.trueaccord.scalapb.GeneratedMessageCompanion[MInit]  {
     self = fieldsMap(7).asInstanceOf[netmsg.game.PlayerState],
     otherPlayers = fieldsMap.getOrElse(8, Nil).asInstanceOf[Seq[netmsg.game.InitPlayer]],
     warpableObjectStats = fieldsMap(9).asInstanceOf[netmsg.game.WarpableObjectStats],
-    attackMultipliers = fieldsMap.getOrElse(10, Nil).asInstanceOf[Seq[netmsg.game.MInit.AttackMultiplier]],
     objectives = fieldsMap(11).asInstanceOf[netmsg.game.Objectives],
     turnStarted = fieldsMap(12).asInstanceOf[netmsg.game.TurnStartedEvt],
     extractionSpeedRates = fieldsMap.getOrElse(13, Nil).asInstanceOf[Seq[netmsg.game.MInit.ExtractionSpeedRate]],
     id = fieldsMap(14).asInstanceOf[netmsg.game.WorldID]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("MInit", this,
-    None, m = Seq(netmsg.game.MInit.AttackMultiplier.descriptor, netmsg.game.MInit.ExtractionSpeedRate.descriptor),
+    None, m = Seq(netmsg.game.MInit.ExtractionSpeedRate.descriptor),
     e = Seq(),
     f = netmsg.game.InternalFields_game.internalFieldsFor("netmsg.game.MInit"))
   lazy val defaultInstance = netmsg.game.MInit(
@@ -253,86 +236,6 @@ object MInit extends com.trueaccord.scalapb.GeneratedMessageCompanion[MInit]  {
     turnStarted = netmsg.game.TurnStartedEvt.defaultInstance,
     id = netmsg.game.WorldID.defaultInstance
   )
-  final case class AttackMultiplier(
-      fromKind: netmsg.game.WObjKind,
-      toKind: netmsg.game.WObjKind,
-      multiplier: Float
-      ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[AttackMultiplier] with com.trueaccord.lenses.Updatable[AttackMultiplier] {
-      lazy val serializedSize: Int = {
-        var __size = 0
-        __size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, fromKind.id)
-        __size += com.google.protobuf.CodedOutputStream.computeEnumSize(2, toKind.id)
-        __size += com.google.protobuf.CodedOutputStream.computeFloatSize(3, multiplier)
-        __size
-      }
-      def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
-        output.writeEnum(1, fromKind.id)
-        output.writeEnum(2, toKind.id)
-        output.writeFloat(3, multiplier)
-      }
-      def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.MInit.AttackMultiplier = {
-        var __fromKind = this.fromKind
-        var __toKind = this.toKind
-        var __multiplier = this.multiplier
-        var _done__ = false
-        while (!_done__) {
-          val _tag__ = __input.readTag()
-          _tag__ match {
-            case 0 => _done__ = true
-            case 8 =>
-              __fromKind = netmsg.game.WObjKind.fromValue(__input.readEnum())
-            case 16 =>
-              __toKind = netmsg.game.WObjKind.fromValue(__input.readEnum())
-            case 29 =>
-              __multiplier = __input.readFloat()
-            case tag => __input.skipField(tag)
-          }
-        }
-        netmsg.game.MInit.AttackMultiplier(
-            fromKind = __fromKind,
-            toKind = __toKind,
-            multiplier = __multiplier
-        )
-      }
-      def withFromKind(__v: netmsg.game.WObjKind): AttackMultiplier = copy(fromKind = __v)
-      def withToKind(__v: netmsg.game.WObjKind): AttackMultiplier = copy(toKind = __v)
-      def withMultiplier(__v: Float): AttackMultiplier = copy(multiplier = __v)
-      def getField(__field: Descriptors.FieldDescriptor): Any = {
-        __field.number match {
-          case 1 => fromKind
-          case 2 => toKind
-          case 3 => multiplier
-        }
-      }
-      def companion = netmsg.game.MInit.AttackMultiplier
-  }
-  
-  object AttackMultiplier extends com.trueaccord.scalapb.GeneratedMessageCompanion[AttackMultiplier]  {
-    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[AttackMultiplier]  = this
-    def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MInit.AttackMultiplier = netmsg.game.MInit.AttackMultiplier(
-      fromKind = fieldsMap(1).asInstanceOf[netmsg.game.WObjKind],
-      toKind = fieldsMap(2).asInstanceOf[netmsg.game.WObjKind],
-      multiplier = fieldsMap(3).asInstanceOf[Float]
-    )
-    lazy val descriptor = new Descriptors.MessageDescriptor("AttackMultiplier", this,
-      None, m = Seq(),
-      e = Seq(),
-      f = netmsg.game.InternalFields_game.internalFieldsFor("netmsg.game.MInit.AttackMultiplier"))
-    lazy val defaultInstance = netmsg.game.MInit.AttackMultiplier(
-      fromKind = netmsg.game.WObjKind.LIGHT,
-      toKind = netmsg.game.WObjKind.LIGHT,
-      multiplier = 0.0f
-    )
-    implicit class AttackMultiplierLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, AttackMultiplier]) extends com.trueaccord.lenses.ObjectLens[UpperPB, AttackMultiplier](_l) {
-      def fromKind: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjKind] = field(_.fromKind)((c_, f_) => c_.copy(fromKind = f_))
-      def toKind: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjKind] = field(_.toKind)((c_, f_) => c_.copy(toKind = f_))
-      def multiplier: com.trueaccord.lenses.Lens[UpperPB, Float] = field(_.multiplier)((c_, f_) => c_.copy(multiplier = f_))
-    }
-    final val FROM_KIND_FIELD_NUMBER = 1
-    final val TO_KIND_FIELD_NUMBER = 2
-    final val MULTIPLIER_FIELD_NUMBER = 3
-  }
-  
   final case class ExtractionSpeedRate(
       extractionSpeed: netmsg.game.WObject.Asteroid.ExtractionSpeed,
       resourcesPerTurn: Int
@@ -410,7 +313,6 @@ object MInit extends com.trueaccord.scalapb.GeneratedMessageCompanion[MInit]  {
     def self: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.PlayerState] = field(_.self)((c_, f_) => c_.copy(self = f_))
     def otherPlayers: com.trueaccord.lenses.Lens[UpperPB, Seq[netmsg.game.InitPlayer]] = field(_.otherPlayers)((c_, f_) => c_.copy(otherPlayers = f_))
     def warpableObjectStats: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WarpableObjectStats] = field(_.warpableObjectStats)((c_, f_) => c_.copy(warpableObjectStats = f_))
-    def attackMultipliers: com.trueaccord.lenses.Lens[UpperPB, Seq[netmsg.game.MInit.AttackMultiplier]] = field(_.attackMultipliers)((c_, f_) => c_.copy(attackMultipliers = f_))
     def objectives: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.Objectives] = field(_.objectives)((c_, f_) => c_.copy(objectives = f_))
     def turnStarted: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.TurnStartedEvt] = field(_.turnStarted)((c_, f_) => c_.copy(turnStarted = f_))
     def extractionSpeedRates: com.trueaccord.lenses.Lens[UpperPB, Seq[netmsg.game.MInit.ExtractionSpeedRate]] = field(_.extractionSpeedRates)((c_, f_) => c_.copy(extractionSpeedRates = f_))
@@ -425,7 +327,6 @@ object MInit extends com.trueaccord.scalapb.GeneratedMessageCompanion[MInit]  {
   final val SELF_FIELD_NUMBER = 7
   final val OTHER_PLAYERS_FIELD_NUMBER = 8
   final val WARPABLE_OBJECT_STATS_FIELD_NUMBER = 9
-  final val ATTACK_MULTIPLIERS_FIELD_NUMBER = 10
   final val OBJECTIVES_FIELD_NUMBER = 11
   final val TURN_STARTED_FIELD_NUMBER = 12
   final val EXTRACTION_SPEED_RATES_FIELD_NUMBER = 13

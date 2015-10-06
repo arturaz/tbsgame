@@ -1,35 +1,18 @@
 package app.models.game.world
 
-/* < Light < Medium < Heavy < */
-sealed trait WObjKind {
-  /* Multiplier if `this` attacks `kind` */
-  def multiplierAt(kind: WObjKind): Double
-}
-object WObjKind {
-  private[this] val Mult = 1.25
-  private[this] val InvMult = 0.75
+sealed trait WObjKind
+object WObjKind extends enumeratum.Enum[WObjKind] {
+  case object Light extends WObjKind
+  def light: WObjKind = Light
 
-  case object Light extends WObjKind {
-    def multiplierAt(kind: WObjKind) = kind match {
-      case Light => 1
-      case Medium => InvMult
-      case Heavy => Mult
-    }
-  }
-  case object Medium extends WObjKind {
-    def multiplierAt(kind: WObjKind) = kind match {
-      case Light => Mult
-      case Medium => 1
-      case Heavy => InvMult
-    }
-  }
-  case object Heavy extends WObjKind {
-    def multiplierAt(kind: WObjKind) = kind match {
-      case Light => InvMult
-      case Medium => Mult
-      case Heavy => 1
-    }
-  }
+  case object Medium extends WObjKind
+  def medium: WObjKind = Medium
 
-  val All = Set(Light, Medium, Heavy)
+  case object Armored extends WObjKind
+  def armored: WObjKind = Armored
+
+  case object Structure extends WObjKind
+  def structure: WObjKind = Structure
+
+  val values = findValues
 }

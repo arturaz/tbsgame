@@ -10,7 +10,6 @@ _: WarpLinkerStats.type =>
   override val cost = Resources(4)
   override val visibility = RectDistance(2)
   override val warpGiven = visibility
-  override val kind = WObjKind.Light
   override val needsWarpZoneToWarp = false
 
   override def warp(owner: Player, position: Vect2) = WarpLinker(position, owner)

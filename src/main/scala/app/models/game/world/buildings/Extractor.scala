@@ -20,7 +20,6 @@ trait ExtractorStatsImpl extends WarpableCompanion[Extractor]
   /* How much fixed */
   val specialExtractsFixed = cost
   override val specialActionsNeeded = Actions(1)
-  override val kind = WObjKind.Medium
 
   override def warpWOReactionImpl(world: World, owner: Player, position: Vect2) = {
     val b = bounds(position)

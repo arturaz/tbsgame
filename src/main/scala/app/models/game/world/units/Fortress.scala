@@ -12,7 +12,7 @@ trait FortressStatsImpl extends EmptySpaceWarpableCompanion[Fortress]
   override val movement = Movement.fromTiles(2)
   override val cost = Resources(10)
   override val populationCost = Population(2)
-  override val kind = WObjKind.Heavy
+  override val kind = WObjKind.Armored
   override val visibility = RectDistance(5)
 
   override def warp(owner: Player, position: Vect2) = Fortress(position, owner)

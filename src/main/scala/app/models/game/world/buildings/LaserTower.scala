@@ -16,7 +16,7 @@ trait LaserTowerStatsImpl extends EmptySpaceWarpableCompanion[LaserTower]
   override val cost = Resources(12)
   override val attackRange = RadialDistance.Five
   override val visibility = RectDistance(4)
-  override val kind = WObjKind.Heavy
+  override val kind = WObjKind.Armored
   override val specialActionsNeeded = Actions(2)
 
   override def warp(owner: Player, position: Vect2) = LaserTower(position, owner)

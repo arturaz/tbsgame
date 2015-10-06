@@ -6,12 +6,13 @@ import app.models.game.world._
 trait GunshipStatsImpl extends EmptySpaceWarpableCompanion[Gunship]
 { _: GunshipStats.type =>
   override val maxHp = HP(180)
-  override val attack = Atk(75)
+  override val attack = Atk(40)
+  override val attackOverrides = Map(WObjKind.light -> Atk(110))
   override val attacks = Attacks(3)
   override val attackRange = RadialDistance.Three
   override val cost = Resources(9)
   override val populationCost = Population(4)
-  override val kind = WObjKind.Heavy
+  override val kind = WObjKind.Armored
   override val visibility = RectDistance(3)
   override val movement = Movement.fromTiles(8)
 

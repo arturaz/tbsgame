@@ -5,6 +5,7 @@ import app.models.game.world._
 
 trait BuildingStatsImpl { _: BuildingStats =>
   override val visibility = RectDistance(3)
+  override val kind = WObjKind.Structure
 }
 
 /* Warpable building */

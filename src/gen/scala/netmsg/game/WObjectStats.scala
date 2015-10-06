@@ -823,25 +823,33 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
   
   final case class Fighter(
       attack: netmsg.base.Range,
+      attackOverrides: Seq[netmsg.game.WObjectStats.Fighter.AttackOverride] = Nil,
       attackRange: Float,
       attacks: Int
       ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[Fighter] with com.trueaccord.lenses.Updatable[Fighter] {
       lazy val serializedSize: Int = {
         var __size = 0
         __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(attack.serializedSize) + attack.serializedSize
-        __size += com.google.protobuf.CodedOutputStream.computeFloatSize(2, attackRange)
-        __size += com.google.protobuf.CodedOutputStream.computeUInt32Size(3, attacks)
+        attackOverrides.foreach(attackOverrides => __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(attackOverrides.serializedSize) + attackOverrides.serializedSize)
+        __size += com.google.protobuf.CodedOutputStream.computeFloatSize(3, attackRange)
+        __size += com.google.protobuf.CodedOutputStream.computeUInt32Size(4, attacks)
         __size
       }
       def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
         output.writeTag(1, 2)
         output.writeRawVarint32(attack.serializedSize)
         attack.writeTo(output)
-        output.writeFloat(2, attackRange)
-        output.writeUInt32(3, attacks)
+        attackOverrides.foreach { v => 
+          output.writeTag(2, 2)
+          output.writeRawVarint32(v.serializedSize)
+          v.writeTo(output)
+        }
+        output.writeFloat(3, attackRange)
+        output.writeUInt32(4, attacks)
       }
       def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.WObjectStats.Fighter = {
         var __attack = this.attack
+        val __attackOverrides = (scala.collection.immutable.Vector.newBuilder[netmsg.game.WObjectStats.Fighter.AttackOverride] ++= this.attackOverrides)
         var __attackRange = this.attackRange
         var __attacks = this.attacks
         var _done__ = false
@@ -851,27 +859,35 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
             case 0 => _done__ = true
             case 10 =>
               __attack = com.trueaccord.scalapb.LiteParser.readMessage(__input, __attack)
-            case 21 =>
+            case 18 =>
+              __attackOverrides += com.trueaccord.scalapb.LiteParser.readMessage(__input, netmsg.game.WObjectStats.Fighter.AttackOverride.defaultInstance)
+            case 29 =>
               __attackRange = __input.readFloat()
-            case 24 =>
+            case 32 =>
               __attacks = __input.readUInt32()
             case tag => __input.skipField(tag)
           }
         }
         netmsg.game.WObjectStats.Fighter(
             attack = __attack,
+            attackOverrides = __attackOverrides.result(),
             attackRange = __attackRange,
             attacks = __attacks
         )
       }
       def withAttack(__v: netmsg.base.Range): Fighter = copy(attack = __v)
+      def clearAttackOverrides = copy(attackOverrides = Nil)
+      def addAttackOverrides(__vs: netmsg.game.WObjectStats.Fighter.AttackOverride*): Fighter = addAllAttackOverrides(__vs)
+      def addAllAttackOverrides(__vs: TraversableOnce[netmsg.game.WObjectStats.Fighter.AttackOverride]): Fighter = copy(attackOverrides = attackOverrides ++ __vs)
+      def withAttackOverrides(__v: Seq[netmsg.game.WObjectStats.Fighter.AttackOverride]): Fighter = copy(attackOverrides = __v)
       def withAttackRange(__v: Float): Fighter = copy(attackRange = __v)
       def withAttacks(__v: Int): Fighter = copy(attacks = __v)
       def getField(__field: Descriptors.FieldDescriptor): Any = {
         __field.number match {
           case 1 => attack
-          case 2 => attackRange
-          case 3 => attacks
+          case 2 => attackOverrides
+          case 3 => attackRange
+          case 4 => attacks
         }
       }
       def companion = netmsg.game.WObjectStats.Fighter
@@ -881,11 +897,12 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
     implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Fighter]  = this
     def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObjectStats.Fighter = netmsg.game.WObjectStats.Fighter(
       attack = fieldsMap(1).asInstanceOf[netmsg.base.Range],
-      attackRange = fieldsMap(2).asInstanceOf[Float],
-      attacks = fieldsMap(3).asInstanceOf[Int]
+      attackOverrides = fieldsMap.getOrElse(2, Nil).asInstanceOf[Seq[netmsg.game.WObjectStats.Fighter.AttackOverride]],
+      attackRange = fieldsMap(3).asInstanceOf[Float],
+      attacks = fieldsMap(4).asInstanceOf[Int]
     )
     lazy val descriptor = new Descriptors.MessageDescriptor("Fighter", this,
-      None, m = Seq(),
+      None, m = Seq(netmsg.game.WObjectStats.Fighter.AttackOverride.descriptor),
       e = Seq(),
       f = netmsg.game.InternalFields_game.internalFieldsFor("netmsg.game.WObjectStats.Fighter"))
     lazy val defaultInstance = netmsg.game.WObjectStats.Fighter(
@@ -893,14 +910,85 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
       attackRange = 0.0f,
       attacks = 0
     )
+    final case class AttackOverride(
+        kind: netmsg.game.WObjKind,
+        attack: netmsg.base.Range
+        ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[AttackOverride] with com.trueaccord.lenses.Updatable[AttackOverride] {
+        lazy val serializedSize: Int = {
+          var __size = 0
+          __size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, kind.id)
+          __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(attack.serializedSize) + attack.serializedSize
+          __size
+        }
+        def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+          output.writeEnum(1, kind.id)
+          output.writeTag(2, 2)
+          output.writeRawVarint32(attack.serializedSize)
+          attack.writeTo(output)
+        }
+        def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.WObjectStats.Fighter.AttackOverride = {
+          var __kind = this.kind
+          var __attack = this.attack
+          var _done__ = false
+          while (!_done__) {
+            val _tag__ = __input.readTag()
+            _tag__ match {
+              case 0 => _done__ = true
+              case 8 =>
+                __kind = netmsg.game.WObjKind.fromValue(__input.readEnum())
+              case 18 =>
+                __attack = com.trueaccord.scalapb.LiteParser.readMessage(__input, __attack)
+              case tag => __input.skipField(tag)
+            }
+          }
+          netmsg.game.WObjectStats.Fighter.AttackOverride(
+              kind = __kind,
+              attack = __attack
+          )
+        }
+        def withKind(__v: netmsg.game.WObjKind): AttackOverride = copy(kind = __v)
+        def withAttack(__v: netmsg.base.Range): AttackOverride = copy(attack = __v)
+        def getField(__field: Descriptors.FieldDescriptor): Any = {
+          __field.number match {
+            case 1 => kind
+            case 2 => attack
+          }
+        }
+        def companion = netmsg.game.WObjectStats.Fighter.AttackOverride
+    }
+    
+    object AttackOverride extends com.trueaccord.scalapb.GeneratedMessageCompanion[AttackOverride]  {
+      implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[AttackOverride]  = this
+      def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.WObjectStats.Fighter.AttackOverride = netmsg.game.WObjectStats.Fighter.AttackOverride(
+        kind = fieldsMap(1).asInstanceOf[netmsg.game.WObjKind],
+        attack = fieldsMap(2).asInstanceOf[netmsg.base.Range]
+      )
+      lazy val descriptor = new Descriptors.MessageDescriptor("AttackOverride", this,
+        None, m = Seq(),
+        e = Seq(),
+        f = netmsg.game.InternalFields_game.internalFieldsFor("netmsg.game.WObjectStats.Fighter.AttackOverride"))
+      lazy val defaultInstance = netmsg.game.WObjectStats.Fighter.AttackOverride(
+        kind = netmsg.game.WObjKind.LIGHT,
+        attack = netmsg.base.Range.defaultInstance
+      )
+      implicit class AttackOverrideLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, AttackOverride]) extends com.trueaccord.lenses.ObjectLens[UpperPB, AttackOverride](_l) {
+        def kind: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjKind] = field(_.kind)((c_, f_) => c_.copy(kind = f_))
+        def attack: com.trueaccord.lenses.Lens[UpperPB, netmsg.base.Range] = field(_.attack)((c_, f_) => c_.copy(attack = f_))
+      }
+      final val KIND_FIELD_NUMBER = 1
+      final val ATTACK_FIELD_NUMBER = 2
+    }
+    
     implicit class FighterLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, Fighter]) extends com.trueaccord.lenses.ObjectLens[UpperPB, Fighter](_l) {
       def attack: com.trueaccord.lenses.Lens[UpperPB, netmsg.base.Range] = field(_.attack)((c_, f_) => c_.copy(attack = f_))
+      def attackOverrides: com.trueaccord.lenses.Lens[UpperPB, Seq[netmsg.game.WObjectStats.Fighter.AttackOverride]] = field(_.attackOverrides)((c_, f_) => c_.copy(attackOverrides = f_))
       def attackRange: com.trueaccord.lenses.Lens[UpperPB, Float] = field(_.attackRange)((c_, f_) => c_.copy(attackRange = f_))
       def attacks: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.attacks)((c_, f_) => c_.copy(attacks = f_))
     }
     final val ATTACK_FIELD_NUMBER = 1
-    final val ATTACK_RANGE_FIELD_NUMBER = 2
-    final val ATTACKS_FIELD_NUMBER = 3
+    final val ATTACK_OVERRIDES_FIELD_NUMBER = 2
+    final val ATTACK_RANGE_FIELD_NUMBER = 3
+    final val ATTACKS_FIELD_NUMBER = 4
   }
   
   final case class Movable(

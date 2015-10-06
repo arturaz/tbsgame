@@ -25,7 +25,7 @@ object SingleMindAI {
     /* Fighters must be dealt with first */
     fOrd(_.isInstanceOf[Fighter]).reverse orElse
     /* Attack ones where most damage can be done. */
-    fOrd(o => self.stats.kind.multiplierAt(o.stats.kind)).reverse orElse
+    fOrd(o => self.stats.attackTo(o.stats.kind)).reverse orElse
     /* Attack ones with least HP first. */
     fOrd(_.hp) orElse
     /* Warping in objects must be dealt with first */

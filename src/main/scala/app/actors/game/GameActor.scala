@@ -52,7 +52,6 @@ object GameActor {
       selfTeam: Team, otherTeams: Iterable[Team],
       self: HumanState, others: Iterable[(Player, Option[HumanState])],
       warpableObjects: Iterable[WarpableStats],
-      attackMultipliers: Set[(WObjKind, WObjKind)],
       objectives: RemainingObjectives, currentTurn: TurnStartedEvt,
       extractionSpeeds: Set[ExtractionSpeed]
     ) extends ClientOut
@@ -88,7 +87,6 @@ object GameActor {
           )
         },
         selfState.gameState.canWarp,
-        for (from <- WObjKind.All; to <- WObjKind.All) yield from -> to,
         game.remainingObjectives(human.team),
         TurnStartedEvt(tbgame.currentPlayer, tbgame.currentTurnTimeframe),
         ExtractionSpeed.values
