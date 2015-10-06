@@ -690,7 +690,10 @@ message LeaveEvt {
   required PlayerID player_id = 1;
 }
 
-message RoundStartedEvt {}
+message RoundStartedEvt {
+  /* Starts from 1 */
+  required uint32 round_index = 1;
+}
 
 message TurnStartedEvt {
   required PlayerID player_id = 1;

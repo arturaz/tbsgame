@@ -7,39 +7,55 @@ package netmsg.game
 import com.trueaccord.scalapb.Descriptors
 
 final case class RoundStartedEvt(
+    roundIndex: Int
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[RoundStartedEvt] with com.trueaccord.lenses.Updatable[RoundStartedEvt] {
     lazy val serializedSize: Int = {
       var __size = 0
+      __size += com.google.protobuf.CodedOutputStream.computeUInt32Size(1, roundIndex)
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+      output.writeUInt32(1, roundIndex)
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.RoundStartedEvt = {
+      var __roundIndex = this.roundIndex
       var _done__ = false
       while (!_done__) {
         val _tag__ = __input.readTag()
         _tag__ match {
           case 0 => _done__ = true
+          case 8 =>
+            __roundIndex = __input.readUInt32()
           case tag => __input.skipField(tag)
         }
       }
       netmsg.game.RoundStartedEvt(
+          roundIndex = __roundIndex
       )
     }
-    def getField(__field: Descriptors.FieldDescriptor): Any = throw new MatchError(__field)
+    def withRoundIndex(__v: Int): RoundStartedEvt = copy(roundIndex = __v)
+    def getField(__field: Descriptors.FieldDescriptor): Any = {
+      __field.number match {
+        case 1 => roundIndex
+      }
+    }
     def companion = netmsg.game.RoundStartedEvt
 }
 
 object RoundStartedEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[RoundStartedEvt]  {
   implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[RoundStartedEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.RoundStartedEvt = netmsg.game.RoundStartedEvt(
+    roundIndex = fieldsMap(1).asInstanceOf[Int]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("RoundStartedEvt", this,
     None, m = Seq(),
     e = Seq(),
     f = netmsg.game.InternalFields_game.internalFieldsFor("netmsg.game.RoundStartedEvt"))
   lazy val defaultInstance = netmsg.game.RoundStartedEvt(
+    roundIndex = 0
   )
   implicit class RoundStartedEvtLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, RoundStartedEvt]) extends com.trueaccord.lenses.ObjectLens[UpperPB, RoundStartedEvt](_l) {
+    def roundIndex: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.roundIndex)((c_, f_) => c_.copy(roundIndex = f_))
   }
+  final val ROUND_INDEX_FIELD_NUMBER = 1
 }

@@ -4,7 +4,7 @@ import java.util.UUID
 
 import app.models.game.world.{Bounds, Vect2}
 import org.joda.time.DateTime
-import spire.math.Rational
+import spire.math.{UInt, Rational}
 import utils.data.Timeframe
 import utils.{RationalValueClass, ValWithMax, IntValueClass}
 import netmsg.{base => nbase}
@@ -17,6 +17,8 @@ trait BaseProto extends Helpers {
 
   implicit def convert[A <: IntValueClass[A]](vwm: ValWithMax[A]): nbase.ValWithMax =
     nbase.ValWithMax(current = vwm.value, maximum = vwm.max)
+
+  implicit def convert(uint: UInt): Int = uint.signed
 
   implicit def convert(dateTime: DateTime): nbase.Timestamp =
     nbase.Timestamp(dateTime.getMillis)

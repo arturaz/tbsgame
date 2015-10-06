@@ -8,8 +8,8 @@ import implicits._
 import scala.language.implicitConversions
 
 trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
-  implicit def convert(evt: RoundStartedEvt.type): game.RoundStartedEvt =
-    game.RoundStartedEvt()
+  implicit def convert(evt: RoundStartedEvt): game.RoundStartedEvt =
+    game.RoundStartedEvt(evt.roundIndex)
 
   implicit def convert(evt: TurnStartedEvt): game.TurnStartedEvt =
     game.TurnStartedEvt(evt.player.id, evt.timeframe.map(convert))
@@ -93,7 +93,7 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
 
   implicit def convert(event: FinalEvent): game.Event =
     event match {
-      case evt: RoundStartedEvt.type => game.Event(roundStarted = Some(evt))
+      case evt: RoundStartedEvt => game.Event(roundStarted = Some(evt))
       case evt: TurnStartedEvt => game.Event(turnStarted = Some(evt))
       case evt: PointOwnershipChangeEvt => game.Event(pointOwnerMapChange = Some(evt))
       case evt: WarpEvt => game.Event(warp = Some(evt))

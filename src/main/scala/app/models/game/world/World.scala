@@ -10,6 +10,7 @@ import app.models.game.world.props.ExtractionSpeed
 import implicits._
 import infrastructure.PrefixedLoggingAdapter
 import monocle.{Lenser, SimpleLens}
+import spire.math.UInt
 import utils.{IdObj, ValWithMax, IntValueClass}
 
 import scala.annotation.tailrec
@@ -28,6 +29,8 @@ case class World private (
   wasVisibleMap: WasVisibleMap,
   playerStates: Map[Player, WorldPlayerState], vpsMap: Map[Team, VPS],
   warpZoneMap: WarpZoneMap, visibilityMap: VisibilityMap,
+  roundIndex: UInt=UInt(1),
+  /* This is used for hashing values in client side. */
   id: World.Id = World.newId
 ) {
   import app.models.game.world.World._
@@ -35,11 +38,13 @@ case class World private (
   val resourcesMap = playerStates.mapValues(_.resources)
   override def toString = s"World($bounds, objects: ${objects.size})"
 
-  def roundStarted(implicit log: LoggingAdapter) =
-    Evented(this, RoundStartedEvt) |>
-    roundX(log.prefixed("started|")) {
-      implicit log => obj => world => WObject.roundStarted(world, obj).map(_._1)
-    }
+  def roundStarted(implicit log: LoggingAdapter) = {
+    val newRoundIndex = roundIndex + UInt(1)
+    Evented(copy(roundIndex = newRoundIndex), RoundStartedEvt(newRoundIndex)) |>
+      roundX(log.prefixed("started|")) {
+        implicit log => obj => world => WObject.roundStarted(world, obj).map(_._1)
+      }
+  }
   def roundEnded(implicit log: LoggingAdapter) =
     Evented(this) |>
     roundX(log.prefixed("finished|")) {

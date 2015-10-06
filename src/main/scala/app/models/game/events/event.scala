@@ -4,6 +4,7 @@ import app.models.game._
 import app.models.game.world._
 import app.models.game.world.maps.VisibilityMap
 import implicits._
+import spire.math.UInt
 import utils.ValWithMax
 import utils.data.Timeframe
 
@@ -50,7 +51,7 @@ case class JoinEvt(human: Human, state: Option[HumanState]) extends Event with F
 }
 case class LeaveEvt(human: Human) extends AlwaysVisibleEvent
 
-case object RoundStartedEvt extends AlwaysVisibleEvent
+case class RoundStartedEvt(roundIndex: UInt) extends AlwaysVisibleEvent
 case class TurnStartedEvt(
   player: Player, timeframe: Option[Timeframe]
 ) extends AlwaysVisibleEvent
