@@ -29,7 +29,7 @@ case class World private (
   wasVisibleMap: WasVisibleMap,
   playerStates: Map[Player, WorldPlayerState], vpsMap: Map[Team, VPS],
   warpZoneMap: WarpZoneMap, visibilityMap: VisibilityMap,
-  roundIndex: UInt=UInt(1),
+  roundIndex: UInt=UInt(0),
   /* This is used for hashing values in client side. */
   id: World.Id = World.newId
 ) {
