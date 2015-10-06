@@ -75,7 +75,7 @@ case class SemiRealtimeGame(
       val (game, curSpin) = current.value
       if (game.allPlayersFinished) {
         val newEvtGame = current.flatMap { _ =>
-          game.roundEnded.flatMap(_.roundStarted).map((_, curSpin.next))
+          game.roundEnded.flatMap(_.roundStarted).map((_, curSpin))
         }
         rec(newEvtGame)
       }
