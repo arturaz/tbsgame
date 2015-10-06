@@ -52,7 +52,7 @@ trait GameProto extends BaseProto {
       case game.FromClient(_, _, _, _, _, Some(m), _, _) =>
         \/-(Leave.apply(_: Human))
       case game.FromClient(_, _, _, _, _, _, Some(m), _) =>
-        \/-(EndTurn.apply(_: Human))
+        \/-(ToggleWaitingForRoundEnd.apply(_: Human))
       case game.FromClient(_, _, _, _, _, _, _, Some(m)) =>
         \/-(Concede.apply(_: Human))
       case game.FromClient(None, None, None, None, None, None, None, None) =>

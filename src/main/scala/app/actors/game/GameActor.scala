@@ -38,7 +38,7 @@ object GameActor {
       human: Human, id: WObject.Id, path: NonEmptyVector[Vect2], targetId: WObject.Id
     ) extends In
     case class Special(human: Human, id: WObject.Id) extends In
-    case class EndTurn(human: Human) extends In
+    case class ToggleWaitingForRoundEnd(human: Human) extends In
     case class Concede(human: Human) extends In
   }
 
@@ -119,27 +119,6 @@ object GameActor {
     ref ! Out.Events(viewedEvents)
   }
 
-  private def advanceTurnIfPossible(
-    game: GameActorGame, now: DateTime
-  )(implicit log: LoggingAdapter): Evented[GameActorGame] = {
-    @tailrec def rec(evtGame: Evented[GameActorGame]): Evented[GameActorGame] = {
-      if (! evtGame.value.shouldGoToNextRound) evtGame
-      else rec(evtGame.flatMap(_.nextRound(now)))
-    }
-
-    rec(Evented(game))
-  }
-
-  private def updatedGame(
-    now: DateTime,
-    f: => Evented[Winner \/ GameActorGame]
-  )(implicit log: LoggingAdapter): Evented[Winner \/ GameActorGame] =
-    f.flatMap {
-      case left @ -\/(_) => Evented(left)
-      case \/-(game) =>
-        advanceTurnIfPossible(game, now).map(_.right)
-    }
-
   def props(
     worldMaterializer: WorldMaterializer, turnTimerSettings: Option[TurnTimers.Settings],
     aiTeam: Team, starting: Set[GameActor.StartingHuman]
@@ -170,7 +149,7 @@ trait GameActorGame {
   def moveAttack(human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id, now: DateTime)
   (implicit log: LoggingAdapter): Result
 
-  def endRound(human: Human, now: DateTime)(implicit log: LoggingAdapter): Result
+  def toggleWaitingForRoundEnd(human: Human, now: DateTime)(implicit log: LoggingAdapter): Result
   def concede(human: Human, now: DateTime)(implicit log: LoggingAdapter): Result
 
   def game: Game
@@ -181,9 +160,6 @@ trait GameActorGame {
 
   def checkTurnTimes(time: DateTime)(implicit log: LoggingAdapter)
   : Evented[Winner \/ GameActorGame]
-
-  def shouldGoToNextRound: Boolean
-  def nextRound(time: DateTime)(implicit log: LoggingAdapter): Evented[GameActorGame]
 }
 
 trait GameActorGameStarter[GAGame <: GameActorGame] {
@@ -251,12 +227,10 @@ class GameActor private (
           init(data.human, data.client, evented.value)
           events(data.human, data.client, evented.events)
         }
-        // And then get to the state where next ready team can act
-        val turnStartedGame = evented.flatMap(advanceTurnIfPossible(_, DateTime.now))
         starting.foreach { data =>
-          events(data.human, data.client, turnStartedGame.events)
+          events(data.human, data.client, evented.events)
         }
-        turnStartedGame.value
+        evented.value
       }
     )
   }
@@ -319,16 +293,15 @@ class GameActor private (
       update(sender(), human, _.moveAttack(human, id, path, target, DateTime.now))
     case In.Special(human, id) =>
       update(sender(), human, _.special(human, id, DateTime.now))
-    case In.EndTurn(human) =>
-      update(sender(), human, _.endRound(human, DateTime.now))
+    case In.ToggleWaitingForRoundEnd(human) =>
+      update(sender(), human, _.toggleWaitingForRoundEnd(human, DateTime.now))
     case In.Concede(human) =>
       update(sender(), human, _.concede(human, DateTime.now))
   }
 
   val receive: PartialFunction[Any, Unit] = notLoggedReceive orElse loggedReceive
 
-  private[this] def checkedTurnTimes =
-    updatedGame(DateTime.now, game.checkTurnTimes(DateTime.now))
+  private[this] def checkedTurnTimes = game.checkTurnTimes(DateTime.now)
 
   private[this] def update(
     requester: ActorRef, human: Human, f: GameActorGame => GameActorGame.Result
@@ -338,9 +311,7 @@ class GameActor private (
     val afterTimeCheck = checkedTurnTimes
     afterTimeCheck.value.fold(
       _ => postGameChange(afterTimeCheck),
-      tbg => f(tbg).map(evt =>
-        updatedGame(DateTime.now, afterTimeCheck.events ++: evt)
-      ).fold(
+      tbg => f(tbg).map(evt => afterTimeCheck.events ++: evt).fold(
         err => {
           log.error(err)
           requester ! Out.Error(err)

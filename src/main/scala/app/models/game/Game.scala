@@ -248,8 +248,9 @@ case class Game private (
 
   private[this] def teamStates(team: Team) = states.view.filter(_._1.team === team)
 
-  def allPlayersTurnEnded = !states.exists(_._2.activity.canAct)
-  def turnEnded(player: Player) = !states(player).activity.canAct
+  def allPlayersFinished = states.forall { case (_, state) =>
+    state.actions.isZero && !state.activity.canAct
+  }
 
   def otherTeamsConceded(team: Team): Boolean =
     states.filter(_._1.team =/= team).forall(_._2.activity === GamePlayerState.Conceded)
@@ -360,7 +361,7 @@ case class Game private (
       if (state.actions.isNotZero)
         Game.doAutoSpecial(this, player)
       else
-        toggleEndRoundWithoutChecking(player)
+        toggleWaitForNextRoundWithoutCheckingObjectives(player)
     } }
 
   def special(
@@ -374,11 +375,12 @@ case class Game private (
     } } }
     }
 
-  def endRound(player: Player)(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    checkObjectives(player.team) { toggleEndRoundWithoutChecking(player) }
+  def toggleWaitForNextRound(player: Player)(implicit log: LoggingAdapter): Game.ResultOrWinner =
+    checkObjectives(player.team) { toggleWaitForNextRoundWithoutCheckingObjectives(player) }
 
-  def toggleEndRoundWithoutChecking(player: Player)(implicit log: LoggingAdapter):
-  Game.Result =
+  def toggleWaitForNextRoundWithoutCheckingObjectives(
+    player: Player
+  )(implicit log: LoggingAdapter): Game.Result =
     withState(player) { state =>
       val newState = state.toggleWaitForNextRound
       Evented(

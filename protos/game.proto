@@ -14,7 +14,7 @@ message FromClient {
   optional MMoveAttack move_attack = 5;
 
   optional MLeave leave = 1001;
-  optional MEndTurn end_turn = 1002;
+  optional MToggleWaitingForRoundEnd toggle_waiting_for_round_end = 1002;
   optional MConcede concede = 1003;
 }
 
@@ -65,7 +65,7 @@ message MMoveAttack {
   required WObjID target_id = 3;
 }
 
-message MEndTurn {}
+message MToggleWaitingForRoundEnd {}
 
 /* Server Out messages */
 

@@ -13,7 +13,7 @@ final case class FromClient(
     special: Option[netmsg.game.MSpecial] = None,
     moveAttack: Option[netmsg.game.MMoveAttack] = None,
     leave: Option[netmsg.game.MLeave] = None,
-    endTurn: Option[netmsg.game.MEndTurn] = None,
+    toggleWaitingForRoundEnd: Option[netmsg.game.MToggleWaitingForRoundEnd] = None,
     concede: Option[netmsg.game.MConcede] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[FromClient] with com.trueaccord.lenses.Updatable[FromClient] {
     lazy val serializedSize: Int = {
@@ -24,7 +24,7 @@ final case class FromClient(
       if (special.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(special.get.serializedSize) + special.get.serializedSize }
       if (moveAttack.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(moveAttack.get.serializedSize) + moveAttack.get.serializedSize }
       if (leave.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(leave.get.serializedSize) + leave.get.serializedSize }
-      if (endTurn.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(endTurn.get.serializedSize) + endTurn.get.serializedSize }
+      if (toggleWaitingForRoundEnd.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(toggleWaitingForRoundEnd.get.serializedSize) + toggleWaitingForRoundEnd.get.serializedSize }
       if (concede.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(concede.get.serializedSize) + concede.get.serializedSize }
       __size
     }
@@ -59,7 +59,7 @@ final case class FromClient(
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
-      endTurn.foreach { v => 
+      toggleWaitingForRoundEnd.foreach { v => 
         output.writeTag(1002, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
@@ -77,7 +77,7 @@ final case class FromClient(
       var __special = this.special
       var __moveAttack = this.moveAttack
       var __leave = this.leave
-      var __endTurn = this.endTurn
+      var __toggleWaitingForRoundEnd = this.toggleWaitingForRoundEnd
       var __concede = this.concede
       var _done__ = false
       while (!_done__) {
@@ -97,7 +97,7 @@ final case class FromClient(
           case 8010 =>
             __leave = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __leave.getOrElse(netmsg.game.MLeave.defaultInstance)))
           case 8018 =>
-            __endTurn = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __endTurn.getOrElse(netmsg.game.MEndTurn.defaultInstance)))
+            __toggleWaitingForRoundEnd = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __toggleWaitingForRoundEnd.getOrElse(netmsg.game.MToggleWaitingForRoundEnd.defaultInstance)))
           case 8026 =>
             __concede = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __concede.getOrElse(netmsg.game.MConcede.defaultInstance)))
           case tag => __input.skipField(tag)
@@ -110,7 +110,7 @@ final case class FromClient(
           special = __special,
           moveAttack = __moveAttack,
           leave = __leave,
-          endTurn = __endTurn,
+          toggleWaitingForRoundEnd = __toggleWaitingForRoundEnd,
           concede = __concede
       )
     }
@@ -132,9 +132,9 @@ final case class FromClient(
     def getLeave: netmsg.game.MLeave = leave.getOrElse(netmsg.game.MLeave.defaultInstance)
     def clearLeave: FromClient = copy(leave = None)
     def withLeave(__v: netmsg.game.MLeave): FromClient = copy(leave = Some(__v))
-    def getEndTurn: netmsg.game.MEndTurn = endTurn.getOrElse(netmsg.game.MEndTurn.defaultInstance)
-    def clearEndTurn: FromClient = copy(endTurn = None)
-    def withEndTurn(__v: netmsg.game.MEndTurn): FromClient = copy(endTurn = Some(__v))
+    def getToggleWaitingForRoundEnd: netmsg.game.MToggleWaitingForRoundEnd = toggleWaitingForRoundEnd.getOrElse(netmsg.game.MToggleWaitingForRoundEnd.defaultInstance)
+    def clearToggleWaitingForRoundEnd: FromClient = copy(toggleWaitingForRoundEnd = None)
+    def withToggleWaitingForRoundEnd(__v: netmsg.game.MToggleWaitingForRoundEnd): FromClient = copy(toggleWaitingForRoundEnd = Some(__v))
     def getConcede: netmsg.game.MConcede = concede.getOrElse(netmsg.game.MConcede.defaultInstance)
     def clearConcede: FromClient = copy(concede = None)
     def withConcede(__v: netmsg.game.MConcede): FromClient = copy(concede = Some(__v))
@@ -146,7 +146,7 @@ final case class FromClient(
         case 4 => special
         case 5 => moveAttack
         case 1001 => leave
-        case 1002 => endTurn
+        case 1002 => toggleWaitingForRoundEnd
         case 1003 => concede
       }
     }
@@ -162,7 +162,7 @@ object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromC
     special = fieldsMap.getOrElse(4, None).asInstanceOf[Option[netmsg.game.MSpecial]],
     moveAttack = fieldsMap.getOrElse(5, None).asInstanceOf[Option[netmsg.game.MMoveAttack]],
     leave = fieldsMap.getOrElse(1001, None).asInstanceOf[Option[netmsg.game.MLeave]],
-    endTurn = fieldsMap.getOrElse(1002, None).asInstanceOf[Option[netmsg.game.MEndTurn]],
+    toggleWaitingForRoundEnd = fieldsMap.getOrElse(1002, None).asInstanceOf[Option[netmsg.game.MToggleWaitingForRoundEnd]],
     concede = fieldsMap.getOrElse(1003, None).asInstanceOf[Option[netmsg.game.MConcede]]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("FromClient", this,
@@ -184,8 +184,8 @@ object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromC
     def optionalMoveAttack: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MMoveAttack]] = field(_.moveAttack)((c_, f_) => c_.copy(moveAttack = f_))
     def leave: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MLeave] = field(_.getLeave)((c_, f_) => c_.copy(leave = Some(f_)))
     def optionalLeave: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MLeave]] = field(_.leave)((c_, f_) => c_.copy(leave = f_))
-    def endTurn: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MEndTurn] = field(_.getEndTurn)((c_, f_) => c_.copy(endTurn = Some(f_)))
-    def optionalEndTurn: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MEndTurn]] = field(_.endTurn)((c_, f_) => c_.copy(endTurn = f_))
+    def toggleWaitingForRoundEnd: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MToggleWaitingForRoundEnd] = field(_.getToggleWaitingForRoundEnd)((c_, f_) => c_.copy(toggleWaitingForRoundEnd = Some(f_)))
+    def optionalToggleWaitingForRoundEnd: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MToggleWaitingForRoundEnd]] = field(_.toggleWaitingForRoundEnd)((c_, f_) => c_.copy(toggleWaitingForRoundEnd = f_))
     def concede: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MConcede] = field(_.getConcede)((c_, f_) => c_.copy(concede = Some(f_)))
     def optionalConcede: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MConcede]] = field(_.concede)((c_, f_) => c_.copy(concede = f_))
   }
@@ -195,6 +195,6 @@ object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromC
   final val SPECIAL_FIELD_NUMBER = 4
   final val MOVE_ATTACK_FIELD_NUMBER = 5
   final val LEAVE_FIELD_NUMBER = 1001
-  final val END_TURN_FIELD_NUMBER = 1002
+  final val TOGGLE_WAITING_FOR_ROUND_END_FIELD_NUMBER = 1002
   final val CONCEDE_FIELD_NUMBER = 1003
 }

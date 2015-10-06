@@ -9,6 +9,7 @@ import app.models.game.world.WarpableCompanion.Some
 import org.joda.time.DateTime
 import utils.data.NonEmptyVector
 import implicits._
+import scala.annotation.tailrec
 import scalaz._, Scalaz._
 
 object SemiRealtimeGame extends GameActorGameStarter[SemiRealtimeGame] {
@@ -47,7 +48,7 @@ case class SemiRealtimeGame(
   game: Game, turnSpinner: TurnSpinner[Human], turnTimers: Option[TurnTimers]
 ) extends GameActorGame
 {
-  def update(result: Game.ResultOrWinner, now: DateTime)
+  def update(result: Game.ResultOrWinner, now: DateTime)(implicit log: LoggingAdapter)
   : SemiRealtimeGame.Result =
     result.map { evtGame =>
       evtGame.flatMap { winnerOrGame =>
@@ -55,28 +56,57 @@ case class SemiRealtimeGame(
       }
     }
 
-  def update(game: Game, now: DateTime): Evented[SemiRealtimeGame] = {
-    def rec(curSpin: TurnSpinner[Human]): TurnSpinner[Human] = {
-      if (game.turnEnded(curSpin.current)) rec(curSpin.next)
-      else curSpin
+  def update(game: Game, now: DateTime)(implicit log: LoggingAdapter)
+  : Evented[SemiRealtimeGame] = {
+    /* Find new player which can act, doing auto specials for the skipped players in the
+       meantime. */
+    @tailrec def rec(current: Evented[(Game, TurnSpinner[Human])])
+    : Evented[(Game, TurnSpinner[Human])] = {
+      val (game, curSpin) = current.value
+      val player = curSpin.current
+      val curState = game.states(player)
+      if (!curState.activity.canAct) {
+        val newEvtGame = current.flatMap { _ =>
+          if (curState.actions.isNotZero) {
+            Game.doAutoSpecial(game, player).fold(
+              err => {
+                log.error(
+                  "auto special failed on waiting for next round for {}: {}", player, err
+                )
+                Evented(game)
+              },
+              identity
+            )
+          }
+          else Evented(game)
+        }.map((_, curSpin.next))
+        rec(newEvtGame)
+      }
+      else current
     }
 
-    val newSpinner =
-      if (game.allPlayersTurnEnded) turnSpinner.next
-      else rec(turnSpinner.next)
-    val newTT = turnTimers.map {
-      _.endTurn(turnSpinner.current, now).turnStarted(newSpinner.current, now)
+    val newEvtGameWithSpinner =
+      if (game.allPlayersFinished)
+        game.roundEnded.flatMap(_.roundStarted).map((_, turnSpinner.next))
+      else
+        rec(Evented((game, turnSpinner.next)))
+    newEvtGameWithSpinner.flatMap { case (game, newSpinner) =>
+      val newTT = turnTimers.map {
+        _.endTurn(turnSpinner.current, now).turnStarted(newSpinner.current, now)
+      }
+      val newGame = copy(game = game, turnSpinner = newSpinner, turnTimers = newTT)
+      Evented(
+        newGame,
+        Vector(newGame.currentTurnStartedEvt)
+      )
     }
-    val newGame = copy(game = game, turnSpinner = newSpinner, turnTimers = newTT)
-    Evented(
-      newGame,
-      Vector(newGame.currentTurnStartedEvt)
-    )
   }
 
   def canAct(human: Human) = human === turnSpinner.current
 
-  def humanDo(human: Human, now: DateTime)(f: Human => Game.ResultOrWinner) = {
+  def humanDo(human: Human, now: DateTime)(f: Human => Game.ResultOrWinner)(
+    implicit log: LoggingAdapter
+  ) = {
     if (canAct(human)) update(f(human), now)
     else s"$human cannot act, because current is ${turnSpinner.current}".left
   }
@@ -106,19 +136,13 @@ case class SemiRealtimeGame(
   def turnTimeEnded(human: Human, now: DateTime)
     (implicit log: LoggingAdapter) = update(game.turnTimeEnded(human), now)
 
-  override def endRound(
+  override def toggleWaitingForRoundEnd(
     human: Human, now: DateTime
   )(implicit log: LoggingAdapter) =
-    update(game.endRound(human), now)
+    update(game.toggleWaitForNextRound(human), now)
 
   override def concede(human: Human, now: DateTime)(implicit log: LoggingAdapter) =
     update(game.concede(human), now)
-
-  override def shouldGoToNextRound = game.allPlayersTurnEnded
-
-  override def nextRound(now: DateTime)(implicit log: LoggingAdapter) = {
-    game.roundEnded.flatMap(_.roundStarted).flatMap(update(_, now))
-  }
 
   override def currentPlayer = turnSpinner.current
 
