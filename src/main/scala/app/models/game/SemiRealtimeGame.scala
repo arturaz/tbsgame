@@ -63,33 +63,38 @@ case class SemiRealtimeGame(
     @tailrec def rec(current: Evented[(Game, TurnSpinner[Human])])
     : Evented[(Game, TurnSpinner[Human])] = {
       val (game, curSpin) = current.value
-      val player = curSpin.current
-      val curState = game.states(player)
-      if (!curState.activity.canAct) {
+      if (game.allPlayersFinished) {
         val newEvtGame = current.flatMap { _ =>
-          if (curState.actions.isNotZero) {
-            Game.doAutoSpecial(game, player).fold(
-              err => {
-                log.error(
-                  "auto special failed on waiting for next round for {}: {}", player, err
-                )
-                Evented(game)
-              },
-              identity
-            )
-          }
-          else Evented(game)
-        }.map((_, curSpin.next))
+          game.roundEnded.flatMap(_.roundStarted).map((_, curSpin.next))
+        }
         rec(newEvtGame)
       }
-      else current
+      else {
+        val player = curSpin.current
+        val curState = game.states(player)
+        if (!curState.activity.canAct) {
+          val newEvtGame = current.flatMap { _ =>
+            if (curState.actions.isNotZero) {
+              val autoSpecialResult = Game.doAutoSpecial(game, player)
+              autoSpecialResult.fold(
+                err => {
+                  log.error(
+                    "auto special failed on waiting for next round for {}: {}", player, err
+                  )
+                  Evented(game)
+                },
+                identity
+              )
+            }
+            else Evented(game)
+          }.map((_, curSpin.next))
+          rec(newEvtGame)
+        }
+        else current
+      }
     }
 
-    val newEvtGameWithSpinner =
-      if (game.allPlayersFinished)
-        game.roundEnded.flatMap(_.roundStarted).map((_, turnSpinner.next))
-      else
-        rec(Evented((game, turnSpinner.next)))
+    val newEvtGameWithSpinner = rec(Evented((game, turnSpinner.next)))
     newEvtGameWithSpinner.flatMap { case (game, newSpinner) =>
       val newTT = turnTimers.map {
         _.endTurn(turnSpinner.current, now).turnStarted(newSpinner.current, now)

@@ -153,25 +153,20 @@ object Game {
   }
 
   private def recalculatePlayerStatesOnRoundStart
-  (g: Evented[Game], team: Team): Evented[Game] =
+  (g: Evented[Game]): Evented[Game] =
     g.flatMap { game =>
-      val teamStates = game.states.filterKeys(_.team === team)
-      teamStates.foldLeft(Evented(game.states)) { case (e, (player, state)) =>
+      game.states.foldLeft(Evented(game.states)) { case (e, (player, state)) =>
         val newState = state.onRoundStart(player, game.world.actionsFor(player))
         if (state === newState) e
         else e.flatMap { curStates => Evented(
           curStates + (player -> newState),
           player.asHuman.fold2(
             Vector.empty,
-            human => Vector(WaitingForRoundEndChangeEvt(human, ! newState.activity.canAct))
+            human => Vector(WaitingForRoundEndChangeEvt(human, newState.activity.canAct))
           ) :+ ActionsChangeEvt(player, newState.actions)
         ) }
       }.map(game.updated)
     }
-
-  private def recalculatePlayerStatesOnRoundStart
-  (g: Evented[Game]): Evented[Game] =
-    g.value.world.teams.foldLeft(g)(recalculatePlayerStatesOnRoundStart)
 
   /* Do one auto special action for given player. */
   def doAutoSpecial(game: Game, player: Player)(implicit log: LoggingAdapter)
@@ -248,8 +243,11 @@ case class Game private (
 
   private[this] def teamStates(team: Team) = states.view.filter(_._1.team === team)
 
-  def allPlayersFinished = states.forall { case (_, state) =>
-    state.actions.isZero && !state.activity.canAct
+  def allPlayersFinished = states.forall { case (player, state) =>
+    (
+      // TODO: fix bots later
+      player.isBot || state.actions.isZero
+    ) && !state.activity.canAct
   }
 
   def otherTeamsConceded(team: Team): Boolean =
