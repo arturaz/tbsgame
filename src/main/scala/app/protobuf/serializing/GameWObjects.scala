@@ -41,7 +41,8 @@ trait GameWObjects { _: GameProto =>
   def owned(obj: OwnedObjStats): game.WObjectStats.OwnedObj =
     game.WObjectStats.OwnedObj(
       maxHp = obj.maxHp, isCritical = obj.isCritical, visibility = obj.visibility,
-      kind = obj.kind, isRespawnable = obj.isInstanceOf[RespawnsOnDestructionStats]
+      kind = obj.kind, isRespawnable = obj.isInstanceOf[RespawnsOnDestructionStats],
+      maxDamagePerHit = obj.maxDamagePerHit.map(convert)
     )
 
   def owned(obj: OwnedObj): game.WObject.OwnedObj =

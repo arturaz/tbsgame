@@ -8,21 +8,21 @@ import com.trueaccord.scalapb.Descriptors
 
 final case class Attack(
     attackerRoll: Int,
-    successful: Boolean
+    isCritical: Boolean
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[Attack] with com.trueaccord.lenses.Updatable[Attack] {
     lazy val serializedSize: Int = {
       var __size = 0
       __size += com.google.protobuf.CodedOutputStream.computeUInt32Size(1, attackerRoll)
-      __size += com.google.protobuf.CodedOutputStream.computeBoolSize(2, successful)
+      __size += com.google.protobuf.CodedOutputStream.computeBoolSize(2, isCritical)
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
       output.writeUInt32(1, attackerRoll)
-      output.writeBool(2, successful)
+      output.writeBool(2, isCritical)
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.Attack = {
       var __attackerRoll = this.attackerRoll
-      var __successful = this.successful
+      var __isCritical = this.isCritical
       var _done__ = false
       while (!_done__) {
         val _tag__ = __input.readTag()
@@ -31,21 +31,21 @@ final case class Attack(
           case 8 =>
             __attackerRoll = __input.readUInt32()
           case 16 =>
-            __successful = __input.readBool()
+            __isCritical = __input.readBool()
           case tag => __input.skipField(tag)
         }
       }
       netmsg.game.Attack(
           attackerRoll = __attackerRoll,
-          successful = __successful
+          isCritical = __isCritical
       )
     }
     def withAttackerRoll(__v: Int): Attack = copy(attackerRoll = __v)
-    def withSuccessful(__v: Boolean): Attack = copy(successful = __v)
+    def withIsCritical(__v: Boolean): Attack = copy(isCritical = __v)
     def getField(__field: Descriptors.FieldDescriptor): Any = {
       __field.number match {
         case 1 => attackerRoll
-        case 2 => successful
+        case 2 => isCritical
       }
     }
     def companion = netmsg.game.Attack
@@ -55,7 +55,7 @@ object Attack extends com.trueaccord.scalapb.GeneratedMessageCompanion[Attack]  
   implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Attack]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.Attack = netmsg.game.Attack(
     attackerRoll = fieldsMap(1).asInstanceOf[Int],
-    successful = fieldsMap(2).asInstanceOf[Boolean]
+    isCritical = fieldsMap(2).asInstanceOf[Boolean]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("Attack", this,
     None, m = Seq(),
@@ -63,12 +63,12 @@ object Attack extends com.trueaccord.scalapb.GeneratedMessageCompanion[Attack]  
     f = netmsg.game.InternalFields_game.internalFieldsFor("netmsg.game.Attack"))
   lazy val defaultInstance = netmsg.game.Attack(
     attackerRoll = 0,
-    successful = false
+    isCritical = false
   )
   implicit class AttackLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, Attack]) extends com.trueaccord.lenses.ObjectLens[UpperPB, Attack](_l) {
     def attackerRoll: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.attackerRoll)((c_, f_) => c_.copy(attackerRoll = f_))
-    def successful: com.trueaccord.lenses.Lens[UpperPB, Boolean] = field(_.successful)((c_, f_) => c_.copy(successful = f_))
+    def isCritical: com.trueaccord.lenses.Lens[UpperPB, Boolean] = field(_.isCritical)((c_, f_) => c_.copy(isCritical = f_))
   }
   final val ATTACKER_ROLL_FIELD_NUMBER = 1
-  final val SUCCESSFUL_FIELD_NUMBER = 2
+  final val IS_CRITICAL_FIELD_NUMBER = 2
 }

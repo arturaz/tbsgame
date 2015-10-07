@@ -435,6 +435,8 @@ message WObjectStats {
     required uint32 max_hp = 3;
     required WObjKind kind = 4;
     required bool is_respawnable = 5;
+    // Max amount of damage that it can per one hit - if not sent, no such limit exists.
+    optional uint32 max_damage_per_hit = 6;
   }
 
   message GivingActions {
@@ -738,7 +740,7 @@ message AttackEvt {
 
 message Attack {
   required uint32 attacker_roll = 1;
-  required bool successful = 2;
+  required bool is_critical = 2;
 }
 
 message MovementChangeEvt {

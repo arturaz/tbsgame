@@ -49,7 +49,7 @@ trait GameProto extends BaseProto with GameWObjects with GameEvents {
     )
 
   implicit def convert(attack: Attack): game.Attack =
-    game.Attack(attackerRoll = attack.attackerRoll, successful = attack.successful)
+    game.Attack(attackerRoll = attack.attackerRoll, isCritical = attack.isCritical)
 
   implicit def convert(kind: WObjKind): game.WObjKind = kind match {
     case WObjKind.Light => game.WObjKind.LIGHT

@@ -494,7 +494,8 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
       visibility: Int,
       maxHp: Int,
       kind: netmsg.game.WObjKind,
-      isRespawnable: Boolean
+      isRespawnable: Boolean,
+      maxDamagePerHit: Option[Int] = None
       ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[OwnedObj] with com.trueaccord.lenses.Updatable[OwnedObj] {
       lazy val serializedSize: Int = {
         var __size = 0
@@ -503,6 +504,7 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
         __size += com.google.protobuf.CodedOutputStream.computeUInt32Size(3, maxHp)
         __size += com.google.protobuf.CodedOutputStream.computeEnumSize(4, kind.id)
         __size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, isRespawnable)
+        if (maxDamagePerHit.isDefined) { __size += com.google.protobuf.CodedOutputStream.computeUInt32Size(6, maxDamagePerHit.get) }
         __size
       }
       def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -511,6 +513,9 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
         output.writeUInt32(3, maxHp)
         output.writeEnum(4, kind.id)
         output.writeBool(5, isRespawnable)
+        maxDamagePerHit.foreach { v => 
+          output.writeUInt32(6, v)
+        }
       }
       def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.WObjectStats.OwnedObj = {
         var __isCritical = this.isCritical
@@ -518,6 +523,7 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
         var __maxHp = this.maxHp
         var __kind = this.kind
         var __isRespawnable = this.isRespawnable
+        var __maxDamagePerHit = this.maxDamagePerHit
         var _done__ = false
         while (!_done__) {
           val _tag__ = __input.readTag()
@@ -533,6 +539,8 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
               __kind = netmsg.game.WObjKind.fromValue(__input.readEnum())
             case 40 =>
               __isRespawnable = __input.readBool()
+            case 48 =>
+              __maxDamagePerHit = Some(__input.readUInt32())
             case tag => __input.skipField(tag)
           }
         }
@@ -541,7 +549,8 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
             visibility = __visibility,
             maxHp = __maxHp,
             kind = __kind,
-            isRespawnable = __isRespawnable
+            isRespawnable = __isRespawnable,
+            maxDamagePerHit = __maxDamagePerHit
         )
       }
       def withIsCritical(__v: Boolean): OwnedObj = copy(isCritical = __v)
@@ -549,6 +558,9 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
       def withMaxHp(__v: Int): OwnedObj = copy(maxHp = __v)
       def withKind(__v: netmsg.game.WObjKind): OwnedObj = copy(kind = __v)
       def withIsRespawnable(__v: Boolean): OwnedObj = copy(isRespawnable = __v)
+      def getMaxDamagePerHit: Int = maxDamagePerHit.getOrElse(0)
+      def clearMaxDamagePerHit: OwnedObj = copy(maxDamagePerHit = None)
+      def withMaxDamagePerHit(__v: Int): OwnedObj = copy(maxDamagePerHit = Some(__v))
       def getField(__field: Descriptors.FieldDescriptor): Any = {
         __field.number match {
           case 1 => isCritical
@@ -556,6 +568,7 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
           case 3 => maxHp
           case 4 => kind
           case 5 => isRespawnable
+          case 6 => maxDamagePerHit
         }
       }
       def companion = netmsg.game.WObjectStats.OwnedObj
@@ -568,7 +581,8 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
       visibility = fieldsMap(2).asInstanceOf[Int],
       maxHp = fieldsMap(3).asInstanceOf[Int],
       kind = fieldsMap(4).asInstanceOf[netmsg.game.WObjKind],
-      isRespawnable = fieldsMap(5).asInstanceOf[Boolean]
+      isRespawnable = fieldsMap(5).asInstanceOf[Boolean],
+      maxDamagePerHit = fieldsMap.getOrElse(6, None).asInstanceOf[Option[Int]]
     )
     lazy val descriptor = new Descriptors.MessageDescriptor("OwnedObj", this,
       None, m = Seq(),
@@ -587,12 +601,15 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
       def maxHp: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.maxHp)((c_, f_) => c_.copy(maxHp = f_))
       def kind: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjKind] = field(_.kind)((c_, f_) => c_.copy(kind = f_))
       def isRespawnable: com.trueaccord.lenses.Lens[UpperPB, Boolean] = field(_.isRespawnable)((c_, f_) => c_.copy(isRespawnable = f_))
+      def maxDamagePerHit: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.getMaxDamagePerHit)((c_, f_) => c_.copy(maxDamagePerHit = Some(f_)))
+      def optionalMaxDamagePerHit: com.trueaccord.lenses.Lens[UpperPB, Option[Int]] = field(_.maxDamagePerHit)((c_, f_) => c_.copy(maxDamagePerHit = f_))
     }
     final val IS_CRITICAL_FIELD_NUMBER = 1
     final val VISIBILITY_FIELD_NUMBER = 2
     final val MAX_HP_FIELD_NUMBER = 3
     final val KIND_FIELD_NUMBER = 4
     final val IS_RESPAWNABLE_FIELD_NUMBER = 5
+    final val MAX_DAMAGE_PER_HIT_FIELD_NUMBER = 6
   }
   
   final case class GivingActions(

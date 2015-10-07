@@ -11,10 +11,12 @@ case class Attack(
   val attackerRoll = (attackerBaseRoll.value * criticalMult).round.toInt
   def successful = attackerRoll > 0
   def damage = HP(attackerRoll max 0)
+  def isCritical = criticalMultiplier.isDefined
 
   /* None if destroyed, Some otherwise */
   def apply[A <: OwnedObj](obj: A): Option[A] =
-    if (successful) obj.takeDamage(damage) else Some(obj)
+    if (successful) obj.takeDamage(obj.stats.maxDamagePerHit.fold2(damage, _ min damage))
+    else Some(obj)
 
   override def toString =
     s"Atk[a: $attackerRoll x [c: $criticalMult] = $attackerRoll]"

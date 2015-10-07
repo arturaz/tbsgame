@@ -14,6 +14,7 @@ import scala.language.implicitConversions
 
 trait OwnedObjStatsImpl { _: OwnedObjStats =>
   val maxHp: HP
+  val maxDamagePerHit = Option.empty[HP]
   val visibility: RectDistance
   /* If team has no critical objects it cannot do any more actions and
      loses the game. */
