@@ -85,6 +85,9 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
   implicit def convert(evt: PopulationChangeEvt): game.PopulationChangeEvt =
     game.PopulationChangeEvt(evt.player.id, evt.population)
 
+  implicit def convert(evt: StatsChangedEvt): game.StatsChangeEvt =
+    game.StatsChangeEvt(evt.newObj.id, evt.newObj.stats)
+
   implicit def convert(evt: JoinEvt): game.JoinEvt =
     game.JoinEvt(convert(evt.human, evt.state))
 
@@ -105,6 +108,7 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
       case evt: ActionsChangeEvt => game.Event(actionsChange = Some(evt))
       case evt: HPChangeEvt => game.Event(hpChange = Some(evt))
       case evt: LevelChangeEvt => game.Event(levelChange = Some(evt))
+      case evt: StatsChangedEvt => game.Event(statsChange = Some(evt))
       case evt: JoinEvt => game.Event(join = Some(evt))
       case evt: LeaveEvt => game.Event(leave = Some(evt))
       case evt: WarpStateChangeEvt => game.Event(warpChange = Some(evt))

@@ -160,6 +160,12 @@ case class OwnerChangeEvt(
   def bounds = newObj.bounds
 }
 
+case class StatsChangedEvt(
+  visibilityMap: VisibilityMap, newObj: OwnedObj
+) extends BoundedEvent {
+  def bounds = newObj.bounds
+}
+
 case class MovementChangeEvt(
   visibilityMap: VisibilityMap, changedObj: Movable
 ) extends BoundedEvent {
@@ -167,7 +173,7 @@ case class MovementChangeEvt(
 }
 
 case class ResourceChangeEvt(
-  obj: (World, WObject) \/ Human, newValue: Resources
+  obj: (World, Asteroid) \/ Human, newValue: Resources
 ) extends VisibleEvent {
   override def visibleBy(owner: Owner) = obj.fold(
     { case (world, wObj) => world.isVisiblePartial(owner, wObj.bounds) },

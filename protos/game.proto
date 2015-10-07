@@ -603,6 +603,7 @@ message WObjectStats {
     required Fighter fighter = 3;
     required Movable movable = 4;
     required Warpable warpable = 5;
+    required bool deployed = 6;
   }
 
   message Gunship {
@@ -676,6 +677,7 @@ message Event { // {{{
   optional OwnerChangeEvt owner_change = 18;
   optional ObjectivesUpdateEvt objectives_update = 19;
   optional PopulationChangeEvt population_change = 20;
+  optional StatsChangeEvt stats_change = 21;
 
   optional JoinEvt join = 1000;
   optional LeaveEvt leave = 1001;
@@ -787,6 +789,11 @@ message ObjDestroyedEvt {
 message OwnerChangeEvt {
   required WObjID obj_id = 1;
   required OwnerID new_owner_id = 2;
+}
+
+message StatsChangeEvt {
+  required WObjID obj_id = 1;
+  required WObjectStats stats = 2;
 }
 
 message ObjectivesUpdateEvt {

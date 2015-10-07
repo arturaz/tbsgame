@@ -219,12 +219,15 @@ case class RocketFrigate(
   xp: XP=RocketFrigateStats.InitialXP,
   attacksLeft: Attacks=RocketFrigateStats.InitialAttacks,
   movementLeft: Movement=RocketFrigateStats.InitialMovement,
-  warpState: WarpTime=RocketFrigateStats.InitialWarpState
-) extends WUnit with Fighter {
-  type Stats = RocketFrigateStats.type
-  override val stats = RocketFrigateStats
+  warpState: WarpTime=RocketFrigateStats.InitialWarpState,
+  stats: RocketFrigateCommonStats=RocketFrigateStats
+) extends WUnit with Fighter with SpecialAction with RocketFrigateImpl {
+  type Stats = RocketFrigateCommonStats
 }
-object RocketFrigateStats extends WFighterUnitStats with RocketFrigateStatsImpl
+sealed trait RocketFrigateCommonStats extends WFighterUnitStats with SpecialActionStats
+  with RocketFrigateCommonStatsImpl
+object RocketFrigateStats extends RocketFrigateCommonStats with RocketFrigateStatsImpl
+object RocketFrigateDeployedStats extends RocketFrigateCommonStats with RocketFrigateDeployedStatsImpl
 
 // </editor-fold>
 

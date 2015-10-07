@@ -24,7 +24,7 @@ trait WObjectImpl {
   val position: Vect2
 
   type Stats <: WObjectStats
-  val stats: Stats
+  def stats: Stats
 
   // Needs to be lazy, because stats might get overriden
   def bounds = stats.bounds(position)
