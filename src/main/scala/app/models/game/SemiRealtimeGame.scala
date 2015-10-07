@@ -127,6 +127,11 @@ case class SemiRealtimeGame(
   )(implicit log: LoggingAdapter) =
     humanDo(human, now)(game.special(_, id))
 
+  override def attackPos(
+    human: Human, id: Id, targetPos: Vect2, now: DateTime
+  )(implicit log: LoggingAdapter) =
+    humanDo(human, now)(game.attackPosition(_, id, targetPos))
+
   override def attack(
     human: Human, id: Id, targetId: Id, now: DateTime
   )(implicit log: LoggingAdapter) =

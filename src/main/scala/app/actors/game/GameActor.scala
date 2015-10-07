@@ -33,6 +33,7 @@ object GameActor {
     ) extends In
     /* path does not include objects position and ends in target position */
     case class Move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]) extends In
+    case class AttackPos(human: Human, id: WObject.Id, targetPos: Vect2) extends In
     case class Attack(human: Human, id: WObject.Id, targetId: WObject.Id) extends In
     case class MoveAttack(
       human: Human, id: WObject.Id, path: NonEmptyVector[Vect2], targetId: WObject.Id
@@ -140,6 +141,9 @@ trait GameActorGame {
   (implicit log: LoggingAdapter): Result
 
   def special(human: Human, id: WObject.Id, now: DateTime)(implicit log: LoggingAdapter): Result
+
+  def attackPos(human: Human, id: WObject.Id, targetPos: Vect2, now: DateTime)
+  (implicit log: LoggingAdapter): Result
 
   def attack(human: Human, id: WObject.Id, targetId: WObject.Id, now: DateTime)
   (implicit log: LoggingAdapter): Result
@@ -285,6 +289,8 @@ class GameActor private (
       update(sender(), human, _.warp(human, position, warpable, DateTime.now))
     case In.Move(human, id, path) =>
       update(sender(), human, _.move(human, id, path, DateTime.now))
+    case In.AttackPos(human, id, targetPos) =>
+      update(sender(), human, _.attackPos(human, id, targetPos, DateTime.now))
     case In.Attack(human, id, target) =>
       update(sender(), human, _.attack(human, id, target, DateTime.now))
     case In.MoveAttack(human, id, path, target) =>

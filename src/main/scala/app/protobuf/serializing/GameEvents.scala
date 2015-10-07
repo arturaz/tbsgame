@@ -37,10 +37,13 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
 
   implicit def convert(evt: AttackEvt[_ <: OwnedObj]): game.AttackEvt =
     game.AttackEvt(
-      attackerId = evt.attacker.id, defenderId = evt.defender._1.id,
-      hpLeft = evt.defender._2.map(_.hp).getOrElse(HP(0)).value,
+      attackerId = evt.attacker.id, defenderId = evt.target._1.id,
+      hpLeft = evt.target._2.map(_.hp).getOrElse(HP(0)).value,
       attack = evt.attack
     )
+
+  implicit def convert(evt: AttackPosEvt): game.AttackPosEvt =
+    game.AttackPosEvt(attackerId = evt.attacker.id, targetPos = evt.pos)
 
   implicit def convert(evt: MovementChangeEvt): game.MovementChangeEvt =
     game.MovementChangeEvt(evt.changedObj.id, evt.changedObj.movementLeft)
@@ -103,6 +106,7 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
       case evt: ObjVisibleEvt => game.Event(objVisible = Some(evt))
       case evt: MoveEvt => game.Event(move = Some(evt))
       case evt: AttackEvt[_] => game.Event(attack = Some(evt))
+      case evt: AttackPosEvt => game.Event(attackPos = Some(evt))
       case evt: MovementChangeEvt => game.Event(movementChange = Some(evt))
       case evt: ResourceChangeEvt => game.Event(resourceChange = Some(evt))
       case evt: ActionsChangeEvt => game.Event(actionsChange = Some(evt))

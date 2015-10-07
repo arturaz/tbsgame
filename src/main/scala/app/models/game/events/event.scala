@@ -117,11 +117,22 @@ case class MoveEvt(
     else Iterable.empty
 }
 
+case class AttackPosEvt(
+  visibilityMap: VisibilityMap, attacker: Fighter, pos: Vect2
+) extends BoundedEvent {
+  override def bounds = pos.toBounds
+}
+
+/**
+ * @param target (old defender, new defender)
+ */
 case class AttackEvt[D <: OwnedObj](
-  visibilityMap: VisibilityMap, attacker: Fighter, defender: (D, Option[D]), attack: Attack
+  visibilityMap: VisibilityMap, attacker: Fighter,
+  target: (D, Option[D]), attack: Attack//, forceVisibilityFor: Option[Owner] = None
 ) extends Event with FinalEvent {
   override def asViewedBy(owner: Owner) =
-    if (visibilityMap.isVisiblePartial(owner, defender._1.bounds)) {
+    if (visibilityMap.isVisiblePartial(owner, target._1.bounds)) {
+      // TODO: what to do when the target is not visible, e.g. after move in move/attack?
       if (visibilityMap.isVisiblePartial(owner, attacker.bounds))
         // Just attack
         Iterable(this)

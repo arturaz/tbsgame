@@ -1,7 +1,7 @@
 package app.models.game.world
 
 import akka.event.LoggingAdapter
-import app.models.game.events.{AttackEvt, AttacksChangedEvt, Evented, LevelChangeEvt}
+import app.models.game.events._
 import app.models.game.world.buildings.LaserTowerOps
 import app.models.game.world.units._
 import app.models.game.{Attack, Player}
@@ -65,23 +65,33 @@ trait FighterImpl extends OwnedObjImpl {
   def noAttacksLeft = attacksLeft.isZero
   def hasAttacksLeft = attacksLeft.isNotZero
 
-  def canReachAttack(obj: OwnedObj) =
-    obj.bounds.withinDistance(position, stats.attackRange)
+  def canReachAttack(bounds: Bounds) =
+    bounds.withinDistance(position, stats.attackRange)
 
-  def cantAttackReason(obj: OwnedObj, world: World): Option[String] = {
+  def cantAttackReason(
+    bounds: Bounds, world: World, checkVisibility: Boolean
+  ): Option[String] = {
     if (noAttacksLeft) Some(s"$this has already used all its attacks!")
     else if (isWarpingIn) Some(s"$this is still warping in!")
-    else if (! world.isVisiblePartial(owner, obj.bounds))
-      Some(s"$this cannot see $obj")
-    else if (! canReachAttack(obj))
-      Some(s"$this cannot attack reach $obj - tile distance ${
-        obj.bounds.tileDistance(position)
+    else if (checkVisibility && ! world.isVisiblePartial(owner, bounds))
+      Some(s"$this cannot see $bounds")
+    else if (! canReachAttack(bounds))
+      Some(s"$this cannot attack reach $bounds - tile distance ${
+        bounds.tileDistance(position)
       } > attack range ${stats.attackRange}!")
     else None
   }
 
-  def canAttack(obj: OwnedObj, world: World) =
-    cantAttackReason(obj, world).isEmpty
+  def cantAttackReason(
+    obj: OwnedObj, world: World, checkVisibility: Boolean
+  ): Option[String] = {
+    cantAttackReason(obj.bounds, world, checkVisibility).map { err =>
+      s"Can't attack $obj: $err"
+    }
+  }
+
+  def canAttack(obj: OwnedObj, world: World, checkVisibility: Boolean=true) =
+    cantAttackReason(obj, world, checkVisibility).isEmpty
 
   def randomAttackTo(kind: WObjKind): Atk =
     Atk((stats.randomAttackTo(kind).value * attackMultiplier).round.toInt)
@@ -105,9 +115,9 @@ trait FighterOps[Self <: Fighter] {
     withAttacksLeftEvt(self.stats.attacks)(world)
 
   private[this] def attackSimple[Target <: OwnedObj]
-  (obj: Target, world: World)(implicit log: LoggingAdapter)
+  (obj: Target, world: World, checkVisibility: Boolean)(implicit log: LoggingAdapter)
   : String \/ (Attack, Evented[Self], Option[Target]) =
-    self.cantAttackReason(obj, world).fold2({
+    self.cantAttackReason(obj, world, checkVisibility).fold2({
       val attack = Attack(self, obj)
       val newObj = attack(obj)
       (
@@ -128,10 +138,49 @@ trait FighterOps[Self <: Fighter] {
       ).right
     }, _.left)
 
-  def attack[Target <: OwnedObj]
-  (obj: Target, world: World, invokeRetaliation: Boolean=true)(implicit log: LoggingAdapter)
+
+
+  def attackPosW(pos: Vect2, world: World)(implicit log: LoggingAdapter)
+  : String \/ Evented[World] = attackPos(pos, world).map(_.map(_._1))
+
+  def attackPos(pos: Vect2, world: World)(implicit log: LoggingAdapter)
+  : String \/ Evented[(World, Option[Self])] = {
+    val targetOpt = world.objects.objectsIn(pos).collectFirst {
+      case obj: OwnedObj if self.isEnemy(obj) => obj
+    }
+    targetOpt match {
+      case None =>
+        self.cantAttackReason(pos.toBounds, world, checkVisibility = false) match {
+          case None =>
+            val evented = (
+              AttackPosEvt(
+                world.visibilityMap, self, pos
+              ) +: withAttacksLeftEvt(self.attacksLeft - Attacks(1))(world)
+            ).flatMap { newSelf =>
+              world.updated(self, newSelf).map { world => (world, Some(newSelf)) }
+            }
+            evented.right
+          case Some(err) =>
+            err.left
+        }
+      case Some(target) =>
+        attack(target, world).map { evented =>
+          val t = evented.value
+          val events = evented.events.map {
+            case e: AttackEvt[_] => AttackPosEvt(e.visibilityMap, e.attacker, pos)
+            case e => e
+          }
+          Evented((t._1, t._2), events)
+        }
+    }
+  }
+
+  def attack[Target <: OwnedObj](
+    obj: Target, world: World,
+    invokeRetaliation: Boolean=true, checkVisibility: Boolean=true
+  )(implicit log: LoggingAdapter)
   : String \/ Evented[(World, Option[Self], Attack, Option[Target])] = {
-    val origAtkEvtE = attackSimple(obj, world).map {
+    val origAtkEvtE = attackSimple(obj, world, checkVisibility).map {
       case (attack, attackedEvt, newObjOpt) =>
         for {
           attacked <- attackedEvt

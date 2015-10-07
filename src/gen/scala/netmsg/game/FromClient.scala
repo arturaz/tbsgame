@@ -9,6 +9,7 @@ import com.trueaccord.scalapb.Descriptors
 final case class FromClient(
     warp: Option[netmsg.game.MWarp] = None,
     move: Option[netmsg.game.MMove] = None,
+    attackPos: Option[netmsg.game.MAttackPos] = None,
     attack: Option[netmsg.game.MAttack] = None,
     special: Option[netmsg.game.MSpecial] = None,
     moveAttack: Option[netmsg.game.MMoveAttack] = None,
@@ -20,6 +21,7 @@ final case class FromClient(
       var __size = 0
       if (warp.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(warp.get.serializedSize) + warp.get.serializedSize }
       if (move.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(move.get.serializedSize) + move.get.serializedSize }
+      if (attackPos.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(attackPos.get.serializedSize) + attackPos.get.serializedSize }
       if (attack.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(attack.get.serializedSize) + attack.get.serializedSize }
       if (special.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(special.get.serializedSize) + special.get.serializedSize }
       if (moveAttack.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(moveAttack.get.serializedSize) + moveAttack.get.serializedSize }
@@ -39,18 +41,23 @@ final case class FromClient(
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
-      attack.foreach { v => 
+      attackPos.foreach { v => 
         output.writeTag(3, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
-      special.foreach { v => 
+      attack.foreach { v => 
         output.writeTag(4, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
-      moveAttack.foreach { v => 
+      special.foreach { v => 
         output.writeTag(5, 2)
+        output.writeRawVarint32(v.serializedSize)
+        v.writeTo(output)
+      }
+      moveAttack.foreach { v => 
+        output.writeTag(6, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
@@ -73,6 +80,7 @@ final case class FromClient(
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.FromClient = {
       var __warp = this.warp
       var __move = this.move
+      var __attackPos = this.attackPos
       var __attack = this.attack
       var __special = this.special
       var __moveAttack = this.moveAttack
@@ -89,10 +97,12 @@ final case class FromClient(
           case 18 =>
             __move = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __move.getOrElse(netmsg.game.MMove.defaultInstance)))
           case 26 =>
-            __attack = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __attack.getOrElse(netmsg.game.MAttack.defaultInstance)))
+            __attackPos = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __attackPos.getOrElse(netmsg.game.MAttackPos.defaultInstance)))
           case 34 =>
-            __special = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __special.getOrElse(netmsg.game.MSpecial.defaultInstance)))
+            __attack = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __attack.getOrElse(netmsg.game.MAttack.defaultInstance)))
           case 42 =>
+            __special = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __special.getOrElse(netmsg.game.MSpecial.defaultInstance)))
+          case 50 =>
             __moveAttack = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __moveAttack.getOrElse(netmsg.game.MMoveAttack.defaultInstance)))
           case 8010 =>
             __leave = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __leave.getOrElse(netmsg.game.MLeave.defaultInstance)))
@@ -106,6 +116,7 @@ final case class FromClient(
       netmsg.game.FromClient(
           warp = __warp,
           move = __move,
+          attackPos = __attackPos,
           attack = __attack,
           special = __special,
           moveAttack = __moveAttack,
@@ -120,6 +131,9 @@ final case class FromClient(
     def getMove: netmsg.game.MMove = move.getOrElse(netmsg.game.MMove.defaultInstance)
     def clearMove: FromClient = copy(move = None)
     def withMove(__v: netmsg.game.MMove): FromClient = copy(move = Some(__v))
+    def getAttackPos: netmsg.game.MAttackPos = attackPos.getOrElse(netmsg.game.MAttackPos.defaultInstance)
+    def clearAttackPos: FromClient = copy(attackPos = None)
+    def withAttackPos(__v: netmsg.game.MAttackPos): FromClient = copy(attackPos = Some(__v))
     def getAttack: netmsg.game.MAttack = attack.getOrElse(netmsg.game.MAttack.defaultInstance)
     def clearAttack: FromClient = copy(attack = None)
     def withAttack(__v: netmsg.game.MAttack): FromClient = copy(attack = Some(__v))
@@ -142,9 +156,10 @@ final case class FromClient(
       __field.number match {
         case 1 => warp
         case 2 => move
-        case 3 => attack
-        case 4 => special
-        case 5 => moveAttack
+        case 3 => attackPos
+        case 4 => attack
+        case 5 => special
+        case 6 => moveAttack
         case 1001 => leave
         case 1002 => toggleWaitingForRoundEnd
         case 1003 => concede
@@ -158,9 +173,10 @@ object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromC
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.FromClient = netmsg.game.FromClient(
     warp = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.game.MWarp]],
     move = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.game.MMove]],
-    attack = fieldsMap.getOrElse(3, None).asInstanceOf[Option[netmsg.game.MAttack]],
-    special = fieldsMap.getOrElse(4, None).asInstanceOf[Option[netmsg.game.MSpecial]],
-    moveAttack = fieldsMap.getOrElse(5, None).asInstanceOf[Option[netmsg.game.MMoveAttack]],
+    attackPos = fieldsMap.getOrElse(3, None).asInstanceOf[Option[netmsg.game.MAttackPos]],
+    attack = fieldsMap.getOrElse(4, None).asInstanceOf[Option[netmsg.game.MAttack]],
+    special = fieldsMap.getOrElse(5, None).asInstanceOf[Option[netmsg.game.MSpecial]],
+    moveAttack = fieldsMap.getOrElse(6, None).asInstanceOf[Option[netmsg.game.MMoveAttack]],
     leave = fieldsMap.getOrElse(1001, None).asInstanceOf[Option[netmsg.game.MLeave]],
     toggleWaitingForRoundEnd = fieldsMap.getOrElse(1002, None).asInstanceOf[Option[netmsg.game.MToggleWaitingForRoundEnd]],
     concede = fieldsMap.getOrElse(1003, None).asInstanceOf[Option[netmsg.game.MConcede]]
@@ -176,6 +192,8 @@ object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromC
     def optionalWarp: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MWarp]] = field(_.warp)((c_, f_) => c_.copy(warp = f_))
     def move: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MMove] = field(_.getMove)((c_, f_) => c_.copy(move = Some(f_)))
     def optionalMove: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MMove]] = field(_.move)((c_, f_) => c_.copy(move = f_))
+    def attackPos: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MAttackPos] = field(_.getAttackPos)((c_, f_) => c_.copy(attackPos = Some(f_)))
+    def optionalAttackPos: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MAttackPos]] = field(_.attackPos)((c_, f_) => c_.copy(attackPos = f_))
     def attack: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MAttack] = field(_.getAttack)((c_, f_) => c_.copy(attack = Some(f_)))
     def optionalAttack: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MAttack]] = field(_.attack)((c_, f_) => c_.copy(attack = f_))
     def special: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MSpecial] = field(_.getSpecial)((c_, f_) => c_.copy(special = Some(f_)))
@@ -191,9 +209,10 @@ object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromC
   }
   final val WARP_FIELD_NUMBER = 1
   final val MOVE_FIELD_NUMBER = 2
-  final val ATTACK_FIELD_NUMBER = 3
-  final val SPECIAL_FIELD_NUMBER = 4
-  final val MOVE_ATTACK_FIELD_NUMBER = 5
+  final val ATTACK_POS_FIELD_NUMBER = 3
+  final val ATTACK_FIELD_NUMBER = 4
+  final val SPECIAL_FIELD_NUMBER = 5
+  final val MOVE_ATTACK_FIELD_NUMBER = 6
   final val LEAVE_FIELD_NUMBER = 1001
   final val TOGGLE_WAITING_FOR_ROUND_END_FIELD_NUMBER = 1002
   final val CONCEDE_FIELD_NUMBER = 1003

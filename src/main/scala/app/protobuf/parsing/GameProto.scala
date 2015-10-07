@@ -38,24 +38,26 @@ trait GameProto extends BaseProto {
     import app.actors.game.GameActor.In._
 
     msg match {
-      case game.FromClient(Some(m), _, _, _, _, _, _, _) =>
+      case game.FromClient(Some(m), _, _, _, _, _, _, _, _) =>
         \/-(Warp(_: Human, m.position, m.warpable))
-      case game.FromClient(_, Some(m), _, _, _, _, _, _) =>
+      case game.FromClient(_, Some(m), _, _, _, _, _, _, _) =>
         for (path <- parsePath(m.path)) yield Move(_: Human, m.id, path)
-      case game.FromClient(_, _, Some(m), _, _, _, _, _) =>
+      case game.FromClient(_, _, Some(m), _, _, _, _, _, _) =>
+        \/-(AttackPos(_: Human, id = m.id, targetPos = m.targetPos))
+      case game.FromClient(_, _, _, Some(m), _, _, _, _, _) =>
         \/-(Attack(_: Human, id = m.id, targetId = m.targetId))
-      case game.FromClient(_, _, _, Some(m), _, _, _, _) =>
+      case game.FromClient(_, _, _, _, Some(m), _, _, _, _) =>
         \/-(Special(_: Human, m.id))
-      case game.FromClient(_, _, _, _, Some(m), _, _, _) =>
+      case game.FromClient(_, _, _, _, _, Some(m), _, _, _) =>
         for (path <- parsePath(m.path))
           yield MoveAttack(_: Human, id = m.id, path, targetId = m.targetId)
-      case game.FromClient(_, _, _, _, _, Some(m), _, _) =>
+      case game.FromClient(_, _, _, _, _, _, Some(m), _, _) =>
         \/-(Leave.apply(_: Human))
-      case game.FromClient(_, _, _, _, _, _, Some(m), _) =>
+      case game.FromClient(_, _, _, _, _, _, _, Some(m), _) =>
         \/-(ToggleWaitingForRoundEnd.apply(_: Human))
-      case game.FromClient(_, _, _, _, _, _, _, Some(m)) =>
+      case game.FromClient(_, _, _, _, _, _, _, _, Some(m)) =>
         \/-(Concede.apply(_: Human))
-      case game.FromClient(None, None, None, None, None, None, None, None) =>
+      case game.FromClient(None, None, None, None, None, None, None, None, None) =>
         s"Empty message: $msg!".left
     }
   }

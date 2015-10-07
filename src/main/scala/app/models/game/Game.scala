@@ -325,17 +325,28 @@ case class Game private (
       } } } }
     }
 
+  private[this] def attackCommon(
+    player: Player, id: WObject.Id
+  )(f: ObjFn[OwnedObj with Fighter])(implicit log: LoggingAdapter): Game.ResultOrWinner =
+    checkObjectives { withAttackObj(player, id)(f) }
+
   def attack(
     player: Player, id: WObject.Id, targetId: WObject.Id
   )(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    checkObjectives {
-      withAttackObj(player, id) { obj =>
+    attackCommon(player, id) { obj =>
       withTargetObj(player, targetId) { targetObj =>
       withVisibility(player, targetObj) {
         obj.attackW(targetObj, world).map { _.map { world =>
           updated(world)
         } }
-      } } }
+      } }
+    }
+
+  def attackPosition(
+    player: Player, id: WObject.Id, targetPos: Vect2
+  )(implicit log: LoggingAdapter): Game.ResultOrWinner =
+    attackCommon(player, id) { obj =>
+      obj.attackPosW(targetPos, world).map(_.map(updated))
     }
 
   def moveAttack(

@@ -27,6 +27,7 @@ final case class Event(
     objectivesUpdate: Option[netmsg.game.ObjectivesUpdateEvt] = None,
     populationChange: Option[netmsg.game.PopulationChangeEvt] = None,
     statsChange: Option[netmsg.game.StatsChangeEvt] = None,
+    attackPos: Option[netmsg.game.AttackPosEvt] = None,
     join: Option[netmsg.game.JoinEvt] = None,
     leave: Option[netmsg.game.LeaveEvt] = None,
     gameWon: Option[netmsg.game.GameWonEvt] = None
@@ -53,6 +54,7 @@ final case class Event(
       if (objectivesUpdate.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(objectivesUpdate.get.serializedSize) + objectivesUpdate.get.serializedSize }
       if (populationChange.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(populationChange.get.serializedSize) + populationChange.get.serializedSize }
       if (statsChange.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(statsChange.get.serializedSize) + statsChange.get.serializedSize }
+      if (attackPos.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(attackPos.get.serializedSize) + attackPos.get.serializedSize }
       if (join.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(join.get.serializedSize) + join.get.serializedSize }
       if (leave.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(leave.get.serializedSize) + leave.get.serializedSize }
       if (gameWon.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(gameWon.get.serializedSize) + gameWon.get.serializedSize }
@@ -159,6 +161,11 @@ final case class Event(
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
+      attackPos.foreach { v => 
+        output.writeTag(22, 2)
+        output.writeRawVarint32(v.serializedSize)
+        v.writeTo(output)
+      }
       join.foreach { v => 
         output.writeTag(1000, 2)
         output.writeRawVarint32(v.serializedSize)
@@ -196,6 +203,7 @@ final case class Event(
       var __objectivesUpdate = this.objectivesUpdate
       var __populationChange = this.populationChange
       var __statsChange = this.statsChange
+      var __attackPos = this.attackPos
       var __join = this.join
       var __leave = this.leave
       var __gameWon = this.gameWon
@@ -244,6 +252,8 @@ final case class Event(
             __populationChange = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __populationChange.getOrElse(netmsg.game.PopulationChangeEvt.defaultInstance)))
           case 170 =>
             __statsChange = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __statsChange.getOrElse(netmsg.game.StatsChangeEvt.defaultInstance)))
+          case 178 =>
+            __attackPos = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __attackPos.getOrElse(netmsg.game.AttackPosEvt.defaultInstance)))
           case 8002 =>
             __join = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __join.getOrElse(netmsg.game.JoinEvt.defaultInstance)))
           case 8010 =>
@@ -274,6 +284,7 @@ final case class Event(
           objectivesUpdate = __objectivesUpdate,
           populationChange = __populationChange,
           statsChange = __statsChange,
+          attackPos = __attackPos,
           join = __join,
           leave = __leave,
           gameWon = __gameWon
@@ -339,6 +350,9 @@ final case class Event(
     def getStatsChange: netmsg.game.StatsChangeEvt = statsChange.getOrElse(netmsg.game.StatsChangeEvt.defaultInstance)
     def clearStatsChange: Event = copy(statsChange = None)
     def withStatsChange(__v: netmsg.game.StatsChangeEvt): Event = copy(statsChange = Some(__v))
+    def getAttackPos: netmsg.game.AttackPosEvt = attackPos.getOrElse(netmsg.game.AttackPosEvt.defaultInstance)
+    def clearAttackPos: Event = copy(attackPos = None)
+    def withAttackPos(__v: netmsg.game.AttackPosEvt): Event = copy(attackPos = Some(__v))
     def getJoin: netmsg.game.JoinEvt = join.getOrElse(netmsg.game.JoinEvt.defaultInstance)
     def clearJoin: Event = copy(join = None)
     def withJoin(__v: netmsg.game.JoinEvt): Event = copy(join = Some(__v))
@@ -370,6 +384,7 @@ final case class Event(
         case 19 => objectivesUpdate
         case 20 => populationChange
         case 21 => statsChange
+        case 22 => attackPos
         case 1000 => join
         case 1001 => leave
         case 1002 => gameWon
@@ -401,6 +416,7 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
     objectivesUpdate = fieldsMap.getOrElse(19, None).asInstanceOf[Option[netmsg.game.ObjectivesUpdateEvt]],
     populationChange = fieldsMap.getOrElse(20, None).asInstanceOf[Option[netmsg.game.PopulationChangeEvt]],
     statsChange = fieldsMap.getOrElse(21, None).asInstanceOf[Option[netmsg.game.StatsChangeEvt]],
+    attackPos = fieldsMap.getOrElse(22, None).asInstanceOf[Option[netmsg.game.AttackPosEvt]],
     join = fieldsMap.getOrElse(1000, None).asInstanceOf[Option[netmsg.game.JoinEvt]],
     leave = fieldsMap.getOrElse(1001, None).asInstanceOf[Option[netmsg.game.LeaveEvt]],
     gameWon = fieldsMap.getOrElse(1002, None).asInstanceOf[Option[netmsg.game.GameWonEvt]]
@@ -452,6 +468,8 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
     def optionalPopulationChange: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.PopulationChangeEvt]] = field(_.populationChange)((c_, f_) => c_.copy(populationChange = f_))
     def statsChange: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.StatsChangeEvt] = field(_.getStatsChange)((c_, f_) => c_.copy(statsChange = Some(f_)))
     def optionalStatsChange: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.StatsChangeEvt]] = field(_.statsChange)((c_, f_) => c_.copy(statsChange = f_))
+    def attackPos: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.AttackPosEvt] = field(_.getAttackPos)((c_, f_) => c_.copy(attackPos = Some(f_)))
+    def optionalAttackPos: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.AttackPosEvt]] = field(_.attackPos)((c_, f_) => c_.copy(attackPos = f_))
     def join: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.JoinEvt] = field(_.getJoin)((c_, f_) => c_.copy(join = Some(f_)))
     def optionalJoin: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.JoinEvt]] = field(_.join)((c_, f_) => c_.copy(join = f_))
     def leave: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.LeaveEvt] = field(_.getLeave)((c_, f_) => c_.copy(leave = Some(f_)))
@@ -479,6 +497,7 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
   final val OBJECTIVES_UPDATE_FIELD_NUMBER = 19
   final val POPULATION_CHANGE_FIELD_NUMBER = 20
   final val STATS_CHANGE_FIELD_NUMBER = 21
+  final val ATTACK_POS_FIELD_NUMBER = 22
   final val JOIN_FIELD_NUMBER = 1000
   final val LEAVE_FIELD_NUMBER = 1001
   final val GAME_WON_FIELD_NUMBER = 1002
