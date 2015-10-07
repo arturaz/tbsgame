@@ -128,23 +128,32 @@ case class AttackPosEvt(
  */
 case class AttackEvt[D <: OwnedObj](
   visibilityMap: VisibilityMap, attacker: Fighter,
-  target: (D, Option[D]), attack: Attack//, forceVisibilityFor: Option[Owner] = None
+  target: (D, Option[D]), attack: Attack
 ) extends Event with FinalEvent {
-  override def asViewedBy(owner: Owner) =
-    if (visibilityMap.isVisiblePartial(owner, target._1.bounds)) {
-      // TODO: what to do when the target is not visible, e.g. after move in move/attack?
-      if (visibilityMap.isVisiblePartial(owner, attacker.bounds))
-        // Just attack
-        Iterable(this)
-      else
-        // Show, attack, then hide.
-        Iterable(
-          ObjVisibleEvt(owner.team, attacker),
-          this,
-          VisibilityChangeEvt(owner.team, invisible = attacker.bounds.points.toVector)
-        )
+  override def asViewedBy(owner: Owner) = {
+    val sourceIsVisible = visibilityMap.isVisiblePartial(owner, attacker.bounds)
+    val targetIsVisible = visibilityMap.isVisiblePartial(owner, target._1.bounds)
+    val shouldDispatch = sourceIsVisible || targetIsVisible
+
+    if (shouldDispatch) {
+      ((
+        if (sourceIsVisible) Vector.empty
+        else Vector(ObjVisibleEvt(owner.team, attacker))
+      ) ++ (
+        if (targetIsVisible) Vector.empty
+        else Vector(ObjVisibleEvt(owner.team, target._1))
+      ) :+ this) ++ (
+        if (sourceIsVisible) Vector.empty
+        else Vector(VisibilityChangeEvt(owner.team, invisible = attacker.bounds.points.toVector))
+      ) ++ (
+        if (targetIsVisible) Vector.empty
+        else target._2.map { t =>
+          VisibilityChangeEvt(owner.team, invisible = t.bounds.points.toVector)
+        }
+      )
     }
     else Iterable.empty
+  }
 }
 
 case class AttacksChangedEvt(
