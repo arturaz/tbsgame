@@ -2773,6 +2773,7 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
       fighter: netmsg.game.WObjectStats.Fighter,
       movable: netmsg.game.WObjectStats.Movable,
       warpable: netmsg.game.WObjectStats.Warpable,
+      specialAction: netmsg.game.WObjectStats.SpecialAction,
       deployed: Boolean
       ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[RocketFrigate] with com.trueaccord.lenses.Updatable[RocketFrigate] {
       lazy val serializedSize: Int = {
@@ -2782,7 +2783,8 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
         __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(fighter.serializedSize) + fighter.serializedSize
         __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(movable.serializedSize) + movable.serializedSize
         __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(warpable.serializedSize) + warpable.serializedSize
-        __size += com.google.protobuf.CodedOutputStream.computeBoolSize(6, deployed)
+        __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(specialAction.serializedSize) + specialAction.serializedSize
+        __size += com.google.protobuf.CodedOutputStream.computeBoolSize(7, deployed)
         __size
       }
       def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -2801,7 +2803,10 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
         output.writeTag(5, 2)
         output.writeRawVarint32(warpable.serializedSize)
         warpable.writeTo(output)
-        output.writeBool(6, deployed)
+        output.writeTag(6, 2)
+        output.writeRawVarint32(specialAction.serializedSize)
+        specialAction.writeTo(output)
+        output.writeBool(7, deployed)
       }
       def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.WObjectStats.RocketFrigate = {
         var __base = this.base
@@ -2809,6 +2814,7 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
         var __fighter = this.fighter
         var __movable = this.movable
         var __warpable = this.warpable
+        var __specialAction = this.specialAction
         var __deployed = this.deployed
         var _done__ = false
         while (!_done__) {
@@ -2825,7 +2831,9 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
               __movable = com.trueaccord.scalapb.LiteParser.readMessage(__input, __movable)
             case 42 =>
               __warpable = com.trueaccord.scalapb.LiteParser.readMessage(__input, __warpable)
-            case 48 =>
+            case 50 =>
+              __specialAction = com.trueaccord.scalapb.LiteParser.readMessage(__input, __specialAction)
+            case 56 =>
               __deployed = __input.readBool()
             case tag => __input.skipField(tag)
           }
@@ -2836,6 +2844,7 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
             fighter = __fighter,
             movable = __movable,
             warpable = __warpable,
+            specialAction = __specialAction,
             deployed = __deployed
         )
       }
@@ -2844,6 +2853,7 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
       def withFighter(__v: netmsg.game.WObjectStats.Fighter): RocketFrigate = copy(fighter = __v)
       def withMovable(__v: netmsg.game.WObjectStats.Movable): RocketFrigate = copy(movable = __v)
       def withWarpable(__v: netmsg.game.WObjectStats.Warpable): RocketFrigate = copy(warpable = __v)
+      def withSpecialAction(__v: netmsg.game.WObjectStats.SpecialAction): RocketFrigate = copy(specialAction = __v)
       def withDeployed(__v: Boolean): RocketFrigate = copy(deployed = __v)
       def getField(__field: Descriptors.FieldDescriptor): Any = {
         __field.number match {
@@ -2852,7 +2862,8 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
           case 3 => fighter
           case 4 => movable
           case 5 => warpable
-          case 6 => deployed
+          case 6 => specialAction
+          case 7 => deployed
         }
       }
       def companion = netmsg.game.WObjectStats.RocketFrigate
@@ -2866,7 +2877,8 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
       fighter = fieldsMap(3).asInstanceOf[netmsg.game.WObjectStats.Fighter],
       movable = fieldsMap(4).asInstanceOf[netmsg.game.WObjectStats.Movable],
       warpable = fieldsMap(5).asInstanceOf[netmsg.game.WObjectStats.Warpable],
-      deployed = fieldsMap(6).asInstanceOf[Boolean]
+      specialAction = fieldsMap(6).asInstanceOf[netmsg.game.WObjectStats.SpecialAction],
+      deployed = fieldsMap(7).asInstanceOf[Boolean]
     )
     lazy val descriptor = new Descriptors.MessageDescriptor("RocketFrigate", this,
       None, m = Seq(),
@@ -2878,6 +2890,7 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
       fighter = netmsg.game.WObjectStats.Fighter.defaultInstance,
       movable = netmsg.game.WObjectStats.Movable.defaultInstance,
       warpable = netmsg.game.WObjectStats.Warpable.defaultInstance,
+      specialAction = netmsg.game.WObjectStats.SpecialAction.defaultInstance,
       deployed = false
     )
     implicit class RocketFrigateLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, RocketFrigate]) extends com.trueaccord.lenses.ObjectLens[UpperPB, RocketFrigate](_l) {
@@ -2886,6 +2899,7 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
       def fighter: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.Fighter] = field(_.fighter)((c_, f_) => c_.copy(fighter = f_))
       def movable: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.Movable] = field(_.movable)((c_, f_) => c_.copy(movable = f_))
       def warpable: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.Warpable] = field(_.warpable)((c_, f_) => c_.copy(warpable = f_))
+      def specialAction: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjectStats.SpecialAction] = field(_.specialAction)((c_, f_) => c_.copy(specialAction = f_))
       def deployed: com.trueaccord.lenses.Lens[UpperPB, Boolean] = field(_.deployed)((c_, f_) => c_.copy(deployed = f_))
     }
     final val BASE_FIELD_NUMBER = 1
@@ -2893,7 +2907,8 @@ object WObjectStats extends com.trueaccord.scalapb.GeneratedMessageCompanion[WOb
     final val FIGHTER_FIELD_NUMBER = 3
     final val MOVABLE_FIELD_NUMBER = 4
     final val WARPABLE_FIELD_NUMBER = 5
-    final val DEPLOYED_FIELD_NUMBER = 6
+    final val SPECIAL_ACTION_FIELD_NUMBER = 6
+    final val DEPLOYED_FIELD_NUMBER = 7
   }
   
   final case class Gunship(

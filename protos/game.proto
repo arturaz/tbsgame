@@ -603,7 +603,8 @@ message WObjectStats {
     required Fighter fighter = 3;
     required Movable movable = 4;
     required Warpable warpable = 5;
-    required bool deployed = 6;
+    required SpecialAction special_action = 6;
+    required bool deployed = 7;
   }
 
   message Gunship {

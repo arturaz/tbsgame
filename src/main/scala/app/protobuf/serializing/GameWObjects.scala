@@ -306,7 +306,8 @@ trait GameWObjects { _: GameProto =>
   implicit def convert(obj: RocketFrigateCommonStats): game.WObjectStats.RocketFrigate =
     game.WObjectStats.RocketFrigate(
       base = base(obj), owned = owned(obj), fighter = fighter(obj), 
-      warpable = warpable(obj), movable = movable(obj), deployed = obj.deployed
+      warpable = warpable(obj), movable = movable(obj), specialAction = specialAction(obj),
+      deployed = obj.deployed
     )
 
   implicit def convert(obj: RocketFrigate): game.WObject.RocketFrigate =
