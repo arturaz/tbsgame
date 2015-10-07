@@ -127,20 +127,15 @@ case class SemiRealtimeGame(
   )(implicit log: LoggingAdapter) =
     humanDo(human, now)(game.special(_, id))
 
-  override def attackPos(
-    human: Human, id: Id, targetPos: Vect2, now: DateTime
-  )(implicit log: LoggingAdapter) =
-    humanDo(human, now)(game.attackPosition(_, id, targetPos))
-
   override def attack(
-    human: Human, id: Id, targetId: Id, now: DateTime
+    human: Human, id: Id, target: Vect2 \/ Id, now: DateTime
   )(implicit log: LoggingAdapter) =
-    humanDo(human, now)(game.attack(_, id, targetId))
+    humanDo(human, now)(game.attack(_, id, target))
 
   override def moveAttack(
-    human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id, now: DateTime
+    human: Human, id: Id, path: NonEmptyVector[Vect2], target: Vect2 \/ Id, now: DateTime
   )(implicit log: LoggingAdapter) =
-    humanDo(human, now)(game.moveAttack(_, id, path, targetId))
+    humanDo(human, now)(game.moveAttack(_, id, path, target))
 
   def turnTimeEnded(human: Human, now: DateTime)
     (implicit log: LoggingAdapter) = update(game.turnTimeEnded(human), now)

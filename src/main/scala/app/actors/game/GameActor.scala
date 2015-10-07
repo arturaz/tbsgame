@@ -33,11 +33,8 @@ object GameActor {
     ) extends In
     /* path does not include objects position and ends in target position */
     case class Move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]) extends In
-    case class AttackPos(human: Human, id: WObject.Id, targetPos: Vect2) extends In
-    case class Attack(human: Human, id: WObject.Id, targetId: WObject.Id) extends In
-    case class MoveAttack(
-      human: Human, id: WObject.Id, path: NonEmptyVector[Vect2], targetId: WObject.Id
-    ) extends In
+    case class Attack(human: Human, id: WObject.Id, target: Vect2 \/ WObject.Id) extends In
+    case class MoveAttack(move: Move, target: Vect2 \/ WObject.Id) extends In
     case class Special(human: Human, id: WObject.Id) extends In
     case class ToggleWaitingForRoundEnd(human: Human) extends In
     case class Concede(human: Human) extends In
@@ -142,14 +139,13 @@ trait GameActorGame {
 
   def special(human: Human, id: WObject.Id, now: DateTime)(implicit log: LoggingAdapter): Result
 
-  def attackPos(human: Human, id: WObject.Id, targetPos: Vect2, now: DateTime)
+  def attack(human: Human, id: WObject.Id, target: Vect2 \/ WObject.Id, now: DateTime)
   (implicit log: LoggingAdapter): Result
 
-  def attack(human: Human, id: WObject.Id, targetId: WObject.Id, now: DateTime)
-  (implicit log: LoggingAdapter): Result
-
-  def moveAttack(human: Human, id: Id, path: NonEmptyVector[Vect2], targetId: Id, now: DateTime)
-  (implicit log: LoggingAdapter): Result
+  def moveAttack(
+    human: Human, id: Id, path: NonEmptyVector[Vect2], target: Vect2 \/ WObject.Id,
+    now: DateTime
+  )(implicit log: LoggingAdapter): Result
 
   def toggleWaitingForRoundEnd(human: Human, now: DateTime)(implicit log: LoggingAdapter): Result
   def concede(human: Human, now: DateTime)(implicit log: LoggingAdapter): Result
@@ -289,12 +285,13 @@ class GameActor private (
       update(sender(), human, _.warp(human, position, warpable, DateTime.now))
     case In.Move(human, id, path) =>
       update(sender(), human, _.move(human, id, path, DateTime.now))
-    case In.AttackPos(human, id, targetPos) =>
-      update(sender(), human, _.attackPos(human, id, targetPos, DateTime.now))
     case In.Attack(human, id, target) =>
       update(sender(), human, _.attack(human, id, target, DateTime.now))
-    case In.MoveAttack(human, id, path, target) =>
-      update(sender(), human, _.moveAttack(human, id, path, target, DateTime.now))
+    case In.MoveAttack(move, target) =>
+      update(
+        sender(), move.human,
+        _.moveAttack(move.human, move.id, move.path, target, DateTime.now)
+      )
     case In.Special(human, id) =>
       update(sender(), human, _.special(human, id, DateTime.now))
     case In.ToggleWaitingForRoundEnd(human) =>

@@ -6,7 +6,6 @@ import app.algorithms.behaviour_trees.BehaviourTree.NodeResult
 import app.models.game.Game.States
 import app.models.game.GamePlayerState.CanWarp
 import app.models.game.events._
-import app.models.game.world.WObject.Id
 import app.models.game.world._
 import implicits._
 import monocle.Lenser
@@ -325,51 +324,68 @@ case class Game private (
       } } } }
     }
 
-  private[this] def attackCommon(
-    player: Player, id: WObject.Id
-  )(f: ObjFn[OwnedObj with Fighter])(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    checkObjectives { withAttackObj(player, id)(f) }
+  def attack(
+    player: Player, id: WObject.Id, target: Vect2 \/ WObject.Id
+  )(implicit log: LoggingAdapter): Game.ResultOrWinner =
+    checkObjectives {
+      withAttackObj(player, id) { obj =>
+        target.fold(
+          targetPos => obj.attackPosW(targetPos, world).map(_.map(updated)),
+          targetId =>
+            withTargetObj(player, targetId) { targetObj =>
+            withVisibility(player, targetObj) {
+              obj.attackW(targetObj, world).map { _.map { world =>
+                updated(world)
+              } }
+            } }
+        )
+      }
+    }
 
   def attack(
     player: Player, id: WObject.Id, targetId: WObject.Id
   )(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    attackCommon(player, id) { obj =>
-      withTargetObj(player, targetId) { targetObj =>
-      withVisibility(player, targetObj) {
-        obj.attackW(targetObj, world).map { _.map { world =>
-          updated(world)
-        } }
-      } }
-    }
+    attack(player, id, targetId.right)
 
   def attackPosition(
     player: Player, id: WObject.Id, targetPos: Vect2
   )(implicit log: LoggingAdapter): Game.ResultOrWinner =
-    attackCommon(player, id) { obj =>
-      obj.attackPosW(targetPos, world).map(_.map(updated))
-    }
+    attack(player, id, -\/(targetPos))
 
   def moveAttack(
-    player: Player, id: Id, path: NonEmptyVector[Vect2], targetId: Id
+    player: Player, id: WObject.Id, path: NonEmptyVector[Vect2],
+    target: Vect2 \/ WObject.Id
   )(implicit log: LoggingAdapter): Game.ResultOrWinner =
     checkObjectives {
       withState(player) { state =>
       withActions(player, Actions(1), state) { state =>
       withMoveAttackObj(player, id) { obj =>
       withVisibility(player, path) {
-      withTargetObj(player, targetId) { targetObj =>
-      withVisibility(player, targetObj) {
-        val evtFinal = obj.moveTo(world, path).flatMap {
-          // We were destroyed after moving, do nothing
-          case Evented((world, None), events) => Evented(world, events).right
-          case Evented((world, Some(afterMoveObj)), events) =>
-            afterMoveObj.attackW(targetObj, world).map { evtAfterAttack =>
-              events ++: evtAfterAttack
-            }
+        def moveAndAttack(
+          attack: (OwnedObj with Movable with Fighter, World) => String \/ Evented[World]
+        ) = {
+          val evtFinal = obj.moveTo(world, path).flatMap {
+            // We were destroyed after moving, do nothing
+            case Evented((world, None), events) => Evented(world, events).right
+            case Evented((world, Some(afterMoveObj)), events) =>
+              attack(afterMoveObj, world).map { evtAfterAttack =>
+                events ++: evtAfterAttack
+              }
+          }
+
+          evtFinal.map { _.map { world => updated(world, player -> state) } }
         }
 
-        evtFinal.map { _.map { world => updated(world, player -> state) } }
-      } } } } } }
+        target.fold(
+          targetPos =>
+            moveAndAttack(_.attackPosW(targetPos, _)),
+          targetId =>
+            withTargetObj(player, targetId) { targetObj =>
+            withVisibility(player, targetObj) {
+              moveAndAttack(_.attackW(targetObj, _))
+            } }
+        )
+      } } } }
     }
 
   def turnTimeEnded(player: Player)(implicit log: LoggingAdapter): Game.ResultOrWinner =

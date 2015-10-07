@@ -8,12 +8,12 @@ import com.trueaccord.scalapb.Descriptors
 
 final case class MAttack(
     id: netmsg.game.WObjID,
-    targetId: netmsg.game.WObjID
+    target: netmsg.game.MAttack.Target
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[MAttack] with com.trueaccord.lenses.Updatable[MAttack] {
     lazy val serializedSize: Int = {
       var __size = 0
       __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(id.serializedSize) + id.serializedSize
-      __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(targetId.serializedSize) + targetId.serializedSize
+      __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(target.serializedSize) + target.serializedSize
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -21,12 +21,12 @@ final case class MAttack(
       output.writeRawVarint32(id.serializedSize)
       id.writeTo(output)
       output.writeTag(2, 2)
-      output.writeRawVarint32(targetId.serializedSize)
-      targetId.writeTo(output)
+      output.writeRawVarint32(target.serializedSize)
+      target.writeTo(output)
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.MAttack = {
       var __id = this.id
-      var __targetId = this.targetId
+      var __target = this.target
       var _done__ = false
       while (!_done__) {
         val _tag__ = __input.readTag()
@@ -35,21 +35,21 @@ final case class MAttack(
           case 10 =>
             __id = com.trueaccord.scalapb.LiteParser.readMessage(__input, __id)
           case 18 =>
-            __targetId = com.trueaccord.scalapb.LiteParser.readMessage(__input, __targetId)
+            __target = com.trueaccord.scalapb.LiteParser.readMessage(__input, __target)
           case tag => __input.skipField(tag)
         }
       }
       netmsg.game.MAttack(
           id = __id,
-          targetId = __targetId
+          target = __target
       )
     }
     def withId(__v: netmsg.game.WObjID): MAttack = copy(id = __v)
-    def withTargetId(__v: netmsg.game.WObjID): MAttack = copy(targetId = __v)
+    def withTarget(__v: netmsg.game.MAttack.Target): MAttack = copy(target = __v)
     def getField(__field: Descriptors.FieldDescriptor): Any = {
       __field.number match {
         case 1 => id
-        case 2 => targetId
+        case 2 => target
       }
     }
     def companion = netmsg.game.MAttack
@@ -59,20 +59,99 @@ object MAttack extends com.trueaccord.scalapb.GeneratedMessageCompanion[MAttack]
   implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[MAttack]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MAttack = netmsg.game.MAttack(
     id = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
-    targetId = fieldsMap(2).asInstanceOf[netmsg.game.WObjID]
+    target = fieldsMap(2).asInstanceOf[netmsg.game.MAttack.Target]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("MAttack", this,
-    None, m = Seq(),
+    None, m = Seq(netmsg.game.MAttack.Target.descriptor),
     e = Seq(),
     f = netmsg.game.InternalFields_game.internalFieldsFor("netmsg.game.MAttack"))
   lazy val defaultInstance = netmsg.game.MAttack(
     id = netmsg.game.WObjID.defaultInstance,
-    targetId = netmsg.game.WObjID.defaultInstance
+    target = netmsg.game.MAttack.Target.defaultInstance
   )
+  final case class Target(
+      targetPos: Option[netmsg.base.Vect2] = None,
+      targetId: Option[netmsg.game.WObjID] = None
+      ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[Target] with com.trueaccord.lenses.Updatable[Target] {
+      lazy val serializedSize: Int = {
+        var __size = 0
+        if (targetPos.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(targetPos.get.serializedSize) + targetPos.get.serializedSize }
+        if (targetId.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(targetId.get.serializedSize) + targetId.get.serializedSize }
+        __size
+      }
+      def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+        targetPos.foreach { v => 
+          output.writeTag(1, 2)
+          output.writeRawVarint32(v.serializedSize)
+          v.writeTo(output)
+        }
+        targetId.foreach { v => 
+          output.writeTag(2, 2)
+          output.writeRawVarint32(v.serializedSize)
+          v.writeTo(output)
+        }
+      }
+      def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.MAttack.Target = {
+        var __targetPos = this.targetPos
+        var __targetId = this.targetId
+        var _done__ = false
+        while (!_done__) {
+          val _tag__ = __input.readTag()
+          _tag__ match {
+            case 0 => _done__ = true
+            case 10 =>
+              __targetPos = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __targetPos.getOrElse(netmsg.base.Vect2.defaultInstance)))
+            case 18 =>
+              __targetId = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __targetId.getOrElse(netmsg.game.WObjID.defaultInstance)))
+            case tag => __input.skipField(tag)
+          }
+        }
+        netmsg.game.MAttack.Target(
+            targetPos = __targetPos,
+            targetId = __targetId
+        )
+      }
+      def getTargetPos: netmsg.base.Vect2 = targetPos.getOrElse(netmsg.base.Vect2.defaultInstance)
+      def clearTargetPos: Target = copy(targetPos = None)
+      def withTargetPos(__v: netmsg.base.Vect2): Target = copy(targetPos = Some(__v))
+      def getTargetId: netmsg.game.WObjID = targetId.getOrElse(netmsg.game.WObjID.defaultInstance)
+      def clearTargetId: Target = copy(targetId = None)
+      def withTargetId(__v: netmsg.game.WObjID): Target = copy(targetId = Some(__v))
+      def getField(__field: Descriptors.FieldDescriptor): Any = {
+        __field.number match {
+          case 1 => targetPos
+          case 2 => targetId
+        }
+      }
+      def companion = netmsg.game.MAttack.Target
+  }
+  
+  object Target extends com.trueaccord.scalapb.GeneratedMessageCompanion[Target]  {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[Target]  = this
+    def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.MAttack.Target = netmsg.game.MAttack.Target(
+      targetPos = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.base.Vect2]],
+      targetId = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.game.WObjID]]
+    )
+    lazy val descriptor = new Descriptors.MessageDescriptor("Target", this,
+      None, m = Seq(),
+      e = Seq(),
+      f = netmsg.game.InternalFields_game.internalFieldsFor("netmsg.game.MAttack.Target"))
+    lazy val defaultInstance = netmsg.game.MAttack.Target(
+    )
+    implicit class TargetLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, Target]) extends com.trueaccord.lenses.ObjectLens[UpperPB, Target](_l) {
+      def targetPos: com.trueaccord.lenses.Lens[UpperPB, netmsg.base.Vect2] = field(_.getTargetPos)((c_, f_) => c_.copy(targetPos = Some(f_)))
+      def optionalTargetPos: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.base.Vect2]] = field(_.targetPos)((c_, f_) => c_.copy(targetPos = f_))
+      def targetId: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjID] = field(_.getTargetId)((c_, f_) => c_.copy(targetId = Some(f_)))
+      def optionalTargetId: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.WObjID]] = field(_.targetId)((c_, f_) => c_.copy(targetId = f_))
+    }
+    final val TARGET_POS_FIELD_NUMBER = 1
+    final val TARGET_ID_FIELD_NUMBER = 2
+  }
+  
   implicit class MAttackLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, MAttack]) extends com.trueaccord.lenses.ObjectLens[UpperPB, MAttack](_l) {
     def id: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjID] = field(_.id)((c_, f_) => c_.copy(id = f_))
-    def targetId: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjID] = field(_.targetId)((c_, f_) => c_.copy(targetId = f_))
+    def target: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MAttack.Target] = field(_.target)((c_, f_) => c_.copy(target = f_))
   }
   final val ID_FIELD_NUMBER = 1
-  final val TARGET_ID_FIELD_NUMBER = 2
+  final val TARGET_FIELD_NUMBER = 2
 }

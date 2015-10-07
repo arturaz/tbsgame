@@ -9,10 +9,9 @@ option java_package = "netmsg";
 message FromClient {
   optional MWarp warp = 1;
   optional MMove move = 2;
-  optional MAttackPos attack_pos = 3;
-  optional MAttack attack = 4;
-  optional MSpecial special = 5;
-  optional MMoveAttack move_attack = 6;
+  optional MAttack attack = 3;
+  optional MSpecial special = 4;
+  optional MMoveAttack move_attack = 5;
 
   optional MLeave leave = 1001;
   optional MToggleWaitingForRoundEnd toggle_waiting_for_round_end = 1002;
@@ -49,14 +48,14 @@ message MMove {
   repeated base.Vect2 path = 2;
 }
 
-message MAttackPos {
-  required WObjID id = 1;
-  required base.Vect2 target_pos = 2;
-}
-
 message MAttack {
+  message Target {
+    optional base.Vect2 target_pos = 1;
+    optional WObjID target_id = 2;
+  }
+
   required WObjID id = 1;
-  required WObjID target_id = 2;
+  required Target target = 2;
 }
 
 message MSpecial {
@@ -64,11 +63,8 @@ message MSpecial {
 }
 
 message MMoveAttack {
-  required WObjID id = 1;
-  // Does not include objects position. Ends with target position.
-  // empty if should not move.
-  repeated base.Vect2 path = 2;
-  required WObjID target_id = 3;
+  required MMove move = 1;
+  required MAttack.Target target = 2;
 }
 
 message MToggleWaitingForRoundEnd {}
