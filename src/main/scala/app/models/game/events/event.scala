@@ -137,16 +137,18 @@ case class AttackPosEvt(
   }
 }
 
-/**
- * @param target (old defender, new defender)
- */
-case class AttackEvt[D <: OwnedObj](
+object AttackEvt {
+  case class Target[A <: OwnedObj](
+    before: A, after: Option[A], attackingPosition: Option[Vect2]
+  )
+}
+case class AttackEvt[Target <: OwnedObj](
   visibilityMap: VisibilityMap, attacker: Fighter,
-  target: (D, Option[D]), attack: Attack
+  target: AttackEvt.Target[Target], attack: Attack
 ) extends Event {
   override def asViewedBy(owner: Owner) = {
     val sourceIsVisible = visibilityMap.isVisiblePartial(owner, attacker.bounds)
-    val targetIsVisible = visibilityMap.isVisiblePartial(owner, target._1.bounds)
+    val targetIsVisible = visibilityMap.isVisiblePartial(owner, target.before.bounds)
 
     if (sourceIsVisible || targetIsVisible) {
       ((
@@ -156,8 +158,10 @@ case class AttackEvt[D <: OwnedObj](
         if (targetIsVisible) this.asFinal
         else AttackPosEvt(
           visibilityMap, attacker,
-          // Shoot to nearest point of the bounds
-          target._1.bounds.perimeter.minBy(attacker.position.sqrDistance)
+          target.attackingPosition.getOrElse(
+            // Shoot to nearest point of the bounds
+            target.before.bounds.perimeter.minBy(attacker.position.sqrDistance)
+          )
         ).asFinal
       )) ++ (
         if (sourceIsVisible) Vector.empty

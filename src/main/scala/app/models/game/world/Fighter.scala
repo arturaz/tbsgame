@@ -163,24 +163,25 @@ trait FighterOps[Self <: Fighter] {
             err.left
         }
       case Some(target) =>
-        attack(target, world, checkVisibility = false).map { evented =>
+        attack(target, world, Some(pos)).map { evented =>
           evented.map(t => (t._1, t._2))
         }
     }
   }
 
   def attack[Target <: OwnedObj](
-    obj: Target, world: World,
-    invokeRetaliation: Boolean=true, checkVisibility: Boolean=true
+    obj: Target, world: World, attackingPosition: Option[Vect2]=None,
+    invokeRetaliation: Boolean=true
   )(implicit log: LoggingAdapter)
   : String \/ Evented[(World, Option[Self], Attack, Option[Target])] = {
-    val origAtkEvtE = attackSimple(obj, world, checkVisibility).map {
+    val origAtkEvtE = attackSimple(obj, world, attackingPosition.isEmpty).map {
       case (attack, attackedEvt, newObjOpt) =>
         for {
           attacked <- attackedEvt
-          newWorld <-
-            AttackEvt(world.visibilityMap, attacked, obj -> newObjOpt, attack) +:
-              world.updated(self, attacked)
+          newWorld <- AttackEvt(
+            world.visibilityMap, attacked,
+            AttackEvt.Target(obj, newObjOpt, attackingPosition), attack
+          ) +: world.updated(self, attacked)
           newWorld <- newObjOpt.fold2(
             // New object is dead, need to respawn
             obj.cast[RespawnsOnDestruction].fold2(
