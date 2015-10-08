@@ -119,8 +119,21 @@ case class MoveEvt(
 
 case class AttackPosEvt(
   visibilityMap: VisibilityMap, attacker: Fighter, pos: Vect2
-) extends BoundedEvent {
-  override def bounds = pos.toBounds
+) extends Event with FinalEvent {
+  override def asViewedBy(owner: Owner) = {
+    val sourceIsVisible = visibilityMap.isVisiblePartial(owner, attacker.bounds)
+    val targetIsVisible = visibilityMap.isVisible(owner, pos)
+
+    if (targetIsVisible) {
+      if (sourceIsVisible) Iterable(this)
+      else Iterable(
+        ObjVisibleEvt(owner.team, attacker),
+        this,
+        VisibilityChangeEvt(owner.team, invisible = attacker.bounds.points.toVector)
+      )
+    }
+    else Iterable.empty
+  }
 }
 
 /**
