@@ -164,7 +164,7 @@ trait FighterOps[Self <: Fighter] {
             err.left
         }
       case Some(target) =>
-        attack(target, world).map { evented =>
+        attack(target, world, checkVisibility = false).map { evented =>
           val t = evented.value
           val events = evented.events.map {
             case e: AttackEvt[_] => AttackPosEvt(e.visibilityMap, e.attacker, pos)
