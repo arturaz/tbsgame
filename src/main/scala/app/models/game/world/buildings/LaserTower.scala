@@ -17,7 +17,7 @@ trait LaserTowerStatsImpl extends EmptySpaceWarpableCompanion[LaserTower]
   override val attackRange = RadialDistance.Five
   override val visibility = RectDistance(4)
   override val kind = WObjKind.Armored
-  override val specialActionsNeeded = Actions(2)
+  override val specialActionsNeeded = Actions(1)
 
   override def warp(owner: Player, position: Vect2) = LaserTower(position, owner)
 }
@@ -33,8 +33,12 @@ with FighterOps[LaserTower] with WarpableOps[LaserTower]
 
 trait LaserTowerImpl { _: LaserTower =>
   protected def specialImpl
-  (world: World, invokedBy: Player)(implicit log: LoggingAdapter) =
-    toFighterOps(this).withAttacksLeftEvt(stats.attacks)(world)
-      .flatMap { newSelf => world.updated(this, newSelf) }
-      .right
+  (world: World, invokedBy: Player)(implicit log: LoggingAdapter) = {
+    if (attacksLeft < stats.attacks) {
+      toFighterOps(this).withAttacksLeftEvt(attacksLeft + Attacks(1))(world)
+        .flatMap { newSelf => world.updated(this, newSelf) }
+        .right
+    }
+    else s"$this already at max attacks!".left
+  }
 }
