@@ -1,7 +1,7 @@
 package app.protobuf.serializing
 
 import app.models.game.events._
-import app.models.game.world.{HP, OwnedObj}
+import app.models.game.world.{World, HP, OwnedObj}
 import netmsg._
 import implicits._
 
@@ -26,7 +26,7 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
   implicit def convert(evt: WarpEvt): game.WarpEvt =
     game.WarpEvt(evt.obj)
 
-  implicit def convert(evt: ObjVisibleEvt): game.ObjVisibleEvt =
+  implicit def convert(evt: ObjVisibleEvent): game.ObjVisibleEvt =
     game.ObjVisibleEvt(convert(evt.obj))
 
   implicit def convert(evt: MoveEvt): game.MoveEvt =
@@ -73,8 +73,24 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
   implicit def convert(evt: WaitingForRoundEndChangeEvt): game.WaitingForRoundEndChangeEvt =
     game.WaitingForRoundEndChangeEvt(evt.player.id, !evt.canAct)
 
+  implicit def convert(r: World.AddReason): game.ObjAddedEvt.Reason = r match {
+    case World.AddReason.Default => game.ObjAddedEvt.Reason.DEFAULT
+    case World.AddReason.Deployment => game.ObjAddedEvt.Reason.DEPLOYMENT
+  }
+
+  implicit def convert(evt: ObjAddedEvent): game.ObjAddedEvt =
+    game.ObjAddedEvt(evt.obj, evt.reason)
+
+  implicit def convert(r: World.RemoveReason): game.ObjDestroyedEvt.Reason = r match {
+    case World.RemoveReason.Default => game.ObjDestroyedEvt.Reason.DEFAULT
+    case World.RemoveReason.Deployment => game.ObjDestroyedEvt.Reason.DEPLOYMENT
+  }
+
   implicit def convert(evt: ObjDestroyedEvt): game.ObjDestroyedEvt =
-    game.ObjDestroyedEvt(evt.obj.id)
+    game.ObjDestroyedEvt(evt.obj.id, evt match {
+      case e: RealObjDestroyedEvt => e.reason
+      case e: GhostObjDestroyedEvt => game.ObjDestroyedEvt.Reason.VISIBILITY
+    })
 
   implicit def convert(evt: OwnerChangeEvt): game.OwnerChangeEvt =
     game.OwnerChangeEvt(evt.newObj.id, evt.newObj.owner.id)
@@ -88,9 +104,6 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
   implicit def convert(evt: PopulationChangeEvt): game.PopulationChangeEvt =
     game.PopulationChangeEvt(evt.player.id, evt.population)
 
-  implicit def convert(evt: StatsChangedEvt): game.StatsChangeEvt =
-    game.StatsChangeEvt(evt.newObj.id, evt.newObj.stats)
-
   implicit def convert(evt: JoinEvt): game.JoinEvt =
     game.JoinEvt(convert(evt.human, evt.state))
 
@@ -103,7 +116,8 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
       case evt: TurnStartedEvt => game.Event(turnStarted = Some(evt))
       case evt: PointOwnershipChangeEvt => game.Event(pointOwnerMapChange = Some(evt))
       case evt: WarpEvt => game.Event(warp = Some(evt))
-      case evt: ObjVisibleEvt => game.Event(objVisible = Some(evt))
+      case evt: ObjVisibleEvent => game.Event(objVisible = Some(evt))
+      case evt: ObjAddedEvent => game.Event(objAdded = Some(evt))
       case evt: MoveEvt => game.Event(move = Some(evt))
       case evt: AttackEvt[_] => game.Event(attack = Some(evt))
       case evt: AttackPosEvt => game.Event(attackPos = Some(evt))
@@ -112,7 +126,6 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
       case evt: ActionsChangeEvt => game.Event(actionsChange = Some(evt))
       case evt: HPChangeEvt => game.Event(hpChange = Some(evt))
       case evt: LevelChangeEvt => game.Event(levelChange = Some(evt))
-      case evt: StatsChangedEvt => game.Event(statsChange = Some(evt))
       case evt: JoinEvt => game.Event(join = Some(evt))
       case evt: LeaveEvt => game.Event(leave = Some(evt))
       case evt: WarpStateChangeEvt => game.Event(warpChange = Some(evt))

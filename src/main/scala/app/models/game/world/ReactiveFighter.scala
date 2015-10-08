@@ -75,7 +75,7 @@ trait ReactiveFighterOps[Self <: ReactiveFighter] {
       }
       else {
         val target = targets.reduce(SingleMindAI.atkOrdRndLtOO(self))
-        self.attackWS(target, world).fold(
+        self.attack(target, world).mapRes(t => (t._1, t._2)).fold(
           err => {
             log.error(
               s"{} tried to attack reachable {}, but failed: {}",

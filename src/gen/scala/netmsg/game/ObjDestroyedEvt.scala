@@ -7,20 +7,24 @@ package netmsg.game
 import com.trueaccord.scalapb.Descriptors
 
 final case class ObjDestroyedEvt(
-    objId: netmsg.game.WObjID
+    objId: netmsg.game.WObjID,
+    reason: netmsg.game.ObjDestroyedEvt.Reason
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[ObjDestroyedEvt] with com.trueaccord.lenses.Updatable[ObjDestroyedEvt] {
     lazy val serializedSize: Int = {
       var __size = 0
       __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(objId.serializedSize) + objId.serializedSize
+      __size += com.google.protobuf.CodedOutputStream.computeEnumSize(2, reason.id)
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
       output.writeTag(1, 2)
       output.writeRawVarint32(objId.serializedSize)
       objId.writeTo(output)
+      output.writeEnum(2, reason.id)
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.game.ObjDestroyedEvt = {
       var __objId = this.objId
+      var __reason = this.reason
       var _done__ = false
       while (!_done__) {
         val _tag__ = __input.readTag()
@@ -28,17 +32,22 @@ final case class ObjDestroyedEvt(
           case 0 => _done__ = true
           case 10 =>
             __objId = com.trueaccord.scalapb.LiteParser.readMessage(__input, __objId)
+          case 16 =>
+            __reason = netmsg.game.ObjDestroyedEvt.Reason.fromValue(__input.readEnum())
           case tag => __input.skipField(tag)
         }
       }
       netmsg.game.ObjDestroyedEvt(
-          objId = __objId
+          objId = __objId,
+          reason = __reason
       )
     }
     def withObjId(__v: netmsg.game.WObjID): ObjDestroyedEvt = copy(objId = __v)
+    def withReason(__v: netmsg.game.ObjDestroyedEvt.Reason): ObjDestroyedEvt = copy(reason = __v)
     def getField(__field: Descriptors.FieldDescriptor): Any = {
       __field.number match {
         case 1 => objId
+        case 2 => reason
       }
     }
     def companion = netmsg.game.ObjDestroyedEvt
@@ -47,17 +56,54 @@ final case class ObjDestroyedEvt(
 object ObjDestroyedEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[ObjDestroyedEvt]  {
   implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ObjDestroyedEvt]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.game.ObjDestroyedEvt = netmsg.game.ObjDestroyedEvt(
-    objId = fieldsMap(1).asInstanceOf[netmsg.game.WObjID]
+    objId = fieldsMap(1).asInstanceOf[netmsg.game.WObjID],
+    reason = fieldsMap(2).asInstanceOf[netmsg.game.ObjDestroyedEvt.Reason]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("ObjDestroyedEvt", this,
     None, m = Seq(),
-    e = Seq(),
+    e = Seq(netmsg.game.ObjDestroyedEvt.Reason.descriptor),
     f = netmsg.game.InternalFields_game.internalFieldsFor("netmsg.game.ObjDestroyedEvt"))
   lazy val defaultInstance = netmsg.game.ObjDestroyedEvt(
-    objId = netmsg.game.WObjID.defaultInstance
+    objId = netmsg.game.WObjID.defaultInstance,
+    reason = netmsg.game.ObjDestroyedEvt.Reason.DEFAULT
   )
+  sealed trait Reason extends com.trueaccord.scalapb.GeneratedEnum {
+    def isDefault: Boolean = false
+    def isVisibility: Boolean = false
+    def isDeployment: Boolean = false
+  }
+  
+  object Reason extends com.trueaccord.scalapb.GeneratedEnumCompanion[Reason] {
+    case object DEFAULT extends Reason {
+      val id = 1
+      val name = "DEFAULT"
+      override def isDefault: Boolean = true
+    }
+    
+    case object VISIBILITY extends Reason {
+      val id = 2
+      val name = "VISIBILITY"
+      override def isVisibility: Boolean = true
+    }
+    
+    case object DEPLOYMENT extends Reason {
+      val id = 3
+      val name = "DEPLOYMENT"
+      override def isDeployment: Boolean = true
+    }
+    
+    lazy val values = Seq(DEFAULT, VISIBILITY, DEPLOYMENT)
+    def fromValue(value: Int): Reason = value match {
+      case 1 => DEFAULT
+      case 2 => VISIBILITY
+      case 3 => DEPLOYMENT
+    }
+    lazy val descriptor = new Descriptors.EnumDescriptor(0, "Reason", this)
+  }
   implicit class ObjDestroyedEvtLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, ObjDestroyedEvt]) extends com.trueaccord.lenses.ObjectLens[UpperPB, ObjDestroyedEvt](_l) {
     def objId: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.WObjID] = field(_.objId)((c_, f_) => c_.copy(objId = f_))
+    def reason: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.ObjDestroyedEvt.Reason] = field(_.reason)((c_, f_) => c_.copy(reason = f_))
   }
   final val OBJ_ID_FIELD_NUMBER = 1
+  final val REASON_FIELD_NUMBER = 2
 }

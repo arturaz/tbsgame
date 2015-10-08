@@ -304,17 +304,29 @@ trait GameWObjects { _: GameProto =>
 
   /************************************************************************************/
 
-  implicit def convert(obj: RocketFrigateCommonStats): game.WObjectStats.RocketFrigate =
+  implicit def convert(obj: RocketFrigateStats.type): game.WObjectStats.RocketFrigate =
     game.WObjectStats.RocketFrigate(
       base = base(obj), owned = owned(obj), fighter = fighter(obj), 
-      warpable = warpable(obj), movable = movable(obj), specialAction = specialAction(obj),
-      deployed = obj.deployed
+      warpable = warpable(obj), movable = movable(obj), specialAction = specialAction(obj)
     )
 
   implicit def convert(obj: RocketFrigate): game.WObject.RocketFrigate =
     game.WObject.RocketFrigate(
       base = base(obj), stats = obj.stats, owned = owned(obj), fighter = fighter(obj), 
       warpable = warpable(obj), movable = movable(obj)
+    )
+
+  /************************************************************************************/
+
+  implicit def convert(obj: RocketFrigateDeployedStats.type): game.WObjectStats.RocketFrigateDeployed =
+    game.WObjectStats.RocketFrigateDeployed(
+      base = base(obj), owned = owned(obj), fighter = fighter(obj),
+      specialAction = specialAction(obj)
+    )
+
+  implicit def convert(obj: RocketFrigateDeployed): game.WObject.RocketFrigateDeployed =
+    game.WObject.RocketFrigateDeployed(
+      base = base(obj), stats = obj.stats, owned = owned(obj), fighter = fighter(obj)
     )
 
   /************************************************************************************/
@@ -378,38 +390,11 @@ trait GameWObjects { _: GameProto =>
       case o: Scout => game.WObject(scout = Some(o))
       case o: RayShip => game.WObject(rayShip = Some(o))
       case o: RocketFrigate => game.WObject(rocketFrigate = Some(o))
+      case o: RocketFrigateDeployed => game.WObject(rocketFrigateDeployed = Some(o))
       case o: Gunship => game.WObject(gunship = Some(o))
       case o: Fortress => game.WObject(fortress = Some(o))
       case o: VPTower => game.WObject(vpTower = Some(o))
       case o: WObjectTestRoot => throw new Exception(
-        s"$o should never be used outside of tests!"
-      )
-    }
-  
-  implicit def convert(obj: WObjectStats): game.WObjectStats =
-    obj match {
-      case o: AsteroidStats.type => game.WObjectStats(asteroid = Some(o))
-      case o: RockStats.type => game.WObjectStats(rock = Some(o))
-      case o: CrystalStats.type => game.WObjectStats(crystal = Some(o))
-      case o: BrushStats.type => game.WObjectStats(brush = Some(o))
-      case o: WarpGateStats.type => game.WObjectStats(warpGate = Some(o))
-      case o: ExtractorStats.type => game.WObjectStats(extractor = Some(o))
-      case o: PopulationTowerStats.type => game.WObjectStats(populationTower = Some(o))
-      case o: ActionTowerStats.type => game.WObjectStats(actionTower = Some(o))
-      case o: WarpLinkerStats.type => game.WObjectStats(warpLinker = Some(o))
-      case o: SpawnerStats.type => game.WObjectStats(spawner = Some(o))
-      case o: LaserTowerStats.type => game.WObjectStats(laserTower = Some(o))
-      case o: CorvetteStats.type => game.WObjectStats(corvette = Some(o))
-      case o: WarpPrismStats.type => game.WObjectStats(warpPrism = Some(o))
-      case o: WaspStats.type => game.WObjectStats(wasp = Some(o))
-      case o: DroneStats.type => game.WObjectStats(drone = Some(o))
-      case o: ScoutStats.type => game.WObjectStats(scout = Some(o))
-      case o: RayShipStats.type => game.WObjectStats(rayShip = Some(o))
-      case o: RocketFrigateCommonStats => game.WObjectStats(rocketFrigate = Some(o))
-      case o: GunshipStats.type => game.WObjectStats(gunship = Some(o))
-      case o: FortressStats.type => game.WObjectStats(fortress = Some(o))
-      case o: VPTowerStats.type => game.WObjectStats(vpTower = Some(o))
-      case o: WObjectStatsTestRoot => throw new Exception(
         s"$o should never be used outside of tests!"
       )
     }
@@ -428,7 +413,7 @@ trait GameWObjects { _: GameProto =>
       case (b, s: WarpPrismStats.type) => b.withWarpPrism(s)
       case (b, s: ScoutStats.type) => b.withScout(s)
       case (b, s: RayShipStats.type) => b.withRayShip(s)
-      case (b, s: RocketFrigateCommonStats) => b.withRocketFrigate(s)
+      case (b, s: RocketFrigateStats.type) => b.withRocketFrigate(s)
       case (b, s: GunshipStats.type) => b.withGunship(s)
       case (b, s: FortressStats.type) => b.withFortress(s)
     }

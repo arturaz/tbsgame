@@ -87,6 +87,10 @@ package object implicits {
     @inline def map2[C](f: B => C): (A, C) = (t._1, f(t._2))
   }
 
+  implicit class EventedResultExts[A](val mm: String \/ Evented[A]) {
+    def mapRes[B](f: A => B): String \/ Evented[B] = mm.map(_.map(f))
+  }
+
   type WeightedIS[+A] = IndexedSeq[(A, Int)]
 
   implicit class WeightedISExts[A](val is: WeightedIS[A])

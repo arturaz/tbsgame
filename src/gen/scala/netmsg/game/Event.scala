@@ -15,6 +15,7 @@ final case class Event(
     move: Option[netmsg.game.MoveEvt] = None,
     attack: Option[netmsg.game.AttackEvt] = None,
     movementChange: Option[netmsg.game.MovementChangeEvt] = None,
+    objAdded: Option[netmsg.game.ObjAddedEvt] = None,
     resourceChange: Option[netmsg.game.ResourceChangeEvt] = None,
     actionsChange: Option[netmsg.game.ActionsChangeEvt] = None,
     warpChange: Option[netmsg.game.WarpStateChangeEvt] = None,
@@ -26,7 +27,6 @@ final case class Event(
     ownerChange: Option[netmsg.game.OwnerChangeEvt] = None,
     objectivesUpdate: Option[netmsg.game.ObjectivesUpdateEvt] = None,
     populationChange: Option[netmsg.game.PopulationChangeEvt] = None,
-    statsChange: Option[netmsg.game.StatsChangeEvt] = None,
     attackPos: Option[netmsg.game.AttackPosEvt] = None,
     join: Option[netmsg.game.JoinEvt] = None,
     leave: Option[netmsg.game.LeaveEvt] = None,
@@ -42,6 +42,7 @@ final case class Event(
       if (move.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(move.get.serializedSize) + move.get.serializedSize }
       if (attack.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(attack.get.serializedSize) + attack.get.serializedSize }
       if (movementChange.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(movementChange.get.serializedSize) + movementChange.get.serializedSize }
+      if (objAdded.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(objAdded.get.serializedSize) + objAdded.get.serializedSize }
       if (resourceChange.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(resourceChange.get.serializedSize) + resourceChange.get.serializedSize }
       if (actionsChange.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(actionsChange.get.serializedSize) + actionsChange.get.serializedSize }
       if (warpChange.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(warpChange.get.serializedSize) + warpChange.get.serializedSize }
@@ -53,7 +54,6 @@ final case class Event(
       if (ownerChange.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(ownerChange.get.serializedSize) + ownerChange.get.serializedSize }
       if (objectivesUpdate.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(objectivesUpdate.get.serializedSize) + objectivesUpdate.get.serializedSize }
       if (populationChange.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(populationChange.get.serializedSize) + populationChange.get.serializedSize }
-      if (statsChange.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(statsChange.get.serializedSize) + statsChange.get.serializedSize }
       if (attackPos.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(attackPos.get.serializedSize) + attackPos.get.serializedSize }
       if (join.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(join.get.serializedSize) + join.get.serializedSize }
       if (leave.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(leave.get.serializedSize) + leave.get.serializedSize }
@@ -98,6 +98,11 @@ final case class Event(
       }
       movementChange.foreach { v => 
         output.writeTag(8, 2)
+        output.writeRawVarint32(v.serializedSize)
+        v.writeTo(output)
+      }
+      objAdded.foreach { v => 
+        output.writeTag(9, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
@@ -156,13 +161,8 @@ final case class Event(
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
-      statsChange.foreach { v => 
-        output.writeTag(21, 2)
-        output.writeRawVarint32(v.serializedSize)
-        v.writeTo(output)
-      }
       attackPos.foreach { v => 
-        output.writeTag(22, 2)
+        output.writeTag(21, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
@@ -191,6 +191,7 @@ final case class Event(
       var __move = this.move
       var __attack = this.attack
       var __movementChange = this.movementChange
+      var __objAdded = this.objAdded
       var __resourceChange = this.resourceChange
       var __actionsChange = this.actionsChange
       var __warpChange = this.warpChange
@@ -202,7 +203,6 @@ final case class Event(
       var __ownerChange = this.ownerChange
       var __objectivesUpdate = this.objectivesUpdate
       var __populationChange = this.populationChange
-      var __statsChange = this.statsChange
       var __attackPos = this.attackPos
       var __join = this.join
       var __leave = this.leave
@@ -228,6 +228,8 @@ final case class Event(
             __attack = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __attack.getOrElse(netmsg.game.AttackEvt.defaultInstance)))
           case 66 =>
             __movementChange = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __movementChange.getOrElse(netmsg.game.MovementChangeEvt.defaultInstance)))
+          case 74 =>
+            __objAdded = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __objAdded.getOrElse(netmsg.game.ObjAddedEvt.defaultInstance)))
           case 82 =>
             __resourceChange = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __resourceChange.getOrElse(netmsg.game.ResourceChangeEvt.defaultInstance)))
           case 90 =>
@@ -251,8 +253,6 @@ final case class Event(
           case 162 =>
             __populationChange = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __populationChange.getOrElse(netmsg.game.PopulationChangeEvt.defaultInstance)))
           case 170 =>
-            __statsChange = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __statsChange.getOrElse(netmsg.game.StatsChangeEvt.defaultInstance)))
-          case 178 =>
             __attackPos = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __attackPos.getOrElse(netmsg.game.AttackPosEvt.defaultInstance)))
           case 8002 =>
             __join = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __join.getOrElse(netmsg.game.JoinEvt.defaultInstance)))
@@ -272,6 +272,7 @@ final case class Event(
           move = __move,
           attack = __attack,
           movementChange = __movementChange,
+          objAdded = __objAdded,
           resourceChange = __resourceChange,
           actionsChange = __actionsChange,
           warpChange = __warpChange,
@@ -283,7 +284,6 @@ final case class Event(
           ownerChange = __ownerChange,
           objectivesUpdate = __objectivesUpdate,
           populationChange = __populationChange,
-          statsChange = __statsChange,
           attackPos = __attackPos,
           join = __join,
           leave = __leave,
@@ -314,6 +314,9 @@ final case class Event(
     def getMovementChange: netmsg.game.MovementChangeEvt = movementChange.getOrElse(netmsg.game.MovementChangeEvt.defaultInstance)
     def clearMovementChange: Event = copy(movementChange = None)
     def withMovementChange(__v: netmsg.game.MovementChangeEvt): Event = copy(movementChange = Some(__v))
+    def getObjAdded: netmsg.game.ObjAddedEvt = objAdded.getOrElse(netmsg.game.ObjAddedEvt.defaultInstance)
+    def clearObjAdded: Event = copy(objAdded = None)
+    def withObjAdded(__v: netmsg.game.ObjAddedEvt): Event = copy(objAdded = Some(__v))
     def getResourceChange: netmsg.game.ResourceChangeEvt = resourceChange.getOrElse(netmsg.game.ResourceChangeEvt.defaultInstance)
     def clearResourceChange: Event = copy(resourceChange = None)
     def withResourceChange(__v: netmsg.game.ResourceChangeEvt): Event = copy(resourceChange = Some(__v))
@@ -347,9 +350,6 @@ final case class Event(
     def getPopulationChange: netmsg.game.PopulationChangeEvt = populationChange.getOrElse(netmsg.game.PopulationChangeEvt.defaultInstance)
     def clearPopulationChange: Event = copy(populationChange = None)
     def withPopulationChange(__v: netmsg.game.PopulationChangeEvt): Event = copy(populationChange = Some(__v))
-    def getStatsChange: netmsg.game.StatsChangeEvt = statsChange.getOrElse(netmsg.game.StatsChangeEvt.defaultInstance)
-    def clearStatsChange: Event = copy(statsChange = None)
-    def withStatsChange(__v: netmsg.game.StatsChangeEvt): Event = copy(statsChange = Some(__v))
     def getAttackPos: netmsg.game.AttackPosEvt = attackPos.getOrElse(netmsg.game.AttackPosEvt.defaultInstance)
     def clearAttackPos: Event = copy(attackPos = None)
     def withAttackPos(__v: netmsg.game.AttackPosEvt): Event = copy(attackPos = Some(__v))
@@ -372,6 +372,7 @@ final case class Event(
         case 6 => move
         case 7 => attack
         case 8 => movementChange
+        case 9 => objAdded
         case 10 => resourceChange
         case 11 => actionsChange
         case 12 => warpChange
@@ -383,8 +384,7 @@ final case class Event(
         case 18 => ownerChange
         case 19 => objectivesUpdate
         case 20 => populationChange
-        case 21 => statsChange
-        case 22 => attackPos
+        case 21 => attackPos
         case 1000 => join
         case 1001 => leave
         case 1002 => gameWon
@@ -404,6 +404,7 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
     move = fieldsMap.getOrElse(6, None).asInstanceOf[Option[netmsg.game.MoveEvt]],
     attack = fieldsMap.getOrElse(7, None).asInstanceOf[Option[netmsg.game.AttackEvt]],
     movementChange = fieldsMap.getOrElse(8, None).asInstanceOf[Option[netmsg.game.MovementChangeEvt]],
+    objAdded = fieldsMap.getOrElse(9, None).asInstanceOf[Option[netmsg.game.ObjAddedEvt]],
     resourceChange = fieldsMap.getOrElse(10, None).asInstanceOf[Option[netmsg.game.ResourceChangeEvt]],
     actionsChange = fieldsMap.getOrElse(11, None).asInstanceOf[Option[netmsg.game.ActionsChangeEvt]],
     warpChange = fieldsMap.getOrElse(12, None).asInstanceOf[Option[netmsg.game.WarpStateChangeEvt]],
@@ -415,8 +416,7 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
     ownerChange = fieldsMap.getOrElse(18, None).asInstanceOf[Option[netmsg.game.OwnerChangeEvt]],
     objectivesUpdate = fieldsMap.getOrElse(19, None).asInstanceOf[Option[netmsg.game.ObjectivesUpdateEvt]],
     populationChange = fieldsMap.getOrElse(20, None).asInstanceOf[Option[netmsg.game.PopulationChangeEvt]],
-    statsChange = fieldsMap.getOrElse(21, None).asInstanceOf[Option[netmsg.game.StatsChangeEvt]],
-    attackPos = fieldsMap.getOrElse(22, None).asInstanceOf[Option[netmsg.game.AttackPosEvt]],
+    attackPos = fieldsMap.getOrElse(21, None).asInstanceOf[Option[netmsg.game.AttackPosEvt]],
     join = fieldsMap.getOrElse(1000, None).asInstanceOf[Option[netmsg.game.JoinEvt]],
     leave = fieldsMap.getOrElse(1001, None).asInstanceOf[Option[netmsg.game.LeaveEvt]],
     gameWon = fieldsMap.getOrElse(1002, None).asInstanceOf[Option[netmsg.game.GameWonEvt]]
@@ -444,6 +444,8 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
     def optionalAttack: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.AttackEvt]] = field(_.attack)((c_, f_) => c_.copy(attack = f_))
     def movementChange: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.MovementChangeEvt] = field(_.getMovementChange)((c_, f_) => c_.copy(movementChange = Some(f_)))
     def optionalMovementChange: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.MovementChangeEvt]] = field(_.movementChange)((c_, f_) => c_.copy(movementChange = f_))
+    def objAdded: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.ObjAddedEvt] = field(_.getObjAdded)((c_, f_) => c_.copy(objAdded = Some(f_)))
+    def optionalObjAdded: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.ObjAddedEvt]] = field(_.objAdded)((c_, f_) => c_.copy(objAdded = f_))
     def resourceChange: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.ResourceChangeEvt] = field(_.getResourceChange)((c_, f_) => c_.copy(resourceChange = Some(f_)))
     def optionalResourceChange: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.ResourceChangeEvt]] = field(_.resourceChange)((c_, f_) => c_.copy(resourceChange = f_))
     def actionsChange: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.ActionsChangeEvt] = field(_.getActionsChange)((c_, f_) => c_.copy(actionsChange = Some(f_)))
@@ -466,8 +468,6 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
     def optionalObjectivesUpdate: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.ObjectivesUpdateEvt]] = field(_.objectivesUpdate)((c_, f_) => c_.copy(objectivesUpdate = f_))
     def populationChange: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.PopulationChangeEvt] = field(_.getPopulationChange)((c_, f_) => c_.copy(populationChange = Some(f_)))
     def optionalPopulationChange: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.PopulationChangeEvt]] = field(_.populationChange)((c_, f_) => c_.copy(populationChange = f_))
-    def statsChange: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.StatsChangeEvt] = field(_.getStatsChange)((c_, f_) => c_.copy(statsChange = Some(f_)))
-    def optionalStatsChange: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.StatsChangeEvt]] = field(_.statsChange)((c_, f_) => c_.copy(statsChange = f_))
     def attackPos: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.AttackPosEvt] = field(_.getAttackPos)((c_, f_) => c_.copy(attackPos = Some(f_)))
     def optionalAttackPos: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.AttackPosEvt]] = field(_.attackPos)((c_, f_) => c_.copy(attackPos = f_))
     def join: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.JoinEvt] = field(_.getJoin)((c_, f_) => c_.copy(join = Some(f_)))
@@ -485,6 +485,7 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
   final val MOVE_FIELD_NUMBER = 6
   final val ATTACK_FIELD_NUMBER = 7
   final val MOVEMENT_CHANGE_FIELD_NUMBER = 8
+  final val OBJ_ADDED_FIELD_NUMBER = 9
   final val RESOURCE_CHANGE_FIELD_NUMBER = 10
   final val ACTIONS_CHANGE_FIELD_NUMBER = 11
   final val WARP_CHANGE_FIELD_NUMBER = 12
@@ -496,8 +497,7 @@ object Event extends com.trueaccord.scalapb.GeneratedMessageCompanion[Event]  {
   final val OWNER_CHANGE_FIELD_NUMBER = 18
   final val OBJECTIVES_UPDATE_FIELD_NUMBER = 19
   final val POPULATION_CHANGE_FIELD_NUMBER = 20
-  final val STATS_CHANGE_FIELD_NUMBER = 21
-  final val ATTACK_POS_FIELD_NUMBER = 22
+  final val ATTACK_POS_FIELD_NUMBER = 21
   final val JOIN_FIELD_NUMBER = 1000
   final val LEAVE_FIELD_NUMBER = 1001
   final val GAME_WON_FIELD_NUMBER = 1002

@@ -21,7 +21,7 @@ object Combat {
     target: SearchRes[OwnedObj], strict: Boolean=true
   )(implicit log: LoggingAdapter): Result[A] = {
     moveAndThen(world, unit, target.path, strict) { case (newWorld, movedUnit) =>
-      movedUnit.attackWS(target.value, newWorld)
+      movedUnit.attack(target.value, newWorld).mapRes(t => (t._1, t._2))
     }
   }
 

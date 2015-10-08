@@ -6,6 +6,10 @@ import scalaz._, Scalaz._
 object Evented {
   def fromTuple[A](t: (A, Events)): Evented[A] = Evented(t._1, t._2)
   def apply[A](value: A, event: Event): Evented[A] = apply(value, Vector(event))
+
+  implicit object instances extends Functor[Evented] {
+    override def map[A, B](fa: Evented[A])(f: (A) => B) = fa.map(f)
+  }
 }
 
 /* This is Writer monad specialized for log=Vector[Event] */

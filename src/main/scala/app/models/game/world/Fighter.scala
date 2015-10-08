@@ -97,6 +97,23 @@ trait FighterImpl extends OwnedObjImpl {
     Atk((stats.randomAttackTo(kind).value * attackMultiplier).round.toInt)
 }
 
+trait FighterCompanion { _: Fighter.type =>
+  sealed trait VisibilityCheck {
+    def checkVisibility = false
+    def attackingPosition = Option.empty[Vect2]
+  }
+
+  object VisibilityCheck {
+    case object On extends VisibilityCheck {
+      override def checkVisibility = true
+    }
+    case object Off extends VisibilityCheck
+    case class AttackingPosition(pos: Vect2) extends VisibilityCheck {
+      override def attackingPosition = Some(pos)
+    }
+  }
+}
+
 trait FighterOps[Self <: Fighter] {
   def self: Self
 
@@ -138,8 +155,6 @@ trait FighterOps[Self <: Fighter] {
       ).right
     }, _.left)
 
-
-
   def attackPosW(pos: Vect2, world: World)(implicit log: LoggingAdapter)
   : String \/ Evented[World] = attackPos(pos, world).map(_.map(_._1))
 
@@ -163,24 +178,25 @@ trait FighterOps[Self <: Fighter] {
             err.left
         }
       case Some(target) =>
-        attack(target, world, Some(pos)).map { evented =>
-          evented.map(t => (t._1, t._2))
-        }
+        attack(
+          target, world, Fighter.VisibilityCheck.AttackingPosition(pos)
+        ).mapRes(t => (t._1, t._2))
     }
   }
 
   def attack[Target <: OwnedObj](
-    obj: Target, world: World, attackingPosition: Option[Vect2]=None,
+    obj: Target, world: World,
+    visibilityCheck: Fighter.VisibilityCheck=Fighter.VisibilityCheck.On,
     invokeRetaliation: Boolean=true
   )(implicit log: LoggingAdapter)
   : String \/ Evented[(World, Option[Self], Attack, Option[Target])] = {
-    val origAtkEvtE = attackSimple(obj, world, attackingPosition.isEmpty).map {
+    val origAtkEvtE = attackSimple(obj, world, visibilityCheck.checkVisibility).map {
       case (attack, attackedEvt, newObjOpt) =>
         for {
           attacked <- attackedEvt
           newWorld <- AttackEvt(
             world.visibilityMap, attacked,
-            AttackEvt.Target(obj, newObjOpt, attackingPosition), attack
+            AttackEvt.Target(obj, newObjOpt, visibilityCheck.attackingPosition), attack
           ) +: world.updated(self, attacked)
           newWorld <- newObjOpt.fold2(
             // New object is dead, need to respawn
@@ -224,14 +240,6 @@ trait FighterOps[Self <: Fighter] {
       case orig => toRetE(orig)
     } }
   }
-
-  def attackWS(obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
-  : String \/ WObject.WorldObjUpdate[Option[Self]] =
-    attack(obj, world).map(_.map { t => (t._1, t._2) })
-
-  def attackW(obj: OwnedObj, world: World)(implicit log: LoggingAdapter)
-  : String \/ Evented[World] =
-    attack(obj, world).map(_.map(_._1))
 
   protected def withAttacksLeft(value: Attacks): Self
 

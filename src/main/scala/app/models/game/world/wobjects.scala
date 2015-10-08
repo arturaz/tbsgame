@@ -146,7 +146,7 @@ case class LaserTower(
   xp: XP=LaserTowerStats.InitialXP,
   warpState: WarpTime=LaserTowerStats.InitialWarpState,
   attacksLeft: Attacks=LaserTowerStats.InitialAttacks
-) extends LaserTowerImpl with PlayerBuilding with Building with Warpable
+) extends LaserTowerImpl with PlayerBuilding with Warpable
 with ReactiveFighter with SpecialAction {
   type Stats = LaserTowerStats.type
   override val stats = LaserTowerStats
@@ -213,21 +213,44 @@ case class Gunship(
 }
 object GunshipStats extends WFighterUnitStats with GunshipStatsImpl
 
+sealed trait RocketFrigateCommon extends PlayerObj with Fighter with SpecialAction {
+  type Stats <: RocketFrigateCommonStats
+  def onSpecialAction: RocketFrigateCommon
+}
+sealed trait RocketFrigateCommonStats extends OwnedObjStats with FighterStats
+  with SpecialActionStats with RocketFrigateCommonStatsImpl
+
 case class RocketFrigate(
   position: Vect2, owner: Player,
   id: WObject.Id=WObject.newId, hp: HP=RocketFrigateStats.maxHp,
   xp: XP=RocketFrigateStats.InitialXP,
   attacksLeft: Attacks=RocketFrigateStats.InitialAttacks,
   movementLeft: Movement=RocketFrigateStats.InitialMovement,
-  warpState: WarpTime=RocketFrigateStats.InitialWarpState,
-  stats: RocketFrigateCommonStats=RocketFrigateStats
-) extends WUnit with Fighter with SpecialAction with RocketFrigateImpl {
-  type Stats = RocketFrigateCommonStats
+  warpState: WarpTime=RocketFrigateStats.InitialWarpState
+) extends RocketFrigateCommon with WUnit with RocketFrigateImpl {
+  type Stats = RocketFrigateStats.type
+  override val stats = RocketFrigateStats
+
+  override def onSpecialAction =
+    RocketFrigateDeployed(position, owner, id, hp, xp, Attacks(0))
 }
-sealed trait RocketFrigateCommonStats extends WFighterUnitStats with SpecialActionStats
-  with RocketFrigateCommonStatsImpl
-object RocketFrigateStats extends RocketFrigateCommonStats with RocketFrigateStatsImpl
+object RocketFrigateStats extends RocketFrigateCommonStats with WFighterUnitStats
+  with RocketFrigateStatsImpl
+
+case class RocketFrigateDeployed(
+  position: Vect2, owner: Player,
+  id: WObject.Id, hp: HP, xp: XP, attacksLeft: Attacks
+) extends RocketFrigateCommon with RocketFrigateImpl {
+  type Stats = RocketFrigateDeployedStats.type
+  override val stats = RocketFrigateDeployedStats
+
+  override def onSpecialAction = RocketFrigate(
+    position, owner, id, hp, xp, Attacks(0), Movement.zero, RocketFrigateStats.warpTime
+  )
+}
 object RocketFrigateDeployedStats extends RocketFrigateCommonStats with RocketFrigateDeployedStatsImpl
+
+
 
 // </editor-fold>
 
@@ -347,6 +370,7 @@ sealed trait TurnCounter extends WObject with TurnCounterImpl
 
 /* Can attack. */
 sealed trait Fighter extends OwnedObj with FighterImpl
+object Fighter extends FighterCompanion
 sealed trait FighterStats extends OwnedObjStats with FighterStatsImpl
 
 /* Can attack reactively not on owners turn. */

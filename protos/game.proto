@@ -368,6 +368,14 @@ message WObject { // {{{
     required Movable movable = 6;
   }
 
+  message RocketFrigateDeployed {
+    required WObjectStats.RocketFrigateDeployed stats = 1;
+    required Base base = 2;
+
+    required OwnedObj owned = 3;
+    required Fighter fighter = 5;
+  }
+
   message Gunship {
     required WObjectStats.Gunship stats = 1;
     required Base base = 2;
@@ -418,6 +426,7 @@ message WObject { // {{{
   optional Drone drone = 19;
   optional WarpPrism warp_prism = 20;
   optional ActionTower action_tower = 21;
+  optional RocketFrigateDeployed rocket_frigate_deployed = 22;
 } // }}}
 
 message WObjectStats {
@@ -608,7 +617,13 @@ message WObjectStats {
     required Movable movable = 4;
     required Warpable warpable = 5;
     required SpecialAction special_action = 6;
-    required bool deployed = 7;
+  }
+
+  message RocketFrigateDeployed {
+    required Base base = 1;
+    required OwnedObj owned = 2;
+    required Fighter fighter = 3;
+    required SpecialAction special_action = 4;
   }
 
   message Gunship {
@@ -633,30 +648,6 @@ message WObjectStats {
     required OwnedObj owned = 3;
     required GivingActions giving_actions = 4;
   }
-
-  /*** Message content - one of these should be set ***/
-
-  optional Asteroid asteroid = 1;
-  optional Rock rock = 2;
-  optional Crystal crystal = 3;
-  optional Brush brush = 4;
-  optional WarpGate warp_gate = 5;
-  optional Extractor extractor = 6;
-  optional WarpLinker warp_linker = 7;
-  optional Spawner spawner = 8;
-  optional LaserTower laser_tower = 9;
-  optional Corvette corvette = 10;
-  optional Wasp wasp = 11;
-  optional Scout scout = 12;
-  optional RayShip ray_ship = 13;
-  optional RocketFrigate rocket_frigate = 14;
-  optional Gunship gunship = 15;
-  optional Fortress fortress = 16;
-  optional VpTower vp_tower = 17;
-  optional PopulationTower population_tower = 18;
-  optional Drone drone = 19;
-  optional WarpPrism warp_prism = 20;
-  optional ActionTower action_tower = 21;
 }
 
 /* Events */
@@ -670,6 +661,7 @@ message Event { // {{{
   optional MoveEvt move = 6;
   optional AttackEvt attack = 7;
   optional MovementChangeEvt movement_change = 8;
+  optional ObjAddedEvt obj_added = 9;
   optional ResourceChangeEvt resource_change = 10;
   optional ActionsChangeEvt actions_change = 11;
   optional WarpStateChangeEvt warp_change = 12;
@@ -682,8 +674,7 @@ message Event { // {{{
   optional OwnerChangeEvt owner_change = 18;
   optional ObjectivesUpdateEvt objectives_update = 19;
   optional PopulationChangeEvt population_change = 20;
-  optional StatsChangeEvt stats_change = 21;
-  optional AttackPosEvt attack_pos = 22;
+  optional AttackPosEvt attack_pos = 21;
 
   optional JoinEvt join = 1000;
   optional LeaveEvt leave = 1001;
@@ -725,6 +716,16 @@ message WarpEvt {
 
 message ObjVisibleEvt {
   required WObject object = 1;
+}
+
+message ObjAddedEvt {
+  enum Reason {
+    DEFAULT = 1;
+    DEPLOYMENT = 2;
+  }
+
+  required WObject object = 1;
+  required Reason reason = 2;
 }
 
 message MoveEvt {
@@ -794,17 +795,20 @@ message WaitingForRoundEndChangeEvt {
 }
 
 message ObjDestroyedEvt {
+  enum Reason {
+    DEFAULT = 1;
+    /* The area is now visible and object that you were seeing was a ghost */
+    VISIBILITY = 2;
+    DEPLOYMENT = 3;
+  }
+
   required WObjID obj_id = 1;
+  required Reason reason = 2;
 }
 
 message OwnerChangeEvt {
   required WObjID obj_id = 1;
   required OwnerID new_owner_id = 2;
-}
-
-message StatsChangeEvt {
-  required WObjID obj_id = 1;
-  required WObjectStats stats = 2;
 }
 
 message ObjectivesUpdateEvt {

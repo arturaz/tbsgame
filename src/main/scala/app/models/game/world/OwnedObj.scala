@@ -87,6 +87,7 @@ trait ToOwnedObjOps {
     case o: WarpPrism => WarpPrismOps(o)
     case o: RayShip => RayShipOps(o)
     case o: RocketFrigate => RocketFrigateOps(o)
+    case o: RocketFrigateDeployed => RocketFrigateDeployedOps(o)
     case o: Scout => ScoutOps(o)
     case o: Wasp => WaspOps(o)
   }).asInstanceOf[OwnedObjOps[A]]

@@ -87,8 +87,14 @@ case class WarpStateChangeEvt(
   def bounds = newObj.bounds
 }
 
-case class ObjVisibleEvt(team: Team, obj: WObject) extends VisibleEvent {
+case class ObjVisibleEvent(team: Team, obj: WObject) extends VisibleEvent {
   override def visibleBy(owner: Owner) = owner.team === team
+}
+
+case class ObjAddedEvent(
+  visibilityMap: VisibilityMap, obj: WObject, reason: World.AddReason
+) extends BoundedEvent {
+  override def bounds = obj.bounds
 }
 
 trait ObjDestroyedEvt extends VisibleEvent {
@@ -96,10 +102,11 @@ trait ObjDestroyedEvt extends VisibleEvent {
 }
 /* Real object was destroyed - dispatch to everyone who sees it. */
 case class RealObjDestroyedEvt(
-  visibilityMap: VisibilityMap, obj: WObject
+  visibilityMap: VisibilityMap, obj: WObject, reason: World.RemoveReason
 ) extends ObjDestroyedEvt with BoundedEvent {
   override def bounds = obj.bounds
 }
+
 /* Ghost object was destroyed - one that we saw in the past but now we can see that it
    does not exist anymore - dispatch to one team. */
 case class GhostObjDestroyedEvt(
@@ -114,7 +121,7 @@ case class MoveEvt(
   override def asViewedBy(owner: Owner) =
     if (visibilityMap.isVisible(owner, oldObj.position)) Iterable(this.asFinal)
     else if (visibilityMap.isVisible(owner, to))
-      Iterable(ObjVisibleEvt(owner.team, oldObj).asFinal, this.asFinal)
+      Iterable(ObjVisibleEvent(owner.team, oldObj).asFinal, this.asFinal)
     else Iterable.empty
 }
 
@@ -128,7 +135,7 @@ case class AttackPosEvt(
     if (sourceIsVisible || targetIsVisible) {
       if (sourceIsVisible) Iterable(this.asFinal)
       else Iterable(
-        ObjVisibleEvt(owner.team, attacker).asFinal,
+        ObjVisibleEvent(owner.team, attacker).asFinal,
         this.asFinal,
         VisibilityChangeEvt(owner.team, invisible = attacker.bounds.points.toVector).asFinal
       )
@@ -153,7 +160,7 @@ case class AttackEvt[Target <: OwnedObj](
     if (sourceIsVisible || targetIsVisible) {
       ((
         if (sourceIsVisible) Vector.empty
-        else Vector(ObjVisibleEvt(owner.team, attacker).asFinal)
+        else Vector(ObjVisibleEvent(owner.team, attacker).asFinal)
       ) :+ (
         if (targetIsVisible) this.asFinal
         else AttackPosEvt(
@@ -193,12 +200,6 @@ case class HPChangeEvt(
 }
 
 case class OwnerChangeEvt(
-  visibilityMap: VisibilityMap, newObj: OwnedObj
-) extends BoundedEvent {
-  def bounds = newObj.bounds
-}
-
-case class StatsChangedEvt(
   visibilityMap: VisibilityMap, newObj: OwnedObj
 ) extends BoundedEvent {
   def bounds = newObj.bounds

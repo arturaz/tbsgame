@@ -116,6 +116,11 @@ case class World private (
       (newWorld, m, o) => m + (o, objects),
       (newWorld, m, o) => m + (o, objects)
     )
+  def addEvt(
+    obj: WObject, reason: World.AddReason=World.AddReason.Default
+  ): Evented[World] =
+    Evented(this, ObjAddedEvent(visibilityMap, obj, reason)).flatMap(_.add(obj))
+
   def remove(obj: WObject): Evented[World] =
     changeWithMapUpdatesSingle(obj)(
       objToOwner,
@@ -123,8 +128,10 @@ case class World private (
       (newWorld, m, o) => m - (o, objects),
       (newWorld, m, o) => m - (o, objects)
     )
-  def removeEvt(obj: WObject): Evented[World] =
-    Evented(this, RealObjDestroyedEvt(visibilityMap, obj)).flatMap(_.remove(obj))
+  def removeEvt(
+    obj: WObject, reason: World.RemoveReason=World.RemoveReason.Default
+  ): Evented[World] =
+    Evented(this, RealObjDestroyedEvt(visibilityMap, obj, reason)).flatMap(_.remove(obj))
 
   def updated[A <: WObject](before: A, after: A): Evented[World] = {
     changeWithMapUpdates[(A, A), (OwnedObj, OwnedObj)] {
@@ -278,6 +285,18 @@ case class World private (
 }
 
 object World {
+  sealed trait AddReason
+  object AddReason {
+    case object Default extends AddReason
+    case object Deployment extends AddReason
+  }
+
+  sealed trait RemoveReason
+  object RemoveReason {
+    case object Default extends RemoveReason
+    case object Deployment extends RemoveReason
+  }
+
   case class Id(id: UUID) extends AnyVal with IdObj {
     override protected def prefix = "WorldID"
   }
@@ -289,7 +308,7 @@ object World {
     }.flatten
     evtWorld.flatMap { world =>
       val newVisibleObjs = world.objects.filterPartial(newVisiblePoints)
-      val newVisibleObjEvents = newVisibleObjs.map(ObjVisibleEvt(team, _))
+      val newVisibleObjEvents = newVisibleObjs.map(ObjVisibleEvent(team, _))
       Evented(world, newVisibleObjEvents.toVector)
     }
   }

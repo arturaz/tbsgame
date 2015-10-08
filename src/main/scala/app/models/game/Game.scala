@@ -334,9 +334,7 @@ case class Game private (
           targetId =>
             withTargetObj(player, targetId) { targetObj =>
             withVisibility(player, targetObj) {
-              obj.attackW(targetObj, world).map { _.map { world =>
-                updated(world)
-              } }
+              obj.attack(targetObj, world).mapRes(t => updated(t._1))
             } }
         )
       }
@@ -382,7 +380,9 @@ case class Game private (
           targetId =>
             withTargetObj(player, targetId) { targetObj =>
             withVisibility(player, targetObj) {
-              moveAndAttack(_.attackW(targetObj, _))
+              moveAndAttack {
+                _.attack(targetObj, _, Fighter.VisibilityCheck.Off).mapRes(_._1)
+              }
             } }
         )
       } } } }
