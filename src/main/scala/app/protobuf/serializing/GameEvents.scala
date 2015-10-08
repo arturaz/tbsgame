@@ -37,8 +37,8 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
 
   implicit def convert(evt: AttackEvt[_ <: OwnedObj]): game.AttackEvt =
     game.AttackEvt(
-      attackerId = evt.attacker.id, defenderId = evt.target._1.id,
-      hpLeft = evt.target._2.map(_.hp).getOrElse(HP(0)).value,
+      attackerId = evt.attacker.id, defenderId = evt.target.before.id,
+      hpLeft = evt.target.after.map(_.hp).getOrElse(HP(0)).value,
       attack = evt.attack
     )
 
