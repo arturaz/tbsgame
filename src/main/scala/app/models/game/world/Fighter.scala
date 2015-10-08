@@ -153,9 +153,8 @@ trait FighterOps[Self <: Fighter] {
         self.cantAttackReason(pos.toBounds, world, checkVisibility = false) match {
           case None =>
             val evented = (
-              AttackPosEvt(
-                world.visibilityMap, self, pos
-              ) +: withAttacksLeftEvt(self.attacksLeft - Attacks(1))(world)
+              AttackPosEvt(world.visibilityMap, self, pos) +:
+                withAttacksLeftEvt(self.attacksLeft - Attacks(1))(world)
             ).flatMap { newSelf =>
               world.updated(self, newSelf).map { world => (world, Some(newSelf)) }
             }
@@ -165,12 +164,7 @@ trait FighterOps[Self <: Fighter] {
         }
       case Some(target) =>
         attack(target, world, checkVisibility = false).map { evented =>
-          val t = evented.value
-          val events = evented.events.map {
-            case e: AttackEvt[_] => AttackPosEvt(e.visibilityMap, e.attacker, pos)
-            case e => e
-          }
-          Evented((t._1, t._2), events)
+          evented.map(t => (t._1, t._2))
         }
     }
   }

@@ -11,17 +11,18 @@ import utils.data.Timeframe
 import scalaz._, Scalaz._
 
 /* Event that cannot be viewed anymore. */
-sealed trait FinalEvent
+case class FinalEvent(evt: Event) extends AnyVal
 
 /* Base event class. */
 sealed trait Event {
   /* Some events expand into several events when viewed in prism of some owner. */
   def asViewedBy(owner: Owner): Iterable[FinalEvent]
+  def asFinal = FinalEvent(this)
 }
 
-sealed trait VisibleEvent extends Event with FinalEvent {
+sealed trait VisibleEvent extends Event {
   def asViewedBy(owner: Owner) =
-    if (visibleBy(owner)) Iterable(this) else Iterable.empty
+    if (visibleBy(owner)) Iterable(this.asFinal) else Iterable.empty
   def visibleBy(owner: Owner): Boolean
 }
 
@@ -44,10 +45,10 @@ case class HumanState(
   resources: Resources, population: ValWithMax[Population], gameState: GamePlayerState
 )
 
-case class JoinEvt(human: Human, state: Option[HumanState]) extends Event with FinalEvent {
+case class JoinEvt(human: Human, state: Option[HumanState]) extends Event {
   override def asViewedBy(owner: Owner) =
-    if (owner.isFriendOf(human)) Seq(this)
-    else Seq(copy(state = None))
+    if (owner.isFriendOf(human)) Seq(this.asFinal)
+    else Seq(copy(state = None).asFinal)
 }
 case class LeaveEvt(human: Human) extends AlwaysVisibleEvent
 
@@ -109,27 +110,27 @@ case class GhostObjDestroyedEvt(
 
 case class MoveEvt(
   visibilityMap: VisibilityMap, oldObj: Movable, to: Vect2, movesLeft: Movement
-) extends Event with FinalEvent {
+) extends Event {
   override def asViewedBy(owner: Owner) =
-    if (visibilityMap.isVisible(owner, oldObj.position)) Iterable(this)
+    if (visibilityMap.isVisible(owner, oldObj.position)) Iterable(this.asFinal)
     else if (visibilityMap.isVisible(owner, to))
-      Iterable(ObjVisibleEvt(owner.team, oldObj), this)
+      Iterable(ObjVisibleEvt(owner.team, oldObj).asFinal, this.asFinal)
     else Iterable.empty
 }
 
 case class AttackPosEvt(
   visibilityMap: VisibilityMap, attacker: Fighter, pos: Vect2
-) extends Event with FinalEvent {
+) extends Event {
   override def asViewedBy(owner: Owner) = {
     val sourceIsVisible = visibilityMap.isVisiblePartial(owner, attacker.bounds)
     val targetIsVisible = visibilityMap.isVisible(owner, pos)
 
-    if (targetIsVisible) {
-      if (sourceIsVisible) Iterable(this)
+    if (sourceIsVisible || targetIsVisible) {
+      if (sourceIsVisible) Iterable(this.asFinal)
       else Iterable(
-        ObjVisibleEvt(owner.team, attacker),
-        this,
-        VisibilityChangeEvt(owner.team, invisible = attacker.bounds.points.toVector)
+        ObjVisibleEvt(owner.team, attacker).asFinal,
+        this.asFinal,
+        VisibilityChangeEvt(owner.team, invisible = attacker.bounds.points.toVector).asFinal
       )
     }
     else Iterable.empty
@@ -142,27 +143,27 @@ case class AttackPosEvt(
 case class AttackEvt[D <: OwnedObj](
   visibilityMap: VisibilityMap, attacker: Fighter,
   target: (D, Option[D]), attack: Attack
-) extends Event with FinalEvent {
+) extends Event {
   override def asViewedBy(owner: Owner) = {
     val sourceIsVisible = visibilityMap.isVisiblePartial(owner, attacker.bounds)
     val targetIsVisible = visibilityMap.isVisiblePartial(owner, target._1.bounds)
-    val shouldDispatch = sourceIsVisible || targetIsVisible
 
-    if (shouldDispatch) {
+    if (sourceIsVisible || targetIsVisible) {
       ((
         if (sourceIsVisible) Vector.empty
-        else Vector(ObjVisibleEvt(owner.team, attacker))
-      ) ++ (
-        if (targetIsVisible) Vector.empty
-        else Vector(ObjVisibleEvt(owner.team, target._1))
-      ) :+ this) ++ (
+        else Vector(ObjVisibleEvt(owner.team, attacker).asFinal)
+      ) :+ (
+        if (targetIsVisible) this.asFinal
+        else AttackPosEvt(
+          visibilityMap, attacker,
+          // Shoot to nearest point of the bounds
+          target._1.bounds.perimeter.minBy(attacker.position.sqrDistance)
+        ).asFinal
+      )) ++ (
         if (sourceIsVisible) Vector.empty
-        else Vector(VisibilityChangeEvt(owner.team, invisible = attacker.bounds.points.toVector))
-      ) ++ (
-        if (targetIsVisible) Vector.empty
-        else target._2.map { t =>
-          VisibilityChangeEvt(owner.team, invisible = t.bounds.points.toVector)
-        }
+        else Vector(
+          VisibilityChangeEvt(owner.team, invisible = attacker.bounds.points.toVector).asFinal
+        )
       )
     }
     else Iterable.empty

@@ -98,7 +98,7 @@ trait GameEvents { _: BaseProto with GameProto with GameWObjects =>
     game.LeaveEvt(evt.human.id)
 
   implicit def convert(event: FinalEvent): game.Event =
-    event match {
+    event.evt match {
       case evt: RoundStartedEvt => game.Event(roundStarted = Some(evt))
       case evt: TurnStartedEvt => game.Event(turnStarted = Some(evt))
       case evt: PointOwnershipChangeEvt => game.Event(pointOwnerMapChange = Some(evt))
