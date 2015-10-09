@@ -16,6 +16,7 @@ trait WarpGateStatsImpl { _: WarpGateStats.type =>
   override val specialActionsNeeded = Actions(1)
   override val blocksVisibility = true
   override val specialResourcesGiven = Resources(1)
+  override val populationCost = Population(0)
 }
 
 trait WarpGateImpl extends OwnedObjImpl with SpecialActionGetResourcesImpl {

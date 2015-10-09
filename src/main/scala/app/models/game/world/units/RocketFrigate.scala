@@ -1,6 +1,7 @@
 package app.models.game.world.units
 
 import akka.event.LoggingAdapter
+import app.models.game.events.{ObjAddedEvent, Evented, PopulationChangeEvt}
 import app.models.game.{Actions, Population, Player}
 import app.models.game.world._
 import scalaz._, Scalaz._
@@ -13,6 +14,7 @@ _: RocketFrigateCommonStats =>
   override val attacks = Attacks(1)
   override val kind = WObjKind.Medium
   override val specialActionsNeeded = Actions(1)
+  override val populationCost = Population(3)
 
   override def warp(owner: Player, position: Vect2) = RocketFrigate(position, owner)
 }
@@ -23,7 +25,6 @@ trait RocketFrigateStatsImpl extends RocketFrigateCommonStatsImpl
   override val movement = Movement.fromTiles(8)
   override val visibility = RectDistance(2)
   override val cost = Resources(8)
-  override val populationCost = Population(3)
 }
 
 trait RocketFrigateDeployedStatsImpl extends RocketFrigateCommonStatsImpl
@@ -37,11 +38,26 @@ trait RocketFrigateImpl { _: RocketFrigateCommon =>
     world: World, invokedBy: Player
   )(implicit log: LoggingAdapter) = {
     val newSelf = onSpecialAction
-    val evented = for {
+    val rawEvented = for {
       world <- world.removeEvt(this, World.RemoveReason.Deployment)
       world <- world.addEvt(newSelf, World.AddReason.Deployment)
     } yield world
 
+    val evented = Evented(
+      rawEvented.value,
+      rawEvented.events.view
+        // Because we are removing and then adding object with same population, we get
+        // -X, +X events which effectively cancel each other out.
+        .filterNot(_.isInstanceOf[PopulationChangeEvt])
+        // More over, after we remove the original object from the world, if it was the
+        // only thing providing visibility, we won't see the add anymore, so we need to
+        // use original visibility map.
+        .map {
+          case e: ObjAddedEvent => e.copy(visibilityMap = world.visibilityMap)
+          case e => e
+        }
+        .toVector
+    )
     evented.right
   }
 }

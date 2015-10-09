@@ -1,7 +1,7 @@
 package app.models.game.world
 
 import akka.event.LoggingAdapter
-import app.models.game.Owner
+import app.models.game.{Population, Owner}
 import app.models.game.events.{Evented, HPChangeEvt}
 import app.models.game.world.buildings._
 import app.models.game.world.maps.WarpZoneMap
@@ -21,6 +21,7 @@ trait OwnedObjStatsImpl { _: OwnedObjStats =>
   val isCritical = false
   val warpGiven = RectDistance(0)
   val kind: WObjKind
+  val populationCost: Population
 }
 
 trait OwnedObjImpl extends WObjectImpl {

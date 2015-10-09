@@ -219,7 +219,7 @@ case class World private (
   ) {
     case (state, gp: GivingPopulation) if gp.owner.isFriendOf(owner) =>
       state.withMax(_ + gp.populationGiven)
-    case (state, oo: Warpable) if oo.owner === owner =>
+    case (state, oo: OwnedObj) if oo.owner === owner =>
       state.withValue(_ + oo.stats.populationCost)
     case (state, _) =>
       state

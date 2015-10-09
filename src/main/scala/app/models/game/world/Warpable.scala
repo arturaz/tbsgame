@@ -69,7 +69,6 @@ trait WarpableStatsImpl { _: WarpableStats =>
   val InitialWarpState = WarpTime(0)
   val warpTime: WarpTime
   val cost: Resources
-  val populationCost: Population
   val group: WarpableGroup
   val needsWarpZoneToWarp = true
 }

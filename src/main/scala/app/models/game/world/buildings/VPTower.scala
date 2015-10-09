@@ -1,7 +1,7 @@
 package app.models.game.world.buildings
 
 import app.models.game.world._
-import app.models.game.{Actions, Owner, Team}
+import app.models.game.{Population, Actions, Owner, Team}
 
 trait VPTowerStatsImpl { _: VPTowerStats.type =>
   override val maxHp = HP(450)
@@ -10,6 +10,7 @@ trait VPTowerStatsImpl { _: VPTowerStats.type =>
   override val actionsGiven = Actions(2)
   override val size = Vect2(2, 2)
   override val vpsGiven = VPS(0)
+  override val populationCost = Population(0)
 
   override val hpAfterRespawn = maxHp
 }

@@ -1,7 +1,7 @@
 package app.models.game.world.buildings
 
 import akka.event.LoggingAdapter
-import app.models.game.Actions
+import app.models.game.{Population, Actions}
 import app.models.game.world._
 import app.models.game.world.units._
 import implicits._
@@ -14,6 +14,7 @@ trait SpawnerStatsImpl { _: SpawnerStats.type =>
   override val actionsGiven = Actions(2)
   override val specialResourcesGiven = Resources(2)
   override val specialActionsNeeded = Actions(1)
+  override val populationCost = Population(0)
 }
 
 case class SpawnerOps(self: Spawner) extends OwnedObjOps[Spawner]

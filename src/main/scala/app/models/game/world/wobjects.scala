@@ -238,19 +238,17 @@ object RocketFrigateStats extends RocketFrigateCommonStats with WFighterUnitStat
   with RocketFrigateStatsImpl
 
 case class RocketFrigateDeployed(
-  position: Vect2, owner: Player,
-  id: WObject.Id, hp: HP, xp: XP, attacksLeft: Attacks
+  position: Vect2, owner: Player, id: WObject.Id, hp: HP, xp: XP, attacksLeft: Attacks
 ) extends RocketFrigateCommon with RocketFrigateImpl {
   type Stats = RocketFrigateDeployedStats.type
   override val stats = RocketFrigateDeployedStats
 
   override def onSpecialAction = RocketFrigate(
-    position, owner, id, hp, xp, Attacks(0), Movement.zero, RocketFrigateStats.warpTime
+    position, owner, id, hp, xp, Attacks(0), Movement.zero,
+    RocketFrigateStats.warpTime
   )
 }
 object RocketFrigateDeployedStats extends RocketFrigateCommonStats with RocketFrigateDeployedStatsImpl
-
-
 
 // </editor-fold>
 

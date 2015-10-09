@@ -279,6 +279,7 @@ trait ToFighterOps {
     case o: Corvette => CorvetteOps(o)
     case o: Gunship => GunshipOps(o)
     case o: RocketFrigate => RocketFrigateOps(o)
+    case o: RocketFrigateDeployed => RocketFrigateDeployedOps(o)
     case o: RayShip => RayShipOps(o)
     case o: Fortress => FortressOps(o)
     case o: Wasp => WaspOps(o)
