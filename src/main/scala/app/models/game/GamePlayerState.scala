@@ -6,7 +6,7 @@ import implicits._
 import scalaz._, Scalaz._
 
 object GamePlayerState {
-  type CanWarp = Set[WarpableCompanion.Some]
+  type CanWarp = Vector[WarpableCompanion.Some]
 
   private[this] val lenser = Lenser[GamePlayerState]
 
@@ -25,7 +25,7 @@ object GamePlayerState {
     override val canAct = false
   }
 
-  val conceded = GamePlayerState(Actions(0), GamePlayerState.Conceded, Set.empty)
+  val conceded = GamePlayerState(Actions(0), GamePlayerState.Conceded, Vector.empty)
 }
 
 case class GamePlayerState(

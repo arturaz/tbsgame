@@ -30,17 +30,17 @@ object Game {
   type ObjectivesMap = Map[Team, Objectives]
 
   object StartingPlayer {
-    val DefaultWarpSet: GamePlayerState.CanWarp = Set(
+    val DefaultWarpSet: GamePlayerState.CanWarp = Vector(
       ExtractorStats,
       WarpLinkerStats,
-      LaserTowerStats,
       PopulationTowerStats,
       ActionTowerStats,
+      LaserTowerStats,
 
       ScoutStats,
+      WarpPrismStats,
       CorvetteStats,
       RocketFrigateStats,
-      WarpPrismStats,
       GunshipStats
     )
   }
@@ -66,7 +66,7 @@ object Game {
           world,
           world.players.map { player => (
             player,
-            startingPlayersWarpMap.getOrElse(player, Set.empty[WarpableCompanion.Some])
+            startingPlayersWarpMap.getOrElse(player, Vector.empty[WarpableCompanion.Some])
           ) }(collection.breakOut)
         ), objectives
       )
