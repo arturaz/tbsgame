@@ -231,20 +231,25 @@ case class RocketFrigate(
   type Stats = RocketFrigateStats.type
   override val stats = RocketFrigateStats
 
+  /**
+   * We can't reuse same ID because the deployed rocket frigate might still be in the
+   * visibility map, thus deployed and undeployed frigates are two distinct objects.
+   **/
   override def onSpecialAction =
-    RocketFrigateDeployed(position, owner, id, hp, xp, Attacks(0))
+    RocketFrigateDeployed(position, owner, WObject.newId, hp, xp, Attacks(0))
 }
 object RocketFrigateStats extends RocketFrigateCommonStats with WFighterUnitStats
   with RocketFrigateStatsImpl
 
 case class RocketFrigateDeployed(
   position: Vect2, owner: Player, id: WObject.Id, hp: HP, xp: XP, attacksLeft: Attacks
-) extends RocketFrigateCommon with RocketFrigateImpl {
+) extends RocketFrigateCommon with MobilityStatic with RocketFrigateImpl {
   type Stats = RocketFrigateDeployedStats.type
   override val stats = RocketFrigateDeployedStats
 
+  /** @see [RocketFrigate.onSpecialAction] **/
   override def onSpecialAction = RocketFrigate(
-    position, owner, id, hp, xp, Attacks(0), Movement.zero,
+    position, owner, WObject.newId, hp, xp, Attacks(0), Movement.zero,
     RocketFrigateStats.warpTime
   )
 }
