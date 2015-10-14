@@ -55,14 +55,14 @@ object Main {
   def runControlClient(args: ImmutableArray[String])(implicit rtConfig: RTConfig): IO[Unit] = {
     for {
       response <- args.head match {
-        case "shutdown" => ControlClient.sendShutdown
-        case "status" => ControlClient.sendStatusReq
+        case "shutdown" => ControlClient.sendShutdown.map(_.map(r =>
+          if (r.success) "Success"
+          else s"Failure!${r.message.fold2("", m => s" Message: $m")}"
+        ))
+        case "status" => ControlClient.sendStatusReq.map(_.map(_.toString))
         case other => IO { s"Unknown command: '$other'".left }
       }
-      _ <- IO.putStrLn(response.fold(
-        err => s"ERROR: $err",
-        res => res.toString
-      ))
+      _ <- IO.putStrLn(response.fold(err => s"ERROR: $err", identity))
     } yield ()
   }
 
