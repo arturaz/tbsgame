@@ -1,6 +1,6 @@
 import sbt.Keys._
 
-name := "TBS Game"
+name := "tbsgame"
 
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 
