@@ -7,15 +7,27 @@ import "management.proto";
 import "base.proto";
 
 message FromClient {
-  optional game.FromClient game = 1;
-  optional management.FromClient management = 2;
-  optional TimeSync.FromClient time_sync = 3;
+  optional ProtoVersionCheck.FromClient proto_version_check = 1;
+
+  optional game.FromClient game = 2;
+  optional management.FromClient management = 3;
+  optional TimeSync.FromClient time_sync = 4;
 }
 
 message FromServer {
-  optional game.FromServer game = 1;
-  optional management.FromServer management = 2;
-  optional TimeSync.FromServer time_sync = 3;
+  optional ProtoVersionCheck.FromServer proto_version_check = 1;
+
+  optional game.FromServer game = 2;
+  optional management.FromServer management = 3;
+  optional TimeSync.FromServer time_sync = 4;
+}
+
+message ProtoVersionCheck {
+  message FromClient {}
+
+  message FromServer {
+    required string checksum = 1;
+  }
 }
 
 message TimeSync {

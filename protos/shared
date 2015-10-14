@@ -1,0 +1,7 @@
+proto_md5() {
+  # strip out comments & blank lines and calculate md5
+  # sed magic - http://stackoverflow.com/a/13062074/935259
+  cat $@ | sed -r -e 's/\/\/.*$//' -e 's/^\s+//' -e 's/\s+$//' \
+    -e ':a; s%(.*)/\*.*\*/%\1%; ta; /\/\*/ !b; N; ba' \
+    | egrep -v "^[[:space:]]*$" | md5sum | awk {'print $1'}
+}

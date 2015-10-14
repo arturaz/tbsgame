@@ -37,14 +37,26 @@ object ControlClient {
   def sendAndReceive[Reply <: NetClient.Control.Out]
   (socket: Socket, msg: NetClient.Control.In)
   (implicit cfg: RTConfig, byteOrder: ByteOrder, replyCT: ClassTag[Reply])
-  : IO[String \/ Reply] = IO {
-    val is = socket.getInputStream
+  : IO[String \/ Reply] = for {
+    _ <- send(socket, msg)
+    res <- receive[Reply](socket)
+  } yield res
+
+  def send(socket: Socket, msg: NetClient.Control.In)
+  (implicit cfg: RTConfig, byteOrder: ByteOrder): IO[Unit] = IO {
     val os = socket.getOutputStream
     val msgWithKey = NetClient.Msgs.FromControlClient(cfg.controlKey, msg)
     val protoMsgBytes = Serializing.serializeControl(msgWithKey)
-    val serialized = IntFramedPipeline.withFrameSize(Frame(protoMsgBytes))
+    val outFrame = Frame(ByteString(Parsing.ControlDiscriminator) ++ protoMsgBytes)
+    val serialized = IntFramedPipeline.withFrameSize(outFrame)
     os.write(serialized.toArray)
     os.flush()
+  }
+
+  def receive[Reply <: NetClient.Control.Out](socket: Socket)
+  (implicit cfg: RTConfig, byteOrder: ByteOrder, replyCT: ClassTag[Reply])
+  : IO[String \/ Reply] = IO {
+    val is = socket.getInputStream
     val frameLengthArr = new Array[Byte](IntFramedPipeline.frameLengthSize)
     is.read(frameLengthArr, 0, frameLengthArr.length)
     val frameLength = ByteString(frameLengthArr).iterator.getInt

@@ -1,5 +1,7 @@
 package app.protobuf.serializing
 
+import java.nio.ByteOrder
+
 import akka.util.ByteString
 import app.actors.{MsgHandler, NetClient}
 import app.actors.game.GameActor
@@ -88,6 +90,10 @@ trait MessagesProto extends Helpers { _: GameProto =>
 
   implicit def convert(out: NetClient.Msgs.FromServer): messages.FromServer =
     out match {
+      case msg: NetClient.Msgs.FromServer.ProtoVersionCheck =>
+        messages.FromServer(protoVersionCheck = Some(
+          messages.ProtoVersionCheck.FromServer(msg.checksum)
+        ))
       case msg: NetClient.Msgs.FromServer.Game =>
         messages.FromServer(game = Some(msg.msg))
       case msg: NetClient.Msgs.FromServer.Management =>
@@ -124,6 +130,7 @@ trait MessagesProto extends Helpers { _: GameProto =>
     serializeGenMsg(convert(out))
   def serializeControl(out: NetClient.Control.Out): ByteString =
     serializeGenMsg(convert(out))
+
   def serialize(out: MsgHandler.Server2Client): ByteString =
     out.toEither.fold(serializeGame, serializeControl)
 

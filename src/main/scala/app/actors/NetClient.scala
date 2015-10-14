@@ -4,6 +4,7 @@ import java.util.UUID
 
 import akka.actor._
 import akka.pattern._
+import netmsg.ProtoChecksum
 import spire.math.UInt
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -121,6 +122,7 @@ object NetClient {
   object Msgs {
     sealed trait FromClient
     object FromClient {
+      case object ProtoVersionCheck extends FromClient
       case class Game(msg: GameInMsg) extends FromClient
       case class Management(msg: NetClient.Management.In) extends FromClient
       case class TimeSync(clientNow: DateTime) extends FromClient
@@ -130,6 +132,7 @@ object NetClient {
 
     sealed trait FromServer
     object FromServer {
+      case class ProtoVersionCheck(checksum: String) extends FromServer
       case class Game(msg: GameActor.ClientOut) extends FromServer
       case class Management(msg: NetClient.Management.Out) extends FromServer
       case class TimeSync(clientNow: DateTime, serverNow: DateTime) extends FromServer
@@ -179,6 +182,8 @@ class NetClient(
   }
 
   private[this] val common: Receive = {
+    case FromClient.ProtoVersionCheck =>
+      FromServer.ProtoVersionCheck(ProtoChecksum.checksum).out()
     case FromClient.TimeSync(clientNow) =>
       FromServer.TimeSync(clientNow, DateTime.now).out()
     case Server.ShutdownInitiated =>

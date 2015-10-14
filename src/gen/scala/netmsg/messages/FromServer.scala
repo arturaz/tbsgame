@@ -7,35 +7,43 @@ package netmsg.messages
 import com.trueaccord.scalapb.Descriptors
 
 final case class FromServer(
+    protoVersionCheck: Option[netmsg.messages.ProtoVersionCheck.FromServer] = None,
     game: Option[netmsg.game.FromServer] = None,
     management: Option[netmsg.management.FromServer] = None,
     timeSync: Option[netmsg.messages.TimeSync.FromServer] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[FromServer] with com.trueaccord.lenses.Updatable[FromServer] {
     lazy val serializedSize: Int = {
       var __size = 0
+      if (protoVersionCheck.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(protoVersionCheck.get.serializedSize) + protoVersionCheck.get.serializedSize }
       if (game.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(game.get.serializedSize) + game.get.serializedSize }
       if (management.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(management.get.serializedSize) + management.get.serializedSize }
       if (timeSync.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(timeSync.get.serializedSize) + timeSync.get.serializedSize }
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
-      game.foreach { v => 
+      protoVersionCheck.foreach { v => 
         output.writeTag(1, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
-      management.foreach { v => 
+      game.foreach { v => 
         output.writeTag(2, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
-      timeSync.foreach { v => 
+      management.foreach { v => 
         output.writeTag(3, 2)
+        output.writeRawVarint32(v.serializedSize)
+        v.writeTo(output)
+      }
+      timeSync.foreach { v => 
+        output.writeTag(4, 2)
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.messages.FromServer = {
+      var __protoVersionCheck = this.protoVersionCheck
       var __game = this.game
       var __management = this.management
       var __timeSync = this.timeSync
@@ -45,20 +53,26 @@ final case class FromServer(
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __game = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __game.getOrElse(netmsg.game.FromServer.defaultInstance)))
+            __protoVersionCheck = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __protoVersionCheck.getOrElse(netmsg.messages.ProtoVersionCheck.FromServer.defaultInstance)))
           case 18 =>
-            __management = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __management.getOrElse(netmsg.management.FromServer.defaultInstance)))
+            __game = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __game.getOrElse(netmsg.game.FromServer.defaultInstance)))
           case 26 =>
+            __management = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __management.getOrElse(netmsg.management.FromServer.defaultInstance)))
+          case 34 =>
             __timeSync = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __timeSync.getOrElse(netmsg.messages.TimeSync.FromServer.defaultInstance)))
           case tag => __input.skipField(tag)
         }
       }
       netmsg.messages.FromServer(
+          protoVersionCheck = __protoVersionCheck,
           game = __game,
           management = __management,
           timeSync = __timeSync
       )
     }
+    def getProtoVersionCheck: netmsg.messages.ProtoVersionCheck.FromServer = protoVersionCheck.getOrElse(netmsg.messages.ProtoVersionCheck.FromServer.defaultInstance)
+    def clearProtoVersionCheck: FromServer = copy(protoVersionCheck = None)
+    def withProtoVersionCheck(__v: netmsg.messages.ProtoVersionCheck.FromServer): FromServer = copy(protoVersionCheck = Some(__v))
     def getGame: netmsg.game.FromServer = game.getOrElse(netmsg.game.FromServer.defaultInstance)
     def clearGame: FromServer = copy(game = None)
     def withGame(__v: netmsg.game.FromServer): FromServer = copy(game = Some(__v))
@@ -70,9 +84,10 @@ final case class FromServer(
     def withTimeSync(__v: netmsg.messages.TimeSync.FromServer): FromServer = copy(timeSync = Some(__v))
     def getField(__field: Descriptors.FieldDescriptor): Any = {
       __field.number match {
-        case 1 => game
-        case 2 => management
-        case 3 => timeSync
+        case 1 => protoVersionCheck
+        case 2 => game
+        case 3 => management
+        case 4 => timeSync
       }
     }
     def companion = netmsg.messages.FromServer
@@ -81,9 +96,10 @@ final case class FromServer(
 object FromServer extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer]  {
   implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[FromServer]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.messages.FromServer = netmsg.messages.FromServer(
-    game = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.game.FromServer]],
-    management = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.management.FromServer]],
-    timeSync = fieldsMap.getOrElse(3, None).asInstanceOf[Option[netmsg.messages.TimeSync.FromServer]]
+    protoVersionCheck = fieldsMap.getOrElse(1, None).asInstanceOf[Option[netmsg.messages.ProtoVersionCheck.FromServer]],
+    game = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.game.FromServer]],
+    management = fieldsMap.getOrElse(3, None).asInstanceOf[Option[netmsg.management.FromServer]],
+    timeSync = fieldsMap.getOrElse(4, None).asInstanceOf[Option[netmsg.messages.TimeSync.FromServer]]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("FromServer", this,
     None, m = Seq(),
@@ -92,6 +108,8 @@ object FromServer extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromS
   lazy val defaultInstance = netmsg.messages.FromServer(
   )
   implicit class FromServerLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, FromServer]) extends com.trueaccord.lenses.ObjectLens[UpperPB, FromServer](_l) {
+    def protoVersionCheck: com.trueaccord.lenses.Lens[UpperPB, netmsg.messages.ProtoVersionCheck.FromServer] = field(_.getProtoVersionCheck)((c_, f_) => c_.copy(protoVersionCheck = Some(f_)))
+    def optionalProtoVersionCheck: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.messages.ProtoVersionCheck.FromServer]] = field(_.protoVersionCheck)((c_, f_) => c_.copy(protoVersionCheck = f_))
     def game: com.trueaccord.lenses.Lens[UpperPB, netmsg.game.FromServer] = field(_.getGame)((c_, f_) => c_.copy(game = Some(f_)))
     def optionalGame: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.game.FromServer]] = field(_.game)((c_, f_) => c_.copy(game = f_))
     def management: com.trueaccord.lenses.Lens[UpperPB, netmsg.management.FromServer] = field(_.getManagement)((c_, f_) => c_.copy(management = Some(f_)))
@@ -99,7 +117,8 @@ object FromServer extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromS
     def timeSync: com.trueaccord.lenses.Lens[UpperPB, netmsg.messages.TimeSync.FromServer] = field(_.getTimeSync)((c_, f_) => c_.copy(timeSync = Some(f_)))
     def optionalTimeSync: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.messages.TimeSync.FromServer]] = field(_.timeSync)((c_, f_) => c_.copy(timeSync = f_))
   }
-  final val GAME_FIELD_NUMBER = 1
-  final val MANAGEMENT_FIELD_NUMBER = 2
-  final val TIME_SYNC_FIELD_NUMBER = 3
+  final val PROTO_VERSION_CHECK_FIELD_NUMBER = 1
+  final val GAME_FIELD_NUMBER = 2
+  final val MANAGEMENT_FIELD_NUMBER = 3
+  final val TIME_SYNC_FIELD_NUMBER = 4
 }

@@ -18,13 +18,15 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
     import messages.FromClient
 
     msg match {
-      case FromClient(Some(m), _, _) =>
+      case FromClient(Some(_), _, _, _) =>
+        NetClient.Msgs.FromClient.ProtoVersionCheck.right
+      case FromClient(_, Some(m), _, _) =>
         parse(m).map(NetClient.Msgs.FromClient.Game)
-      case FromClient(_, Some(m), _) =>
+      case FromClient(_, _, Some(m), _) =>
         parse(m).map(NetClient.Msgs.FromClient.Management)
-      case FromClient(_, _, Some(m)) =>
+      case FromClient(_, _, _, Some(m)) =>
         parse(m).right
-      case FromClient(None, None, None) =>
+      case FromClient(None, None, None, None) =>
         s"Empty message $msg!".left
     }
   }
@@ -59,13 +61,16 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
     }
   }
 
+  val GameDiscriminator = 0.toByte
+  val ControlDiscriminator = 1.toByte
+
   def parse(data: ByteString)
   : String \/ (NetClient.Msgs.FromClient \/ NetClient.Msgs.FromControlClient) = {
-    lazy val asClient = parseFromClient(data)
-    lazy val asControl = parseFromControlClient(data)
-
-    (asClient.map(_.left) orElse asControl.map(_.right)).leftMap { _ =>
-      s"Can't parse data: [asClient=$asClient] [asControl=$asControl]"
+    data.headOption match {
+      case Some(GameDiscriminator) => parseFromClient(data.tail).map(_.left)
+      case Some(ControlDiscriminator) => parseFromControlClient(data.tail).map(_.right)
+      case Some(other) => s"Unknown discriminator byte: '$other'!".left
+      case None => s"Empty data ByteString!".left
     }
   }
 
