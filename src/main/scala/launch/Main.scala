@@ -3,10 +3,11 @@ package launch
 import java.nio.ByteOrder
 
 import akka.actor.{ActorSystem, Props}
-import app.actors.Server
+import app.actors.{NetClient, Server}
 import app.actors.game.GamesManagerActor
 import app.models.game.world.maps.{GameMaps, TMXReader, GameMap}
 import app.persistence.DBDriver
+import com.typesafe.config.{ConfigFactory, Config}
 import org.apache.commons.io.{Charsets, IOUtils}
 import org.flywaydb.core.Flyway
 import utils.JAR
@@ -15,29 +16,50 @@ import collection.JavaConverters._
 import implicits._
 
 import scalaz._, Scalaz._
+import scalaz.effect.IO
 
 /**
  * Created by arturas on 2014-10-08.
  */
 object Main {
   private[this] lazy val appSystem = ActorSystem("app")
+  private[this] implicit val byteOrder = ByteOrder.BIG_ENDIAN
 
   def main(args: Array[String]) = {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val rtConfig = RTConfig.fromConfig(ConfigFactory.load()).valueOr { errors =>
+      System.err.println(s"Errors while loading runtime config: $errors. Exiting.")
+      sys.exit(-1)
+    }
 
+    val io =
+      if (args.isEmpty) runServer()
+      else runControlClient(ImmutableArray.fromArray(args))
+    io.unsafePerformIO()
+  }
+
+  def runServer()(implicit rtConfig: RTConfig): IO[Unit] = IO {
     val maps = readMaps("maps").valueOr { errors =>
       System.err.println(s"Errors in map loading: $errors. Exiting.")
       sys.exit(-1)
     }
 
-    val dbUrl = "jdbc:sqlite:app.db"
-    applyMigrations(dbUrl)
-    val db = DBDriver.Database.forURL(dbUrl)
+    applyMigrations(rtConfig.dbUrl)
+    val db = DBDriver.Database.forURL(rtConfig.dbUrl)
 
     val gamesManager = appSystem.actorOf(Props(new GamesManagerActor(maps)), "games-manager")
     println(s"Games manager started: $gamesManager")
-    val server = appSystem.actorOf(Props(new Server(5000, gamesManager, db)), "server")
+    val server = appSystem.actorOf(Props(new Server(rtConfig, gamesManager, db)), "server")
     println(s"Server started: $server")
+  }
+
+  def runControlClient(args: ImmutableArray[String])(implicit rtConfig: RTConfig): IO[Unit] = {
+    for {
+      response <- args.head match {
+        case "shutdown" => ControlClient.sendShutdown
+        case other => IO { s"Unknown command: '$other'".left }
+      }
+      _ <- IO.putStrLn(response.toString)
+    } yield ()
   }
 
   def applyMigrations(url: String): Unit = {

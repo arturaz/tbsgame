@@ -6,10 +6,12 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.event.{LoggingAdapter, LoggingReceive}
 import akka.io.Tcp._
 import akka.util.ByteString
-import app.actors.NetClient.Msgs.{FromClient, FromServer}
+import app.actors.NetClient.Msgs.{FromControlClient, FromClient, FromServer}
+import app.actors.NetClient.Control
 import app.protobuf.parsing.Parsing
 import app.protobuf.serializing.Serializing
-import utils.network.{CodedFramePipeline, IntFramedPipeline, Pipeline}
+import utils.network.IntFramedPipeline.Frame
+import utils.network.IntFramedPipeline
 import implicits._
 import scalaz._, Scalaz._
 
@@ -18,6 +20,18 @@ import scalaz._, Scalaz._
  */
 object MsgHandler {
   private case object Ack extends Event
+
+  // We need this because we can't pattern match in Receive on \/
+  sealed trait Server2Client {
+    def toEither = this match {
+      case Server2Client.GameMsg(msg) => msg.left
+      case Server2Client.ControlMsg(msg) => msg.right
+    }
+  }
+  object Server2Client {
+    case class GameMsg(msg: NetClient.Msgs.FromServer) extends Server2Client
+    case class ControlMsg(msg: NetClient.Control.Out) extends Server2Client
+  }
 }
 
 class MsgHandler(
@@ -44,32 +58,37 @@ extends Actor with ActorLogging {
   private[this] var suspended = false
 
   private[this] val fromClient: Receive = {
-    case Received(data) => pipeline.fromClient(data).foreach {
+    case Received(data) => pipeline.unserialize(data).foreach {
       case -\/(err) => log.error(err)
-      case \/-(msg) => netClient ! msg
+      case \/-(clientOrControlMsg) => netClient ! clientOrControlMsg.fold(identity, identity)
     }
   }
 
-  private[this] val buffering = LoggingReceive(fromClient orElse {
-    case msg: FromServer =>
-      buffer(pipeline.toClient(msg))
+  private[this] val buffering = {
+    LoggingReceive(fromClient orElse {
+      case msg: MsgHandler.Server2Client =>
+        buffer(pipeline.serialize(msg))
 
-    case Ack =>
-      acknowledge()
+      case Ack =>
+        acknowledge()
 
-    case msg: ConnectionClosed =>
-      log.info(s"closing = true by {}.", msg)
-      closing = true
-  })
+      case msg: ConnectionClosed =>
+        log.info(s"closing = true by {}.", msg)
+        closing = true
+    })
+  }
 
   override val receive = LoggingReceive(fromClient orElse {
-    case msg: FromServer =>
-      val data = pipeline.toClient(msg)
+    case msg: Server2Client =>
+      val data = pipeline.serialize(msg)
 
       buffer(data)
       connection ! Write(data, Ack)
 
       context.become(buffering, discardOld = false)
+
+    case msg: Server.ShutdownInitiated.type =>
+      netClient ! msg
 
     case msg: ConnectionClosed =>
       log.info(s"Connection closed by {}.", msg)
@@ -113,15 +132,13 @@ extends Actor with ActorLogging {
   }
 }
 
-class MsgHandlerPipeline(implicit byteOrder: ByteOrder, log: LoggingAdapter)
-extends Pipeline[ByteString, Vector[String \/ FromClient], FromServer, ByteString] {
+class MsgHandlerPipeline(implicit byteOrder: ByteOrder, log: LoggingAdapter) {
   private[this] val intFramed = new IntFramedPipeline()
-  private[this] val coded = new CodedFramePipeline(Parsing.parse, Serializing.serialize)
 
-  override def fromClient(data: ByteString) = intFramed.fromClient(data).map { frame =>
-    coded.fromClient(frame).leftMap(err => s"Cannot decode $frame into message: $err")
+  def unserialize(data: ByteString) = intFramed.fromFramedData(data).map { frame =>
+    Parsing.parse(frame.data).leftMap(err => s"Cannot decode $frame into message: $err")
   }
 
-  override def toClient(data: FromServer) =
-    data |> coded.toClient |> intFramed.toClient
+  def serialize(data: MsgHandler.Server2Client) =
+    data |> Serializing.serialize |> Frame |> intFramed.withFrameSize
 }

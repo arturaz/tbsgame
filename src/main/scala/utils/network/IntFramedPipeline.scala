@@ -7,52 +7,38 @@ import akka.util.ByteString
 import utils.Hex
 import utils.network.IntFramedPipeline.Frame
 
-class IntFramedPipeline(implicit byteOrder: ByteOrder, log: LoggingAdapter)
-extends Pipeline[ByteString, Vector[Frame], Frame, ByteString] {
+import scala.annotation.tailrec
+
+class IntFramedPipeline(implicit byteOrder: ByteOrder) {
   import IntFramedPipeline._
 
   private[this] var buffer = ByteString.empty
 
-  def fromClient(data: ByteString): Vector[Frame] = {
+  def fromFramedData(data: ByteString): Vector[Frame] = {
     buffer ++= data
-//    log.debug(s"Received ${data.size} bytes.")
-//    log.debug(s"Data: ${Hex.bytesToHex(data)}")
     val (newBuf, frames) = process(buffer)
     buffer = newBuf
     frames
   }
 
-  def toClient(data: Frame) = {
-    val bb = ByteString.newBuilder
-    bb.putInt(data.data.size)
-    bb ++= data.data
-    val result = bb.result()
-//    log.debug(s"Encoded frame of size ${data.data.size} bytes.")
-//    log.debug(s"Data: ${Hex.bytesToHex(result)}")
-    result
-  }
+  def withFrameSize(data: Frame) = IntFramedPipeline.withFrameSize(data)
 
-  private[this] def process(
+  @tailrec private[this] def process(
     buffer: Buffer, frames: Vector[Frame]=Vector.empty
-    ): (Buffer, Vector[Frame]) = {
+  ): (Buffer, Vector[Frame]) = {
+    def defaultRet = (buffer, frames)
+
     if (buffer.length >= frameLengthSize) {
       val iter = buffer.iterator
       val frameSize = iter.getInt
       val rest = iter.toByteString
       if (rest.length >= frameSize) {
         val (frame, newBuf) = rest.splitAt(frameSize)
-//        Log.debug(
-//          s"Frame of size $frameSize received, rest of the buffer is ${
-//            newBuf.size} bytes"
-//        )
-        return process(newBuf, frames :+ Frame(frame))
+        process(newBuf, frames :+ Frame(frame))
       }
-      else {
-//        Log.debug(s"Still need ${frameSize - rest.length} bytes for frame.")
-      }
+      else defaultRet
     }
-
-    (buffer, frames)
+    else defaultRet
   }
 }
 
@@ -60,4 +46,12 @@ object IntFramedPipeline {
   val frameLengthSize = 4
   case class Frame(data: ByteString) extends AnyVal
   type Buffer = ByteString
+
+  def withFrameSize(data: Frame)(implicit byteOrder: ByteOrder) = {
+    val bb = ByteString.newBuilder
+    bb.putInt(data.data.size)
+    bb ++= data.data
+    val result = bb.result()
+    result
+  }
 }

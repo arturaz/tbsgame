@@ -1,0 +1,30 @@
+package control;
+
+option java_package = "netmsg";
+
+message ControlSecretKey {
+  required string key = 1;
+}
+
+message Client2Server {
+  required ControlSecretKey secret_key = 1;
+
+  optional ShutdownReq shutdown = 2;
+  optional StatusReq status = 3;
+}
+
+message Server2Client {
+  optional GenericReply reply = 1;
+  optional StatusReply status = 2;
+}
+
+message GenericReply {
+  required bool success = 1;
+  optional string message = 2;
+}
+
+message ShutdownReq {}
+
+message StatusReq {}
+
+message StatusReply {}

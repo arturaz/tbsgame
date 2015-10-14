@@ -3,7 +3,7 @@ package app.actors.game
 import akka.actor.SupervisorStrategy.Stop
 import akka.actor._
 import akka.event.LoggingReceive
-import app.actors.NetClient
+import app.actors.{Server, NetClient}
 import app.actors.NetClient.Management.In.JoinGame.Mode
 import app.actors.game.GameActor.StartingHuman
 import app.models.User
@@ -13,6 +13,7 @@ import app.models.game.{TurnTimers, Bot, Human, Team}
 import implicits._
 import utils.data.NonEmptyVector
 import scalaz._, Scalaz._
+import scala.concurrent.duration._
 
 import scala.util.Random
 
@@ -54,6 +55,7 @@ object GamesManagerActor {
 
 class GamesManagerActor(maps: GameMaps) extends Actor with ActorLogging {
   import app.actors.game.GamesManagerActor._
+  import context.dispatcher
 
   type WaitingList = Vector[(User, ActorRef)]
   type WaitingLists = Map[Mode.PvP, WaitingList]
@@ -94,6 +96,18 @@ class GamesManagerActor(maps: GameMaps) extends Actor with ActorLogging {
         log.info("Game {} terminated for humans {}", ref, humans)
         game2humans -= ref
         humans.foreach { human => user2game -= human.user }
+      }
+
+    case Server.ShutdownInitiated =>
+      log.info("Shutdown mode initiated.")
+      context.system.scheduler.schedule(0.seconds, 1.second, self, Server.CheckShutdown)
+
+    case Server.CheckShutdown =>
+      val games = game2humans.size
+      log.debug("Checking for shutdown state, games: {}", games)
+      if (games === 0) {
+        log.info("No games alive, shutting down.")
+        context.system.shutdown()
       }
   }
 

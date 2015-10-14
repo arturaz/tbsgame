@@ -4,6 +4,7 @@ import java.util.UUID
 
 import akka.actor._
 import akka.event.LoggingReceive
+import akka.io.Tcp.Unbind
 import app.actors.NetClient.Management.{SessionToken, PlainPassword, Credentials}
 import app.actors.game.{GamesManagerActor, GameActor}
 import app.models._
@@ -18,6 +19,27 @@ import scala.util.Try
 
 object NetClient {
   type GameInMsg = Human => GameActor.In
+
+  object Control {
+    case class SecretKey(key: String) extends AnyVal
+
+    sealed trait In
+    object In {
+      case object Shutdown extends In
+      case object Status extends In
+    }
+
+    sealed trait Out
+    object Out {
+      case class GenericReply(success: Boolean, message: Option[String]) extends Out
+      object GenericReply {
+        val success = GenericReply(success = true, None)
+        def error(msg: String) = GenericReply(success = false, Some(msg))
+      }
+
+      case class Status() extends Out
+    }
+  }
 
   object Management {
     sealed trait AuthToken
@@ -87,6 +109,8 @@ object NetClient {
       case class TimeSync(clientNow: DateTime) extends FromClient
     }
 
+    case class FromControlClient(key: NetClient.Control.SecretKey, msg: NetClient.Control.In)
+
     sealed trait FromServer
     object FromServer {
       case class Game(msg: GameActor.ClientOut) extends FromServer
@@ -97,7 +121,9 @@ object NetClient {
 }
 
 class NetClient(
-  msgHandler: ActorRef, gamesManager: ActorRef, db: Database
+  msgHandler: ActorRef, gamesManager: ActorRef, server: ActorRef,
+  controlKey: NetClient.Control.SecretKey,
+  db: Database
 ) extends Actor with ActorLogging {
   import app.actors.NetClient.Management.In._
   import app.actors.NetClient.Management.Out._
@@ -105,7 +131,7 @@ class NetClient(
   import app.actors.NetClient._
 
   implicit class ServerMsgExts(msg: FromServer) {
-    def out(): Unit = msgHandler ! msg
+    def out(): Unit = msgHandler ! MsgHandler.Server2Client.GameMsg(msg)
   }
   implicit class ManagementMsgExts(msg: Management.Out) {
     def out(): Unit = FromServer.Management(msg).out()
@@ -113,14 +139,47 @@ class NetClient(
   implicit class GameMsgExts(msg: GameActor.ClientOut) {
     def out(): Unit = FromServer.Game(msg).out()
   }
+  implicit class ControlMsgExts(msg: Control.Out) {
+    def out(): Unit = msgHandler ! MsgHandler.Server2Client.ControlMsg(msg)
+  }
 
   context.watch(msgHandler)
 
   override def receive = notLoggedIn
 
+  private[this] var shutdownInitiated = false
+  private[this] var inGameOpt = Option.empty[(ActorRef, Human)]
+
+  @throws[Exception](classOf[Exception])
+  override def postStop(): Unit = {
+    if (shutdownInitiated) {
+      inGameOpt.foreach { case (gameRef, human) =>
+        // Auto-concede if lost connection when shutdown is initiated.
+        log.info("Auto conceding because lost connection in shutdown mode.")
+        gameRef ! GameActor.In.Concede(human)
+      }
+    }
+  }
+
   private[this] val common: Receive = {
     case FromClient.TimeSync(clientNow) =>
       FromServer.TimeSync(clientNow, DateTime.now).out()
+    case Server.ShutdownInitiated =>
+      shutdownInitiated = true
+    case c: FromControlClient =>
+      handleControl(c).out()
+      context.stop(self)
+  }
+
+  def handleControl(c: FromControlClient): Control.Out = {
+    if (c.key === controlKey) c.msg match {
+      case Control.In.Shutdown =>
+        server ! Unbind
+        Control.Out.GenericReply.success
+      case Control.In.Status =>
+        Control.Out.Status()
+    }
+    else Control.Out.GenericReply.error(s"Invalid control key '${c.key}'")
   }
 
   private[this] val notLoggedIn: Receive = {
@@ -193,6 +252,7 @@ class NetClient(
   }: Receive) orElse common)
 
   private[this] def inGame(user: User, human: Human, game: ActorRef): Receive = {
+    inGameOpt = Some((game, human))
     context.watch(game)
     LoggingReceive(({
       case FromClient.Game(msgFn) =>
@@ -202,6 +262,7 @@ class NetClient(
         msg.out()
       case Terminated if sender() == game =>
         log.error("Game was terminated")
+        inGameOpt = None
         context.become(loggedIn(user))
     }: Receive) orElse common)
   }

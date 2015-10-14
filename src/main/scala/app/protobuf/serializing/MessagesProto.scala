@@ -1,8 +1,9 @@
 package app.protobuf.serializing
 
 import akka.util.ByteString
-import app.actors.NetClient
+import app.actors.{MsgHandler, NetClient}
 import app.actors.game.GameActor
+import com.trueaccord.scalapb.GeneratedMessage
 import netmsg._
 import implicits._
 import scalaz._, Scalaz._
@@ -95,6 +96,34 @@ trait MessagesProto extends Helpers { _: GameProto =>
         messages.FromServer(timeSync = Some(msg))
     }
 
-  def serialize(out: NetClient.Msgs.FromServer): ByteString =
-    ByteString(convert(out).toByteArray)
+  implicit def convert(msg: NetClient.Msgs.FromControlClient): control.Client2Server = {
+    implicit def convert(key: NetClient.Control.SecretKey):control.ControlSecretKey =
+      control.ControlSecretKey(key.key)
+
+    msg.msg match {
+      case NetClient.Control.In.Shutdown =>
+        control.Client2Server(msg.key, shutdown = Some(control.ShutdownReq()))
+      case NetClient.Control.In.Status =>
+        control.Client2Server(msg.key, status = Some(control.StatusReq()))
+    }
+  }
+
+  implicit def convert(out: NetClient.Control.Out): control.Server2Client =
+    out match {
+      case NetClient.Control.Out.GenericReply(success, messageOpt) =>
+        control.Server2Client(reply = Some(control.GenericReply(success, messageOpt)))
+      case NetClient.Control.Out.Status() =>
+        control.Server2Client(status = Some(control.StatusReply()))
+    }
+
+  def serializeGame(out: NetClient.Msgs.FromServer): ByteString =
+    serializeGenMsg(convert(out))
+  def serializeControl(out: NetClient.Msgs.FromControlClient): ByteString =
+    serializeGenMsg(convert(out))
+  def serializeControl(out: NetClient.Control.Out): ByteString =
+    serializeGenMsg(convert(out))
+  def serialize(out: MsgHandler.Server2Client): ByteString =
+    out.toEither.fold(serializeGame, serializeControl)
+
+  def serializeGenMsg(m: GeneratedMessage): ByteString = ByteString(m.toByteArray)
 }
