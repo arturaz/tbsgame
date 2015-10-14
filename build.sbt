@@ -20,7 +20,7 @@ val macrosSettings = commonSettings ++ Seq(
 val scalazVersion = "7.1.4"
 
 val rootSettings = commonSettings ++ Seq(
-  version := "0.2.0",
+  version := "1.0",
   scalacOptions ++= Seq("-deprecation", "-Xlint", "-Xfatal-warnings"),
   unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "gen" / "scala",
   initialCommands in console := """import app.models._, world._, implicits._""",
