@@ -236,7 +236,7 @@ case class RocketFrigate(
    * visibility map, thus deployed and undeployed frigates are two distinct objects.
    **/
   override def onSpecialAction =
-    RocketFrigateDeployed(position, owner, WObject.newId, hp, xp, Attacks(0))
+    RocketFrigateDeployed(position, owner, WObject.newId, hp, xp, attacksLeft)
 }
 object RocketFrigateStats extends RocketFrigateCommonStats with WFighterUnitStats
   with RocketFrigateStatsImpl
@@ -249,7 +249,7 @@ case class RocketFrigateDeployed(
 
   /** @see [RocketFrigate.onSpecialAction] **/
   override def onSpecialAction = RocketFrigate(
-    position, owner, WObject.newId, hp, xp, Attacks(0), Movement.zero,
+    position, owner, WObject.newId, hp, xp, attacksLeft, Movement.zero,
     RocketFrigateStats.warpTime
   )
 }

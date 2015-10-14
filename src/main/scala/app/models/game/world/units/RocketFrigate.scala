@@ -10,7 +10,6 @@ trait RocketFrigateCommonStatsImpl extends EmptySpaceWarpableCompanion[RocketFri
 _: RocketFrigateCommonStats =>
   override val maxHp = HP(30)
   override val attack = Atk(210)
-  override val attackOverrides = Map(WObjKind.light -> Atk(95))
   override val attacks = Attacks(1)
   override val kind = WObjKind.Medium
   override val specialActionsNeeded = Actions(1)
@@ -22,7 +21,7 @@ _: RocketFrigateCommonStats =>
 trait RocketFrigateStatsImpl extends RocketFrigateCommonStatsImpl
 { _: RocketFrigateStats.type =>
   override val attackRange = RadialDistance.Two
-  override val movement = Movement.fromTiles(8)
+  override val movement = Movement.fromTiles(12)
   override val visibility = RectDistance(2)
   override val cost = Resources(8)
 }
