@@ -6,6 +6,7 @@ import akka.util.ByteString
 import app.actors.NetClient
 import netmsg._
 import implicits._
+import spire.math.UInt
 
 import scalaz._, Scalaz._
 
@@ -50,7 +51,9 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
       case control.Server2Client(Some(m), _) =>
         Out.GenericReply(m.success, m.message).right
       case control.Server2Client(_, Some(m)) =>
-        Out.Status().right
+        Out.Status(
+          m.clients.map(UInt.apply), m.playingUsers.map(UInt.apply), m.games.map(UInt.apply)
+        ).right
       case control.Server2Client(None, None) =>
         s"Empty message: control.Server2Client".left
     }

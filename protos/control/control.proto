@@ -27,4 +27,9 @@ message ShutdownReq {}
 
 message StatusReq {}
 
-message StatusReply {}
+message StatusReply {
+  // optional because we might not return it if report fails.
+  optional uint32 clients = 1;
+  optional uint32 playing_users = 2;
+  optional uint32 games = 3;
+}

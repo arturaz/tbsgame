@@ -11,6 +11,7 @@ import app.models.game.world.maps.{GameMaps, GameMap, SingleplayerMap, WorldMate
 import app.models.game.world.{ExtractorStats, Resources, World}
 import app.models.game.{TurnTimers, Bot, Human, Team}
 import implicits._
+import spire.math.UInt
 import utils.data.NonEmptyVector
 import scalaz._, Scalaz._
 import scala.concurrent.duration._
@@ -24,6 +25,18 @@ object GamesManagerActor {
   object In {
     case class Join(user: User, mode: NetClient.Management.In.JoinGame.Mode) extends In
     case class CancelJoinGame(user: User) extends In
+    case object Report extends In
+  }
+
+  sealed trait Out
+  object Out {
+    case class Report(users: UInt, games: UInt) extends Out
+  }
+
+  sealed trait Internal
+  object Internal {
+    /* Check if we can shutdown. */
+    case object CheckShutdown
   }
 
   // TODO: proper singleplayer
@@ -100,15 +113,19 @@ class GamesManagerActor(maps: GameMaps) extends Actor with ActorLogging {
 
     case Server.ShutdownInitiated =>
       log.info("Shutdown mode initiated.")
-      context.system.scheduler.schedule(0.seconds, 1.second, self, Server.CheckShutdown)
+      context.system.scheduler
+        .schedule(0.seconds, 1.second, self, GamesManagerActor.Internal.CheckShutdown)
 
-    case Server.CheckShutdown =>
+    case GamesManagerActor.Internal.CheckShutdown =>
       val games = game2humans.size
       log.debug("Checking for shutdown state, games: {}", games)
       if (games === 0) {
         log.info("No games alive, shutting down.")
         context.system.shutdown()
       }
+
+    case GamesManagerActor.In.Report =>
+      sender ! GamesManagerActor.Out.Report(UInt(user2game.size), UInt(game2humans.size))
   }
 
   private[this] def noExistingGame(user: User, mode: Mode, client: ActorRef): Unit = {

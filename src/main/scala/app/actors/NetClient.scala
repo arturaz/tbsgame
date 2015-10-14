@@ -3,14 +3,20 @@ package app.actors
 import java.util.UUID
 
 import akka.actor._
+import akka.pattern._
+import spire.math.UInt
+import scala.concurrent.Future
+import scala.concurrent.duration._
 import akka.event.LoggingReceive
 import akka.io.Tcp.Unbind
+import akka.util.Timeout
 import app.actors.NetClient.Management.{SessionToken, PlainPassword, Credentials}
 import app.actors.game.{GamesManagerActor, GameActor}
 import app.models._
-import app.models.game.{TurnTimers, Human}
+import app.models.game.Human
 import app.persistence.tables.Tables
 import implicits._
+import scala.reflect.ClassTag
 import scalaz._, Scalaz._
 import app.persistence.DBDriver._
 import org.joda.time.DateTime
@@ -37,7 +43,18 @@ object NetClient {
         def error(msg: String) = GenericReply(success = false, Some(msg))
       }
 
-      case class Status() extends Out
+      case class Status(
+        tcpClients: Option[UInt], playingUsers: Option[UInt], games: Option[UInt]
+      ) extends Out {
+        override def toString = {
+          import Status.asStr
+          s"Status[tcp clients: ${asStr(tcpClients)}, playing users: ${
+          asStr(playingUsers)}, games: ${asStr(games)}]"
+        }
+      }
+      object Status {
+        def asStr(o: Option[UInt]) = o.fold2("-", _.toString())
+      }
     }
   }
 
@@ -167,19 +184,43 @@ class NetClient(
     case Server.ShutdownInitiated =>
       shutdownInitiated = true
     case c: FromControlClient =>
-      handleControl(c).out()
-      context.stop(self)
+      import context.dispatcher
+      handleControl(c).onComplete {
+        case util.Success(m) => m.out()
+        case util.Failure(err) => log.error("Error while handling control message {}: {}", c, err)
+      }
   }
 
-  def handleControl(c: FromControlClient): Control.Out = {
+  def handleControl(c: FromControlClient): Future[Control.Out] = {
     if (c.key === controlKey) c.msg match {
       case Control.In.Shutdown =>
         server ! Unbind
-        Control.Out.GenericReply.success
+        Future.successful(Control.Out.GenericReply.success)
       case Control.In.Status =>
-        Control.Out.Status()
+        import context.dispatcher
+
+        def ask[Reply : ClassTag, Result](
+          ref: AskableActorRef, message: Any, f: Reply => Result
+        ) = {
+          ref.ask(message)(Timeout(3.seconds)).mapTo[Reply].map(r => Some(f(r))).recover {
+            case e =>
+              log.error("Error while asking for {}: {}", message, e)
+              None
+          }
+        }
+
+        val clientsCountF = ask[Server.Out.ReportClientCount, UInt](
+          server, Server.In.ReportClientCount, r => r.clients
+        )
+        val gamesCountF = ask[GamesManagerActor.Out.Report, (UInt, UInt)](
+          gamesManager, GamesManagerActor.In.Report, r => (r.users, r.games)
+        )
+
+        (clientsCountF zip gamesCountF).map { case (clients, gameManagerOpt) =>
+          Control.Out.Status(clients, gameManagerOpt.map(_._1), gameManagerOpt.map(_._2))
+        }
     }
-    else Control.Out.GenericReply.error(s"Invalid control key '${c.key}'")
+    else Future.successful(Control.Out.GenericReply.error(s"Invalid control key '${c.key}'"))
   }
 
   private[this] val notLoggedIn: Receive = {

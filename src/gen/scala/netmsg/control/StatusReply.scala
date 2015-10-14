@@ -7,32 +7,77 @@ package netmsg.control
 import com.trueaccord.scalapb.Descriptors
 
 final case class StatusReply(
+    clients: Option[Int] = None,
+    playingUsers: Option[Int] = None,
+    games: Option[Int] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[StatusReply] with com.trueaccord.lenses.Updatable[StatusReply] {
     lazy val serializedSize: Int = {
       var __size = 0
+      if (clients.isDefined) { __size += com.google.protobuf.CodedOutputStream.computeUInt32Size(1, clients.get) }
+      if (playingUsers.isDefined) { __size += com.google.protobuf.CodedOutputStream.computeUInt32Size(2, playingUsers.get) }
+      if (games.isDefined) { __size += com.google.protobuf.CodedOutputStream.computeUInt32Size(3, games.get) }
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+      clients.foreach { v => 
+        output.writeUInt32(1, v)
+      }
+      playingUsers.foreach { v => 
+        output.writeUInt32(2, v)
+      }
+      games.foreach { v => 
+        output.writeUInt32(3, v)
+      }
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.control.StatusReply = {
+      var __clients = this.clients
+      var __playingUsers = this.playingUsers
+      var __games = this.games
       var _done__ = false
       while (!_done__) {
         val _tag__ = __input.readTag()
         _tag__ match {
           case 0 => _done__ = true
+          case 8 =>
+            __clients = Some(__input.readUInt32())
+          case 16 =>
+            __playingUsers = Some(__input.readUInt32())
+          case 24 =>
+            __games = Some(__input.readUInt32())
           case tag => __input.skipField(tag)
         }
       }
       netmsg.control.StatusReply(
+          clients = __clients,
+          playingUsers = __playingUsers,
+          games = __games
       )
     }
-    def getField(__field: Descriptors.FieldDescriptor): Any = throw new MatchError(__field)
+    def getClients: Int = clients.getOrElse(0)
+    def clearClients: StatusReply = copy(clients = None)
+    def withClients(__v: Int): StatusReply = copy(clients = Some(__v))
+    def getPlayingUsers: Int = playingUsers.getOrElse(0)
+    def clearPlayingUsers: StatusReply = copy(playingUsers = None)
+    def withPlayingUsers(__v: Int): StatusReply = copy(playingUsers = Some(__v))
+    def getGames: Int = games.getOrElse(0)
+    def clearGames: StatusReply = copy(games = None)
+    def withGames(__v: Int): StatusReply = copy(games = Some(__v))
+    def getField(__field: Descriptors.FieldDescriptor): Any = {
+      __field.number match {
+        case 1 => clients
+        case 2 => playingUsers
+        case 3 => games
+      }
+    }
     def companion = netmsg.control.StatusReply
 }
 
 object StatusReply extends com.trueaccord.scalapb.GeneratedMessageCompanion[StatusReply]  {
   implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[StatusReply]  = this
   def fromFieldsMap(fieldsMap: Map[Int, Any]): netmsg.control.StatusReply = netmsg.control.StatusReply(
+    clients = fieldsMap.getOrElse(1, None).asInstanceOf[Option[Int]],
+    playingUsers = fieldsMap.getOrElse(2, None).asInstanceOf[Option[Int]],
+    games = fieldsMap.getOrElse(3, None).asInstanceOf[Option[Int]]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("StatusReply", this,
     None, m = Seq(),
@@ -41,5 +86,14 @@ object StatusReply extends com.trueaccord.scalapb.GeneratedMessageCompanion[Stat
   lazy val defaultInstance = netmsg.control.StatusReply(
   )
   implicit class StatusReplyLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, StatusReply]) extends com.trueaccord.lenses.ObjectLens[UpperPB, StatusReply](_l) {
+    def clients: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.getClients)((c_, f_) => c_.copy(clients = Some(f_)))
+    def optionalClients: com.trueaccord.lenses.Lens[UpperPB, Option[Int]] = field(_.clients)((c_, f_) => c_.copy(clients = f_))
+    def playingUsers: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.getPlayingUsers)((c_, f_) => c_.copy(playingUsers = Some(f_)))
+    def optionalPlayingUsers: com.trueaccord.lenses.Lens[UpperPB, Option[Int]] = field(_.playingUsers)((c_, f_) => c_.copy(playingUsers = f_))
+    def games: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.getGames)((c_, f_) => c_.copy(games = Some(f_)))
+    def optionalGames: com.trueaccord.lenses.Lens[UpperPB, Option[Int]] = field(_.games)((c_, f_) => c_.copy(games = f_))
   }
+  final val CLIENTS_FIELD_NUMBER = 1
+  final val PLAYING_USERS_FIELD_NUMBER = 2
+  final val GAMES_FIELD_NUMBER = 3
 }

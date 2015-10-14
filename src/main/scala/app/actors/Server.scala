@@ -8,6 +8,7 @@ import akka.io.{IO, Tcp}
 import app.persistence.DBDriver
 import implicits._
 import launch.RTConfig
+import spire.math.UInt
 import scala.concurrent.duration._
 import scalaz._, Scalaz._, implicits._
 
@@ -56,12 +57,28 @@ class Server(
         handlerRef => Props(new NetClient(handlerRef, gamesManager, self, rtConfig.controlKey, db))
       )), s"${remote.getHostString}-${remote.getPort}")
       connection ! Tcp.Register(msgHandler, keepOpenOnPeerClosed = true)
+
+    case Server.In.ReportClientCount =>
+      sender ! Server.Out.ReportClientCount(UInt(context.children.size))
+  }
+
+  @throws[Exception](classOf[Exception])
+  override def postStop(): Unit = {
+    log.info("Shutting down actor system because server has stopped.")
+    system.shutdown()
   }
 }
 
 object Server {
-  case object ShutdownInitiated
+  sealed trait In
+  object In {
+    case object ReportClientCount extends In
+  }
 
-  /* Check if we can shutdown. */
-  case object CheckShutdown
+  sealed trait Out
+  object Out {
+    case class ReportClientCount(clients: UInt) extends In
+  }
+
+  case object ShutdownInitiated
 }

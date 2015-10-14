@@ -112,8 +112,10 @@ trait MessagesProto extends Helpers { _: GameProto =>
     out match {
       case NetClient.Control.Out.GenericReply(success, messageOpt) =>
         control.Server2Client(reply = Some(control.GenericReply(success, messageOpt)))
-      case NetClient.Control.Out.Status() =>
-        control.Server2Client(status = Some(control.StatusReply()))
+      case NetClient.Control.Out.Status(clients, playingUsers, games) =>
+        control.Server2Client(status = Some(control.StatusReply(
+          clients.map(convert), playingUsers.map(convert), games.map(convert)
+        )))
     }
 
   def serializeGame(out: NetClient.Msgs.FromServer): ByteString =

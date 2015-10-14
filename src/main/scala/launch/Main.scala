@@ -56,9 +56,13 @@ object Main {
     for {
       response <- args.head match {
         case "shutdown" => ControlClient.sendShutdown
+        case "status" => ControlClient.sendStatusReq
         case other => IO { s"Unknown command: '$other'".left }
       }
-      _ <- IO.putStrLn(response.toString)
+      _ <- IO.putStrLn(response.fold(
+        err => s"ERROR: $err",
+        res => res.toString
+      ))
     } yield ()
   }
 

@@ -22,6 +22,9 @@ object ControlClient {
   def sendShutdown(implicit cfg: RTConfig, byteOrder: ByteOrder) =
     connectSendAndDisconnect[NetClient.Control.Out.GenericReply](NetClient.Control.In.Shutdown)
 
+  def sendStatusReq(implicit cfg: RTConfig, byteOrder: ByteOrder) =
+    connectSendAndDisconnect[NetClient.Control.Out.Status](NetClient.Control.In.Status)
+
   def connectSendAndDisconnect[Reply <: NetClient.Control.Out]
   (msg: NetClient.Control.In)
   (implicit cfg: RTConfig, byteOrder: ByteOrder, replyCT: ClassTag[Reply])
