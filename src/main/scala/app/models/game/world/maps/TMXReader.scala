@@ -2,7 +2,7 @@ package app.models.game.world.maps
 
 import java.io.{InputStream, File}
 
-import app.models.game.Bot
+import app.models.game.{NPC, Bot}
 import app.models.game.world.buildings._
 import app.models.game.world._
 import app.models.game.world.props.ExtractionSpeed
@@ -125,14 +125,15 @@ object TMXReader {
           case 4 => MinResource
         }
         current add Asteroid(position, resources(field.range), field.extractionSpeed)
-      case 5 => current.addNpc(npc => Spawner(position, npc)).right
-      case 6 => current.addNpc(npc => VPTower(position, npc.team)).right
+//      case 5 => current.addNpc(npc => Spawner(position, npc)).right
+      case 5 => current.right // ignore for now
+      case 6 => current add VPTower(position, NPC.team)
       case 7 => current.addStarting(position).right
       case 8 => current add Brush(position)
       case 9 => current add Crystal(position)
-      case 10 => current.addNpc(npc => Fortress(position, npc)).right
-      case 11 => current.addNpc(npc => RayShip(position, npc)).right
-      case 12 => current.addNpc(npc => Wasp(position, npc)).right
+      case 10 => current.right //.addNpc(npc => Fortress(position, npc)).right
+      case 11 => current.right //.addNpc(npc => RayShip(position, npc)).right
+      case 12 => current.right //.addNpc(npc => Wasp(position, npc)).right
     }
   }
 

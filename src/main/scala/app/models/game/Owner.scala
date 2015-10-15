@@ -30,6 +30,11 @@ case class Team(id: Team.Id=Team.newId) extends Owner {
   override def team = this
 }
 
+case object NPC extends Owner {
+  override val id = Player.Id(new UUID(0, 0))
+  override val team = Team(Team.Id(new UUID(0, 0)))
+}
+
 object Player {
   case class Id(id: UUID) extends AnyVal with Owner.Id {
     override protected def prefix = "PID"

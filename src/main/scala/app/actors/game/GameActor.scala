@@ -200,7 +200,7 @@ class GameActor private (
 
   private[this] var game: GameActorGame = {
     val humanTeams = starting.map(_.human.team)
-    val world = worldMaterializer.materialize(humanTeams, aiTeam).right_!
+    val world = worldMaterializer.materialize(humanTeams).right_!
     log.debug("World initialized to {}", world)
     val objectives = Map(
       aiTeam -> Objectives(

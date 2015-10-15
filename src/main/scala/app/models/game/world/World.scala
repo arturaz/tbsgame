@@ -95,6 +95,7 @@ case class World private (
         (owner match {
           case t: Team => world.playerStates.keys.filter(_.team === t).toVector
           case p: Player => Vector(p)
+          case NPC => Vector.empty
         }).flatMap { player =>
           val populationBefore = this.populationFor(player)
           val populationNow = world.populationFor(player)

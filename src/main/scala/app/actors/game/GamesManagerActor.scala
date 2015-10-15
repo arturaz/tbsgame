@@ -165,8 +165,9 @@ class GamesManagerActor(maps: GameMaps) extends Actor with ActorLogging {
 
   private[this] def launchRandomGenerated(user: User, client: ActorRef) = {
     val materializer = SingleplayerMap { data => implicit log =>
-      val npcBot = Bot(data.npcTeam)
-      val spawnerBot = Bot(data.npcTeam)
+      val npcTeam = Team()
+      val npcBot = Bot(npcTeam)
+      val spawnerBot = Bot(npcTeam)
       World.create(
         data.humanTeam, () => npcBot, () => spawnerBot, staticObjectsKnownAtStart = false
       )
