@@ -11,6 +11,8 @@ import app.models.game.world.maps.{GameMaps, GameMap, SingleplayerMap, WorldMate
 import app.models.game.world.{ExtractorStats, Resources, World}
 import app.models.game.{TurnTimers, Bot, Human, Team}
 import implicits._
+import infrastructure.GCM
+import launch.RTConfig
 import spire.math.UInt
 import utils.data.NonEmptyVector
 import scalaz._, Scalaz._
@@ -66,7 +68,9 @@ object GamesManagerActor {
 //  }
 }
 
-class GamesManagerActor(maps: GameMaps) extends Actor with ActorLogging {
+class GamesManagerActor(
+  maps: GameMaps, gcm: Option[(ActorRef, RTConfig.GCM)]
+)(implicit rtConfig: RTConfig) extends Actor with ActorLogging {
   import app.actors.game.GamesManagerActor._
   import context.dispatcher
 
@@ -99,7 +103,7 @@ class GamesManagerActor(maps: GameMaps) extends Actor with ActorLogging {
         log.info("Not cancelling join game for {}, because not in joining list", user),
         mode => {
           waitingListUser2Mode -= user
-          waitingList += mode -> waitingList(mode).filter(_._1 =/= user)
+          updateWaitingList(mode, waitingList(mode).filter(_._1 =/= user))
           sender() ! NetClient.Management.Out.JoinGameCancelled
         }
       )
@@ -128,6 +132,14 @@ class GamesManagerActor(maps: GameMaps) extends Actor with ActorLogging {
       sender ! GamesManagerActor.Out.Report(UInt(user2game.size), UInt(game2humans.size))
   }
 
+  private[this] def updateWaitingList(mode: Mode.PvP, list: WaitingList): Unit = {
+    waitingList += mode -> list
+    // TODO: support multiple modes
+    if (list.isEmpty) gcm.foreach { case (ref, cfg) =>
+      ref ! GCM.searchingForOpponent(searching = false, cfg.searchForOpponentTTL)
+    }
+  }
+
   private[this] def noExistingGame(user: User, mode: Mode, client: ActorRef): Unit = {
     mode match {
       case Mode.Singleplayer =>
@@ -135,12 +147,17 @@ class GamesManagerActor(maps: GameMaps) extends Actor with ActorLogging {
         launchPVE(user, client)
       case pvp: Mode.PvP =>
         val updatedWaitingList = waitingList(pvp) :+ ((user, client))
-        waitingList += pvp -> updatedWaitingList
+        updateWaitingList(pvp, updatedWaitingList)
         waitingListUser2Mode += user -> pvp
-        if (updatedWaitingList.size < pvp.playersNeeded) log.debug(
-          "Added {} from {} to {} waiting list: {}",
-          user, client, mode, updatedWaitingList
-        )
+        if (updatedWaitingList.size < pvp.playersNeeded) {
+          log.debug(
+            "Added {} from {} to {} waiting list: {}",
+            user, client, mode, updatedWaitingList
+          )
+          gcm.foreach { case (ref, cfg) =>
+            ref ! GCM.searchingForOpponent(searching = true, cfg.searchForOpponentTTL)
+          }
+        }
         else fromWaitingList(pvp)
     }
   }
@@ -180,7 +197,7 @@ class GamesManagerActor(maps: GameMaps) extends Actor with ActorLogging {
 
   private[this] def fromWaitingList(mode: Mode.PvP): Unit = {
     val (entries, newWaitingList) = waitingList(mode).splitAt(mode.playersNeeded)
-    waitingList += mode -> newWaitingList
+    updateWaitingList(mode, newWaitingList)
     val teams = Vector.fill(mode.teams)(Team())
     val players = entries.zipWithIndex.map { case ((_user, _client), idx) =>
       val team = teams.wrapped(idx)

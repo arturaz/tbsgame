@@ -32,6 +32,18 @@ object MsgHandler {
     case class GameMsg(msg: NetClient.Msgs.FromServer) extends Server2Client
     case class ControlMsg(msg: NetClient.Control.Out) extends Server2Client
   }
+
+  sealed trait Client2Server {
+    def message: Serializable
+  }
+  object Client2Server {
+    case class GameMsg(message: NetClient.Msgs.FromClient) extends Client2Server
+    case class ControlMsg(message: NetClient.Msgs.FromControlClient) extends Client2Server
+    // Background searching for opponent heartbeat
+    case class BackgroundSFOHeartbeat(token: String) extends Client2Server {
+      override def message = this
+    }
+  }
 }
 
 class MsgHandler(
@@ -60,7 +72,7 @@ extends Actor with ActorLogging {
   private[this] val fromClient: Receive = {
     case Received(data) => pipeline.unserialize(data).foreach {
       case -\/(err) => log.error(err)
-      case \/-(clientOrControlMsg) => netClient ! clientOrControlMsg.fold(identity, identity)
+      case \/-(clientOrControlMsg) => netClient ! clientOrControlMsg.message
     }
   }
 

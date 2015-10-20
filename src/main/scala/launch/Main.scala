@@ -3,7 +3,7 @@ package launch
 import java.nio.ByteOrder
 
 import akka.actor.{ActorSystem, Props}
-import app.actors.{NetClient, Server}
+import app.actors.{GCMSender, NetClient, Server}
 import app.actors.game.GamesManagerActor
 import app.models.game.world.maps.{GameMaps, TMXReader, GameMap}
 import app.persistence.DBDriver
@@ -23,6 +23,7 @@ import scalaz.effect.IO
  */
 object Main {
   private[this] lazy val appSystem = ActorSystem("app")
+  // This is used in clients as well! Think a lot before changing it.
   private[this] implicit val byteOrder = ByteOrder.BIG_ENDIAN
 
   def main(args: Array[String]) = {
@@ -46,7 +47,12 @@ object Main {
     applyMigrations(rtConfig.dbUrl)
     val db = DBDriver.Database.forURL(rtConfig.dbUrl)
 
-    val gamesManager = appSystem.actorOf(Props(new GamesManagerActor(maps)), "games-manager")
+    val gcm = rtConfig.gcm.map { gcm =>
+      val ref = appSystem.actorOf(Props(new GCMSender(gcm.key)), "gcm-sender")
+      println(s"GCM sender started: $ref")
+      (ref, gcm)
+    }
+    val gamesManager = appSystem.actorOf(Props(new GamesManagerActor(maps, gcm)), "games-manager")
     println(s"Games manager started: $gamesManager")
     val server = appSystem.actorOf(Props(new Server(rtConfig, gamesManager, db)), "server")
     println(s"Server started: $server")

@@ -120,7 +120,7 @@ object NetClient {
   }
 
   object Msgs {
-    sealed trait FromClient
+    sealed trait FromClient extends Serializable
     object FromClient {
       case object ProtoVersionCheck extends FromClient
       case class Game(msg: GameInMsg) extends FromClient
@@ -186,6 +186,7 @@ class NetClient(
       FromServer.ProtoVersionCheck(ProtoChecksum.checksum).out()
     case FromClient.TimeSync(clientNow) =>
       FromServer.TimeSync(clientNow, DateTime.now).out()
+    case MsgHandler.Client2Server.BackgroundSFOHeartbeat(token) =>
     case Server.ShutdownInitiated =>
       shutdownInitiated = true
     case c: FromControlClient =>

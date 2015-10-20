@@ -8,6 +8,8 @@ resolvers += Resolver.sonatypeRepo("releases")
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
+resolvers += "spray repo" at "http://repo.spray.io"
+
 val commonSettings = Seq(
   scalaVersion := "2.11.7",
   scalacOptions := Seq("-feature", "-unchecked")
@@ -33,7 +35,9 @@ val rootSettings = commonSettings ++ Seq(
     "com.github.nscala-time" %% "nscala-time" % "1.8.0",
     "com.beachape" %% "enumeratum" % "1.0.1",
     "org.spire-math" %% "spire" % "0.9.0",
-    "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.4.8"
+    "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.4.8",
+    "io.argonaut" %% "argonaut" % "6.1-M4",
+    "io.spray" %% "spray-client" % "1.3.3"
   ) ++ Seq(
     "org.flywaydb" % "flyway-core" % "3.1",
     "com.zaxxer" % "HikariCP-java6" % "2.2.5",

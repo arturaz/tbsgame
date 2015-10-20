@@ -1,17 +1,34 @@
 package launch
 
+import java.util.concurrent.TimeUnit
+
 import app.actors.NetClient
 import com.typesafe.config.Config
 import spire.math.UInt
 
+import scala.concurrent.duration._
 import scalaz._, Scalaz._
 
-/** Runtime config that is being loaded from Typesafe config. **/
+/**
+ * Runtime config that is being loaded from Typesafe config.
+ *
+ * @param gcm if not set, GCM messages are not sent
+ */
 case class RTConfig(
-  port: UInt, dbUrl: String, controlKey: NetClient.Control.SecretKey
+  port: UInt, dbUrl: String, controlKey: NetClient.Control.SecretKey,
+  gcm: Option[RTConfig.GCM]
 )
 
 object RTConfig {
+  // Time to live
+  case class TTL(duration: FiniteDuration) extends AnyVal
+
+  case class GCM(key: GCM.Key, searchForOpponentTTL: TTL)
+  object GCM {
+    case class Key(value: String) extends AnyVal
+  }
+
+
   def key(s: String) = s"tbsgame.$s"
 
   def fromConfig(config: Config): ValidationNel[String, RTConfig] = {
@@ -19,11 +36,21 @@ object RTConfig {
     val dbUrl = config.readStr(key("db.url"))
     val configSecretKey =
       config.readStr(key("control.secret_key")).map(NetClient.Control.SecretKey.apply)
+    val gcmAuth = config.readBool(key("google.gcm.enabled")).flatMap {
+      case false => None.right
+      case true =>
+        for {
+          gcmKey <- config.readStr(key("google.gcm.server_api_key")).map(key => GCM.Key(key))
+          searchForOpponentTTL <-
+            config.readDuration(key("google.gcm.searching_for_opponent.time_to_live")).map(TTL)
+        } yield Some(GCM(gcmKey, searchForOpponentTTL))
+    }
 
     (
       port.validation.toValidationNel |@|
       dbUrl.validation.toValidationNel |@|
-      configSecretKey.validation.toValidationNel
+      configSecretKey.validation.toValidationNel |@|
+      gcmAuth.validation.toValidationNel
     )(RTConfig.apply)
   }
 
@@ -44,5 +71,8 @@ object RTConfig {
       }
 
     def readStr(key: String) = read(key)(_.getString)
+    def readBool(key: String) = read(key)(_.getBoolean)
+    def readDuration(key: String) =
+      read(key)(c => key => c.getDuration(key, TimeUnit.MILLISECONDS).millis)
   }
 }
