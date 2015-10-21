@@ -8,6 +8,7 @@ import akka.io.Tcp._
 import akka.util.ByteString
 import app.actors.NetClient.Msgs.{FromControlClient, FromClient, FromServer}
 import app.actors.NetClient.Control
+import app.actors.game.GamesManagerActor
 import app.protobuf.parsing.Parsing
 import app.protobuf.serializing.Serializing
 import utils.network.IntFramedPipeline.Frame
@@ -40,7 +41,7 @@ object MsgHandler {
     case class GameMsg(message: NetClient.Msgs.FromClient) extends Client2Server
     case class ControlMsg(message: NetClient.Msgs.FromControlClient) extends Client2Server
     // Background searching for opponent heartbeat
-    case class BackgroundSFOHeartbeat(token: String) extends Client2Server {
+    case class BackgroundSFOHeartbeat(token: GamesManagerActor.BackgroundToken) extends Client2Server {
       override def message = this
     }
   }

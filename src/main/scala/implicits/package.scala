@@ -77,6 +77,10 @@ package object implicits {
     @inline def wrapped(idx: Int) = is(idx % is.size)
   }
 
+  implicit class VectorExts[A](val v: Vector[A]) extends AnyVal {
+    @inline def removeAt(idx: Int) = v.patch(idx, Nil, 1)
+  }
+
   implicit class OrderedExts[A <: Ordered[A]](val o: A) extends AnyVal {
     def min(other: A): A = if (o <= other) o else other
     def max(other: A): A = if (o >= other) o else other

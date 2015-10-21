@@ -3,6 +3,7 @@ package app.protobuf.parsing
 import app.actors.NetClient
 import app.actors.NetClient.Management.In.JoinGame
 import app.actors.NetClient.Management.{SessionToken, PlainPassword, Credentials}
+import app.actors.game.GamesManagerActor.BackgroundToken
 
 import netmsg._
 
@@ -20,7 +21,7 @@ trait ManagementProto extends BaseProto {
 
   implicit def parse(mode: management.JoinGame.Mode): JoinGame.Mode = {
     if (mode.teams <= 1) JoinGame.Mode.Singleplayer
-    else JoinGame.Mode.PvP(teams = mode.teams, playersPerTeam = mode.playersPerTeam)
+    else JoinGame.Mode.OneVsOne
   }
 
   def parse(msg: management.FromClient): String \/ NetClient.Management.In = {
@@ -28,19 +29,21 @@ trait ManagementProto extends BaseProto {
     import app.actors.NetClient.Management.In._
 
     msg match {
-      case FromClient(Some(m), _, _, _, _, _) =>
+      case FromClient(Some(m), _, _, _, _, _, _) =>
         AutoRegister.right
-      case FromClient(_, Some(m), _, _, _, _) =>
+      case FromClient(_, Some(m), _, _, _, _, _) =>
         CheckNameAvailability(m.name).right
-      case FromClient(_, _, Some(m), _, _, _) =>
+      case FromClient(_, _, Some(m), _, _, _, _) =>
         Register(m.username, PlainPassword(m.password), m.email).right
-      case FromClient(_, _, _, Some(m), _, _) =>
+      case FromClient(_, _, _, Some(m), _, _, _) =>
         for (credentials <- parse(m.credentials)) yield Login(credentials)
-      case FromClient(_, _, _, _, Some(m), _) =>
+      case FromClient(_, _, _, _, Some(m), _, _) =>
         JoinGame(m.mode).right
-      case FromClient(_, _, _, _, _, Some(m)) =>
+      case FromClient(_, _, _, _, _, Some(m), _) =>
         CancelJoinGame.right
-      case FromClient(None, None, None, None, None, None) =>
+      case FromClient(_, _, _, _, _, _, Some(m)) =>
+        CancelBackgroundToken(BackgroundToken(m.token)).right
+      case FromClient(None, None, None, None, None, None, None) =>
         s"Empty msg $msg!".left
     }
   }

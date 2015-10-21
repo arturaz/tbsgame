@@ -1,42 +1,52 @@
 package app.actors.game
 
+import java.util.UUID
+
 import akka.actor.SupervisorStrategy.Stop
 import akka.actor._
-import akka.event.LoggingReceive
-import app.actors.{Server, NetClient}
-import app.actors.NetClient.Management.In.JoinGame.Mode
+import akka.event.{LoggingAdapter, LoggingReceive}
+import app.actors.NetClient.Management.In.JoinGame.{Mode, PvPMode}
 import app.actors.game.GameActor.StartingHuman
+import app.actors.{MsgHandler, NetClient, Server}
 import app.models.User
-import app.models.game.world.maps.{GameMaps, GameMap, SingleplayerMap, WorldMaterializer}
+import app.models.game.world.maps.{GameMaps, SingleplayerMap, WorldMaterializer}
 import app.models.game.world.{ExtractorStats, Resources, World}
-import app.models.game.{TurnTimers, Bot, Human, Team}
+import app.models.game.{Bot, Human, Team, TurnTimers}
 import implicits._
 import infrastructure.GCM
 import launch.RTConfig
+import org.joda.time.DateTime
 import spire.math.UInt
-import utils.data.NonEmptyVector
-import scalaz._, Scalaz._
-import scala.concurrent.duration._
 
-import scala.util.Random
+import scala.concurrent.duration._
+import scalaz.Scalaz._
+import scalaz._
+import scalaz.effect.IO
 
 object GamesManagerActor {
   val StartingResources = ExtractorStats.cost * Resources(4)
 
   sealed trait In
   object In {
+    // After user connects to the server, he should check whether he is in game or not.
+    case class CheckUserStatus(user: User) extends In
+
+    // Game joining
     case class Join(user: User, mode: NetClient.Management.In.JoinGame.Mode) extends In
     case class CancelJoinGame(user: User) extends In
-    case object Report extends In
+
+    // Stats report for control client
+    case object StatsReport extends In
   }
 
   sealed trait Out
   object Out {
-    case class Report(users: UInt, games: UInt) extends Out
+    case class StatsReport(users: UInt, games: UInt) extends Out
   }
 
   sealed trait Internal
   object Internal {
+    case object CleanupBackgroundWaitingList
     /* Check if we can shutdown. */
     case object CheckShutdown
   }
@@ -66,6 +76,16 @@ object GamesManagerActor {
 //      case PresetTeam.Blue => copy(blueTeamPlayers = blueTeamPlayers + user)
 //    }
 //  }
+
+  case class BackgroundToken(value: String) extends AnyVal
+  object BackgroundToken {
+    val newToken = IO { BackgroundToken(UUID.randomUUID().toString) }
+  }
+
+  case class WaitingListEntry(user: User, client: ActorRef, backgroundToken: BackgroundToken)
+
+  private def joinGame(game: ActorRef, human: Human, client: ActorRef): Unit =
+    game.tell(GameActor.In.Join(human), client)
 }
 
 class GamesManagerActor(
@@ -74,51 +94,32 @@ class GamesManagerActor(
   import app.actors.game.GamesManagerActor._
   import context.dispatcher
 
-  type WaitingList = Vector[(User, ActorRef)]
-  type WaitingLists = Map[Mode.PvP, WaitingList]
-  private[this] var waitingList: WaitingLists = Map.empty.withDefaultValue(Vector.empty)
-  private[this] var waitingListUser2Mode = Map.empty[User, Mode.PvP]
+  private[this] var waitingList = Vector.empty[WaitingListEntry]
+  // token -> last heartbeat
+  private[this] var waitingInBackground = Map.empty[BackgroundToken, DateTime]
   private[this] var user2game = Map.empty[User, (ActorRef, Human)]
   private[this] var game2humans = Map.empty[ActorRef, Set[Human]]
+
+  context.system.scheduler.schedule(
+    0.seconds, 1.second, self, GamesManagerActor.Internal.CleanupBackgroundWaitingList
+  )
 
   override def supervisorStrategy = OneForOneStrategy() {
     case _ => Stop
   }
 
-  override def receive = LoggingReceive {
-    case GamesManagerActor.In.Join(user, mode) =>
-      user2game.get(user).fold2(
-        {
-          if (waitingListUser2Mode.contains(user)) log.warning(
-            "Not joining a new game, because {} is already in a waiting list, ref: {}",
-            user, sender()
-          )
-          else noExistingGame(user, mode, sender())
-        },
-        { case (game, human) => game.tell(GameActor.In.Join(human), sender()) }
-      )
-
-    case GamesManagerActor.In.CancelJoinGame(user) =>
-      waitingListUser2Mode.get(user).fold2(
-        log.info("Not cancelling join game for {}, because not in joining list", user),
-        mode => {
-          waitingListUser2Mode -= user
-          updateWaitingList(mode, waitingList(mode).filter(_._1 =/= user))
-          sender() ! NetClient.Management.Out.JoinGameCancelled
-        }
-      )
-
-    case Terminated(ref) =>
-      game2humans.get(ref).foreach { humans =>
-        log.info("Game {} terminated for humans {}", ref, humans)
-        game2humans -= ref
-        humans.foreach { human => user2game -= human.user }
+  private[this] val notLoggedReceive: Receive = {
+    case GamesManagerActor.Internal.CleanupBackgroundWaitingList =>
+      val now = DateTime.now()
+      waitingInBackground = waitingInBackground.filter { case (token, lastBeat) =>
+        val timePassed = now - lastBeat
+        val active = timePassed <= rtConfig.gamesManager.backgroundHeartbeatTTL.duration
+        if (! active) log.debug(
+          "Timing out background token {}: {} > {}",
+          token, timePassed, rtConfig.gamesManager.backgroundHeartbeatTTL.duration
+        )
+        active
       }
-
-    case Server.ShutdownInitiated =>
-      log.info("Shutdown mode initiated.")
-      context.system.scheduler
-        .schedule(0.seconds, 1.second, self, GamesManagerActor.Internal.CheckShutdown)
 
     case GamesManagerActor.Internal.CheckShutdown =>
       val games = game2humans.size
@@ -127,17 +128,80 @@ class GamesManagerActor(
         log.info("No games alive, shutting down.")
         context.system.shutdown()
       }
-
-    case GamesManagerActor.In.Report =>
-      sender ! GamesManagerActor.Out.Report(UInt(user2game.size), UInt(game2humans.size))
   }
 
-  private[this] def updateWaitingList(mode: Mode.PvP, list: WaitingList): Unit = {
-    waitingList += mode -> list
-    // TODO: support multiple modes
-    if (list.isEmpty) gcm.foreach { case (ref, cfg) =>
-      ref ! GCM.searchingForOpponent(searching = false, cfg.searchForOpponentTTL)
-    }
+  override def receive = notLoggedReceive orElse LoggingReceive {
+    case GamesManagerActor.In.CheckUserStatus(user) =>
+      user2game.get(user).foreach { case (game, human) =>
+        log.info("{} joining game {} on user status check", human, game)
+        joinGame(game, human, sender())
+      }
+
+    case GamesManagerActor.In.Join(user, mode) =>
+      user2game.get(user).fold2(
+        {
+          if (waitingList.exists(_.user === user)) log.warning(
+            "Not joining a new game, because {} is already in a waiting list, ref: {}",
+            user, sender()
+          )
+          else noExistingGame(user, mode, sender())
+        },
+        { case (game, human) =>
+          log.info("{} joining game {} on game join", human, game)
+          joinGame(game, human, sender())
+        }
+      )
+
+    case GamesManagerActor.In.CancelJoinGame(user) =>
+      waitingList.indexWhere(_.user === user) match {
+        case -1 =>
+          log.warning("Not cancelling join game, because {} is not in a waiting list.", user)
+        case idx =>
+          val entry = waitingList(idx)
+          context.unwatch(entry.client)
+          waitingList = waitingList.removeAt(idx)
+          notifyGCM()
+          sender() ! NetClient.Management.Out.JoinGameCancelled
+      }
+
+    case NetClient.Management.In.CancelBackgroundToken(token) =>
+      waitingInBackground -= token
+
+    case MsgHandler.Client2Server.BackgroundSFOHeartbeat(token) =>
+      if (waitingInBackground contains token) {
+        waitingInBackground += token -> DateTime.now()
+        log.debug("Background heartbeat from {}", token)
+      }
+      else {
+        // TODO: should we tell sender that his heartbeat was expired?
+        log.info("Ignoring background heartbeat from unknown token: {}", token)
+      }
+
+    case Terminated(ref) =>
+      // Game termination
+      game2humans.get(ref).foreach { humans =>
+        log.info("Game {} terminated for humans {}", ref, humans)
+        game2humans -= ref
+        humans.foreach { human => user2game -= human.user }
+      }
+
+      // NetClient termination
+      waitingList.zipWithIndex.collectFirst {
+        case (entry @ WaitingListEntry(_, `ref`, _), idx) =>
+          (entry, idx)
+      }.foreach { case (entry, idx) =>
+        log.info("{} going into background", entry)
+        waitingList = waitingList.removeAt(idx)
+        waitingInBackground += entry.backgroundToken -> DateTime.now()
+      }
+
+    case Server.ShutdownInitiated =>
+      log.info("Shutdown mode initiated.")
+      context.system.scheduler
+        .schedule(0.seconds, 1.second, self, GamesManagerActor.Internal.CheckShutdown)
+
+    case GamesManagerActor.In.StatsReport =>
+      sender ! GamesManagerActor.Out.StatsReport(UInt(user2game.size), UInt(game2humans.size))
   }
 
   private[this] def noExistingGame(user: User, mode: Mode, client: ActorRef): Unit = {
@@ -145,20 +209,27 @@ class GamesManagerActor(
       case Mode.Singleplayer =>
         //launchRandomGenerated(user, client)
         launchPVE(user, client)
-      case pvp: Mode.PvP =>
-        val updatedWaitingList = waitingList(pvp) :+ ((user, client))
-        updateWaitingList(pvp, updatedWaitingList)
-        waitingListUser2Mode += user -> pvp
-        if (updatedWaitingList.size < pvp.playersNeeded) {
+      case pvp: PvPMode =>
+        val token = BackgroundToken.newToken.unsafePerformIO()
+        val entry = WaitingListEntry(user, client, token)
+        waitingList :+= entry
+        if (waitingList.size < pvp.playersNeeded) {
           log.debug(
             "Added {} from {} to {} waiting list: {}",
-            user, client, mode, updatedWaitingList
+            user, client, mode, waitingList
           )
-          gcm.foreach { case (ref, cfg) =>
-            ref ! GCM.searchingForOpponent(searching = true, cfg.searchForOpponentTTL)
-          }
+          notifyGCM()
+          context.watch(client)
+          client ! NetClient.Management.Out.WaitingListJoined(token)
         }
         else fromWaitingList(pvp)
+    }
+  }
+
+  private[this] def notifyGCM(): Unit = {
+    gcm.foreach { case (ref, cfg) =>
+      val searching = waitingList.nonEmpty || waitingInBackground.nonEmpty
+      ref ! GCM.searchingForOpponent(searching, cfg.searchForOpponentTTL)
     }
   }
 
@@ -195,15 +266,16 @@ class GamesManagerActor(
     )
   }
 
-  private[this] def fromWaitingList(mode: Mode.PvP): Unit = {
-    val (entries, newWaitingList) = waitingList(mode).splitAt(mode.playersNeeded)
-    updateWaitingList(mode, newWaitingList)
+  private[this] def fromWaitingList(mode: PvPMode): Unit = {
+    val (entries, newWaitingList) = waitingList.splitAt(mode.playersNeeded)
+    waitingList = newWaitingList
+    notifyGCM()
+
     val teams = Vector.fill(mode.teams)(Team())
-    val players = entries.zipWithIndex.map { case ((_user, _client), idx) =>
+    val players = entries.zipWithIndex.map { case (entry, idx) =>
       val team = teams.wrapped(idx)
-      StartingHuman(Human(_user, team), StartingResources, _client)
+      StartingHuman(Human(entry.user, team), StartingResources, entry.client)
     }.toSet
-    entries.foreach { case (user, _) => waitingListUser2Mode -= user }
 
     log.debug(
       "Fetched {} from waiting list for mode {}, rest={}", players, mode, newWaitingList

@@ -11,7 +11,8 @@ final case class FromServer(
     register: Option[netmsg.management.RegisterResponse] = None,
     login: Option[netmsg.management.LoginResponse] = None,
     gameJoined: Option[netmsg.management.GameJoined] = None,
-    gameJoinCancelled: Option[netmsg.management.JoinGameCancelled] = None
+    gameJoinCancelled: Option[netmsg.management.JoinGameCancelled] = None,
+    waitingListJoined: Option[netmsg.management.WaitingListJoined] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[FromServer] with com.trueaccord.lenses.Updatable[FromServer] {
     lazy val serializedSize: Int = {
       var __size = 0
@@ -20,6 +21,7 @@ final case class FromServer(
       if (login.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(login.get.serializedSize) + login.get.serializedSize }
       if (gameJoined.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(gameJoined.get.serializedSize) + gameJoined.get.serializedSize }
       if (gameJoinCancelled.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(gameJoinCancelled.get.serializedSize) + gameJoinCancelled.get.serializedSize }
+      if (waitingListJoined.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(waitingListJoined.get.serializedSize) + waitingListJoined.get.serializedSize }
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -48,6 +50,11 @@ final case class FromServer(
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
+      waitingListJoined.foreach { v => 
+        output.writeTag(6, 2)
+        output.writeRawVarint32(v.serializedSize)
+        v.writeTo(output)
+      }
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.management.FromServer = {
       var __checkNameAvailability = this.checkNameAvailability
@@ -55,6 +62,7 @@ final case class FromServer(
       var __login = this.login
       var __gameJoined = this.gameJoined
       var __gameJoinCancelled = this.gameJoinCancelled
+      var __waitingListJoined = this.waitingListJoined
       var _done__ = false
       while (!_done__) {
         val _tag__ = __input.readTag()
@@ -70,6 +78,8 @@ final case class FromServer(
             __gameJoined = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __gameJoined.getOrElse(netmsg.management.GameJoined.defaultInstance)))
           case 42 =>
             __gameJoinCancelled = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __gameJoinCancelled.getOrElse(netmsg.management.JoinGameCancelled.defaultInstance)))
+          case 50 =>
+            __waitingListJoined = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __waitingListJoined.getOrElse(netmsg.management.WaitingListJoined.defaultInstance)))
           case tag => __input.skipField(tag)
         }
       }
@@ -78,7 +88,8 @@ final case class FromServer(
           register = __register,
           login = __login,
           gameJoined = __gameJoined,
-          gameJoinCancelled = __gameJoinCancelled
+          gameJoinCancelled = __gameJoinCancelled,
+          waitingListJoined = __waitingListJoined
       )
     }
     def getCheckNameAvailability: netmsg.management.CheckNameAvailabilityResponse = checkNameAvailability.getOrElse(netmsg.management.CheckNameAvailabilityResponse.defaultInstance)
@@ -96,6 +107,9 @@ final case class FromServer(
     def getGameJoinCancelled: netmsg.management.JoinGameCancelled = gameJoinCancelled.getOrElse(netmsg.management.JoinGameCancelled.defaultInstance)
     def clearGameJoinCancelled: FromServer = copy(gameJoinCancelled = None)
     def withGameJoinCancelled(__v: netmsg.management.JoinGameCancelled): FromServer = copy(gameJoinCancelled = Some(__v))
+    def getWaitingListJoined: netmsg.management.WaitingListJoined = waitingListJoined.getOrElse(netmsg.management.WaitingListJoined.defaultInstance)
+    def clearWaitingListJoined: FromServer = copy(waitingListJoined = None)
+    def withWaitingListJoined(__v: netmsg.management.WaitingListJoined): FromServer = copy(waitingListJoined = Some(__v))
     def getField(__field: Descriptors.FieldDescriptor): Any = {
       __field.number match {
         case 1 => checkNameAvailability
@@ -103,6 +117,7 @@ final case class FromServer(
         case 3 => login
         case 4 => gameJoined
         case 5 => gameJoinCancelled
+        case 6 => waitingListJoined
       }
     }
     def companion = netmsg.management.FromServer
@@ -115,7 +130,8 @@ object FromServer extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromS
     register = fieldsMap.getOrElse(2, None).asInstanceOf[Option[netmsg.management.RegisterResponse]],
     login = fieldsMap.getOrElse(3, None).asInstanceOf[Option[netmsg.management.LoginResponse]],
     gameJoined = fieldsMap.getOrElse(4, None).asInstanceOf[Option[netmsg.management.GameJoined]],
-    gameJoinCancelled = fieldsMap.getOrElse(5, None).asInstanceOf[Option[netmsg.management.JoinGameCancelled]]
+    gameJoinCancelled = fieldsMap.getOrElse(5, None).asInstanceOf[Option[netmsg.management.JoinGameCancelled]],
+    waitingListJoined = fieldsMap.getOrElse(6, None).asInstanceOf[Option[netmsg.management.WaitingListJoined]]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("FromServer", this,
     None, m = Seq(),
@@ -134,10 +150,13 @@ object FromServer extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromS
     def optionalGameJoined: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.management.GameJoined]] = field(_.gameJoined)((c_, f_) => c_.copy(gameJoined = f_))
     def gameJoinCancelled: com.trueaccord.lenses.Lens[UpperPB, netmsg.management.JoinGameCancelled] = field(_.getGameJoinCancelled)((c_, f_) => c_.copy(gameJoinCancelled = Some(f_)))
     def optionalGameJoinCancelled: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.management.JoinGameCancelled]] = field(_.gameJoinCancelled)((c_, f_) => c_.copy(gameJoinCancelled = f_))
+    def waitingListJoined: com.trueaccord.lenses.Lens[UpperPB, netmsg.management.WaitingListJoined] = field(_.getWaitingListJoined)((c_, f_) => c_.copy(waitingListJoined = Some(f_)))
+    def optionalWaitingListJoined: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.management.WaitingListJoined]] = field(_.waitingListJoined)((c_, f_) => c_.copy(waitingListJoined = f_))
   }
   final val CHECK_NAME_AVAILABILITY_FIELD_NUMBER = 1
   final val REGISTER_FIELD_NUMBER = 2
   final val LOGIN_FIELD_NUMBER = 3
   final val GAME_JOINED_FIELD_NUMBER = 4
   final val GAME_JOIN_CANCELLED_FIELD_NUMBER = 5
+  final val WAITING_LIST_JOINED_FIELD_NUMBER = 6
 }

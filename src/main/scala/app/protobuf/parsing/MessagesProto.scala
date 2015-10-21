@@ -3,6 +3,7 @@ package app.protobuf.parsing
 import java.io.InputStream
 
 import akka.util.ByteString
+import app.actors.game.GamesManagerActor.BackgroundToken
 import app.actors.{MsgHandler, NetClient}
 import netmsg._
 import implicits._
@@ -72,7 +73,9 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
       case Some(ControlDiscriminator) =>
         parseFromControlClient(data.tail).map(MsgHandler.Client2Server.ControlMsg)
       case Some(BackgroundSearchingForOpponentHeartbeatDiscriminator) =>
-        MsgHandler.Client2Server.BackgroundSFOHeartbeat(data.tail.utf8String).right
+        MsgHandler.Client2Server.BackgroundSFOHeartbeat(
+          BackgroundToken(data.tail.utf8String)
+        ).right
       case Some(other) => s"Unknown discriminator byte: '$other'!".left
       case None => s"Empty data ByteString!".left
     }

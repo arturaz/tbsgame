@@ -12,6 +12,7 @@ message FromClient {
   optional Login login = 4;
   optional JoinGame join_game = 5;
   optional CancelJoinGame cancel_join_game = 6;
+  optional CancelBackgroundToken cancel_background_token = 7;
 }
 
 message FromServer {
@@ -20,6 +21,7 @@ message FromServer {
   optional LoginResponse login = 3;
   optional GameJoined game_joined = 4;
   optional JoinGameCancelled game_join_cancelled = 5;
+  optional WaitingListJoined waiting_list_joined = 6;
 }
 
 message Credentials {
@@ -89,3 +91,10 @@ message GameJoined {
 
 message CancelJoinGame {}
 message JoinGameCancelled {}
+
+message CancelBackgroundToken {
+  required string token = 1;
+}
+message WaitingListJoined {
+  required string background_token = 1;
+}

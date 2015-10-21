@@ -16,7 +16,7 @@ import scalaz._, Scalaz._
  */
 case class RTConfig(
   port: UInt, dbUrl: String, controlKey: NetClient.Control.SecretKey,
-  gcm: Option[RTConfig.GCM]
+  gcm: Option[RTConfig.GCM], gamesManager: RTConfig.GamesManager
 )
 
 object RTConfig {
@@ -28,6 +28,7 @@ object RTConfig {
     case class Key(value: String) extends AnyVal
   }
 
+  case class GamesManager(backgroundHeartbeatTTL: TTL)
 
   def key(s: String) = s"tbsgame.$s"
 
@@ -45,12 +46,15 @@ object RTConfig {
             config.readDuration(key("google.gcm.searching_for_opponent.time_to_live")).map(TTL)
         } yield Some(GCM(gcmKey, searchForOpponentTTL))
     }
+    val gamesManager = config.readDuration(key("games_manager.background_heartbeat_ttl"))
+      .map(d => GamesManager(TTL(d)))
 
     (
       port.validation.toValidationNel |@|
       dbUrl.validation.toValidationNel |@|
       configSecretKey.validation.toValidationNel |@|
-      gcmAuth.validation.toValidationNel
+      gcmAuth.validation.toValidationNel |@|
+      gamesManager.validation.toValidationNel
     )(RTConfig.apply)
   }
 

@@ -82,6 +82,10 @@ trait MessagesProto extends Helpers { _: GameProto =>
         management.FromServer(gameJoined = Some(msg))
       case NetClient.Management.Out.JoinGameCancelled =>
         management.FromServer(gameJoinCancelled = Some(management.JoinGameCancelled()))
+      case NetClient.Management.Out.WaitingListJoined(token) =>
+        management.FromServer(
+          waitingListJoined = Some(management.WaitingListJoined(token.value))
+        )
     }
 
   implicit def convert(out: NetClient.Msgs.FromServer.TimeSync)
