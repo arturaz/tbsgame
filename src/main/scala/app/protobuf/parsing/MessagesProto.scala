@@ -3,6 +3,7 @@ package app.protobuf.parsing
 import java.io.InputStream
 
 import akka.util.ByteString
+import app.actors.MsgHandler.Client2Server.BackgroundSFO
 import app.actors.game.GamesManagerActor.BackgroundToken
 import app.actors.{MsgHandler, NetClient}
 import netmsg._
@@ -64,7 +65,8 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
 
   val GameDiscriminator = 0.toByte
   val ControlDiscriminator = 1.toByte
-  val BackgroundSearchingForOpponentHeartbeatDiscriminator = 2.toByte
+  val BackgroundSFOHeartbeatDiscriminator = 2.toByte
+  val BackgroundSFOCancelDiscriminator = 3.toByte
 
   def parse(data: ByteString): String \/ MsgHandler.Client2Server = {
     data.headOption match {
@@ -72,10 +74,13 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
         parseFromClient(data.tail).map(MsgHandler.Client2Server.GameMsg)
       case Some(ControlDiscriminator) =>
         parseFromControlClient(data.tail).map(MsgHandler.Client2Server.ControlMsg)
-      case Some(BackgroundSearchingForOpponentHeartbeatDiscriminator) =>
-        MsgHandler.Client2Server.BackgroundSFOHeartbeat(
-          BackgroundToken(data.tail.utf8String)
-        ).right
+      case Some(
+        byte @ (BackgroundSFOHeartbeatDiscriminator | BackgroundSFOCancelDiscriminator)
+      ) =>
+        val kind =
+          if (byte === BackgroundSFOHeartbeatDiscriminator) BackgroundSFO.Kind.Heartbeat
+          else BackgroundSFO.Kind.Cancel
+        MsgHandler.Client2Server.BackgroundSFO(kind, BackgroundToken(data.tail.utf8String)).right
       case Some(other) => s"Unknown discriminator byte: '$other'!".left
       case None => s"Empty data ByteString!".left
     }

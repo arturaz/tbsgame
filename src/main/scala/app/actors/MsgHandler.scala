@@ -41,8 +41,17 @@ object MsgHandler {
     case class GameMsg(message: NetClient.Msgs.FromClient) extends Client2Server
     case class ControlMsg(message: NetClient.Msgs.FromControlClient) extends Client2Server
     // Background searching for opponent heartbeat
-    case class BackgroundSFOHeartbeat(token: GamesManagerActor.BackgroundToken) extends Client2Server {
+    case class BackgroundSFO(
+      kind: BackgroundSFO.Kind, token: GamesManagerActor.BackgroundToken
+    ) extends Client2Server {
       override def message = this
+    }
+    object BackgroundSFO {
+      sealed trait Kind
+      object Kind {
+        case object Heartbeat extends Kind
+        case object Cancel extends Kind
+      }
     }
   }
 }

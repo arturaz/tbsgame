@@ -5,6 +5,7 @@ import java.util.UUID
 import akka.actor.SupervisorStrategy.Stop
 import akka.actor._
 import akka.event.{LoggingAdapter, LoggingReceive}
+import app.actors.MsgHandler.Client2Server.BackgroundSFO
 import app.actors.NetClient.Management.In.JoinGame.{Mode, PvPMode}
 import app.actors.game.GameActor.StartingHuman
 import app.actors.{MsgHandler, NetClient, Server}
@@ -111,15 +112,18 @@ class GamesManagerActor(
   private[this] val notLoggedReceive: Receive = {
     case GamesManagerActor.Internal.CleanupBackgroundWaitingList =>
       val now = DateTime.now()
-      waitingInBackground = waitingInBackground.filter { case (token, lastBeat) =>
+      val expiredKeys = waitingInBackground.keys.filter { token =>
+        val lastBeat = waitingInBackground(token)
         val timePassed = now - lastBeat
         val active = timePassed <= rtConfig.gamesManager.backgroundHeartbeatTTL.duration
         if (! active) log.debug(
           "Timing out background token {}: {} > {}",
           token, timePassed, rtConfig.gamesManager.backgroundHeartbeatTTL.duration
         )
-        active
+        !active
       }
+      expiredKeys.foreach(waitingInBackground -= _)
+      if (expiredKeys.nonEmpty) notifyGCM()
 
     case GamesManagerActor.Internal.CheckShutdown =>
       val games = game2humans.size
@@ -165,16 +169,21 @@ class GamesManagerActor(
       }
 
     case NetClient.Management.In.CancelBackgroundToken(token) =>
-      waitingInBackground -= token
+      removeBackgroundToken(token)
 
-    case MsgHandler.Client2Server.BackgroundSFOHeartbeat(token) =>
+    case MsgHandler.Client2Server.BackgroundSFO(kind, token) =>
       if (waitingInBackground contains token) {
-        waitingInBackground += token -> DateTime.now()
-        log.debug("Background heartbeat from {}", token)
+        kind match {
+          case BackgroundSFO.Kind.Heartbeat =>
+            waitingInBackground += token -> DateTime.now()
+            log.debug("Background heartbeat from {}", token)
+          case BackgroundSFO.Kind.Cancel =>
+            removeBackgroundToken(token)
+        }
       }
       else {
         // TODO: should we tell sender that his heartbeat was expired?
-        log.info("Ignoring background heartbeat from unknown token: {}", token)
+        log.info("Ignoring background {} from unknown token: {}", kind, token)
       }
 
     case Terminated(ref) =>
@@ -193,6 +202,7 @@ class GamesManagerActor(
         log.info("{} going into background", entry)
         waitingList = waitingList.removeAt(idx)
         waitingInBackground += entry.backgroundToken -> DateTime.now()
+        notifyGCM()
       }
 
     case Server.ShutdownInitiated =>
@@ -202,6 +212,12 @@ class GamesManagerActor(
 
     case GamesManagerActor.In.StatsReport =>
       sender ! GamesManagerActor.Out.StatsReport(UInt(user2game.size), UInt(game2humans.size))
+  }
+
+  private[this] def removeBackgroundToken(token: BackgroundToken): Unit = {
+    log.info("Removing background token: {}", token)
+    waitingInBackground -= token
+    notifyGCM()
   }
 
   private[this] def noExistingGame(user: User, mode: Mode, client: ActorRef): Unit = {
@@ -228,8 +244,9 @@ class GamesManagerActor(
 
   private[this] def notifyGCM(): Unit = {
     gcm.foreach { case (ref, cfg) =>
-      val searching = waitingList.nonEmpty || waitingInBackground.nonEmpty
-      ref ! GCM.searchingForOpponent(searching, cfg.searchForOpponentTTL)
+      val foreground = GCM.Data.SearchingForOpponent.InForeground(UInt(waitingList.size))
+      val background = GCM.Data.SearchingForOpponent.InBackground(UInt(waitingInBackground.size))
+      ref ! GCM.searchingForOpponent(foreground, background, cfg.searchForOpponentTTL)
     }
   }
 

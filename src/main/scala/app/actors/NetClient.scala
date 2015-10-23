@@ -195,7 +195,7 @@ class NetClient(
       FromServer.ProtoVersionCheck(ProtoChecksum.checksum).out()
     case FromClient.TimeSync(clientNow) =>
       FromServer.TimeSync(clientNow, DateTime.now).out()
-    case m: MsgHandler.Client2Server.BackgroundSFOHeartbeat =>
+    case m: MsgHandler.Client2Server.BackgroundSFO =>
       gamesManager ! m
     case FromClient.Management(m: NetClient.Management.In.CancelBackgroundToken) =>
       gamesManager ! m
