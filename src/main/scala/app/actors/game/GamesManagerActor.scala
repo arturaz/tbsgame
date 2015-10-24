@@ -130,7 +130,7 @@ class GamesManagerActor(
       log.debug("Checking for shutdown state, games: {}", games)
       if (games === 0) {
         log.info("No games alive, shutting down.")
-        context.system.shutdown()
+        context.system.terminate()
       }
   }
 

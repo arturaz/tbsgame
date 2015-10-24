@@ -2,16 +2,18 @@ import java.nio.{ByteBuffer, ByteOrder}
 import java.util.UUID
 
 import akka.event.LoggingAdapter
+import akka.typed.{ActorRef, ActorSystem}
 import app.models.game.events.Evented
 import infrastructure.PrefixedLoggingAdapter
 import org.joda.time.DateTime
-import utils.{IntValueClass, Base36, CompositeOrdering}
+import utils.{Base36, CompositeOrdering, IntValueClass}
 
+import scala.language.implicitConversions
 import scala.reflect.ClassTag
 import scala.util.{Random, Try}
+import scalaz.Scalaz._
+import scalaz._
 import scalaz.effect.IO
-import scalaz._, Scalaz._
-import scala.language.implicitConversions
 
 /**
  * Created by arturas on 2014-09-11.
@@ -171,5 +173,23 @@ package object implicits {
       val bb = ByteBuffer.wrap(arr)
       new UUID(bb.getLong, bb.getLong).right
     }
+  }
+
+  object TypedActorSystemExts {
+    private val asUntyped =
+      classOf[ActorSystem[_]].getDeclaredMethod("untyped")
+  }
+  implicit class TypedActorSystemExts(val as: ActorSystem[_]) extends AnyVal {
+    def asUntyped =
+      TypedActorSystemExts.asUntyped.invoke(as).asInstanceOf[akka.actor.ActorSystem]
+  }
+
+  object TypedActorRefExts {
+    private val asUntyped =
+      classOf[ActorRef[_]].getDeclaredMethod("untypedRef")
+  }
+  implicit class TypedActorRefExts(val ref: ActorRef[_]) extends AnyVal {
+    def asUntyped =
+      TypedActorRefExts.asUntyped.invoke(ref).asInstanceOf[akka.actor.ActorRef]
   }
 }

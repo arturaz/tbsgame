@@ -2,27 +2,26 @@ package launch
 
 import java.nio.ByteOrder
 
-import akka.actor.{ActorSystem, Props}
-import app.actors.{GCMSender, NetClient, Server}
-import app.actors.game.GamesManagerActor
-import app.models.game.world.maps.{GameMaps, TMXReader, GameMap}
+import akka.actor.{Props => UTProps}
+import akka.typed.ScalaDSL._
+import akka.typed.{ActorSystem, Props}
+import app.actors.GCMSender
+import app.models.game.world.maps.{GameMap, GameMaps, TMXReader}
 import app.persistence.DBDriver
-import com.typesafe.config.{ConfigFactory, Config}
-import org.apache.commons.io.{Charsets, IOUtils}
+import com.typesafe.config.ConfigFactory
+import implicits._
 import org.flywaydb.core.Flyway
 import utils.JAR
 import utils.data.NonEmptyVector
-import collection.JavaConverters._
-import implicits._
 
-import scalaz._, Scalaz._
+import scalaz.Scalaz._
+import scalaz._
 import scalaz.effect.IO
 
 /**
  * Created by arturas on 2014-10-08.
  */
 object Main {
-  private[this] lazy val appSystem = ActorSystem("app")
   // This is used in clients as well! Think a lot before changing it.
   private[this] implicit val byteOrder = ByteOrder.BIG_ENDIAN
 
@@ -47,15 +46,22 @@ object Main {
     applyMigrations(rtConfig.dbUrl)
     val db = DBDriver.Database.forURL(rtConfig.dbUrl)
 
-    val gcm = rtConfig.gcm.map { gcm =>
-      val ref = appSystem.actorOf(Props(new GCMSender(gcm.key)), "gcm-sender")
-      println(s"GCM sender started: $ref")
-      (ref, gcm)
+    val main = ContextAware[Unit] { ctx =>
+      val gcm = rtConfig.gcm.map { gcm =>
+        val behaviour = GCMSender.behaviour(gcm.authHeader)
+        val ref = ctx.spawn(Props(behaviour), "gcm-sender")
+        println(s"GCM sender started: $ref")
+        (ref.asUntyped, gcm)
+      }
+//
+//      val gamesManager = ctx.actorOf(UTProps(new GamesManagerActor(maps, gcm)), "games-manager")
+//      println(s"Games manager started: $gamesManager")
+//      val server = ctx.actorOf(UTProps(new Server(rtConfig, gamesManager, db)), "server")
+//      println(s"Server started: $server")
+
+      Empty
     }
-    val gamesManager = appSystem.actorOf(Props(new GamesManagerActor(maps, gcm)), "games-manager")
-    println(s"Games manager started: $gamesManager")
-    val server = appSystem.actorOf(Props(new Server(rtConfig, gamesManager, db)), "server")
-    println(s"Server started: $server")
+    ActorSystem("app", Props(main))
   }
 
   def runControlClient(args: ImmutableArray[String])(implicit rtConfig: RTConfig): IO[Unit] = {

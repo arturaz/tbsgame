@@ -19,6 +19,8 @@ val macrosSettings = commonSettings ++ Seq(
   libraryDependencies <+= scalaVersion("org.scala-lang" % "scala-reflect" % _)
 )
 
+val akkaVersion = "2.4.0"
+
 val scalazVersion = "7.1.4"
 
 val rootSettings = commonSettings ++ Seq(
@@ -27,7 +29,9 @@ val rootSettings = commonSettings ++ Seq(
   unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "gen" / "scala",
   initialCommands in console := """import app.models._, world._, implicits._""",
   libraryDependencies ++= Seq(
-    "com.typesafe.akka" %% "akka-actor" % "2.3.6",
+    "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+    "com.typesafe.akka" %% "akka-typed-experimental" % akkaVersion,
+    "com.typesafe.akka" %% "akka-http-experimental" % "1.0",
     "org.scalaz" %% "scalaz-core" % scalazVersion,
     "org.scalaz" %% "scalaz-effect" % scalazVersion,
     "commons-io" % "commons-io" % "2.4",
@@ -36,8 +40,7 @@ val rootSettings = commonSettings ++ Seq(
     "com.beachape" %% "enumeratum" % "1.0.1",
     "org.spire-math" %% "spire" % "0.9.0",
     "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.4.8",
-    "io.argonaut" %% "argonaut" % "6.1-M4",
-    "io.spray" %% "spray-client" % "1.3.3"
+    "io.argonaut" %% "argonaut" % "6.1-M4"
   ) ++ Seq(
     "org.flywaydb" % "flyway-core" % "3.1",
     "com.zaxxer" % "HikariCP-java6" % "2.2.5",

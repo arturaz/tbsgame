@@ -2,7 +2,8 @@ package launch
 
 import java.util.concurrent.TimeUnit
 
-import app.actors.NetClient
+import akka.http.scaladsl.model.HttpHeader
+import app.actors.{GCMSender, NetClient}
 import com.typesafe.config.Config
 import spire.math.UInt
 
@@ -23,7 +24,9 @@ object RTConfig {
   // Time to live
   case class TTL(duration: FiniteDuration) extends AnyVal
 
-  case class GCM(key: GCM.Key, searchForOpponentTTL: TTL)
+  case class GCM(
+    key: GCM.Key, authHeader: HttpHeader, searchForOpponentTTL: TTL
+  )
   object GCM {
     case class Key(value: String) extends AnyVal
   }
@@ -42,9 +45,10 @@ object RTConfig {
       case true =>
         for {
           gcmKey <- config.readStr(key("google.gcm.server_api_key")).map(key => GCM.Key(key))
+          gcmAuthHeader <- GCMSender.authHeader(gcmKey)
           searchForOpponentTTL <-
             config.readDuration(key("google.gcm.searching_for_opponent.time_to_live")).map(TTL)
-        } yield Some(GCM(gcmKey, searchForOpponentTTL))
+        } yield Some(GCM(gcmKey, gcmAuthHeader, searchForOpponentTTL))
     }
     val gamesManager = config.readDuration(key("games_manager.background_heartbeat_ttl"))
       .map(d => GamesManager(TTL(d)))

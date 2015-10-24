@@ -1,39 +1,58 @@
 package app.actors
 
-import akka.actor.{Actor, ActorLogging}
-import argonaut._, Argonaut._
+import akka.event.Logging
+import akka.http.scaladsl.model.HttpHeader.ParsingResult
+import akka.http.scaladsl.model._
+import akka.stream.ActorMaterializer
+import akka.typed.ScalaDSL._
+import akka.typed._
+import argonaut.Argonaut._
+import implicits._
 import infrastructure.GCM
 import launch.RTConfig
-import spray.client.pipelining._
-import spray.http._
-import spray.httpx.marshalling.Marshaller
 
 import scala.util.Try
-
-class GCMSender(key: RTConfig.GCM.Key) extends Actor with ActorLogging {
-  import context.dispatcher
-
-  implicit private[this] val jsonMarshaller =
-    Marshaller.delegate[Json, String](ContentTypes.`application/json`)(_.nospaces)
-
-  private[this] val pipeline =
-    addHeader("Authorization", s"key=${key.value}") ~> sendReceive
-
-  override def receive: Receive = {
-    case m: GCM.Message =>
-      log.info("Sending GCM message: {}", m)
-      val body = m.asJson
-      log.debug("GCM message as JSON: {}", body.nospaces)
-      val future = pipeline(Post("https://gcm-http.googleapis.com/gcm/send", body))
-      // Logging isn't thread safe.
-      future.onComplete(r => self ! GCMSender.Internal.GCMComplete(m, r))
-    case GCMSender.Internal.GCMComplete(message, result) =>
-      log.info("GCM response for {}: {}", message, result)
-  }
-}
+import scalaz.Scalaz._
 
 object GCMSender {
+  sealed trait In
+  case class Send(message: GCM.Message) extends In
+
   object Internal {
-    case class GCMComplete(message: GCM.Message, result: Try[HttpResponse])
+    case class GCMComplete(
+      message: GCM.Message, result: Try[HttpResponse]
+    ) extends In
   }
+
+  def behaviour(authHeader: HttpHeader): Behavior[Send] =
+    ContextAware[In] { ctx =>
+      val untypedSystem = ctx.system.asUntyped
+      implicit val materializer = ActorMaterializer()(ctx)
+//      val http = Http()
+      val log = Logging(untypedSystem, ctx.self.asUntyped)
+      val headers = Vector(authHeader)
+
+      Static {
+        case Send(m) =>
+          log.info("Sending GCM message: {}", m)
+          val body = m.asJson.nospaces
+          log.debug("GCM message as JSON: {}", body)
+//          val future = http.singleRequest(HttpRequest(
+//            HttpMethods.POST, "https://gcm-http.googleapis.com/gcm/send",
+//            headers, HttpEntity(MediaTypes.`application/json`, body)
+//          ))
+//
+//          // Logging isn't thread safe.
+//          future.onComplete(r => ctx.self ! GCMSender.Internal.GCMComplete(m, r))
+        case Internal.GCMComplete(message, result) =>
+          log.info("GCM response for {}: {}", message, result)
+      }
+    }.narrow
+
+  def authHeader(key: RTConfig.GCM.Key) =
+    HttpHeader.parse("Authorization", s"key=${key.value}") match {
+      case ParsingResult.Ok(header, _) => header.right
+      case ParsingResult.Error(error) =>
+        s"Cannot turn '$key' into HTTP header: $error".left
+    }
 }

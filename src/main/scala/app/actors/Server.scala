@@ -65,7 +65,7 @@ class Server(
   @throws[Exception](classOf[Exception])
   override def postStop(): Unit = {
     log.info("Shutting down actor system because server has stopped.")
-    system.shutdown()
+    system.terminate()
   }
 }
 
