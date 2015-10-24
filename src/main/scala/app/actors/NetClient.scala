@@ -2,8 +2,8 @@ package app.actors
 
 import java.util.UUID
 
-import akka.actor._
-import akka.pattern._
+import akka.typed._, ScalaDSL._
+import akka.{actor => untyped}
 import netmsg.ProtoChecksum
 import spire.math.UInt
 import scala.concurrent.Future
@@ -25,18 +25,35 @@ import org.joda.time.DateTime
 import scala.util.Try
 
 object NetClient {
+  type ClientInRef = akka.typed.ActorRef[Msgs.FromClient]
+  type ServerOutRef = akka.typed.ActorRef[Msgs.FromServer]
   type GameInMsg = Human => GameActor.In
+
+  private[this] sealed trait Message
+
+  sealed trait In extends Message
+  sealed trait MsgHandlerIn extends In
+  // Messages that come from TCP connection
+  sealed trait MsgHandlerConnectionIn extends MsgHandlerIn
+
+  sealed trait MsgHandlerOut
+
+  sealed trait ServerOut
+
+  sealed trait GamesManagerIn
+  sealed trait GamesManagerOut
 
   object Control {
     case class SecretKey(key: String) extends AnyVal
 
     sealed trait In
     object In {
+      case object ShutdownInitiated extends MsgHandlerIn
       case object Shutdown extends In
       case object Status extends In
     }
 
-    sealed trait Out
+    sealed trait Out extends MsgHandlerOut
     object Out {
       case class GenericReply(success: Boolean, message: Option[String]) extends Out
       object GenericReply {
@@ -107,10 +124,12 @@ object NetClient {
       case object CancelJoinGame extends In
 
       // After client logs in it should cancel the active background token.
-      case class CancelBackgroundToken(token: GamesManagerActor.BackgroundToken) extends In
+      case class CancelBackgroundToken(
+        token: GamesManagerActor.BackgroundToken
+      ) extends In with ServerOut
     }
 
-    sealed trait Out
+    sealed trait Out extends MsgHandlerOut
     object Out {
       case class CheckNameAvailabilityResponse(name: String, available: Boolean) extends Out
       case class RegisterResponse(newToken: Option[SessionToken]) extends Out
@@ -124,12 +143,14 @@ object NetClient {
       case class GameJoined(human: Human) extends Out
       case object JoinGameCancelled extends Out
 
-      case class WaitingListJoined(token: GamesManagerActor.BackgroundToken) extends Out
+      case class WaitingListJoined(
+        token: GamesManagerActor.BackgroundToken
+      ) extends Out with GamesManagerIn
     }
   }
 
   object Msgs {
-    sealed trait FromClient extends Serializable
+    sealed trait FromClient extends MsgHandlerConnectionIn
     object FromClient {
       case object ProtoVersionCheck extends FromClient
       case class Game(msg: GameInMsg) extends FromClient
@@ -137,23 +158,66 @@ object NetClient {
       case class TimeSync(clientNow: DateTime) extends FromClient
     }
 
-    case class FromControlClient(key: NetClient.Control.SecretKey, msg: NetClient.Control.In)
+    case class FromControlClient(
+      key: NetClient.Control.SecretKey, msg: NetClient.Control.In
+    ) extends MsgHandlerConnectionIn
 
-    sealed trait FromServer
+    // Background searching for opponent heartbeat
+    case class BackgroundSFO(
+      kind: BackgroundSFO.Kind, token: GamesManagerActor.BackgroundToken
+    ) extends MsgHandlerConnectionIn with GamesManagerOut
+    object BackgroundSFO {
+      sealed trait Kind
+      object Kind {
+        case object Heartbeat extends Kind
+        case object Cancel extends Kind
+      }
+    }
+
+    sealed trait FromServer extends MsgHandlerOut
     object FromServer {
       case class ProtoVersionCheck(checksum: String) extends FromServer
       case class Game(msg: GameActor.ClientOut) extends FromServer
-      case class Management(msg: NetClient.Management.Out) extends FromServer
       case class TimeSync(clientNow: DateTime, serverNow: DateTime) extends FromServer
     }
   }
+
+  def behavior(
+    msgHandler: MsgHandler.Ref, gamesManager: GamesManagerActor.Ref,
+    server: Server.Ref, controlKey: NetClient.Control.SecretKey,
+    db: Database
+  ): Behavior[In] = ContextAware[Message] { ctx =>
+    ctx.watch(msgHandler)
+
+
+    val common = Partial[Msgs.FromClient] {
+      case Msgs.FromClient.ProtoVersionCheck =>
+        msgHandler ! Msgs.FromServer.ProtoVersionCheck(ProtoChecksum.checksum)
+        Same
+
+      case Msgs.FromClient.TimeSync(clientNow) =>
+        msgHandler ! Msgs.FromServer.TimeSync(clientNow, DateTime.now)
+        Same
+
+      case m: Msgs.BackgroundSFO =>
+        gamesManager ! m
+      case FromClient.Management(m: NetClient.Management.In.CancelBackgroundToken) =>
+        gamesManager ! m
+      case m: NetClient.Management.Out.WaitingListJoined =>
+        m.out()
+      case Server.ShutdownInitiated =>
+        shutdownInitiated = true
+      case c: FromControlClient =>
+        import context.dispatcher
+        handleControl(c).onComplete {
+          case util.Success(m) => m.out()
+          case util.Failure(err) => log.error("Error while handling control message {}: {}", c, err)
+        }
+    }
+  }.narrow
 }
 
-class NetClient(
-  msgHandler: ActorRef, gamesManager: ActorRef, server: ActorRef,
-  controlKey: NetClient.Control.SecretKey,
-  db: Database
-) extends Actor with ActorLogging {
+class NetClient {
   import app.actors.NetClient.Management.In._
   import app.actors.NetClient.Management.Out._
   import app.actors.NetClient.Msgs._
@@ -172,8 +236,6 @@ class NetClient(
     def out(): Unit = msgHandler ! MsgHandler.Server2Client.ControlMsg(msg)
   }
 
-  context.watch(msgHandler)
-
   override def receive = notLoggedIn
 
   private[this] var shutdownInitiated = false
@@ -190,26 +252,6 @@ class NetClient(
     }
   }
 
-  private[this] val common: Receive = {
-    case FromClient.ProtoVersionCheck =>
-      FromServer.ProtoVersionCheck(ProtoChecksum.checksum).out()
-    case FromClient.TimeSync(clientNow) =>
-      FromServer.TimeSync(clientNow, DateTime.now).out()
-    case m: MsgHandler.Client2Server.BackgroundSFO =>
-      gamesManager ! m
-    case FromClient.Management(m: NetClient.Management.In.CancelBackgroundToken) =>
-      gamesManager ! m
-    case m: NetClient.Management.Out.WaitingListJoined =>
-      m.out()
-    case Server.ShutdownInitiated =>
-      shutdownInitiated = true
-    case c: FromControlClient =>
-      import context.dispatcher
-      handleControl(c).onComplete {
-        case util.Success(m) => m.out()
-        case util.Failure(err) => log.error("Error while handling control message {}: {}", c, err)
-      }
-  }
 
   def handleControl(c: FromControlClient): Future[Control.Out] = {
     if (c.key === controlKey) c.msg match {

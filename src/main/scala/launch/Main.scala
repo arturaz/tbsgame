@@ -3,9 +3,11 @@ package launch
 import java.nio.ByteOrder
 
 import akka.actor.{Props => UTProps}
+import akka.stream.ActorMaterializer
 import akka.typed.ScalaDSL._
-import akka.typed.{ActorSystem, Props}
-import app.actors.GCMSender
+import akka.typed.{PostStop, ActorSystem, Props}
+import app.actors.{Server, GCMSender}
+import app.actors.game.GamesManagerActor
 import app.models.game.world.maps.{GameMap, GameMaps, TMXReader}
 import app.persistence.DBDriver
 import com.typesafe.config.ConfigFactory
@@ -47,19 +49,29 @@ object Main {
     val db = DBDriver.Database.forURL(rtConfig.dbUrl)
 
     val main = ContextAware[Unit] { ctx =>
+      val untypedAS = akka.actor.ActorSystem("app-untyped")
+
       val gcm = rtConfig.gcm.map { gcm =>
-        val behaviour = GCMSender.behaviour(gcm.authHeader)
+        val behaviour = GCMSender.behaviour(
+          gcm.authHeader, ActorMaterializer()(untypedAS)
+        )
         val ref = ctx.spawn(Props(behaviour), "gcm-sender")
         println(s"GCM sender started: $ref")
-        (ref.asUntyped, gcm)
+        (ref, gcm)
       }
-//
-//      val gamesManager = ctx.actorOf(UTProps(new GamesManagerActor(maps, gcm)), "games-manager")
-//      println(s"Games manager started: $gamesManager")
-//      val server = ctx.actorOf(UTProps(new Server(rtConfig, gamesManager, db)), "server")
-//      println(s"Server started: $server")
 
-      Empty
+      val gamesManager =
+        ctx.spawn(Props(GamesManagerActor.behaviour(maps, gcm)), "games-manager")
+      println(s"Games manager started: $gamesManager")
+
+      val server = ctx.actorOf(UTProps(new Server(rtConfig, gamesManager, db)), "server")
+      println(s"Server started: $server")
+
+      Full {
+        case Sig(_, PostStop) =>
+          untypedAS.terminate()
+          Stopped
+      }
     }
     ActorSystem("app", Props(main))
   }

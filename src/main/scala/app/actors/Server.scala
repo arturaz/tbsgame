@@ -3,76 +3,34 @@ package app.actors
 import java.net.InetSocketAddress
 import java.nio.ByteOrder
 
-import akka.actor._
 import akka.io.{IO, Tcp}
+import akka.typed.ScalaDSL._
+import akka.typed._
+import akka.{actor => untyped}
+import app.actors.game.GamesManagerActor
 import app.persistence.DBDriver
 import implicits._
 import launch.RTConfig
 import spire.math.UInt
-import scala.concurrent.duration._
-import scalaz._, Scalaz._, implicits._
-
-class Server(
-  rtConfig: RTConfig, gamesManager: ActorRef, db: DBDriver.Database
-)(implicit byteOrder: ByteOrder) extends Actor with ActorLogging {
-  import context.system, context.dispatcher
-
-  def port = rtConfig.port
-
-  val manager = IO(Tcp)
-  manager ! Tcp.Bind(self, new InetSocketAddress(port.signed))
-
-  /* Actor that is handling our bound socket. */
-  private[this] var socketRef = Option.empty[ActorRef]
-
-  def receive = {
-    case Tcp.Bound(localAddress) =>
-      socketRef = Some(sender())
-      log.info("Server bound to {}", localAddress)
-
-    case msg: Tcp.Unbind.type =>
-      socketRef.fold2(
-        log.error("Can't unbind, socket not bound to {}", port),
-        ref => {
-          log.debug("Received a request to unbind, forwarding to {}", ref)
-          ref ! msg
-        }
-      )
-
-    case Tcp.Unbound =>
-      socketRef = None
-      log.info("Socket to port {} unbound, initiating shutdown.", port)
-      context.children.foreach(_ ! Server.ShutdownInitiated)
-      gamesManager ! Server.ShutdownInitiated
-
-    case Tcp.CommandFailed(b: Tcp.Bind) =>
-      log.error(s"Cannot bind to ${b.localAddress}!")
-      context.stop(self)
-
-    case Tcp.Connected(remote, local) =>
-      log.info(s"Client connected from $remote.")
-      val connection = sender()
-      val msgHandler = context.actorOf(Props(new MsgHandler(
-        connection,
-        handlerRef => Props(new NetClient(handlerRef, gamesManager, self, rtConfig.controlKey, db))
-      )), s"${remote.getHostString}-${remote.getPort}")
-      connection ! Tcp.Register(msgHandler, keepOpenOnPeerClosed = true)
-
-    case Server.In.ReportClientCount =>
-      sender ! Server.Out.ReportClientCount(UInt(context.children.size))
-  }
-
-  @throws[Exception](classOf[Exception])
-  override def postStop(): Unit = {
-    log.info("Shutting down actor system because server has stopped.")
-    system.terminate()
-  }
-}
 
 object Server {
-  sealed trait In
+  type Ref = ActorRef[In]
+
+  private[this] sealed trait Message
+
+  sealed trait In extends Message
   object In {
-    case object ReportClientCount extends In
+    case class ReportClientCount(replyTo: ActorRef[Out.ReportClientCount])
+      extends In
+    case object Unbind extends In
+  }
+
+  private[this] sealed trait Internal extends Message
+  private[this] object Internal {
+    case class Tcp(
+      msg: akka.io.Tcp.Message, sender: untyped.ActorRef
+    ) extends Internal
+    case class MsgHandlerTerminated(ref: MsgHandler.Ref) extends Internal
   }
 
   sealed trait Out
@@ -80,5 +38,74 @@ object Server {
     case class ReportClientCount(clients: UInt) extends In
   }
 
-  case object ShutdownInitiated
+  def behavior(
+    rtConfig: RTConfig, gamesManager: GamesManagerActor.Ref,
+    db: DBDriver.Database
+  )(implicit byteOrder: ByteOrder): Behavior[In] = ContextAware[Message] { ctx =>
+    def port = rtConfig.port
+
+    val log = ctx.createLogging()
+    val tcpHandler = ctx.spawnAdapterUTRef[Tcp.Message](Internal.Tcp)
+
+    val manager = IO(Tcp)(ctx.system.asUntyped)
+    manager ! Tcp.Bind(tcpHandler.asUntyped, new InetSocketAddress(port.signed))
+
+    /* Actor that is handling our bound socket. */
+    var socketRef = Option.empty[untyped.ActorRef]
+    var msgHandlers = Set.empty[MsgHandler.Ref]
+
+    Full {
+      case Msg(_, Internal.Tcp(Tcp.Bound(localAddress), sender)) =>
+        socketRef = Some(sender)
+        log.info("Server bound to {}", localAddress)
+        Same
+
+      case Msg(_, In.Unbind) =>
+        socketRef.fold2(
+          log.error("Can't unbind, socket not bound to {}", port),
+          ref => {
+            log.debug("Received a request to unbind, forwarding to {}", ref)
+            ref ! Tcp.Unbind
+          }
+        )
+        Same
+
+      case Msg(_, Internal.Tcp(Tcp.Unbound, _)) =>
+        socketRef = None
+        log.info("Socket to port {} unbound, initiating shutdown.", port)
+        msgHandlers.foreach(_ ! MsgHandler.In.Control.ShutdownInitiated)
+        gamesManager ! GamesManagerActor.In.ShutdownInitiated
+        Same
+
+      case Msg(_, Internal.Tcp(Tcp.CommandFailed(b: Tcp.Bind), _)) =>
+        log.error(s"Cannot bind to ${b.localAddress}!")
+        Stopped
+
+      case Msg(_, Internal.Tcp(Tcp.Connected(remote, local), connection)) =>
+        log.info(s"Client connected from $remote.")
+        val (msgHandler, tcpAdapter) = MsgHandler.spawn(
+          s"${remote.getHostString}-${remote.getPort}", ctx, connection,
+          handlerRef => NetClient.behavior(
+            handlerRef, gamesManager, ctx.self, rtConfig.controlKey, db
+          ).narrow
+        )
+        msgHandlers += msgHandler
+        ctx.watchWith(msgHandler, Internal.MsgHandlerTerminated(msgHandler))
+        connection ! Tcp.Register(tcpAdapter.asUntyped, keepOpenOnPeerClosed = true)
+        Same
+
+      case Msg(_, In.ReportClientCount(replyTo)) =>
+        replyTo ! Server.Out.ReportClientCount(UInt(ctx.children.size))
+        Same
+
+      case Msg(_, Internal.MsgHandlerTerminated(ref)) =>
+        msgHandlers -= ref
+        Same
+
+      case Sig(_, PostStop) =>
+        log.info("Shutting down actor system because server has stopped.")
+        ctx.system.terminate()
+        Stopped
+    }
+  }.narrow
 }

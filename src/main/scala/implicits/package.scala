@@ -1,8 +1,9 @@
 import java.nio.{ByteBuffer, ByteOrder}
 import java.util.UUID
 
-import akka.event.LoggingAdapter
-import akka.typed.{ActorRef, ActorSystem}
+import akka.event.{Logging, LoggingAdapter}
+import akka.typed.{ActorContext, ActorRef, ActorSystem}
+import akka.{actor => untyped}
 import app.models.game.events.Evented
 import infrastructure.PrefixedLoggingAdapter
 import org.joda.time.DateTime
@@ -191,5 +192,35 @@ package object implicits {
   implicit class TypedActorRefExts(val ref: ActorRef[_]) extends AnyVal {
     def asUntyped =
       TypedActorRefExts.asUntyped.invoke(ref).asInstanceOf[akka.actor.ActorRef]
+  }
+  
+  implicit class TypedActorContextExts[A](val ctx: ActorContext[A]) extends AnyVal {
+    def createLogging() = Logging(ctx.system.asUntyped, ctx.self.asUntyped)
+
+    /** As `spawnAdapter` but gives access to the untyped ActorRef which sent
+      * the original message. */
+    def spawnAdapterUTRef[B](f: (B, untyped.ActorRef) => A) =
+      ActorRef[B](ctx.actorOf(untyped.Props(classOf[UTRefMessageWrapper], f)))
+
+    /** Watch `ref` and send `msg` to self when it terminates. */
+    def watchWith(ref: ActorRef[_], msg: A) = watchWith(ref, msg, ctx.self)
+
+    /** Watch `ref` and send `msg` to `sendTo` when it terminates. */
+    def watchWith[B](ref: ActorRef[_], msg: B, sendTo: ActorRef[B]) = {
+      import akka.typed._, ScalaDSL._
+      ctx.spawnAnonymous(Props(ContextAware { anonCtx =>
+        anonCtx.watch(ref)
+
+        Full {
+          case Sig(_, Terminated(`ref`)) =>
+            sendTo ! msg
+            Stopped
+        }
+      }))
+    }
+  }
+
+  class UTRefMessageWrapper(f: (Any, untyped.ActorRef) => Any) extends untyped.Actor {
+    def receive = { case msg => context.parent ! f(msg, sender()) }
   }
 }

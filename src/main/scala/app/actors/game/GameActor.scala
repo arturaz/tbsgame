@@ -1,49 +1,68 @@
 package app.actors.game
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import akka.event.{LoggingAdapter, LoggingReceive}
+import akka.event.{Logging, LoggingAdapter, LoggingReceive}
+import akka.typed._, ScalaDSL._
+import app.actors.NetClient
 import app.actors.game.GameActor.Out.Joined
-import app.actors.game.GameActorGame.Result
-import app.algorithms.Pathfinding.Path
 import app.models.game._
 import app.models.game.events._
 import app.models.game.world.WObject.Id
 import app.models.game.world._
-import app.models.game.world.buildings._
 import app.models.game.world.maps.WorldMaterializer
 import app.models.game.world.props.ExtractionSpeed
-import app.models.game.world.units._
 import implicits._
 import org.joda.time.DateTime
-import utils.data.{Timeframe, NonEmptyVector}
+import utils.data.{NonEmptyVector, Timeframe}
 
-import scala.annotation.tailrec
 import scala.concurrent.duration._
 import scala.language.existentials
 import scalaz._, Scalaz._
 
 object GameActor {
-  sealed trait In
+  type Ref = akka.typed.ActorRef[In]
+
+  private[this] sealed trait Message
+
+  sealed trait In extends Message
   object In {
-    case object CheckTurnTime extends In
-    case class Join(human: Human) extends In
-    case class Leave(human: Human) extends In
+    case class Join(
+      human: Human, replyJoined: ActorRef[Out.Joined],
+      replyClientOut: ActorRef[ClientOut]
+    ) extends In
     case class Warp(
-      human: Human, position: Vect2, warpable: WarpableCompanion.Some
+      human: Human, position: Vect2, warpable: WarpableCompanion.Some,
+      replyTo: ActorRef[ClientOut]
     ) extends In
     /* path does not include objects position and ends in target position */
-    case class Move(human: Human, id: WObject.Id, path: NonEmptyVector[Vect2]) extends In
-    case class Attack(human: Human, id: WObject.Id, target: Vect2 \/ WObject.Id) extends In
-    case class MoveAttack(move: Move, target: Vect2 \/ WObject.Id) extends In
-    case class Special(human: Human, id: WObject.Id) extends In
-    case class ToggleWaitingForRoundEnd(human: Human) extends In
-    case class Concede(human: Human) extends In
+    case class Move(
+      human: Human, id: WObject.Id, path: NonEmptyVector[Vect2],
+      replyTo: ActorRef[ClientOut]
+    ) extends In
+    case class Attack(
+      human: Human, id: WObject.Id, target: Vect2 \/ WObject.Id,
+      replyTo: ActorRef[ClientOut]
+    ) extends In
+    case class MoveAttack(
+      move: Move, target: Vect2 \/ WObject.Id, replyTo: ActorRef[ClientOut]
+    ) extends In
+    case class Special(
+      human: Human, id: WObject.Id, replyTo: ActorRef[ClientOut]
+    ) extends In
+    case class ToggleWaitingForRoundEnd(
+      human: Human, replyTo: ActorRef[ClientOut]
+    ) extends In
+    case class Concede(human: Human, replyTo: ActorRef[ClientOut]) extends In
+  }
+
+  private[this] sealed trait Internal extends Message
+  private[this] object Internal {
+    case object CheckTurnTime extends Internal
   }
 
   sealed trait Out
   sealed trait ClientOut extends Out
   object Out {
-    case class Joined(human: Human, game: ActorRef) extends Out
+    case class Joined(human: Human, game: Ref) extends Out
     case class Init(
       id: World.Id, bounds: Bounds, objects: WorldObjs.All,
       warpZonePoints: Iterable[Vect2], visiblePoints: Iterable[Vect2],
@@ -58,19 +77,19 @@ object GameActor {
   }
 
   private[this] def initMsg(human: Human, tbgame: GameActorGame)
-  (implicit log: LoggingAdapter): Either[String, Out.Init] = {
+  (implicit log: LoggingAdapter): String \/ Out.Init = {
     val game = tbgame.game
     val visibleGame = game.visibleBy(human)
     val states = visibleGame.states
     val resourceMap = visibleGame.world.resourcesMap
-    def stateFor(p: Player): Either[String, HumanState] = for {
+    def stateFor(p: Player): String \/ HumanState = for {
       gameState <- states.get(p).
-        toRight(s"can't get game state for $p in $states").right
+        toRightDisjunction(s"can't get game state for $p in $states")
       resources <- resourceMap.get(p).
-        toRight(s"can't get game state for $p in $resourceMap").right
+        toRightDisjunction(s"can't get game state for $p in $resourceMap")
     } yield HumanState(resources, visibleGame.world.populationFor(p), gameState)
 
-    stateFor(human).right.map { selfState =>
+    stateFor(human).map { selfState =>
       Out.Init(
         game.world.id, visibleGame.world.bounds,
         visibleGame.world.objects ++
@@ -80,7 +99,7 @@ object GameActor {
         human.team, game.world.teams - human.team, selfState,
           (game.world.players - human).map { player =>
           player -> (
-            if (player.isFriendOf(human)) stateFor(player).right.toOption
+            if (player.isFriendOf(human)) stateFor(player).toOption
             else None
           )
         },
@@ -92,16 +111,8 @@ object GameActor {
     }
   }
 
-  private def init(
-    human: Human, ref: ActorRef, tbgame: GameActorGame
-  )(implicit log: LoggingAdapter): Unit =
-    initMsg(human, tbgame).fold(
-      err => throw new IllegalStateException(s"cannot init game state: $err"),
-      msg => ref ! msg
-    )
-
   private def events(
-    human: Human, ref: ActorRef, events: Events
+    human: Human, ref: ActorRef[Out.Events], events: Events
   )(implicit log: LoggingAdapter): Unit = {
     log.debug("### Dispatching events for {} ###", human)
     log.debug("Events ({}):", events.size)
@@ -115,14 +126,157 @@ object GameActor {
     ref ! Out.Events(viewedEvents)
   }
 
-  def props(
-    worldMaterializer: WorldMaterializer, turnTimerSettings: Option[TurnTimers.Settings],
-    aiTeam: Team, starting: Set[GameActor.StartingHuman]
-  ) = Props(new GameActor(worldMaterializer, turnTimerSettings, aiTeam, starting))
-
-  case class StartingHuman(human: Human, resources: Resources, client: ActorRef) {
+  case class StartingHuman(
+    human: Human, resources: Resources,
+    client: akka.typed.ActorRef[NetClient.ServerOutRef]
+  ) {
     def game = Game.StartingPlayer(human, resources)
   }
+
+  def behavior(
+    worldMaterializer: WorldMaterializer,
+    turnTimerSettings: Option[TurnTimers.Settings],
+    aiTeam: Team, starting: Set[GameActor.StartingHuman]
+  ): Behavior[In] = ContextAware[Message] { ctx =>
+    implicit val log = Logging(ctx.system.asUntyped, ctx.self.asUntyped)
+
+    def scheduleCheckTurnTime() =
+      ctx.schedule(1.second, ctx.self, Internal.CheckTurnTime)
+
+    log.debug(
+      "initializing game actor: starting={} turnTimer={}, aiTeam={}",
+      starting, turnTimerSettings, aiTeam
+    )
+
+    var clients = starting.map(data => data.human -> data.client).toMap
+
+    var game: GameActorGame = {
+      val humanTeams = starting.map(_.human.team)
+      val world = worldMaterializer.materialize(humanTeams).right_!
+      log.debug("World initialized to {}", world)
+      val objectives = Map(
+        aiTeam -> Objectives(
+          destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
+        )
+      ) ++ humanTeams.map { _ -> Objectives(
+  //      gatherResources = Some(Objective.GatherResources(world, Resources(200), Percentage(0.15))),
+  //      collectVps = Some(Objective.CollectVPs(VPS(10))),
+        destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
+      ) }.toMap
+      log.debug("Objectives initialized to {}", objectives)
+      SemiRealtimeGame(
+        world, starting.map(_.game), objectives,
+        turnTimerSettings.map(WithCurrentTime(_, DateTime.now))
+      ).fold(
+        err => throw new IllegalStateException(s"Cannot initialize game: $err"),
+        evented => {
+          log.debug("Turn based game initialized to {}", evented)
+          starting.foreach { data =>
+            val init = initMsg(data.human, evented.value)
+
+            data.client ! Joined(data.human, ctx.self)
+            // We need to init the game to starting state.
+            init(data.human, data.client, evented.value)
+            events(data.human, data.client, evented.events)
+          }
+          starting.foreach { data =>
+            events(data.human, data.client, evented.events)
+          }
+          evented.value
+        }
+      )
+    }
+
+    def checkedTurnTimes = game.checkTurnTimes(DateTime.now)
+
+    def update(
+      requester: ActorRef[ClientOut], human: Human,
+      f: GameActorGame => GameActorGame.Result
+    ): Behavior[Message] = {
+      log.debug("Updating game by a request from {}", requester)
+
+      val afterTimeCheck = checkedTurnTimes
+      afterTimeCheck.value.fold(
+        _ => postGameChange(afterTimeCheck),
+        tbg => f(tbg).map(evt => afterTimeCheck.events ++: evt).fold(
+          err => {
+            log.error(err)
+            requester ! Out.Error(err)
+            Same
+          },
+          postGameChange
+        )
+      )
+    }
+
+    def postGameChange(
+      evented: Evented[Winner \/ GameActorGame]
+    ): Behavior[Message] = {
+      dispatchEvents(evented.events)
+      evented.value.fold(
+        winner => {
+          log.info("Game is finished, won by {}", winner)
+          Stopped
+        },
+        g => {
+          game = g
+          Same
+        }
+      )
+    }
+
+    def dispatchEvents(events: Events): Unit = {
+      if (events.nonEmpty) clients.foreach { case (human, ref) =>
+        GameActor.events(human, ref, events)
+      }
+    }
+
+    var turnTimerChecker = scheduleCheckTurnTime()
+
+    Full {
+      case Msg(_, Internal.CheckTurnTime) =>
+        postGameChange(checkedTurnTimes)
+        Same
+
+      case Sig(_, PostStop) =>
+        turnTimerChecker.cancel()
+        Same
+
+      case Msg(_, In.Join(human, joinedRef, clientOutRef)) =>
+        joinedRef ! Out.Joined(human, ctx.self)
+        def doInit(tbg: GameActorGame): Unit = {
+          init(human, clientOutRef, tbg)
+          clients += human -> clientOutRef
+        }
+
+        if (game.isJoined(human)) {
+          log.info("Rejoining {} to {}", human, ctx.self)
+          doInit(game)
+        }
+        else {
+          log.error("Unknown human trying to join the game: {}", human)
+        }
+        Same
+
+      case Msg(_, In.Warp(human, position, warpable, replyTo)) =>
+        update(replyTo, human, _.warp(human, position, warpable, DateTime.now))
+      case Msg(_, In.Move(human, id, path, replyTo)) =>
+        update(replyTo, human, _.move(human, id, path, DateTime.now))
+      case Msg(_, In.Attack(human, id, target, replyTo)) =>
+        update(replyTo, human, _.attack(human, id, target, DateTime.now))
+      case Msg(_, In.MoveAttack(move, target, replyTo)) =>
+        update(
+          replyTo, move.human,
+          _.moveAttack(move.human, move.id, move.path, target, DateTime.now)
+        )
+      case Msg(_, In.Special(human, id, replyTo)) =>
+        update(replyTo, human, _.special(human, id, DateTime.now))
+      case Msg(_, In.ToggleWaitingForRoundEnd(human, replyTo)) =>
+        update(replyTo, human, _.toggleWaitingForRoundEnd(human, DateTime.now))
+      case Msg(_, In.Concede(human, replyTo)) =>
+        update(replyTo, human, _.concede(human, DateTime.now))
+    }
+  }.narrow
 }
 
 object GameActorGame {
@@ -181,161 +335,4 @@ trait GameActorGameStarter[GAGame <: GameActorGame] {
   protected[this] def startNewGame(
     game: Game, turnTimers: Option[WithCurrentTime[TurnTimers]]
   )(implicit log: LoggingAdapter): String \/ Evented[GAGame]
-}
-
-class GameActor private (
-  worldMaterializer: WorldMaterializer, turnTimerSettings: Option[TurnTimers.Settings],
-  aiTeam: Team, starting: Set[GameActor.StartingHuman]
-) extends Actor with ActorLogging {
-  import app.actors.game.GameActor._
-  import context.dispatcher
-  implicit val logging = log
-
-  log.debug(
-    "initializing game actor: starting={} turnTimer={}, aiTeam={}",
-    starting, turnTimerSettings, aiTeam
-  )
-
-  private[this] var clients = starting.map(data => data.human -> data.client).toMap
-
-  private[this] var game: GameActorGame = {
-    val humanTeams = starting.map(_.human.team)
-    val world = worldMaterializer.materialize(humanTeams).right_!
-    log.debug("World initialized to {}", world)
-    val objectives = Map(
-      aiTeam -> Objectives(
-        destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
-      )
-    ) ++ humanTeams.map { _ -> Objectives(
-//      gatherResources = Some(Objective.GatherResources(world, Resources(200), Percentage(0.15))),
-//      collectVps = Some(Objective.CollectVPs(VPS(10))),
-      destroyAllCriticalObjects = Some(Objective.DestroyAllCriticalObjects)
-    ) }.toMap
-    log.debug("Objectives initialized to {}", objectives)
-    SemiRealtimeGame(
-      world, starting.map(_.game), objectives,
-      turnTimerSettings.map(WithCurrentTime(_, DateTime.now))
-    ).fold(
-      err => throw new IllegalStateException(s"Cannot initialize game: $err"),
-      evented => {
-        log.debug("Turn based game initialized to {}", evented)
-        starting.foreach { data =>
-          data.client ! Joined(data.human, self)
-          // We need to init the game to starting state.
-          init(data.human, data.client, evented.value)
-          events(data.human, data.client, evented.events)
-        }
-        starting.foreach { data =>
-          events(data.human, data.client, evented.events)
-        }
-        evented.value
-      }
-    )
-  }
-
-  val turnTimerChecker =
-    context.system.scheduler.schedule(1.second, 1.second, self, In.CheckTurnTime)
-
-  @throws[Exception](classOf[Exception])
-  override def postStop() = {
-    super.postStop()
-    turnTimerChecker.cancel()
-  }
-  
-  val notLoggedReceive: Receive = {
-    case In.CheckTurnTime =>
-      postGameChange(checkedTurnTimes)
-  }
-
-  val loggedReceive = LoggingReceive {
-    case In.Join(human) =>
-      val ref = sender()
-      ref ! Out.Joined(human, self)
-      def doInit(tbg: GameActorGame): Unit = {
-        init(human, ref, tbg)
-        clients += human -> ref
-      }
-
-      if (game.isJoined(human)) {
-        log.info("Rejoining {} to {}", human, self)
-        doInit(game)
-      }
-      else {
-        log.error("Unknown human trying to join the game: {}", human)
-        // TODO: allow new joins?
-        //        update(
-        //          ref, human,
-        //          _.join(human, GameActor.StartingResources).right.map { evtTbg =>
-        //            doInit(evtTbg.value)
-        //            evtTbg
-        //          }
-        //        )
-      }
-//    case In.Leave(human) =>
-//      if (clients.contains(human)) {
-//        update(sender(), human, _.leave(human).right.map { evtTbg =>
-//          clients -= human
-//          evtTbg
-//        })
-//      }
-//      else {
-//        sender ! Out.Error(s"No human $human is joined.")
-//      }
-    case In.Warp(human, position, warpable) =>
-      update(sender(), human, _.warp(human, position, warpable, DateTime.now))
-    case In.Move(human, id, path) =>
-      update(sender(), human, _.move(human, id, path, DateTime.now))
-    case In.Attack(human, id, target) =>
-      update(sender(), human, _.attack(human, id, target, DateTime.now))
-    case In.MoveAttack(move, target) =>
-      update(
-        sender(), move.human,
-        _.moveAttack(move.human, move.id, move.path, target, DateTime.now)
-      )
-    case In.Special(human, id) =>
-      update(sender(), human, _.special(human, id, DateTime.now))
-    case In.ToggleWaitingForRoundEnd(human) =>
-      update(sender(), human, _.toggleWaitingForRoundEnd(human, DateTime.now))
-    case In.Concede(human) =>
-      update(sender(), human, _.concede(human, DateTime.now))
-  }
-
-  val receive: PartialFunction[Any, Unit] = notLoggedReceive orElse loggedReceive
-
-  private[this] def checkedTurnTimes = game.checkTurnTimes(DateTime.now)
-
-  private[this] def update(
-    requester: ActorRef, human: Human, f: GameActorGame => GameActorGame.Result
-  ): Unit = {
-    log.debug("Updating game by a request from {}", requester)
-
-    val afterTimeCheck = checkedTurnTimes
-    afterTimeCheck.value.fold(
-      _ => postGameChange(afterTimeCheck),
-      tbg => f(tbg).map(evt => afterTimeCheck.events ++: evt).fold(
-        err => {
-          log.error(err)
-          requester ! Out.Error(err)
-        },
-        postGameChange
-      )
-    )
-  }
-
-  private[this] def postGameChange(evented: Evented[Winner \/ GameActorGame]): Unit = {
-    dispatchEvents(evented.events)
-    evented.value.fold(
-      winner => {
-        log.info("Game is finished, won by {}", winner)
-        context.stop(self)
-      },
-      g => game = g
-    )
-  }
-
-  private[this] def dispatchEvents(events: Events): Unit = {
-    if (events.nonEmpty) clients.foreach { case (human, ref) =>
-      GameActor.events(human, ref, events)
-    }
-  }
 }

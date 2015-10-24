@@ -4,6 +4,7 @@ import java.io.InputStream
 
 import akka.util.ByteString
 import app.actors.MsgHandler.Client2Server.BackgroundSFO
+import app.actors.NetClient.Msgs.BackgroundSFO
 import app.actors.game.GamesManagerActor.BackgroundToken
 import app.actors.{MsgHandler, NetClient}
 import netmsg._
@@ -68,19 +69,19 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
   val BackgroundSFOHeartbeatDiscriminator = 2.toByte
   val BackgroundSFOCancelDiscriminator = 3.toByte
 
-  def parse(data: ByteString): String \/ MsgHandler.Client2Server = {
+  def parse(data: ByteString): String \/ NetClient.MsgHandlerConnectionIn = {
     data.headOption match {
       case Some(GameDiscriminator) =>
-        parseFromClient(data.tail).map(MsgHandler.Client2Server.GameMsg)
+        parseFromClient(data.tail)
       case Some(ControlDiscriminator) =>
-        parseFromControlClient(data.tail).map(MsgHandler.Client2Server.ControlMsg)
+        parseFromControlClient(data.tail)
       case Some(
         byte @ (BackgroundSFOHeartbeatDiscriminator | BackgroundSFOCancelDiscriminator)
       ) =>
         val kind =
           if (byte === BackgroundSFOHeartbeatDiscriminator) BackgroundSFO.Kind.Heartbeat
           else BackgroundSFO.Kind.Cancel
-        MsgHandler.Client2Server.BackgroundSFO(kind, BackgroundToken(data.tail.utf8String)).right
+        BackgroundSFO(kind, BackgroundToken(data.tail.utf8String)).right
       case Some(other) => s"Unknown discriminator byte: '$other'!".left
       case None => s"Empty data ByteString!".left
     }

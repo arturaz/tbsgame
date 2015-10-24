@@ -135,8 +135,10 @@ trait MessagesProto extends Helpers { _: GameProto =>
   def serializeControl(out: NetClient.Control.Out): ByteString =
     serializeGenMsg(convert(out))
 
-  def serialize(out: MsgHandler.Server2Client): ByteString =
-    out.toEither.fold(serializeGame, serializeControl)
+  def serialize(out: NetClient.MsgHandlerOut): ByteString = out match {
+    case m: NetClient.Msgs.FromServer => serializeGame(m)
+    case m: NetClient.Control.Out => serializeControl(m)
+  }
 
   def serializeGenMsg(m: GeneratedMessage): ByteString = ByteString(m.toByteArray)
 }
