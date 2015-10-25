@@ -2,18 +2,17 @@ package app.actors.game
 
 import java.util.UUID
 
-import akka.actor.Actor
-import akka.typed._, ScalaDSL._
-import akka.event.{Logging, LoggingAdapter, LoggingReceive}
-import app.actors.MsgHandler.Client2Server.BackgroundSFO
-import app.actors.NetClient.Management.In.JoinGame.{Mode, PvPMode}
-import app.actors.game.GameActor.StartingHuman
-import app.actors.{GCMSender, MsgHandler, NetClient, Server}
+import akka.event.Logging
+import akka.typed.ScalaDSL._
+import akka.typed._
+import app.actors.NetClient.LoggedInState.JoinGame.{PvPMode, Mode}
+import app.actors.game.GameActor.{ClientData, StartingHuman}
+import app.actors.{GCMSender, NetClient}
 import app.models.User
 import app.models.game.world.maps.{GameMaps, SingleplayerMap, WorldMaterializer}
 import app.models.game.world.{ExtractorStats, Resources, World}
 import app.models.game.{Bot, Human, Team, TurnTimers}
-import implicits._
+import implicits._, implicits.actor._
 import infrastructure.GCM
 import launch.RTConfig
 import org.joda.time.DateTime
@@ -21,7 +20,6 @@ import spire.math.UInt
 
 import scala.concurrent.duration._
 import scalaz.Scalaz._
-import scalaz._
 import scalaz.effect.IO
 
 object GamesManagerActor {
@@ -29,48 +27,38 @@ object GamesManagerActor {
 
   val StartingResources = ExtractorStats.cost * Resources(4)
 
-  private[this] sealed trait Message
+  sealed trait Message
+
   sealed trait In extends Message
   object In {
-    case class FromNetClient(msg: NetClient.GamesManagerOut) extends In
-
-    case class CancelBackgroundToken(
-      token: GamesManagerActor.BackgroundToken
-    ) extends In
+    case class FromNetClient(msg: NetClient.GamesManagerFwd) extends In
 
     // After user connects to the server, he should check whether he is in game or not.
-    case class CheckUserStatus(user: User) extends In
+    case class CheckUserStatus(user: User, client: NetClient.LoggedInRef) extends In
 
     // Game joining
     case class Join(
-      user: User, mode: NetClient.Management.In.JoinGame.Mode,
-      replyTo: ActorRef[GameActor.In.Join]
+      user: User, mode: NetClient.LoggedInState.JoinGame.Mode,
+      replyTo: NetClient.LoggedInRef
     ) extends In
     case class CancelJoinGame(
-      user: User, replyTo: ActorRef[NetClient.Management.Out.JoinGameCancelled.type]
+      user: User, replyTo: ActorRef[NetClient.LoggedInState.JoinGameCancelled.type]
     ) extends In
 
     // Stats report for control client
-    case class StatsReport(replyTo: ActorRef[Out.StatsReport]) extends In
+    case class StatsReport(replyTo: ActorRef[StatsReportData]) extends In
 
     case object ShutdownInitiated extends In
   }
 
-  sealed trait Out
-  object Out {
-    case class StatsReport(users: UInt, games: UInt) extends Out
-  }
-
-  sealed trait Internal extends Message
-  object Internal {
+  private[this] sealed trait Internal extends Message
+  private[this] object Internal {
     case object CleanupBackgroundWaitingList extends Internal
     /* Check if we can shutdown. */
     case object CheckShutdown extends Internal
 
     case class GameTerminated(ref: GameActor.Ref) extends Internal
-    case class ClientTerminated(
-      ref: ActorRef[NetClient.GamesManagerIn]
-    ) extends Internal
+    case class ClientTerminated(ref: NetClient.LoggedInRef) extends Internal
   }
 
   // TODO: proper singleplayer
@@ -99,25 +87,26 @@ object GamesManagerActor {
 //    }
 //  }
 
+  case class StatsReportData(users: UInt, games: UInt)
+
   case class BackgroundToken(value: String) extends AnyVal
   object BackgroundToken {
     val newToken = IO { BackgroundToken(UUID.randomUUID().toString) }
   }
 
   case class WaitingListEntry(
-    user: User, client: ActorRef[NetClient.ServerOutRef],
+    user: User, client: NetClient.LoggedInRef,
     backgroundToken: BackgroundToken
   )
 
   private def joinGame(
-    game: GameActor.Ref, human: Human, client: ActorRef[GameActor.In.Join]
-  ): Unit =
-    game.tell(GameActor.In.Join(human), client)
+    game: GameActor.Ref, human: Human, client: NetClient.LoggedInRef
+  ): Unit = game ! GameActor.In.Join(ClientData(human, client), client)
 
   def behaviour(
     maps: GameMaps, gcm: Option[(ActorRef[GCMSender.Send], RTConfig.GCM)]
   )(implicit rtConfig: RTConfig): Behavior[In] = ContextAware[Message] { ctx =>
-    val log = Logging(ctx.system.asUntyped, ctx.self.asUntyped)
+    val log = ctx.createLogging()
 
     def scheduleCleanup(): Unit =
       ctx.schedule(1.second, ctx.self, Internal.CleanupBackgroundWaitingList)
@@ -148,7 +137,7 @@ object GamesManagerActor {
     }
 
     def noExistingGame(
-      user: User, mode: Mode, client: ActorRef[NetClient.GamesManagerIn]
+      user: User, mode: Mode, client: NetClient.LoggedInRef
     ): Unit = {
       mode match {
         case Mode.Singleplayer =>
@@ -165,13 +154,13 @@ object GamesManagerActor {
             )
             notifyGCM()
             ctx.watchWith(client, Internal.ClientTerminated(client))
-            client ! NetClient.Management.Out.WaitingListJoined(token)
+            client ! NetClient.LoggedInState.WaitingListJoined(token)
           }
           else fromWaitingList(pvp)
       }
     }
 
-    def launchPVE(user: User, client: ActorRef) = {
+    def launchPVE(user: User, client: NetClient.LoggedInRef) = {
       // TODO: proper PVE
   //    val team = pveGame.giveTeam
   //    if (pveGame.ref.isEmpty) {
@@ -185,24 +174,24 @@ object GamesManagerActor {
 
       createGame(
         maps.pve.random, None, Team(),
-        Set(StartingHuman(Human(user, Team()), StartingResources, client))
+        Set(StartingHuman(Human(user, Team()), StartingResources, client, client))
       )
     }
 
-    def launchRandomGenerated(user: User, client: ActorRef) = {
-      val materializer = SingleplayerMap { data => implicit log =>
-        val npcTeam = Team()
-        val npcBot = Bot(npcTeam)
-        val spawnerBot = Bot(npcTeam)
-        World.create(
-          data.humanTeam, () => npcBot, () => spawnerBot, staticObjectsKnownAtStart = false
-        )
-      }
-      createGame(
-        materializer, None, Team(),
-        Set(StartingHuman(Human(user, Team()), StartingResources, client))
-      )
-    }
+//    def launchRandomGenerated(user: User, client: NetClient.LoggedInRef) = {
+//      val materializer = SingleplayerMap { data => implicit log =>
+//        val npcTeam = Team()
+//        val npcBot = Bot(npcTeam)
+//        val spawnerBot = Bot(npcTeam)
+//        World.create(
+//          data.humanTeam, () => npcBot, () => spawnerBot, staticObjectsKnownAtStart = false
+//        )
+//      }
+//      createGame(
+//        materializer, None, Team(),
+//        Set(StartingHuman(Human(user, Team()), StartingResources, client, client))
+//      )
+//    }
 
     def fromWaitingList(mode: PvPMode): Unit = {
       val (entries, newWaitingList) = waitingList.splitAt(mode.playersNeeded)
@@ -212,7 +201,9 @@ object GamesManagerActor {
       val teams = Vector.fill(mode.teams)(Team())
       val players = entries.zipWithIndex.map { case (entry, idx) =>
         val team = teams.wrapped(idx)
-        StartingHuman(Human(entry.user, team), StartingResources, entry.client)
+        StartingHuman(
+          Human(entry.user, team), StartingResources, entry.client, entry.client
+        )
       }.toSet
 
       log.debug(
@@ -228,7 +219,7 @@ object GamesManagerActor {
     def createGame(
       worldMaterializer: WorldMaterializer, turnTimerSettings: Option[TurnTimers.Settings],
       npcTeam: Team, starting: Set[GameActor.StartingHuman]
-    ): ActorRef = {
+    ): GameActor.Ref = {
       val game = ctx.spawnAnonymous(Props(GameActor.behavior(
         worldMaterializer, turnTimerSettings, npcTeam, starting
       )))
@@ -242,8 +233,8 @@ object GamesManagerActor {
     }
 
     scheduleCleanup()
-    Full[Message] {
-      case Msg(_, Internal.CleanupBackgroundWaitingList) =>
+    Total[Message] {
+      case Internal.CleanupBackgroundWaitingList =>
         val now = DateTime.now()
         val expiredKeys = waitingInBackground.keys.filter { token =>
           val lastBeat = waitingInBackground(token)
@@ -261,12 +252,12 @@ object GamesManagerActor {
         scheduleCleanup()
         Same
 
-      case Msg(_, In.ShutdownInitiated) =>
+      case In.ShutdownInitiated =>
         log.info("Shutdown mode initiated.")
         scheduleShutdownMode()
         Same
 
-      case Msg(_, Internal.CheckShutdown) =>
+      case Internal.CheckShutdown =>
         val games = game2humans.size
         log.debug("Checking for shutdown state, games: {}", games)
         if (games === 0) {
@@ -279,30 +270,30 @@ object GamesManagerActor {
           Same
         }
 
-      case Msg(_, In.CheckUserStatus(user)) =>
+      case In.CheckUserStatus(user, client) =>
         user2game.get(user).foreach { case (game, human) =>
           log.info("{} joining game {} on user status check", human, game)
-          joinGame(game, human, sender())
+          joinGame(game, human, client)
         }
         Same
 
-      case Msg(_, In.Join(user, mode, replyTo)) =>
+      case In.Join(user, mode, replyTo) =>
         user2game.get(user).fold2(
           {
             if (waitingList.exists(_.user === user)) log.warning(
               "Not joining a new game, because {} is already in a waiting list, ref: {}",
-              user, sender()
+              user, replyTo
             )
-            else noExistingGame(user, mode, sender())
+            else noExistingGame(user, mode, replyTo)
           },
           { case (game, human) =>
             log.info("{} joining game {} on game join", human, game)
-            joinGame(game, human, sender())
+            joinGame(game, human, replyTo)
           }
         )
         Same
 
-      case Msg(_, In.CancelJoinGame(user, replyTo)) =>
+      case In.CancelJoinGame(user, replyTo) =>
         waitingList.indexWhere(_.user === user) match {
           case -1 =>
             log.warning("Not cancelling join game, because {} is not in a waiting list.", user)
@@ -311,25 +302,25 @@ object GamesManagerActor {
             ctx.unwatch(entry.client)
             waitingList = waitingList.removeAt(idx)
             notifyGCM()
-            replyTo ! NetClient.Management.Out.JoinGameCancelled
+            replyTo ! NetClient.LoggedInState.JoinGameCancelled
         }
         Same
 
-      case Msg(_, In.StatsReport(replyTo)) =>
-        replyTo ! Out.StatsReport(UInt(user2game.size), UInt(game2humans.size))
+      case In.StatsReport(replyTo) =>
+        replyTo ! StatsReportData(UInt(user2game.size), UInt(game2humans.size))
         Same
 
-      case Msg(_, In.CancelBackgroundToken(token)) =>
+      case In.FromNetClient(NetClient.NotLoggedInState.CancelBackgroundToken(token)) =>
         removeBackgroundToken(token)
         Same
 
-      case Msg(_, In.FromNetClient(NetClient.Msgs.BackgroundSFO(kind, token))) =>
+      case In.FromNetClient(NetClient.MsgHandlerConnectionIn.BackgroundSFO(kind, token)) =>
         if (waitingInBackground contains token) {
           kind match {
-            case NetClient.Msgs.BackgroundSFO.Kind.Heartbeat =>
+            case NetClient.MsgHandlerConnectionIn.BackgroundSFO.Kind.Heartbeat =>
               waitingInBackground += token -> DateTime.now()
               log.debug("Background heartbeat from {}", token)
-            case NetClient.Msgs.BackgroundSFO.Kind.Cancel =>
+            case NetClient.MsgHandlerConnectionIn.BackgroundSFO.Kind.Cancel =>
               removeBackgroundToken(token)
           }
         }
@@ -339,7 +330,7 @@ object GamesManagerActor {
         }
         Same
 
-      case Msg(_, Internal.ClientTerminated(ref)) =>
+      case Internal.ClientTerminated(ref) =>
         waitingList.zipWithIndex.collectFirst {
           case (entry @ WaitingListEntry(_, `ref`, _), idx) =>
             (entry, idx)
@@ -351,7 +342,7 @@ object GamesManagerActor {
         }
         Same
 
-      case Msg(_, Internal.GameTerminated(ref)) =>
+      case Internal.GameTerminated(ref) =>
         game2humans.get(ref) match {
           case Some(humans) =>
             log.info("Game {} terminated for humans {}", ref, humans)

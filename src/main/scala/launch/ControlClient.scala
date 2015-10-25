@@ -3,7 +3,6 @@ package launch
 import java.net.Socket
 import java.nio.ByteOrder
 
-import akka.event.LoggingAdapter
 import akka.util.ByteString
 import app.actors.NetClient
 import app.protobuf.parsing.Parsing
@@ -12,7 +11,8 @@ import utils.network.IntFramedPipeline
 import utils.network.IntFramedPipeline.Frame
 
 import scala.reflect.ClassTag
-import scalaz._, Scalaz._
+import scalaz.Scalaz._
+import scalaz._
 import scalaz.effect.IO
 
 /**
@@ -45,7 +45,7 @@ object ControlClient {
   def send(socket: Socket, msg: NetClient.Control.In)
   (implicit cfg: RTConfig, byteOrder: ByteOrder): IO[Unit] = IO {
     val os = socket.getOutputStream
-    val msgWithKey = NetClient.Msgs.FromControlClient(cfg.controlKey, msg)
+    val msgWithKey = NetClient.Control(cfg.controlKey, msg)
     val protoMsgBytes = Serializing.serializeControl(msgWithKey)
     val outFrame = Frame(ByteString(Parsing.ControlDiscriminator) ++ protoMsgBytes)
     val serialized = IntFramedPipeline.withFrameSize(outFrame)

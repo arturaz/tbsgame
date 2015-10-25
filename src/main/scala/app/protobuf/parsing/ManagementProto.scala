@@ -1,9 +1,9 @@
 package app.protobuf.parsing
 
 import app.actors.NetClient
-import app.actors.NetClient.Management.In.JoinGame
-import app.actors.NetClient.Management.{SessionToken, PlainPassword, Credentials}
+import app.actors.NetClient.LoggedInState.JoinGame
 import app.actors.game.GamesManagerActor.BackgroundToken
+import app.actors.net_client.{Credentials, SessionToken, PlainPassword}
 
 import netmsg._
 
@@ -24,25 +24,25 @@ trait ManagementProto extends BaseProto {
     else JoinGame.Mode.OneVsOne
   }
 
-  def parse(msg: management.FromClient): String \/ NetClient.Management.In = {
+  def parse(msg: management.FromClient): String \/ NetClient.ManagementIn = {
     import management.FromClient
-    import app.actors.NetClient.Management.In._
+    import app.actors.NetClient._
 
     msg match {
       case FromClient(Some(m), _, _, _, _, _, _) =>
-        AutoRegister.right
+        NotLoggedInState.AutoRegister.right
       case FromClient(_, Some(m), _, _, _, _, _) =>
-        CheckNameAvailability(m.name).right
+        LoggedInState.CheckNameAvailability(m.name).right
       case FromClient(_, _, Some(m), _, _, _, _) =>
-        Register(m.username, PlainPassword(m.password), m.email).right
+        LoggedInState.Register(m.username, PlainPassword(m.password), m.email).right
       case FromClient(_, _, _, Some(m), _, _, _) =>
-        for (credentials <- parse(m.credentials)) yield Login(credentials)
+        for (credentials <- parse(m.credentials)) yield NotLoggedInState.Login(credentials)
       case FromClient(_, _, _, _, Some(m), _, _) =>
-        JoinGame(m.mode).right
+        LoggedInState.JoinGame(m.mode).right
       case FromClient(_, _, _, _, _, Some(m), _) =>
-        CancelJoinGame.right
+        LoggedInState.CancelJoinGame.right
       case FromClient(_, _, _, _, _, _, Some(m)) =>
-        CancelBackgroundToken(BackgroundToken(m.token)).right
+        NotLoggedInState.CancelBackgroundToken(BackgroundToken(m.token)).right
       case FromClient(None, None, None, None, None, None, None) =>
         s"Empty msg $msg!".left
     }

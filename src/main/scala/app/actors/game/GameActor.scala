@@ -1,9 +1,9 @@
 package app.actors.game
 
-import akka.event.{Logging, LoggingAdapter, LoggingReceive}
-import akka.typed._, ScalaDSL._
+import akka.event.LoggingAdapter
+import akka.typed.ScalaDSL._
+import akka.typed._
 import app.actors.NetClient
-import app.actors.game.GameActor.Out.Joined
 import app.models.game._
 import app.models.game.events._
 import app.models.game.world.WObject.Id
@@ -11,47 +11,47 @@ import app.models.game.world._
 import app.models.game.world.maps.WorldMaterializer
 import app.models.game.world.props.ExtractionSpeed
 import implicits._
+import implicits.actor._
 import org.joda.time.DateTime
 import utils.data.{NonEmptyVector, Timeframe}
 
 import scala.concurrent.duration._
-import scala.language.existentials
-import scalaz._, Scalaz._
+import scala.language.{existentials, implicitConversions}
+import scalaz.Scalaz._
+import scalaz._
 
 object GameActor {
   type Ref = akka.typed.ActorRef[In]
+  private[this] type NetClientJoinedRef = ActorRef[NetClient.LoggedInState.GameJoined]
+  type NetClientOutRef = ActorRef[NetClient.InGameState.FromGameActor]
 
-  private[this] sealed trait Message
+  sealed trait Message
+
+  case class ClientData(human: Human, replyTo: NetClientOutRef)
 
   sealed trait In extends Message
   object In {
     case class Join(
-      human: Human, replyJoined: ActorRef[Out.Joined],
-      replyClientOut: ActorRef[ClientOut]
+      clientData: ClientData, replyJoined: NetClientJoinedRef
     ) extends In
     case class Warp(
-      human: Human, position: Vect2, warpable: WarpableCompanion.Some,
-      replyTo: ActorRef[ClientOut]
+      clientData: ClientData, position: Vect2, warpable: WarpableCompanion.Some
     ) extends In
     /* path does not include objects position and ends in target position */
     case class Move(
-      human: Human, id: WObject.Id, path: NonEmptyVector[Vect2],
-      replyTo: ActorRef[ClientOut]
+      clientData: ClientData, id: WObject.Id, path: NonEmptyVector[Vect2]
     ) extends In
     case class Attack(
-      human: Human, id: WObject.Id, target: Vect2 \/ WObject.Id,
-      replyTo: ActorRef[ClientOut]
+      clientData: ClientData, id: WObject.Id, target: Vect2 \/ WObject.Id
     ) extends In
     case class MoveAttack(
-      move: Move, target: Vect2 \/ WObject.Id, replyTo: ActorRef[ClientOut]
+      move: Move, target: Vect2 \/ WObject.Id
     ) extends In
     case class Special(
-      human: Human, id: WObject.Id, replyTo: ActorRef[ClientOut]
+      clientData: ClientData, id: WObject.Id
     ) extends In
-    case class ToggleWaitingForRoundEnd(
-      human: Human, replyTo: ActorRef[ClientOut]
-    ) extends In
-    case class Concede(human: Human, replyTo: ActorRef[ClientOut]) extends In
+    case class ToggleWaitingForRoundEnd(clientData: ClientData) extends In
+    case class Concede(clientData: ClientData) extends In
   }
 
   private[this] sealed trait Internal extends Message
@@ -59,10 +59,11 @@ object GameActor {
     case object CheckTurnTime extends Internal
   }
 
-  sealed trait Out
-  sealed trait ClientOut extends Out
-  object Out {
-    case class Joined(human: Human, game: Ref) extends Out
+  sealed trait NetClientOut
+  implicit def asNetClient(msg: NetClientOut): NetClient.InGameState.FromGameActor =
+    NetClient.InGameState.FromGameActor(msg)
+
+  object NetClientOut {
     case class Init(
       id: World.Id, bounds: Bounds, objects: WorldObjs.All,
       warpZonePoints: Iterable[Vect2], visiblePoints: Iterable[Vect2],
@@ -71,14 +72,14 @@ object GameActor {
       warpableObjects: Iterable[WarpableStats],
       objectives: RemainingObjectives, currentTurn: TurnStartedEvt,
       extractionSpeeds: Set[ExtractionSpeed]
-    ) extends ClientOut
-    case class Events(events: Vector[FinalEvent]) extends ClientOut
-    case class Error(error: String) extends ClientOut
+    ) extends NetClientOut
+    case class Events(events: Vector[FinalEvent]) extends NetClientOut
+    case class Error(error: String) extends NetClientOut
   }
 
-  private[this] def initMsg(human: Human, tbgame: GameActorGame)
-  (implicit log: LoggingAdapter): String \/ Out.Init = {
-    val game = tbgame.game
+  private[this] def initMsg(human: Human, gaGame: GameActorGame)
+  (implicit log: LoggingAdapter): String \/ NetClientOut.Init = {
+    val game = gaGame.game
     val visibleGame = game.visibleBy(human)
     val states = visibleGame.states
     val resourceMap = visibleGame.world.resourcesMap
@@ -90,7 +91,7 @@ object GameActor {
     } yield HumanState(resources, visibleGame.world.populationFor(p), gameState)
 
     stateFor(human).map { selfState =>
-      Out.Init(
+      NetClientOut.Init(
         game.world.id, visibleGame.world.bounds,
         visibleGame.world.objects ++
           game.world.noLongerVisibleImmovableObjectsFor(human.team),
@@ -105,14 +106,14 @@ object GameActor {
         },
         selfState.gameState.canWarp,
         game.remainingObjectives(human.team),
-        TurnStartedEvt(tbgame.currentPlayer, tbgame.currentTurnTimeframe),
+        TurnStartedEvt(gaGame.currentPlayer, gaGame.currentTurnTimeframe),
         ExtractionSpeed.values
       )
     }
   }
 
   private def events(
-    human: Human, ref: ActorRef[Out.Events], events: Events
+    human: Human, ref: NetClientOutRef, events: Events
   )(implicit log: LoggingAdapter): Unit = {
     log.debug("### Dispatching events for {} ###", human)
     log.debug("Events ({}):", events.size)
@@ -123,12 +124,12 @@ object GameActor {
       viewed
     }
 
-    ref ! Out.Events(viewedEvents)
+    ref ! NetClientOut.Events(viewedEvents)
   }
 
   case class StartingHuman(
     human: Human, resources: Resources,
-    client: akka.typed.ActorRef[NetClient.ServerOutRef]
+    replyJoined: NetClientJoinedRef, client: NetClientOutRef
   ) {
     def game = Game.StartingPlayer(human, resources)
   }
@@ -138,7 +139,7 @@ object GameActor {
     turnTimerSettings: Option[TurnTimers.Settings],
     aiTeam: Team, starting: Set[GameActor.StartingHuman]
   ): Behavior[In] = ContextAware[Message] { ctx =>
-    implicit val log = Logging(ctx.system.asUntyped, ctx.self.asUntyped)
+    implicit val log = ctx.createLogging()
 
     def scheduleCheckTurnTime() =
       ctx.schedule(1.second, ctx.self, Internal.CheckTurnTime)
@@ -172,11 +173,11 @@ object GameActor {
         evented => {
           log.debug("Turn based game initialized to {}", evented)
           starting.foreach { data =>
-            val init = initMsg(data.human, evented.value)
+            val init = initMsg(data.human, evented.value).right_!
 
-            data.client ! Joined(data.human, ctx.self)
+            data.replyJoined ! NetClient.LoggedInState.GameJoined(data.human, ctx.self)
             // We need to init the game to starting state.
-            init(data.human, data.client, evented.value)
+            data.client ! init
             events(data.human, data.client, evented.events)
           }
           starting.foreach { data =>
@@ -190,8 +191,7 @@ object GameActor {
     def checkedTurnTimes = game.checkTurnTimes(DateTime.now)
 
     def update(
-      requester: ActorRef[ClientOut], human: Human,
-      f: GameActorGame => GameActorGame.Result
+      requester: NetClientOutRef, f: GameActorGame => GameActorGame.Result
     ): Behavior[Message] = {
       log.debug("Updating game by a request from {}", requester)
 
@@ -201,7 +201,7 @@ object GameActor {
         tbg => f(tbg).map(evt => afterTimeCheck.events ++: evt).fold(
           err => {
             log.error(err)
-            requester ! Out.Error(err)
+            requester ! NetClientOut.Error(err)
             Same
           },
           postGameChange
@@ -234,47 +234,50 @@ object GameActor {
     var turnTimerChecker = scheduleCheckTurnTime()
 
     Full {
-      case Msg(_, Internal.CheckTurnTime) =>
-        postGameChange(checkedTurnTimes)
-        Same
-
       case Sig(_, PostStop) =>
         turnTimerChecker.cancel()
         Same
+        
+      case Msg(_, msg) => msg match {
+        case Internal.CheckTurnTime =>
+          postGameChange(checkedTurnTimes)
+          turnTimerChecker = scheduleCheckTurnTime()
+          Same
 
-      case Msg(_, In.Join(human, joinedRef, clientOutRef)) =>
-        joinedRef ! Out.Joined(human, ctx.self)
-        def doInit(tbg: GameActorGame): Unit = {
-          init(human, clientOutRef, tbg)
-          clients += human -> clientOutRef
-        }
+        case In.Join(ClientData(human, replyTo), joinedRef) =>
+          joinedRef ! NetClient.LoggedInState.GameJoined(human, ctx.self)
+          def doInit(gaGame: GameActorGame): Unit = {
+            replyTo ! initMsg(human, gaGame).right_!
+            clients += human -> replyTo
+          }
+  
+          if (game.isJoined(human)) {
+            log.info("Rejoining {} to {}", human, ctx.self)
+            doInit(game)
+          }
+          else {
+            log.error("Unknown human trying to join the game: {}", human)
+          }
+          Same
 
-        if (game.isJoined(human)) {
-          log.info("Rejoining {} to {}", human, ctx.self)
-          doInit(game)
-        }
-        else {
-          log.error("Unknown human trying to join the game: {}", human)
-        }
-        Same
-
-      case Msg(_, In.Warp(human, position, warpable, replyTo)) =>
-        update(replyTo, human, _.warp(human, position, warpable, DateTime.now))
-      case Msg(_, In.Move(human, id, path, replyTo)) =>
-        update(replyTo, human, _.move(human, id, path, DateTime.now))
-      case Msg(_, In.Attack(human, id, target, replyTo)) =>
-        update(replyTo, human, _.attack(human, id, target, DateTime.now))
-      case Msg(_, In.MoveAttack(move, target, replyTo)) =>
-        update(
-          replyTo, move.human,
-          _.moveAttack(move.human, move.id, move.path, target, DateTime.now)
-        )
-      case Msg(_, In.Special(human, id, replyTo)) =>
-        update(replyTo, human, _.special(human, id, DateTime.now))
-      case Msg(_, In.ToggleWaitingForRoundEnd(human, replyTo)) =>
-        update(replyTo, human, _.toggleWaitingForRoundEnd(human, DateTime.now))
-      case Msg(_, In.Concede(human, replyTo)) =>
-        update(replyTo, human, _.concede(human, DateTime.now))
+        case In.Warp(clientData, position, warpable) =>
+          update(clientData.replyTo, _.warp(clientData.human, position, warpable, DateTime.now))
+        case In.Move(clientData, id, path) =>
+          update(clientData.replyTo, _.move(clientData.human, id, path, DateTime.now))
+        case In.Attack(clientData, id, target) =>
+          update(clientData.replyTo, _.attack(clientData.human, id, target, DateTime.now))
+        case In.MoveAttack(move, target) =>
+          update(
+            move.clientData.replyTo,
+            _.moveAttack(move.clientData.human, move.id, move.path, target, DateTime.now)
+          )
+        case In.Special(clientData, id) =>
+          update(clientData.replyTo, _.special(clientData.human, id, DateTime.now))
+        case In.ToggleWaitingForRoundEnd(clientData) =>
+          update(clientData.replyTo, _.toggleWaitingForRoundEnd(clientData.human, DateTime.now))
+        case In.Concede(clientData) =>
+          update(clientData.replyTo, _.concede(clientData.human, DateTime.now))
+      }
     }
   }.narrow
 }

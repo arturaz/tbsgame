@@ -8,7 +8,7 @@ import akka.stream.ActorMaterializer
 import akka.typed.ScalaDSL._
 import akka.typed._
 import argonaut.Argonaut._
-import implicits._
+import implicits.actor._
 import infrastructure.GCM
 import launch.RTConfig
 
@@ -45,6 +45,7 @@ object GCMSender {
           ))(httpMaterializer)
 
           // Logging isn't thread safe.
+          import ctx.executionContext
           future.onComplete(r => ctx.self ! GCMSender.Internal.GCMComplete(m, r))
         case Internal.GCMComplete(message, result) =>
           log.info("GCM response for {}: {}", message, result)

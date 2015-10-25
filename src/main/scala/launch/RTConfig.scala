@@ -3,12 +3,14 @@ package launch
 import java.util.concurrent.TimeUnit
 
 import akka.http.scaladsl.model.HttpHeader
-import app.actors.{GCMSender, NetClient}
+import app.actors.GCMSender
+import app.actors.net_client.ControlSecretKey
 import com.typesafe.config.Config
 import spire.math.UInt
 
 import scala.concurrent.duration._
-import scalaz._, Scalaz._
+import scalaz.Scalaz._
+import scalaz._
 
 /**
  * Runtime config that is being loaded from Typesafe config.
@@ -16,7 +18,7 @@ import scalaz._, Scalaz._
  * @param gcm if not set, GCM messages are not sent
  */
 case class RTConfig(
-  port: UInt, dbUrl: String, controlKey: NetClient.Control.SecretKey,
+  port: UInt, dbUrl: String, controlKey: ControlSecretKey,
   gcm: Option[RTConfig.GCM], gamesManager: RTConfig.GamesManager
 )
 
@@ -39,7 +41,7 @@ object RTConfig {
     val port = config.readUInt(key("server.port"))
     val dbUrl = config.readStr(key("db.url"))
     val configSecretKey =
-      config.readStr(key("control.secret_key")).map(NetClient.Control.SecretKey.apply)
+      config.readStr(key("control.secret_key")).map(ControlSecretKey.apply)
     val gcmAuth = config.readBool(key("google.gcm.enabled")).flatMap {
       case false => None.right
       case true =>

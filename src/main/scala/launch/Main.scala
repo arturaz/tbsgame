@@ -5,9 +5,9 @@ import java.nio.ByteOrder
 import akka.actor.{Props => UTProps}
 import akka.stream.ActorMaterializer
 import akka.typed.ScalaDSL._
-import akka.typed.{PostStop, ActorSystem, Props}
-import app.actors.{Server, GCMSender}
+import akka.typed.{ActorSystem, PostStop, Props}
 import app.actors.game.GamesManagerActor
+import app.actors.{GCMSender, Server}
 import app.models.game.world.maps.{GameMap, GameMaps, TMXReader}
 import app.persistence.DBDriver
 import com.typesafe.config.ConfigFactory
@@ -64,7 +64,7 @@ object Main {
         ctx.spawn(Props(GamesManagerActor.behaviour(maps, gcm)), "games-manager")
       println(s"Games manager started: $gamesManager")
 
-      val server = ctx.actorOf(UTProps(new Server(rtConfig, gamesManager, db)), "server")
+      val server = ctx.spawn(Props(Server.behavior(rtConfig, gamesManager, db)), "server")
       println(s"Server started: $server")
 
       Full {

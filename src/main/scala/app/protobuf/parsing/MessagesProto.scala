@@ -3,10 +3,10 @@ package app.protobuf.parsing
 import java.io.InputStream
 
 import akka.util.ByteString
-import app.actors.MsgHandler.Client2Server.BackgroundSFO
-import app.actors.NetClient.Msgs.BackgroundSFO
+import app.actors.NetClient.MsgHandlerConnectionIn.BackgroundSFO
 import app.actors.game.GamesManagerActor.BackgroundToken
-import app.actors.{MsgHandler, NetClient}
+import app.actors.net_client.ControlSecretKey
+import app.actors.NetClient
 import netmsg._
 import implicits._
 import spire.math.UInt
@@ -14,19 +14,19 @@ import spire.math.UInt
 import scalaz._, Scalaz._
 
 trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
-  def parse(m: messages.TimeSync.FromClient): NetClient.Msgs.FromClient.TimeSync =
-    NetClient.Msgs.FromClient.TimeSync(parse(m.now))
+  def parse(m: messages.TimeSync.FromClient): NetClient.MsgHandlerConnectionIn.TimeSync =
+    NetClient.MsgHandlerConnectionIn.TimeSync(parse(m.now))
 
-  def parse(msg: messages.FromClient): String \/ NetClient.Msgs.FromClient = {
+  def parse(msg: messages.FromClient): String \/ NetClient.GameClientIn = {
     import messages.FromClient
 
     msg match {
       case FromClient(Some(_), _, _, _) =>
-        NetClient.Msgs.FromClient.ProtoVersionCheck.right
+        NetClient.NotLoggedInState.ProtoVersionCheck.right
       case FromClient(_, Some(m), _, _) =>
-        parse(m).map(NetClient.Msgs.FromClient.Game)
+        parse(m).map(NetClient.InGameState.FromMsgHandler)
       case FromClient(_, _, Some(m), _) =>
-        parse(m).map(NetClient.Msgs.FromClient.Management)
+        parse(m)
       case FromClient(_, _, _, Some(m)) =>
         parse(m).right
       case FromClient(None, None, None, None) =>
@@ -34,16 +34,16 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
     }
   }
 
-  def parse(msg: control.Client2Server): String \/ NetClient.Msgs.FromControlClient = {
-    import NetClient.Control.In, scala.language.implicitConversions
-    implicit def convert(m: control.ControlSecretKey): NetClient.Control.SecretKey =
-      NetClient.Control.SecretKey(m.key)
+  def parse(msg: control.Client2Server): String \/ NetClient.Control = {
+    import NetClient.Control, scala.language.implicitConversions
+    implicit def convert(m: control.ControlSecretKey): ControlSecretKey =
+      ControlSecretKey(m.key)
 
     msg match {
       case control.Client2Server(key, Some(m), _) =>
-        NetClient.Msgs.FromControlClient(key, In.Shutdown).right
+        Control(key, Control.In.Shutdown).right
       case control.Client2Server(key, _, Some(m)) =>
-        NetClient.Msgs.FromControlClient(key, In.Status).right
+        Control(key, Control.In.Status).right
       case control.Client2Server(_, None, None) =>
         s"Empty message: control.Client2Server".left
     }
@@ -87,11 +87,11 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
     }
   }
 
-  def parseFromClient(data: ByteString): String \/ NetClient.Msgs.FromClient = {
+  def parseFromClient(data: ByteString): String \/ NetClient.GameClientIn = {
     parseWithParser(data, _ |> messages.FromClient.parseFrom |> parse)
   }
 
-  def parseFromControlClient(data: ByteString): String \/ NetClient.Msgs.FromControlClient = {
+  def parseFromControlClient(data: ByteString): String \/ NetClient.Control = {
     parseWithParser(data, _ |> control.Client2Server.parseFrom |> parse)
   }
 

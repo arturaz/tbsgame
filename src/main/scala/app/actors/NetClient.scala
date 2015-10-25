@@ -2,53 +2,64 @@ package app.actors
 
 import java.util.UUID
 
-import akka.typed._, ScalaDSL._
-import akka.{actor => untyped}
+import akka.typed._, ScalaDSL._, AskPattern._
+import app.actors.game.GameActor.ClientData
 import netmsg.ProtoChecksum
 import spire.math.UInt
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import akka.event.LoggingReceive
-import akka.io.Tcp.Unbind
 import akka.util.Timeout
-import app.actors.NetClient.Management.{SessionToken, PlainPassword, Credentials}
+import app.actors.net_client._
 import app.actors.game.{GamesManagerActor, GameActor}
 import app.models._
 import app.models.game.Human
 import app.persistence.tables.Tables
-import implicits._
-import scala.reflect.ClassTag
+import implicits._, implicits.actor._
 import scalaz._, Scalaz._
 import app.persistence.DBDriver._
 import org.joda.time.DateTime
+import scala.language.implicitConversions
 
 import scala.util.Try
 
 object NetClient {
-  type ClientInRef = akka.typed.ActorRef[Msgs.FromClient]
-  type ServerOutRef = akka.typed.ActorRef[Msgs.FromServer]
-  type GameInMsg = Human => GameActor.In
+  type Ref = ActorRef[In]
+  type LoggedInRef = ActorRef[IsLoggedIn]
+  type GameInMsg = GameActor.ClientData => GameActor.In
 
-  private[this] sealed trait Message
+  sealed trait In
 
-  sealed trait In extends Message
+  // Messages forwarded to GamesManager
+  sealed trait GamesManagerFwd { _: In => }
+  implicit def asGamesManager(msg: GamesManagerFwd): GamesManagerActor.In.FromNetClient =
+    GamesManagerActor.In.FromNetClient(msg)
+
+  // Messages that come from MsgHandler.
   sealed trait MsgHandlerIn extends In
-  // Messages that come from TCP connection
-  sealed trait MsgHandlerConnectionIn extends MsgHandlerIn
+  object MsgHandlerIn {
+    case class FwdFromMsgHandler(msg: MsgHandler.NetClientFwd) extends MsgHandlerIn
+  }
 
+  // Messages sent to MsgHandler
   sealed trait MsgHandlerOut
+  implicit def asMsgHandler(msg: MsgHandlerOut): MsgHandler.In.FromNetClient =
+    MsgHandler.In.FromNetClient(msg)
 
-  sealed trait ServerOut
+  // Messages that come via the TCP connection
+  sealed trait MsgHandlerConnectionIn extends MsgHandlerIn
+  // Messages that come from the game client
+  sealed trait GameClientIn extends MsgHandlerConnectionIn
+  sealed trait GameClientOut extends MsgHandlerOut
+  // Messages that are defined in management protobuf.
+  sealed trait ManagementIn extends GameClientIn
+  sealed trait ManagementOut extends GameClientOut
 
-  sealed trait GamesManagerIn
-  sealed trait GamesManagerOut
-
+  // Messages that come from the control client
+  case class Control(key: ControlSecretKey, msg: Control.In)
+    extends MsgHandlerConnectionIn
   object Control {
-    case class SecretKey(key: String) extends AnyVal
-
     sealed trait In
     object In {
-      case object ShutdownInitiated extends MsgHandlerIn
       case object Shutdown extends In
       case object Status extends In
     }
@@ -65,107 +76,22 @@ object NetClient {
         tcpClients: Option[UInt], playingUsers: Option[UInt], games: Option[UInt]
       ) extends Out {
         override def toString = {
-          import Status.asStr
+          def asStr(o: Option[UInt]) = o.fold2("-", _.toString())
           s"Status[tcp clients: ${asStr(tcpClients)}, playing users: ${
-          asStr(playingUsers)}, games: ${asStr(games)}]"
+            asStr(playingUsers)}, games: ${asStr(games)}]"
         }
-      }
-      object Status {
-        def asStr(o: Option[UInt]) = o.fold2("-", _.toString())
       }
     }
   }
 
-  object Management {
-    sealed trait AuthToken
-
-    case class SessionToken(value: String) extends AuthToken
-    object SessionToken {
-      def random() = SessionToken(UUID.randomUUID().shortStr)
-    }
-
-    case class PlainPassword(value: String) extends AuthToken {
-      import com.github.t3hnar.bcrypt._
-
-      def encrypted = value.bcrypt
-      def check(hash: String) = value.isBcrypted(hash)
-    }
-
-    case class Credentials(name: String, auth: AuthToken) {
-      def check(sessionToken: String, passwordHash: String): Boolean =
-        auth match {
-          case SessionToken(token) => sessionToken == token
-          case password: PlainPassword => password.check(passwordHash)
-        }
-    }
-
-    sealed trait In
-    object In {
-      case object AutoRegister extends In
-      case class CheckNameAvailability(name: String) extends In
-      case class Register(
-        username: String, password: PlainPassword, email: String
-      ) extends In
-      case class Login(credentials: Credentials) extends In
-      object JoinGame {
-        sealed trait Mode
-        sealed trait PvPMode extends Mode {
-          def playersPerTeam: Int
-          def teams: Int
-          def playersNeeded = teams * playersPerTeam
-        }
-
-        object Mode {
-          case object Singleplayer extends Mode
-          case object OneVsOne extends PvPMode { def playersPerTeam = 1; def teams = 2 }
-        }
-      }
-      case class JoinGame(mode: JoinGame.Mode) extends In
-      case object CancelJoinGame extends In
-
-      // After client logs in it should cancel the active background token.
-      case class CancelBackgroundToken(
-        token: GamesManagerActor.BackgroundToken
-      ) extends In with ServerOut
-    }
-
-    sealed trait Out extends MsgHandlerOut
-    object Out {
-      case class CheckNameAvailabilityResponse(name: String, available: Boolean) extends Out
-      case class RegisterResponse(newToken: Option[SessionToken]) extends Out
-
-      sealed trait LoginResponse extends Out
-      case object InvalidCredentials extends LoginResponse
-      case class LoggedIn(
-        user: User, token: SessionToken, autogenerated: Boolean
-      ) extends LoginResponse
-
-      case class GameJoined(human: Human) extends Out
-      case object JoinGameCancelled extends Out
-
-      case class WaitingListJoined(
-        token: GamesManagerActor.BackgroundToken
-      ) extends Out with GamesManagerIn
-    }
-  }
-
-  object Msgs {
-    sealed trait FromClient extends MsgHandlerConnectionIn
-    object FromClient {
-      case object ProtoVersionCheck extends FromClient
-      case class Game(msg: GameInMsg) extends FromClient
-      case class Management(msg: NetClient.Management.In) extends FromClient
-      case class TimeSync(clientNow: DateTime) extends FromClient
-    }
-
-    case class FromControlClient(
-      key: NetClient.Control.SecretKey, msg: NetClient.Control.In
-    ) extends MsgHandlerConnectionIn
+  object MsgHandlerConnectionIn {
+    case class TimeSync(clientNow: DateTime) extends GameClientIn
+    case class TimeSyncReply(clientNow: DateTime, serverNow: DateTime) extends GameClientOut
 
     // Background searching for opponent heartbeat
     case class BackgroundSFO(
       kind: BackgroundSFO.Kind, token: GamesManagerActor.BackgroundToken
-    ) extends MsgHandlerConnectionIn with GamesManagerOut
+    ) extends MsgHandlerConnectionIn with GamesManagerFwd
     object BackgroundSFO {
       sealed trait Kind
       object Kind {
@@ -173,203 +99,266 @@ object NetClient {
         case object Cancel extends Kind
       }
     }
+  }
 
-    sealed trait FromServer extends MsgHandlerOut
-    object FromServer {
-      case class ProtoVersionCheck(checksum: String) extends FromServer
-      case class Game(msg: GameActor.ClientOut) extends FromServer
-      case class TimeSync(clientNow: DateTime, serverNow: DateTime) extends FromServer
+  sealed trait NotLoggedInState extends MsgHandlerConnectionIn
+  object NotLoggedInState {
+    case object ProtoVersionCheck extends NotLoggedInState with GameClientIn
+    case class ProtoVersionCheckReply(checksum: String) extends GameClientOut
+
+    // After client connects in it should cancel the active background token.
+    case class CancelBackgroundToken(
+      token: GamesManagerActor.BackgroundToken
+    ) extends NotLoggedInState with GamesManagerFwd with ManagementIn
+
+    case object AutoRegister extends NotLoggedInState with ManagementIn
+
+    case class Login(credentials: Credentials) extends NotLoggedInState with ManagementIn
+    sealed trait LoginResponse extends ManagementOut
+    object LoginResponse {
+      case object InvalidCredentials extends LoginResponse
+      case class LoggedIn(
+        user: User, token: SessionToken, autogenerated: Boolean
+      ) extends LoginResponse
     }
+  }
+
+  sealed trait IsLoggedIn extends In
+
+  sealed trait LoggedInState extends IsLoggedIn
+  object LoggedInState {
+    object JoinGame {
+      sealed trait Mode
+      sealed trait PvPMode extends Mode {
+        def playersPerTeam: Int
+        def teams: Int
+        def playersNeeded = teams * playersPerTeam
+      }
+
+      object Mode {
+        case object Singleplayer extends Mode
+        case object OneVsOne extends PvPMode { def playersPerTeam = 1; def teams = 2 }
+      }
+    }
+    case class JoinGame(mode: JoinGame.Mode) extends LoggedInState with ManagementIn
+    case class GameJoined(human: Human, game: GameActor.Ref) extends LoggedInState with ManagementOut
+
+    case object CancelJoinGame extends LoggedInState with ManagementIn
+    case object JoinGameCancelled extends LoggedInState with ManagementOut
+
+    case class CheckNameAvailability(name: String) extends LoggedInState with ManagementIn
+    case class CheckNameAvailabilityResponse(
+      name: String, available: Boolean
+    ) extends ManagementOut
+
+    case class Register(
+      username: String, password: PlainPassword, email: String
+    ) extends LoggedInState with ManagementIn
+    case class RegisterResponse(newToken: Option[SessionToken]) extends ManagementOut
+
+    case class WaitingListJoined(token: GamesManagerActor.BackgroundToken)
+      extends LoggedInState with ManagementOut
+  }
+
+  sealed trait InGameState extends IsLoggedIn
+  object InGameState {
+    case class FromMsgHandler(msg: GameInMsg) extends InGameState with GameClientIn
+    case class FromGameActor(msg: GameActor.NetClientOut) extends InGameState with GameClientOut
   }
 
   def behavior(
     msgHandler: MsgHandler.Ref, gamesManager: GamesManagerActor.Ref,
-    server: Server.Ref, controlKey: NetClient.Control.SecretKey,
+    server: Server.Ref, controlKey: ControlSecretKey,
     db: Database
-  ): Behavior[In] = ContextAware[Message] { ctx =>
+  ): Behavior[In] = ContextAware[In] { ctx =>
+    val log = ctx.createLogging()
     ctx.watch(msgHandler)
 
+    def handleControl(c: Control): Future[Control.Out] = {
+      if (c.key === controlKey) c.msg match {
+        case Control.In.Shutdown =>
+          server ! Server.In.Unbind
+          Future.successful(Control.Out.GenericReply.success)
+        case Control.In.Status =>
+          import ctx.executionContext
 
-    val common = Partial[Msgs.FromClient] {
-      case Msgs.FromClient.ProtoVersionCheck =>
-        msgHandler ! Msgs.FromServer.ProtoVersionCheck(ProtoChecksum.checksum)
-        Same
+          implicit val timeout = Timeout(3.seconds)
 
-      case Msgs.FromClient.TimeSync(clientNow) =>
-        msgHandler ! Msgs.FromServer.TimeSync(clientNow, DateTime.now)
-        Same
-
-      case m: Msgs.BackgroundSFO =>
-        gamesManager ! m
-      case FromClient.Management(m: NetClient.Management.In.CancelBackgroundToken) =>
-        gamesManager ! m
-      case m: NetClient.Management.Out.WaitingListJoined =>
-        m.out()
-      case Server.ShutdownInitiated =>
-        shutdownInitiated = true
-      case c: FromControlClient =>
-        import context.dispatcher
-        handleControl(c).onComplete {
-          case util.Success(m) => m.out()
-          case util.Failure(err) => log.error("Error while handling control message {}: {}", c, err)
-        }
-    }
-  }.narrow
-}
-
-class NetClient {
-  import app.actors.NetClient.Management.In._
-  import app.actors.NetClient.Management.Out._
-  import app.actors.NetClient.Msgs._
-  import app.actors.NetClient._
-
-  implicit class ServerMsgExts(msg: FromServer) {
-    def out(): Unit = msgHandler ! MsgHandler.Server2Client.GameMsg(msg)
-  }
-  implicit class ManagementMsgExts(msg: Management.Out) {
-    def out(): Unit = FromServer.Management(msg).out()
-  }
-  implicit class GameMsgExts(msg: GameActor.ClientOut) {
-    def out(): Unit = FromServer.Game(msg).out()
-  }
-  implicit class ControlMsgExts(msg: Control.Out) {
-    def out(): Unit = msgHandler ! MsgHandler.Server2Client.ControlMsg(msg)
-  }
-
-  override def receive = notLoggedIn
-
-  private[this] var shutdownInitiated = false
-  private[this] var inGameOpt = Option.empty[(ActorRef, Human)]
-
-  @throws[Exception](classOf[Exception])
-  override def postStop(): Unit = {
-    if (shutdownInitiated) {
-      inGameOpt.foreach { case (gameRef, human) =>
-        // Auto-concede if lost connection when shutdown is initiated.
-        log.info("Auto conceding because lost connection in shutdown mode.")
-        gameRef ! GameActor.In.Concede(human)
-      }
-    }
-  }
-
-
-  def handleControl(c: FromControlClient): Future[Control.Out] = {
-    if (c.key === controlKey) c.msg match {
-      case Control.In.Shutdown =>
-        server ! Unbind
-        Future.successful(Control.Out.GenericReply.success)
-      case Control.In.Status =>
-        import context.dispatcher
-
-        def ask[Reply : ClassTag, Result](
-          ref: AskableActorRef, message: Any, f: Reply => Result
-        ) = {
-          ref.ask(message)(Timeout(3.seconds)).mapTo[Reply].map(r => Some(f(r))).recover {
+          def asOption[A](f: Future[A]) = f.map(Some.apply).recover {
             case e =>
-              log.error("Error while asking for {}: {}", message, e)
+              log.error("Error while asking: {}", e)
               None
           }
-        }
 
-        val clientsCountF = ask[Server.Out.ReportClientCount, UInt](
-          server, Server.In.ReportClientCount, r => r.clients
-        )
-        val gamesCountF = ask[GamesManagerActor.Out.StatsReport, (UInt, UInt)](
-          gamesManager, GamesManagerActor.In.StatsReport, r => (r.users, r.games)
-        )
+          val clientsCountF = (server ? Server.In.ReportClientCount) |> asOption
+          val gamesCountF = (gamesManager ? GamesManagerActor.In.StatsReport) |> asOption
 
-        (clientsCountF zip gamesCountF).map { case (clients, gameManagerOpt) =>
-          Control.Out.Status(clients, gameManagerOpt.map(_._1), gameManagerOpt.map(_._2))
-        }
-    }
-    else Future.successful(Control.Out.GenericReply.error(s"Invalid control key '${c.key}'"))
-  }
-
-  private[this] val notLoggedIn: Receive = {
-    def logIn(user: User, sessionToken: SessionToken, autogenerated: Boolean): Unit = {
-      context.become(loggedIn(user))
-      LoggedIn(user, sessionToken, autogenerated).out()
-      gamesManager ! GamesManagerActor.In.CheckUserStatus(user)
+          (clientsCountF zip gamesCountF).map {
+            case (clients, gameManagerOpt) => Control.Out.Status(
+              clients, gameManagerOpt.map(_.users), gameManagerOpt.map(_.games)
+            )
+          }
+      }
+      else Future.successful(
+        Control.Out.GenericReply.error(s"Invalid control key '${c.key}'")
+      )
     }
 
-    LoggingReceive(({
-      case FromClient.Management(AutoRegister) =>
-        val password = PlainPassword(UUID.randomUUID().shortStr)
-        val sessionToken = SessionToken.random()
-        val id = UUID.randomUUID()
-        val user = User(id, s"autogen-${id.shortStr}")
-        val credentials = Credentials(user.name, password)
-        db.withSession { implicit session =>
-          Tables.users.
-            map(t => (t.user, t.sessionToken, t.password, t.email)).
-            insert((user, sessionToken.value, password.encrypted, None))
+    var shutdownInitiated = false
+    var inGameOpt = Option.empty[(GameActor.Ref, Human)]
+
+    val common = Full[In] {
+      case Sig(_, PostStop) =>
+        if (shutdownInitiated) {
+          inGameOpt.foreach { case (gameRef, human) =>
+            // Auto-concede if lost connection when shutdown is initiated.
+            log.info("Auto conceding because lost connection in shutdown mode.")
+            gameRef ! GameActor.In.Concede(ClientData(human, ctx.self))
+          }
         }
-        logIn(user, sessionToken, autogenerated = true)
+        Same
 
-      case FromClient.Management(Login(credentials)) =>
-        val optQ = Tables.users.
-          filter(t => t.name === credentials.name).
-          map(t => (t.id, t.sessionToken, t.email, t.password))
-        val idOpt = db.withSession(optQ.firstOption(_)).filter {
-          case (_, sessionToken, _, pwHash) =>
-            credentials.check(sessionToken, pwHash)
-        }.map(t => (t._1, SessionToken(t._2), t._3.isEmpty))
+      case Msg(_, MsgHandlerConnectionIn.TimeSync(clientNow)) =>
+        msgHandler ! MsgHandlerConnectionIn.TimeSyncReply(clientNow, DateTime.now)
+        Same
 
-        idOpt.fold2(
-          InvalidCredentials.out(),
-          { case (id, token, autogenerated) =>
-            logIn(User(id, credentials.name), token, autogenerated) }
-        )
-    }: Receive) orElse common)
-  }
+      case Msg(_, m: MsgHandlerConnectionIn.BackgroundSFO) =>
+        gamesManager ! m
+        Same
 
-  private[this] def loggedIn(user: User): Receive = LoggingReceive(({
-    case FromClient.Management(CheckNameAvailability(name)) =>
-      val query = Tables.users.map(_.name).filter(_ === name).exists
-      val exists = db.withSession(query.run(_))
-      CheckNameAvailabilityResponse(name, ! exists).out()
+      case Msg(_, MsgHandlerIn.FwdFromMsgHandler(MsgHandler.In.Control.ShutdownInitiated)) =>
+        shutdownInitiated = true
+        Same
 
-    case FromClient.Management(Register(username, password, email)) =>
-      val token = SessionToken.random()
-      val query = Tables.users.
-        filter(t => t.id === user.id && t.email.isEmpty).
-        map(t => (t.name, t.email, t.password, t.sessionToken))
-      val success = Try {
-        db.withSession(query.update((
-          username, Some(email), password.encrypted, token.value
-        ))(_))
-      }.getOrElse(0) === 1
-      RegisterResponse(if (success) Some(token) else None).out()
+      case Msg(_, c: Control) =>
+        import ctx.executionContext
+        handleControl(c).onComplete {
+          case util.Success(m) => msgHandler ! m
+          case util.Failure(err) => log.error("Error while handling control message {}: {}", c, err)
+        }
+        Same
+    }
 
-    case FromClient.Management(JoinGame(mode)) =>
-      gamesManager ! GamesManagerActor.In.Join(user, mode)
+    lazy val notLoggedIn = {
+      def logIn(
+        self: ActorRef[In], user: User, sessionToken: SessionToken,
+        autogenerated: Boolean
+      ) = {
+        msgHandler ! NotLoggedInState.LoginResponse.LoggedIn(user, sessionToken, autogenerated)
+        gamesManager ! GamesManagerActor.In.CheckUserStatus(user, self)
+        loggedIn(user)
+      }
 
-    case FromClient.Management(CancelJoinGame) =>
-      gamesManager ! GamesManagerActor.In.CancelJoinGame(user)
+      Partial[In] {
+        case msg: NotLoggedInState => msg match {
+          case NotLoggedInState.ProtoVersionCheck =>
+            msgHandler ! NotLoggedInState.ProtoVersionCheckReply(ProtoChecksum.checksum)
+            Same
 
-    case msg: JoinGameCancelled.type =>
-      msg.out()
+          case m: NotLoggedInState.CancelBackgroundToken =>
+            gamesManager ! m
+            Same
 
-    case GameActor.Out.Joined(human, game) =>
-      GameJoined(human).out()
-      context.become(inGame(user, human, game))
-  }: Receive) orElse common)
+          case NotLoggedInState.AutoRegister =>
+            val password = PlainPassword(UUID.randomUUID().shortStr)
+            val sessionToken = SessionToken.random()
+            val id = UUID.randomUUID()
+            val user = User(id, s"autogen-${id.shortStr}")
+            val credentials = Credentials(user.name, password)
+            db.withSession { implicit session =>
+              Tables.users.
+                map(t => (t.user, t.sessionToken, t.password, t.email)).
+                insert((user, sessionToken.value, password.encrypted, None))
+            }
+            logIn(ctx.self, user, sessionToken, autogenerated = true)
 
-  private[this] def inGame(user: User, human: Human, game: ActorRef): Receive = {
-    inGameOpt = Some((game, human))
-    context.watch(game)
-    LoggingReceive(({
-      case FromClient.Game(msgFn) =>
-        val msg = msgFn(human)
-        game ! msg
-      case msg: GameActor.ClientOut =>
-        msg.out()
-      case Terminated if sender() == game =>
-        log.error("Game was terminated")
-        inGameOpt = None
-        context.become(loggedIn(user))
-    }: Receive) orElse common)
-  }
+          case NotLoggedInState.Login(credentials) =>
+            val optQ = Tables.users.
+              filter(t => t.name === credentials.name).
+              map(t => (t.id, t.sessionToken, t.email, t.password))
+            val idOpt = db.withSession(optQ.firstOption(_)).filter {
+              case (_, sessionToken, _, pwHash) =>
+                credentials.check(sessionToken, pwHash)
+            }.map(t => (t._1, SessionToken(t._2), t._3.isEmpty))
+
+            idOpt.fold2(
+              {
+                msgHandler ! NotLoggedInState.LoginResponse.InvalidCredentials
+                Same
+              },
+              { case (id, token, autogenerated) =>
+                logIn(ctx.self, User(id, credentials.name), token, autogenerated)
+              }
+            )
+        }
+      }
+    }
+
+    def loggedIn(user: User): Behavior[In] = Partial[In] {
+      case msg: LoggedInState => msg match {
+        case LoggedInState.CheckNameAvailability(name) =>
+          val query = Tables.users.map(_.name).filter(_ === name).exists
+          val exists = db.withSession(query.run(_))
+          msgHandler ! LoggedInState.CheckNameAvailabilityResponse(name, ! exists)
+          Same
+
+        case LoggedInState.Register(username, password, email) =>
+          val token = SessionToken.random()
+          val query = Tables.users.
+            filter(t => t.id === user.id && t.email.isEmpty).
+            map(t => (t.name, t.email, t.password, t.sessionToken))
+          val success = Try {
+            db.withSession(query.update((
+              username, Some(email), password.encrypted, token.value
+            ))(_))
+          }.getOrElse(0) === 1
+          msgHandler ! LoggedInState.RegisterResponse(if (success) Some(token) else None)
+          Same
+
+        case LoggedInState.JoinGame(mode) =>
+          gamesManager ! GamesManagerActor.In.Join(user, mode, ctx.self)
+          Same
+
+        case msg: LoggedInState.WaitingListJoined =>
+          msgHandler ! msg
+          Same
+
+        case msg @ LoggedInState.GameJoined(human, game) =>
+          msgHandler ! msg
+          inGame(user, human, game)
+
+        case LoggedInState.CancelJoinGame =>
+          gamesManager ! GamesManagerActor.In.CancelJoinGame(user, ctx.self)
+          Same
+
+        case msg: LoggedInState.JoinGameCancelled.type =>
+          msgHandler ! msg
+          Same
+      }
+    }
+
+    def inGame(user: User, human: Human, game: GameActor.Ref) = {
+      inGameOpt = Some((game, human))
+      ctx.watch(game)
+      Full[In] {
+        case Sig(_, Terminated(`game`)) =>
+          log.error("Game was terminated")
+          inGameOpt = None
+          loggedIn(user)
+
+        case Msg(_, msg: InGameState) =>
+          msg match {
+            case InGameState.FromMsgHandler(msgFn) =>
+              val msg = msgFn(ClientData(human, ctx.self))
+              game ! msg
+            case gameMsg: InGameState.FromGameActor =>
+              msgHandler ! gameMsg
+          }
+          Same
+      }
+    }
+
+    Or(common, notLoggedIn)
+  }.narrow
 }
-
 

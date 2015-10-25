@@ -1,17 +1,15 @@
 package app.protobuf.parsing
 
 import app.actors.NetClient.GameInMsg
-import app.actors.game.GameActor.In
+import app.actors.game.GameActor.In._
+import app.actors.game.GameActor.{ClientData, In}
 import app.models.game._
 import app.models.game.world._
-import app.models.game.world.units._
-import app.models.game.world.buildings._
 import netmsg._
-import implicits._
-import scalaz._, Scalaz._
-import app.actors.game.GameActor.In._
 
 import scala.language.implicitConversions
+import scalaz.Scalaz._
+import scalaz._
 
 trait GameProto extends BaseProto {
   implicit def parsePid(v: game.PlayerID): Player.Id = Player.Id(v.id)
@@ -43,32 +41,34 @@ trait GameProto extends BaseProto {
       case game.MAttack.Target(None, None) => s"Empty MAttack.Target: $o!".left
     }
 
-  def parseMove(m: game.MMove): String \/ (Human => Move) =
-    for (path <- parsePath(m.path)) yield In.Move(_: Human, m.id, path)
+  def parseMove(m: game.MMove): String \/ (ClientData => Move) =
+    for (path <- parsePath(m.path))
+      yield In.Move(_: ClientData, m.id, path)
 
   def parse(msg: game.FromClient): String \/ GameInMsg = {
     msg match {
       case game.FromClient(Some(m), _, _, _, _, _, _, _) =>
-        \/-(In.Warp(_: Human, m.position, m.warpable))
+        \/-(In.Warp(_: ClientData, m.position, m.warpable))
       case game.FromClient(_, Some(m), _, _, _, _, _, _) =>
         parseMove(m)
       case game.FromClient(_, _, Some(m), _, _, _, _, _) =>
         parseTarget(m.target).map { target =>
-          In.Attack(_: Human, m.id, target)
+          In.Attack(_: ClientData, m.id, target)
         }
       case game.FromClient(_, _, _, Some(m), _, _, _, _) =>
-        \/-(In.Special(_: Human, m.id))
+        \/-(In.Special(_: ClientData, m.id))
       case game.FromClient(_, _, _, _, Some(m), _, _, _) =>
         for {
           move <- parseMove(m.move)
           target <- parseTarget(m.target)
         } yield move.andThen(In.MoveAttack(_, target))
       case game.FromClient(_, _, _, _, _, Some(m), _, _) =>
-        \/-(In.Leave.apply(_: Human))
+        // TODO: remove from proto
+        s"Deprecated message: $m".left
       case game.FromClient(_, _, _, _, _, _, Some(m), _) =>
-        \/-(In.ToggleWaitingForRoundEnd.apply(_: Human))
+        \/-(In.ToggleWaitingForRoundEnd.apply(_: ClientData))
       case game.FromClient(_, _, _, _, _, _, _, Some(m)) =>
-        \/-(In.Concede.apply(_: Human))
+        \/-(In.Concede.apply(_: ClientData))
       case game.FromClient(None, None, None, None, None, None, None, None) =>
         s"Empty message: $msg!".left
     }

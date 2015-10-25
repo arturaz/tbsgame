@@ -2,7 +2,6 @@ package app.actors
 
 import java.nio.ByteOrder
 
-import akka.event.LoggingAdapter
 import akka.io.Tcp
 import akka.typed.ScalaDSL._
 import akka.typed._
@@ -10,30 +9,36 @@ import akka.util.ByteString
 import akka.{actor => untyped}
 import app.protobuf.parsing.Parsing
 import app.protobuf.serializing.Serializing
-import implicits._
+import implicits.actor._
 import utils.network.IntFramedPipeline
 import utils.network.IntFramedPipeline.Frame
 
+import scala.language.implicitConversions
 import scalaz.Scalaz._
 import scalaz._
 
 object MsgHandler {
   type Ref = ActorRef[In]
 
-  private[this] sealed trait Message
+  sealed trait Message
 
   sealed trait In extends Message
   object In {
     sealed trait Control extends In
     object Control {
-      case object ShutdownInitiated extends Control
+      case object ShutdownInitiated extends Control with NetClientFwd
     }
     case class FromNetClient(msg: NetClient.MsgHandlerOut) extends In
   }
 
+  // Messages forwarded to NetClient
+  sealed trait NetClientFwd
+  implicit def asNetClientFwd(msg: NetClientFwd): NetClient.MsgHandlerIn.FwdFromMsgHandler =
+    NetClient.MsgHandlerIn.FwdFromMsgHandler(msg)
+
   private[this] sealed trait Internal extends Message
   private[this] object Internal {
-    case class Tcp(msg: akka.io.Tcp.Message) extends Internal
+    case class Tcp(msg: akka.io.Tcp.Event) extends Internal
     case object Ack extends akka.io.Tcp.Event with Internal
   }
 
@@ -43,12 +48,8 @@ object MsgHandler {
     netClientBehavior: Ref => Behavior[NetClient.MsgHandlerIn],
     maxToClientBufferSize: Int = 1024 * 1024
   )(implicit byteOrder: ByteOrder) = {
-    val main = ctx.spawn(
-      Props(behavior(connection, netClientBehavior, maxToClientBufferSize)),
-      name
-    )
-    val tcp = ctx.spawn(
-      Props(ContextAware[Tcp.Message] { tcpCtx =>
+    lazy val tcpAdapter: ActorRef[Tcp.Event] = ctx.spawn(
+      Props(ContextAware[Tcp.Event] { tcpCtx =>
         tcpCtx.watch(main)
         Full {
           case Msg(_, msg) =>
@@ -60,11 +61,18 @@ object MsgHandler {
       }),
       s"$name-tcp-adapter"
     )
-    (main: Ref, tcp)
+    lazy val main: ActorRef[Message] = {
+      val bridge = TypedUntypedActorBridge(connection, tcpAdapter.asUntyped)
+      ctx.spawn(
+        Props(behavior(bridge, netClientBehavior, maxToClientBufferSize)),
+        name
+      )
+    }
+    (main: Ref, tcpAdapter)
   }
 
   private[this] def behavior(
-    connection: untyped.ActorRef, 
+    connection: TypedUntypedActorBridge,
     netClientBehavior: Ref => Behavior[NetClient.MsgHandlerIn],
     maxToClientBufferSize: Int
   )(implicit byteOrder: ByteOrder): Behavior[Message] = ContextAware { ctx =>
@@ -81,7 +89,46 @@ object MsgHandler {
 
     val netClient = ctx.spawn(Props(netClientBehavior(ctx.self)), "net-client")
     ctx.watch(netClient)
-    ctx.watch(connection)
+    ctx.watch(connection.raw)
+
+    val common = Partial[Message] {
+      case Internal.Tcp(Tcp.Received(data)) =>
+        pipeline.unserialize(data).foreach {
+          case -\/(err) => log.error(err)
+          case \/-(msg) => netClient ! msg
+        }
+        Same
+
+      case msg: In.Control.ShutdownInitiated.type =>
+        netClient ! msg
+        Same
+    }
+
+    lazy val buffering = Partial[Message] {
+      case In.FromNetClient(msg) =>
+        buffer(pipeline.serialize(msg))
+
+      case Internal.Ack =>
+        acknowledge()
+
+      case Internal.Tcp(msg: Tcp.ConnectionClosed) =>
+        log.info(s"closing = true by {}.", msg)
+        closing = true
+        Same
+    }
+
+    lazy val normal = Partial[Message] {
+      case In.FromNetClient(msg) =>
+        val data = pipeline.serialize(msg)
+
+        buffer(data)
+        connection ! Tcp.Write(data, Internal.Ack)
+        buffering
+
+      case Internal.Tcp(msg: Tcp.ConnectionClosed) =>
+        log.info(s"Connection closed by {}.", msg)
+        Stopped
+    }
 
     def buffer(data: ByteString): Behavior[Message] = {
       storage :+= data
@@ -123,49 +170,11 @@ object MsgHandler {
       }
     }
 
-    val common = Full[Internal.Tcp] {
-      case Msg(_, Internal.Tcp(Tcp.Received(data))) =>
-        pipeline.unserialize(data).foreach {
-          case -\/(err) => log.error(err)
-          case \/-(msg) => netClient ! msg
-        }
-        Same
-    }
-
-    lazy val buffering = Partial[Message] {
-      case In.FromNetClient(msg) =>
-        buffer(pipeline.serialize(msg))
-      case Internal.Ack =>
-        acknowledge()
-      case Internal.Tcp(msg: Tcp.ConnectionClosed) =>
-        log.info(s"closing = true by {}.", msg)
-        closing = true
-        Same
-    }
-
-    lazy val normal = Partial[Message] {
-      case In.FromNetClient(msg) =>
-        val data = pipeline.serialize(msg)
-
-        buffer(data)
-        connection ! Tcp.Write(data, Internal.Ack)
-
-        buffering
-
-      case In.Control.ShutdownInitiated =>
-        netClient ! NetClient.Control.In.ShutdownInitiated
-        Same
-
-      case Internal.Tcp(msg: Tcp.ConnectionClosed) =>
-        log.info(s"Connection closed by {}.", msg)
-        Stopped
-    }
-
     Or(common, normal)
   }
 }
 
-class MsgHandlerPipeline(implicit byteOrder: ByteOrder, log: LoggingAdapter) {
+class MsgHandlerPipeline(implicit byteOrder: ByteOrder) {
   private[this] val intFramed = new IntFramedPipeline()
 
   def unserialize(data: ByteString) = intFramed.fromFramedData(data).map { frame =>
