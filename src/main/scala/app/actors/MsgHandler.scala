@@ -49,10 +49,13 @@ object MsgHandler {
     maxToClientBufferSize: Int = 1024 * 1024
   )(implicit byteOrder: ByteOrder) = {
     lazy val tcpAdapter: ActorRef[Tcp.Event] = ctx.spawn(
-      Props(ContextAware[Tcp.Event] { tcpCtx =>
+      Props(ContextAware[Any] { tcpCtx =>
         tcpCtx.watch(main)
         Full {
-          case Msg(_, msg) =>
+          case Msg(_, msg: Message) =>
+            main ! msg
+            Same
+          case Msg(_, msg: Tcp.Event) =>
             main ! Internal.Tcp(msg)
             Same
           case Sig(_, Terminated(`main`)) =>
@@ -106,7 +109,7 @@ object MsgHandler {
 
     lazy val buffering = Partial[Message] {
       case In.FromNetClient(msg) =>
-        buffer(pipeline.serialize(msg))
+        buffer(pipeline.serialize(msg)).getOrElse(Same)
 
       case Internal.Ack =>
         acknowledge()
@@ -121,30 +124,31 @@ object MsgHandler {
       case In.FromNetClient(msg) =>
         val data = pipeline.serialize(msg)
 
-        buffer(data)
-        connection ! Tcp.Write(data, Internal.Ack)
-        buffering
+        buffer(data).getOrElse {
+          connection ! Tcp.Write(data, Internal.Ack)
+          buffering
+        }
 
       case Internal.Tcp(msg: Tcp.ConnectionClosed) =>
         log.info(s"Connection closed by {}.", msg)
         Stopped
     }
 
-    def buffer(data: ByteString): Behavior[Message] = {
+    def buffer(data: ByteString): Option[Behavior[Message]] = {
       storage :+= data
       stored += data.size
 
       if (stored > maxToClientBufferSize) {
         log.warning(s"drop connection to [{}] (buffer overrun)", connection)
-        Stopped
+        Some(Stopped)
       }
       else if (stored > highWatermark) {
         log.debug(s"suspending reading")
         connection ! Tcp.SuspendReading
         suspended = true
-        Same
+        None
       }
-      else Same
+      else None
     }
 
     def acknowledge(): Behavior[Message] = {
