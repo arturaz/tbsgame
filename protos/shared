@@ -5,3 +5,7 @@ proto_md5() {
     -e ':a; s%(.*)/\*.*\*/%\1%; ta; /\/\*/ !b; N; ba' \
     | egrep -v "^[[:space:]]*$" | md5sum | awk {'print $1'}
 }
+
+abspath() {
+  echo "$(echo $(cd $(dirname $1); pwd)/$(basename $1))"
+}

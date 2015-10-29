@@ -52,12 +52,10 @@ object Main {
       val untypedAS = akka.actor.ActorSystem("app-untyped")
 
       val gcm = rtConfig.gcm.map { gcm =>
-        val behaviour = GCMSender.behaviour(
-          gcm.authHeader, ActorMaterializer()(untypedAS)
-        )
+        val behaviour = GCMSender.behaviour(gcm.authHeader, untypedAS)
         val ref = ctx.spawn(Props(behaviour), "gcm-sender")
         println(s"GCM sender started: $ref")
-        (ref, gcm)
+        ref
       }
 
       val gamesManager =

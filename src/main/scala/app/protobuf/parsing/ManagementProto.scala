@@ -29,22 +29,24 @@ trait ManagementProto extends BaseProto {
     import app.actors.NetClient._
 
     msg match {
-      case FromClient(Some(m), _, _, _, _, _, _) =>
+      case FromClient(Some(m), _, _, _, _, _, _, _) =>
         NotLoggedInState.AutoRegister.right
-      case FromClient(_, Some(m), _, _, _, _, _) =>
+      case FromClient(_, Some(m), _, _, _, _, _, _) =>
         LoggedInState.CheckNameAvailability(m.name).right
-      case FromClient(_, _, Some(m), _, _, _, _) =>
+      case FromClient(_, _, Some(m), _, _, _, _, _) =>
         LoggedInState.Register(m.username, PlainPassword(m.password), m.email).right
-      case FromClient(_, _, _, Some(m), _, _, _) =>
+      case FromClient(_, _, _, Some(m), _, _, _, _) =>
         for (credentials <- parse(m.credentials)) yield NotLoggedInState.Login(credentials)
-      case FromClient(_, _, _, _, Some(m), _, _) =>
+      case FromClient(_, _, _, _, Some(m), _, _, _) =>
         LoggedInState.JoinGame(m.mode).right
-      case FromClient(_, _, _, _, _, Some(m), _) =>
+      case FromClient(_, _, _, _, _, Some(m), _, _) =>
         LoggedInState.CancelJoinGame.right
-      case FromClient(_, _, _, _, _, _, Some(m)) =>
+      case FromClient(_, _, _, _, _, _, Some(m), _) =>
         NotLoggedInState.CancelBackgroundToken(BackgroundToken(m.token)).right
-      case FromClient(None, None, None, None, None, None, None) =>
-        s"Empty msg $msg!".left
+      case FromClient(_, _, _, _, _, _, _, Some(m)) =>
+        LoggedInState.GoingToBackground.right
+      case FromClient(None, None, None, None, None, None, None, None) =>
+        "Empty msg management.FromClient!".left
     }
   }
 }

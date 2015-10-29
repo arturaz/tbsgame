@@ -2,4 +2,4 @@
 // Do not edit!
 package netmsg
 
-object ProtoChecksum { val checksum = "e3147d4447fc29b986d37242978697d3" }
+object ProtoChecksum { val checksum = "19655f377d63ff55856f3c91b746a058" }

@@ -2,11 +2,13 @@ package app.actors.game
 
 import java.util.UUID
 
+import akka.actor.{Scheduler, Cancellable}
 import akka.event.Logging
 import akka.typed.ScalaDSL._
 import akka.typed._
 import app.actors.NetClient.LoggedInState.JoinGame.{PvPMode, Mode}
 import app.actors.game.GameActor.{ClientData, StartingHuman}
+import app.actors.game.GamesManagerActor.BackgroundNotConnected
 import app.actors.{GCMSender, NetClient}
 import app.models.User
 import app.models.game.world.maps.{GameMaps, SingleplayerMap, WorldMaterializer}
@@ -20,6 +22,7 @@ import spire.math.UInt
 
 import scala.concurrent.duration._
 import scalaz.Scalaz._
+import scalaz.{-\/, \/-, \/}
 import scalaz.effect.IO
 
 object GamesManagerActor {
@@ -45,6 +48,16 @@ object GamesManagerActor {
       user: User, replyTo: ActorRef[NetClient.LoggedInState.JoinGameCancelled.type]
     ) extends In
 
+    /* Sent before Unity goes to background. */
+    case class ClientGoingToBackground(user: User) extends In
+    /* Sent when background client connects to the server. */
+    case class BackgroundClientConnected(
+      token: BackgroundToken, replyTo: ActorRef[NetClient.NotLoggedInState.BackgroundLoginReply],
+      ref: NetClient.BGClientRef
+    ) extends In
+    /* Sent when "Leave Queue" is pressed in background client. */
+    case class BackgroundClientLeaveQueue(token: BackgroundToken) extends In
+
     // Stats report for control client
     case class StatsReport(replyTo: ActorRef[StatsReportData]) extends In
 
@@ -53,12 +66,11 @@ object GamesManagerActor {
 
   private[this] sealed trait Internal extends Message
   private[this] object Internal {
-    case object CleanupBackgroundWaitingList extends Internal
-    /* Check if we can shutdown. */
-    case object CheckShutdown extends Internal
+    case class BGTokenExpired(token: BackgroundToken) extends Internal
 
     case class GameTerminated(ref: GameActor.Ref) extends Internal
     case class ClientTerminated(ref: NetClient.LoggedInRef) extends Internal
+    case class BackgroundClientTerminated(token: BackgroundToken) extends Internal
   }
 
   // TODO: proper singleplayer
@@ -95,44 +107,75 @@ object GamesManagerActor {
   }
 
   case class WaitingListEntry(
-    user: User, client: NetClient.LoggedInRef,
-    backgroundToken: BackgroundToken
-  )
+    user: User, client: NetClient.LoggedInRef, backgroundToken: BackgroundToken
+  ) {
+    def toBackground(now: DateTime, schedule: FiniteDuration => IO[Cancellable])
+        (implicit rtConfig: RTConfig) =
+      BackgroundNotConnected.apply(now, schedule).map { state =>
+        BackgroundWaitingListEntry(user, state.left)
+      }
+  }
+
+  case class BackgroundNotConnected(lastSeen: DateTime, scheduledCheck: Cancellable)
+  object BackgroundNotConnected {
+    def apply(now: DateTime, schedule: FiniteDuration => IO[Cancellable])(implicit rtConfig: RTConfig)
+    : IO[BackgroundNotConnected] = for {
+      scheduled <- schedule(rtConfig.gamesManager.backgroundHeartbeatTTL.duration)
+    } yield apply(now, scheduled)
+  }
+
+  case class BackgroundWaitingListEntry(
+    user: User, infoOrConn: BackgroundNotConnected \/ NetClient.BGClientRef
+  ) {
+    def cancelScheduledCheck = IO { infoOrConn.swap.foreach(_.scheduledCheck.cancel()) }
+  }
 
   private def joinGame(
     game: GameActor.Ref, human: Human, client: NetClient.LoggedInRef
   ): Unit = game ! GameActor.In.Join(ClientData(human, client), client)
 
   def behaviour(
-    maps: GameMaps, gcm: Option[(ActorRef[GCMSender.Send], RTConfig.GCM)]
+    maps: GameMaps, gcm: Option[ActorRef[GCMSender.Send]]
   )(implicit rtConfig: RTConfig): Behavior[In] = ContextAware[Message] { ctx =>
     val log = ctx.createLogging()
 
-    def scheduleCleanup(): Unit =
-      ctx.schedule(1.second, ctx.self, Internal.CleanupBackgroundWaitingList)
-
-    def scheduleShutdownMode(): Unit =
-      ctx.schedule(1.second, ctx.self, Internal.CheckShutdown)
-
     var waitingList = Vector.empty[WaitingListEntry]
-    // token -> last heartbeat
-    var waitingInBackground = Map.empty[BackgroundToken, DateTime]
+    var waitingInBackground = Map.empty[BackgroundToken, BackgroundWaitingListEntry]
     var user2game = Map.empty[User, (GameActor.Ref, Human)]
     var game2humans = Map.empty[GameActor.Ref, Set[Human]]
+    var shuttingDown = false
+
+    def findUserInWaitingListF(f: WaitingListEntry => Boolean) = waitingList.indexWhere(f) match {
+      case -1 => None
+      case idx => Some((waitingList(idx), idx))
+    }
+    def findUserInWaitingList(user: User) = findUserInWaitingListF(_.user === user)
 
     def removeBackgroundToken(token: BackgroundToken): Unit = {
-      log.info("Removing background token: {}", token)
-      waitingInBackground -= token
-      notifyGCM()
+      waitingInBackground.get(token).fold2(
+        log.info("Background token {} not found for removal.", token),
+        entry => {
+          log.info("Removing background token: {}", token)
+          entry.cancelScheduledCheck.unsafePerformIO()
+          waitingInBackground -= token
+          notifyWaitingListChanged()
+        }
+      )
     }
 
-    def notifyGCM(): Unit = {
-      gcm.foreach { case (ref, cfg) =>
-        val foreground = GCM.Data.SearchingForOpponent.InForeground(UInt(waitingList.size))
-        val background = GCM.Data.SearchingForOpponent.InBackground(UInt(waitingInBackground.size))
-        ref ! GCMSender.Send(
-          GCM.searchingForOpponent(foreground, background, cfg.searchForOpponentTTL)
-        )
+    def waitingListIds = waitingList.map(_.user.id).toSet ++ waitingInBackground.map(_._2.user.id)
+
+    def notifyWaitingListChanged(): Unit = {
+      val gcmWaitingList = waitingListIds
+      gcm.foreach { _ ! GCMSender.Send(GCM.SearchingForOpponent(gcmWaitingList).message) }
+      waitingInBackground.foreach {
+        case (_, BackgroundWaitingListEntry(user, \/-(bgRef))) =>
+          val opponentWaiting = !(
+            gcmWaitingList.isEmpty ||
+            (gcmWaitingList.size == 1 && gcmWaitingList.contains(user.id))
+          )
+          bgRef ! NetClient.BackgroundLoggedInState.WaitingListChanged(opponentWaiting)
+        case _ =>
       }
     }
 
@@ -152,7 +195,7 @@ object GamesManagerActor {
               "Added {} from {} to {} waiting list: {}",
               user, client, mode, waitingList
             )
-            notifyGCM()
+            notifyWaitingListChanged()
             ctx.watchWith(client, Internal.ClientTerminated(client))
             client ! NetClient.LoggedInState.WaitingListJoined(token)
           }
@@ -196,7 +239,7 @@ object GamesManagerActor {
     def fromWaitingList(mode: PvPMode): Unit = {
       val (entries, newWaitingList) = waitingList.splitAt(mode.playersNeeded)
       waitingList = newWaitingList
-      notifyGCM()
+      notifyWaitingListChanged()
 
       val teams = Vector.fill(mode.teams)(Team())
       val players = entries.zipWithIndex.map { case (entry, idx) =>
@@ -226,56 +269,36 @@ object GamesManagerActor {
       ctx.watchWith(game, Internal.GameTerminated(game))
       starting.foreach { data =>
         user2game += data.human.user -> ((game, data.human))
+        ctx.unwatch(data.client)
       }
       game2humans += game -> starting.map(_.human)
       log.info("Game {} created for {}", game, starting)
       game
     }
 
-    scheduleCleanup()
+    def tryToShutdown(): Behavior[Message] = {
+      val games = game2humans.size
+      log.debug("Checking for shutdown state, games: {}", games)
+      if (games === 0) {
+        log.info("No games alive, shutting down.")
+        ctx.system.terminate()
+        Stopped
+      }
+      else Same
+    }
+
+    def scheduleBGTokenExpired(token: BackgroundToken)(delay: FiniteDuration) =
+      IO { ctx.schedule(delay, ctx.self, Internal.BGTokenExpired(token)) }
+
     Total[Message] {
-      case Internal.CleanupBackgroundWaitingList =>
-        val now = DateTime.now()
-        val expiredKeys = waitingInBackground.keys.filter { token =>
-          val lastBeat = waitingInBackground(token)
-          val timePassed = now - lastBeat
-          val active = timePassed <= rtConfig.gamesManager.backgroundHeartbeatTTL.duration
-          if (! active) log.debug(
-            "Timing out background token {}: {} > {}",
-            token, timePassed, rtConfig.gamesManager.backgroundHeartbeatTTL.duration
-          )
-          !active
-        }
-        expiredKeys.foreach(waitingInBackground -= _)
-        if (expiredKeys.nonEmpty) notifyGCM()
-
-        scheduleCleanup()
-        Same
-
-      case In.ShutdownInitiated =>
-        log.info("Shutdown mode initiated.")
-        scheduleShutdownMode()
-        Same
-
-      case Internal.CheckShutdown =>
-        val games = game2humans.size
-        log.debug("Checking for shutdown state, games: {}", games)
-        if (games === 0) {
-          log.info("No games alive, shutting down.")
-          ctx.system.terminate()
-          Stopped
-        }
-        else {
-          scheduleShutdownMode()
-          Same
-        }
-
       case In.CheckUserStatus(user, client) =>
         user2game.get(user).foreach { case (game, human) =>
           log.info("{} joining game {} on user status check", human, game)
           joinGame(game, human, client)
         }
         Same
+        
+      // <editor-fold desc="Game joining">
 
       case In.Join(user, mode, replyTo) =>
         user2game.get(user).fold2(
@@ -294,55 +317,101 @@ object GamesManagerActor {
         Same
 
       case In.CancelJoinGame(user, replyTo) =>
-        waitingList.indexWhere(_.user === user) match {
-          case -1 =>
-            log.warning("Not cancelling join game, because {} is not in a waiting list.", user)
-          case idx =>
-            val entry = waitingList(idx)
+        findUserInWaitingList(user).fold2(
+          log.warning("Not cancelling join game, because {} is not in a waiting list.", user),
+          { case (entry, idx) =>
             ctx.unwatch(entry.client)
             waitingList = waitingList.removeAt(idx)
-            notifyGCM()
+            notifyWaitingListChanged()
             replyTo ! NetClient.LoggedInState.JoinGameCancelled
-        }
-        Same
-
-      case In.StatsReport(replyTo) =>
-        replyTo ! StatsReportData(UInt(user2game.size), UInt(game2humans.size))
-        Same
-
-      case In.FromNetClient(NetClient.NotLoggedInState.CancelBackgroundToken(token)) =>
-        removeBackgroundToken(token)
-        Same
-
-      case In.FromNetClient(NetClient.MsgHandlerConnectionIn.BackgroundSFO(kind, token)) =>
-        if (waitingInBackground contains token) {
-          kind match {
-            case NetClient.MsgHandlerConnectionIn.BackgroundSFO.Kind.Heartbeat =>
-              waitingInBackground += token -> DateTime.now()
-              log.debug("Background heartbeat from {}", token)
-            case NetClient.MsgHandlerConnectionIn.BackgroundSFO.Kind.Cancel =>
-              removeBackgroundToken(token)
           }
-        }
-        else {
-          // TODO: should we tell sender that his heartbeat was expired?
-          log.info("Ignoring background {} from unknown token: {}", kind, token)
+        )
+        Same
+
+      case msg @ In.ClientGoingToBackground(user) =>
+        findUserInWaitingList(user) match {
+          case None =>
+            log.error("Cannot find user {} in the waiting list for {}", user, msg)
+          case Some((entry, idx)) =>
+            waitingList = waitingList.removeAt(idx)
+            waitingInBackground += entry.backgroundToken -> entry.toBackground(
+              DateTime.now(),
+              scheduleBGTokenExpired(entry.backgroundToken)
+            ).unsafePerformIO()
+            ctx.unwatch(entry.client)
         }
         Same
 
       case Internal.ClientTerminated(ref) =>
-        waitingList.zipWithIndex.collectFirst {
-          case (entry @ WaitingListEntry(_, `ref`, _), idx) =>
-            (entry, idx)
-        }.foreach { case (entry, idx) =>
-          log.info("{} going into background", entry)
+        log.info("client terminated: {}", ref)
+        findUserInWaitingListF(_.client === ref).foreach { case (entry, idx) =>
           waitingList = waitingList.removeAt(idx)
-          waitingInBackground += entry.backgroundToken -> DateTime.now()
-          notifyGCM()
+          notifyWaitingListChanged()
         }
         Same
 
+      // </editor-fold>
+
+      // <editor-fold desc="Background client handling">
+
+      case In.BackgroundClientConnected(token, replyTo, ref) =>
+        waitingInBackground.get(token).fold2(
+          {
+            log.info("Unknown background client {} connected with token {}", ref, token)
+            replyTo ! NetClient.NotLoggedInState.BackgroundLoginReply("unknown token".left)
+          },
+          entry => {
+            log.info("Background client {} connected with token {}", ref, token)
+            entry.cancelScheduledCheck.unsafePerformIO()
+            waitingInBackground += token -> entry.copy(infoOrConn = ref.right)
+            ctx.watchWith(ref, Internal.BackgroundClientTerminated(token))
+            replyTo ! NetClient.NotLoggedInState.BackgroundLoginReply(token.right)
+          }
+        )
+        Same
+
+      case Internal.BackgroundClientTerminated(token) =>
+        waitingInBackground.get(token).fold2(
+          log.error("Can't find background client by token {} on termination!", token),
+          entry => {
+            log.info("background client terminated unvoluntary: {} -> {}", token, entry)
+            val state = (for {
+              _ <- entry.cancelScheduledCheck
+              state <- BackgroundNotConnected(DateTime.now(), scheduleBGTokenExpired(token) _)
+            } yield state).unsafePerformIO()
+            waitingInBackground += token -> entry.copy(infoOrConn = state.left)
+          }
+        )
+        Same
+        
+      case In.BackgroundClientLeaveQueue(token) =>
+        log.info("background client leaving queue: {}", token)
+        removeBackgroundToken(token)
+        Same
+
+      case Internal.BGTokenExpired(token) =>
+        waitingInBackground.get(token) match {
+          case None =>
+            log.debug("No BG token to expire: {}", token)
+          case Some(BackgroundWaitingListEntry(_, -\/(_))) =>
+            log.info("Timing out background token {}", token)
+            removeBackgroundToken(token)
+          case _ =>
+            log.debug("Client with BG token {}")
+        }
+        Same
+
+      case In.FromNetClient(NetClient.NotLoggedInState.CancelBackgroundToken(token)) =>
+        log.info("logged in client is cancelling his background token: {}", token)
+        removeBackgroundToken(token)
+        Same
+
+      // </editor-fold>
+
+      // <editor-fold desc="Game tracking">
+
       case Internal.GameTerminated(ref) =>
+        log.info("game terminated: {}", ref)
         game2humans.get(ref) match {
           case Some(humans) =>
             log.info("Game {} terminated for humans {}", ref, humans)
@@ -353,7 +422,29 @@ object GamesManagerActor {
               "Game {} terminated, but can't find it in our state!", ref
             )
         }
+
+        if (shuttingDown) tryToShutdown()
+        else Same
+
+      // </editor-fold>
+
+      // <editor-fold desc="Shutdown procedure">
+
+      case In.ShutdownInitiated =>
+        log.info("Shutdown mode initiated.")
+        shuttingDown = true
+        tryToShutdown()
+
+      // </editor-fold>
+
+      // <editor-fold desc="Stats">
+
+      case In.StatsReport(replyTo) =>
+        replyTo ! StatsReportData(UInt(user2game.size), UInt(game2humans.size))
         Same
+
+      // </editor-fold>
+
     }
   }.narrow
 }

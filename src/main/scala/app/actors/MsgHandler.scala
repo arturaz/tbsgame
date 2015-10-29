@@ -96,18 +96,24 @@ object MsgHandler {
 
     val common = Partial[Message] {
       case Internal.Tcp(Tcp.Received(data)) =>
-        pipeline.unserialize(data).foreach {
-          case -\/(err) => log.error(err)
-          case \/-(msg) => netClient ! msg
+        val hadErrors = pipeline.unserialize(data).foldLeft(false) {
+          case (true, _) =>
+            true
+          case (false, -\/(err)) =>
+            log.error(err)
+            true
+          case (false, \/-(msg)) =>
+            netClient ! msg
+            false
         }
-        Same
+        if (hadErrors) Stopped else Same
 
       case msg: In.Control.ShutdownInitiated.type =>
         netClient ! msg
         Same
     }
 
-    lazy val buffering = Partial[Message] {
+    lazy val buffering = common orElse Partial[Message] {
       case In.FromNetClient(msg) =>
         buffer(pipeline.serialize(msg)).getOrElse(Same)
 
@@ -120,7 +126,7 @@ object MsgHandler {
         Same
     }
 
-    lazy val normal = Partial[Message] {
+    lazy val normal = common orElse Partial[Message] {
       case In.FromNetClient(msg) =>
         val data = pipeline.serialize(msg)
 
@@ -174,7 +180,7 @@ object MsgHandler {
       }
     }
 
-    Or(common, normal)
+    normal
   }
 }
 

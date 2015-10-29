@@ -1,7 +1,7 @@
 package implicits
 
 import akka.event.Logging
-import akka.typed.{ActorContext, ActorRef, ActorSystem}
+import akka.typed._
 import akka.{actor => untyped}
 
 package object actor {
@@ -51,6 +51,25 @@ package object actor {
         }
       }))
       ref
+    }
+  }
+
+  implicit class BehaviorExts[A](val b: Behavior[A]) extends AnyVal {
+    def orElse(b1: Behavior[A]) = new Behavior[A] {
+      val unhandled = ScalaDSL.Unhandled[A]
+
+      override def management(ctx: ActorContext[A], msg: Signal): Behavior[A] =
+        orElse(_.management(ctx, msg))
+
+      override def message(ctx: ActorContext[A], msg: A): Behavior[A] =
+        orElse(_.message(ctx, msg))
+
+      private[this] def orElse(f: Behavior[A] => Behavior[A]) = {
+        f(b) match {
+          case `unhandled` => f(b1)
+          case other => other
+        }
+      }
     }
   }
 }

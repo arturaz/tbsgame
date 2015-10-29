@@ -1,0 +1,28 @@
+package bg_client;
+
+option java_package = "netmsg";
+
+// >>>
+message Client2Server {
+  optional Login login = 1;
+}
+
+// <<<
+message Server2Client {
+  optional LoginReply login = 1;
+  optional WaitingListChanged waiting_list_changed = 2;
+}
+
+// >>>
+message Login {
+  required string token = 1;
+}
+// <<<
+message LoginReply {
+  optional string error = 1;
+}
+
+// <<<
+message WaitingListChanged {
+  required bool opponent_waiting = 1;
+}

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 client_dir="$1"
 
 if [ "$client_dir" == "" ]; then
@@ -7,23 +9,26 @@ if [ "$client_dir" == "" ]; then
   exit 1
 fi
 
-targetdir="$client_dir/code/game-general/Networking/Messages/"
-targetdir="$(echo $(cd $(dirname $targetdir); pwd)/$(basename $targetdir))"
 thisdir="$(dirname $0)"
+source "$thisdir/shared"
+
+game_targetdir=$(abspath "$client_dir/unity/Assets/Code/game-general/Networking/Messages/")
+android_targetdir=$(abspath "$client_dir/android-support/src/")
+
 cwd="$(pwd)"
+protoc=$(abspath "$thisdir/tools/protoc.exe")
+cs_protoc=$(abspath "$thisdir/tools/ProtoGen.exe")
 
 namespace="game_general.Networking.Messages"
 
-source "$thisdir/shared"
-
 cd "$thisdir/game"
-echo "Exporting to $targetdir"
-mkdir -p "$targetdir"
-rm -rf "$targetdir"/*.cs
-../tools/ProtoGen.exe *.proto -namespace="$namespace" -output_directory="$targetdir" -nest_classes=true
+echo "Exporting to $game_targetdir"
+mkdir -p "$game_targetdir"
+rm -rf "$game_targetdir"/*.cs
+$cs_protoc *.proto -namespace="$namespace" -output_directory="$game_targetdir" -nest_classes=true
 cd "$cwd"
 
-checksum_file="$targetdir/ProtoChecksum.cs"
+checksum_file="$game_targetdir/ProtoChecksum.cs"
 echo "Writing protocol definition checksums to $checksum_file"
 checksum=$(proto_md5 "$thisdir/game/"*.proto)
 cat > "$checksum_file" << EOF
@@ -35,3 +40,8 @@ namespace $namespace {
   }
 }
 EOF
+
+cd "$thisdir/bg_client"
+echo "Exporting to $android_targetdir"
+$protoc *.proto --java_out=$android_targetdir
+cd "$cwd"

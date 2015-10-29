@@ -1,18 +1,19 @@
 #!/bin/bash
 
+set -e
+
 thisdir="$(cd "$(dirname "$0")"; pwd)"
 cwd="$(pwd)"
 
-targetdir="$thisdir/../src/gen/scala/"
-targetdir="$(echo $(cd $(dirname $targetdir); pwd)/$(basename $targetdir))"
-
-protoc="$thisdir/tools/protoc.exe"
-
 source "$thisdir/shared"
+
+targetdir=$(abspath "$thisdir/../src/gen/scala/")
+
+protoc=$(abspath "$thisdir/tools/protoc.exe")
 
 echo "Exporting to $targetdir."
 rm -rf "$targetdir"/*
-for dir in game control; do
+for dir in game control bg_client; do
   cd "$thisdir/$dir"
   echo "Exporting in $dir"
   $protoc "--plugin=protoc-gen-scala=$thisdir/tools/scalapb-0.4.9.exe" \

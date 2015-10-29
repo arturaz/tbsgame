@@ -26,9 +26,7 @@ object RTConfig {
   // Time to live
   case class TTL(duration: FiniteDuration) extends AnyVal
 
-  case class GCM(
-    key: GCM.Key, authHeader: HttpHeader, searchForOpponentTTL: TTL
-  )
+  case class GCM(key: GCM.Key, authHeader: HttpHeader)
   object GCM {
     case class Key(value: String) extends AnyVal
   }
@@ -48,9 +46,7 @@ object RTConfig {
         for {
           gcmKey <- config.readStr(key("google.gcm.server_api_key")).map(key => GCM.Key(key))
           gcmAuthHeader <- GCMSender.authHeader(gcmKey)
-          searchForOpponentTTL <-
-            config.readDuration(key("google.gcm.searching_for_opponent.time_to_live")).map(TTL)
-        } yield Some(GCM(gcmKey, gcmAuthHeader, searchForOpponentTTL))
+        } yield Some(GCM(gcmKey, gcmAuthHeader))
     }
     val gamesManager = config.readDuration(key("games_manager.background_heartbeat_ttl"))
       .map(d => GamesManager(TTL(d)))

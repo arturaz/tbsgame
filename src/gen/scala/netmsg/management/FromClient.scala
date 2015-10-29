@@ -13,7 +13,8 @@ final case class FromClient(
     login: Option[netmsg.management.Login] = None,
     joinGame: Option[netmsg.management.JoinGame] = None,
     cancelJoinGame: Option[netmsg.management.CancelJoinGame] = None,
-    cancelBackgroundToken: Option[netmsg.management.CancelBackgroundToken] = None
+    cancelBackgroundToken: Option[netmsg.management.CancelBackgroundToken] = None,
+    goingToBackground: Option[netmsg.management.GoingToBackground] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[FromClient] with com.trueaccord.lenses.Updatable[FromClient] {
     lazy val serializedSize: Int = {
       var __size = 0
@@ -24,6 +25,7 @@ final case class FromClient(
       if (joinGame.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(joinGame.get.serializedSize) + joinGame.get.serializedSize }
       if (cancelJoinGame.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(cancelJoinGame.get.serializedSize) + cancelJoinGame.get.serializedSize }
       if (cancelBackgroundToken.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(cancelBackgroundToken.get.serializedSize) + cancelBackgroundToken.get.serializedSize }
+      if (goingToBackground.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(goingToBackground.get.serializedSize) + goingToBackground.get.serializedSize }
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -62,6 +64,11 @@ final case class FromClient(
         output.writeRawVarint32(v.serializedSize)
         v.writeTo(output)
       }
+      goingToBackground.foreach { v => 
+        output.writeTag(8, 2)
+        output.writeRawVarint32(v.serializedSize)
+        v.writeTo(output)
+      }
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): netmsg.management.FromClient = {
       var __autoRegister = this.autoRegister
@@ -71,6 +78,7 @@ final case class FromClient(
       var __joinGame = this.joinGame
       var __cancelJoinGame = this.cancelJoinGame
       var __cancelBackgroundToken = this.cancelBackgroundToken
+      var __goingToBackground = this.goingToBackground
       var _done__ = false
       while (!_done__) {
         val _tag__ = __input.readTag()
@@ -90,6 +98,8 @@ final case class FromClient(
             __cancelJoinGame = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __cancelJoinGame.getOrElse(netmsg.management.CancelJoinGame.defaultInstance)))
           case 58 =>
             __cancelBackgroundToken = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __cancelBackgroundToken.getOrElse(netmsg.management.CancelBackgroundToken.defaultInstance)))
+          case 66 =>
+            __goingToBackground = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __goingToBackground.getOrElse(netmsg.management.GoingToBackground.defaultInstance)))
           case tag => __input.skipField(tag)
         }
       }
@@ -100,7 +110,8 @@ final case class FromClient(
           login = __login,
           joinGame = __joinGame,
           cancelJoinGame = __cancelJoinGame,
-          cancelBackgroundToken = __cancelBackgroundToken
+          cancelBackgroundToken = __cancelBackgroundToken,
+          goingToBackground = __goingToBackground
       )
     }
     def getAutoRegister: netmsg.management.AutoRegister = autoRegister.getOrElse(netmsg.management.AutoRegister.defaultInstance)
@@ -124,6 +135,9 @@ final case class FromClient(
     def getCancelBackgroundToken: netmsg.management.CancelBackgroundToken = cancelBackgroundToken.getOrElse(netmsg.management.CancelBackgroundToken.defaultInstance)
     def clearCancelBackgroundToken: FromClient = copy(cancelBackgroundToken = None)
     def withCancelBackgroundToken(__v: netmsg.management.CancelBackgroundToken): FromClient = copy(cancelBackgroundToken = Some(__v))
+    def getGoingToBackground: netmsg.management.GoingToBackground = goingToBackground.getOrElse(netmsg.management.GoingToBackground.defaultInstance)
+    def clearGoingToBackground: FromClient = copy(goingToBackground = None)
+    def withGoingToBackground(__v: netmsg.management.GoingToBackground): FromClient = copy(goingToBackground = Some(__v))
     def getField(__field: Descriptors.FieldDescriptor): Any = {
       __field.number match {
         case 1 => autoRegister
@@ -133,6 +147,7 @@ final case class FromClient(
         case 5 => joinGame
         case 6 => cancelJoinGame
         case 7 => cancelBackgroundToken
+        case 8 => goingToBackground
       }
     }
     def companion = netmsg.management.FromClient
@@ -147,7 +162,8 @@ object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromC
     login = fieldsMap.getOrElse(4, None).asInstanceOf[Option[netmsg.management.Login]],
     joinGame = fieldsMap.getOrElse(5, None).asInstanceOf[Option[netmsg.management.JoinGame]],
     cancelJoinGame = fieldsMap.getOrElse(6, None).asInstanceOf[Option[netmsg.management.CancelJoinGame]],
-    cancelBackgroundToken = fieldsMap.getOrElse(7, None).asInstanceOf[Option[netmsg.management.CancelBackgroundToken]]
+    cancelBackgroundToken = fieldsMap.getOrElse(7, None).asInstanceOf[Option[netmsg.management.CancelBackgroundToken]],
+    goingToBackground = fieldsMap.getOrElse(8, None).asInstanceOf[Option[netmsg.management.GoingToBackground]]
   )
   lazy val descriptor = new Descriptors.MessageDescriptor("FromClient", this,
     None, m = Seq(),
@@ -170,6 +186,8 @@ object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromC
     def optionalCancelJoinGame: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.management.CancelJoinGame]] = field(_.cancelJoinGame)((c_, f_) => c_.copy(cancelJoinGame = f_))
     def cancelBackgroundToken: com.trueaccord.lenses.Lens[UpperPB, netmsg.management.CancelBackgroundToken] = field(_.getCancelBackgroundToken)((c_, f_) => c_.copy(cancelBackgroundToken = Some(f_)))
     def optionalCancelBackgroundToken: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.management.CancelBackgroundToken]] = field(_.cancelBackgroundToken)((c_, f_) => c_.copy(cancelBackgroundToken = f_))
+    def goingToBackground: com.trueaccord.lenses.Lens[UpperPB, netmsg.management.GoingToBackground] = field(_.getGoingToBackground)((c_, f_) => c_.copy(goingToBackground = Some(f_)))
+    def optionalGoingToBackground: com.trueaccord.lenses.Lens[UpperPB, Option[netmsg.management.GoingToBackground]] = field(_.goingToBackground)((c_, f_) => c_.copy(goingToBackground = f_))
   }
   final val AUTO_REGISTER_FIELD_NUMBER = 1
   final val CHECK_NAME_AVAILABILITY_FIELD_NUMBER = 2
@@ -178,4 +196,5 @@ object FromClient extends com.trueaccord.scalapb.GeneratedMessageCompanion[FromC
   final val JOIN_GAME_FIELD_NUMBER = 5
   final val CANCEL_JOIN_GAME_FIELD_NUMBER = 6
   final val CANCEL_BACKGROUND_TOKEN_FIELD_NUMBER = 7
+  final val GOING_TO_BACKGROUND_FIELD_NUMBER = 8
 }

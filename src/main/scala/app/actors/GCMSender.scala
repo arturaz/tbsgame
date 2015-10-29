@@ -7,6 +7,7 @@ import akka.http.scaladsl.model._
 import akka.stream.ActorMaterializer
 import akka.typed.ScalaDSL._
 import akka.typed._
+import akka.{actor => untyped}
 import argonaut.Argonaut._
 import implicits.actor._
 import infrastructure.GCM
@@ -26,12 +27,12 @@ object GCMSender {
   }
 
   def behaviour(
-    authHeader: HttpHeader, httpMaterializer: ActorMaterializer
+    authHeader: HttpHeader, httpSystem: untyped.ActorSystem
   ): Behavior[Send] =
     ContextAware[In] { ctx =>
-      val untypedSystem = ctx.system.asUntyped
-      val http = Http(untypedSystem)
-      val log = Logging(untypedSystem, ctx.self.asUntyped)
+      val http = Http(httpSystem)
+      implicit val httpMaterializer = ActorMaterializer()(httpSystem)
+      val log = Logging(ctx.system.asUntyped, ctx.self.asUntyped)
       val headers = Vector(authHeader)
 
       Static {

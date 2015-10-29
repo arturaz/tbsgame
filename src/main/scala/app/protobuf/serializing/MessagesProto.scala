@@ -3,13 +3,13 @@ package app.protobuf.serializing
 import akka.util.ByteString
 import app.actors.NetClient
 import app.actors.game.GameActor
-import app.actors.net_client.ControlSecretKey
 import com.trueaccord.scalapb.GeneratedMessage
 import netmsg._
+import scalaz._, Scalaz._
 
 import scala.language.implicitConversions
 
-trait MessagesProto extends Helpers { _: GameProto =>
+trait MessagesProto extends Helpers { _: GameProto with ControlProto with BgClientProto =>
   implicit def convert(msg: GameActor.NetClientOut.Events): game.MEvents =
     game.MEvents(convertSeq(msg.events))
 
@@ -104,38 +104,10 @@ trait MessagesProto extends Helpers { _: GameProto =>
         messages.FromServer(timeSync = Some(msg))
     }
 
-  implicit def convert(msg: NetClient.Control): control.Client2Server = {
-    implicit def convert(key: ControlSecretKey): control.ControlSecretKey =
-      control.ControlSecretKey(key.key)
-
-    msg.msg match {
-      case NetClient.Control.In.Shutdown =>
-        control.Client2Server(msg.key, shutdown = Some(control.ShutdownReq()))
-      case NetClient.Control.In.Status =>
-        control.Client2Server(msg.key, status = Some(control.StatusReq()))
-    }
-  }
-
-  implicit def convert(out: NetClient.Control.Out): control.Server2Client =
-    out match {
-      case NetClient.Control.Out.GenericReply(success, messageOpt) =>
-        control.Server2Client(reply = Some(control.GenericReply(success, messageOpt)))
-      case NetClient.Control.Out.Status(clients, playingUsers, games) =>
-        control.Server2Client(status = Some(control.StatusReply(
-          clients.map(convert), playingUsers.map(convert), games.map(convert)
-        )))
-    }
-
-  def serializeGame(out: NetClient.GameClientOut): ByteString =
-    serializeGenMsg(convert(out))
-  def serializeControl(out: NetClient.Control): ByteString =
-    serializeGenMsg(convert(out))
-  def serializeControl(out: NetClient.Control.Out): ByteString =
-    serializeGenMsg(convert(out))
-
   def serialize(out: NetClient.MsgHandlerOut): ByteString = out match {
-    case m: NetClient.GameClientOut => serializeGame(m)
-    case m: NetClient.Control.Out => serializeControl(m)
+    case m: NetClient.GameClientOut => m |> convert |> serializeGenMsg
+    case m: NetClient.Control.Out => m |> convert |> serializeGenMsg
+    case m: NetClient.BackgroundClientOut => m |> convert |> serializeGenMsg
   }
 
   def serializeGenMsg(m: GeneratedMessage): ByteString = ByteString(m.toByteArray)

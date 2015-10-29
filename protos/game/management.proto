@@ -13,6 +13,7 @@ message FromClient {
   optional JoinGame join_game = 5;
   optional CancelJoinGame cancel_join_game = 6;
   optional CancelBackgroundToken cancel_background_token = 7;
+  optional GoingToBackground going_to_background = 8;
 }
 
 message FromServer {
@@ -95,6 +96,9 @@ message JoinGameCancelled {}
 message CancelBackgroundToken {
   required string token = 1;
 }
+
+message GoingToBackground {}
+
 message WaitingListJoined {
   required string background_token = 1;
 }

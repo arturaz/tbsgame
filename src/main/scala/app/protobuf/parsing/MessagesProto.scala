@@ -3,7 +3,7 @@ package app.protobuf.parsing
 import java.io.InputStream
 
 import akka.util.ByteString
-import app.actors.NetClient.MsgHandlerConnectionIn.BackgroundSFO
+import app.actors.NetClient.NotLoggedInState.BackgroundLogin
 import app.actors.game.GamesManagerActor.BackgroundToken
 import app.actors.net_client.ControlSecretKey
 import app.actors.NetClient
@@ -30,7 +30,7 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
       case FromClient(_, _, _, Some(m)) =>
         parse(m).right
       case FromClient(None, None, None, None) =>
-        s"Empty message $msg!".left
+        s"Empty message messages.FromClient!".left
     }
   }
 
@@ -64,10 +64,18 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
     }
   }
 
+  def parse(msg: bg_client.Client2Server): String \/ NetClient.BackgroundClientIn = {
+    msg match {
+      case bg_client.Client2Server(Some(m)) =>
+        BackgroundLogin(BackgroundToken(m.token)).right
+      case bg_client.Client2Server(None) =>
+        s"Empty message: bg_client.Client2Server".left
+    }
+  }
+
   val GameDiscriminator = 0.toByte
   val ControlDiscriminator = 1.toByte
-  val BackgroundSFOHeartbeatDiscriminator = 2.toByte
-  val BackgroundSFOCancelDiscriminator = 3.toByte
+  val BackgroundClientDiscriminator = 2.toByte
 
   def parse(data: ByteString): String \/ NetClient.MsgHandlerConnectionIn = {
     data.headOption match {
@@ -75,13 +83,8 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
         parseFromClient(data.tail)
       case Some(ControlDiscriminator) =>
         parseFromControlClient(data.tail)
-      case Some(
-        byte @ (BackgroundSFOHeartbeatDiscriminator | BackgroundSFOCancelDiscriminator)
-      ) =>
-        val kind =
-          if (byte === BackgroundSFOHeartbeatDiscriminator) BackgroundSFO.Kind.Heartbeat
-          else BackgroundSFO.Kind.Cancel
-        BackgroundSFO(kind, BackgroundToken(data.tail.utf8String)).right
+      case Some(BackgroundClientDiscriminator) =>
+        parseFromBackgroundClient(data.tail)
       case Some(other) => s"Unknown discriminator byte: '$other'!".left
       case None => s"Empty data ByteString!".left
     }
@@ -95,12 +98,16 @@ trait MessagesProto extends BaseProto { _: GameProto with ManagementProto =>
     parseWithParser(data, _ |> control.Client2Server.parseFrom |> parse)
   }
 
+  def parseFromBackgroundClient(data: ByteString): String \/ NetClient.BackgroundClientIn = {
+    parseWithParser(data, _ |> bg_client.Client2Server.parseFrom |> parse)
+  }
+
   def parseFromControlServer(data: ByteString): String \/ NetClient.Control.Out = {
     parseWithParser(data, _ |> control.Server2Client.parseFrom |> parse)
   }
   
   def parseWithParser[A](data: ByteString, protoParser: InputStream => String \/ A) = {
     try protoParser(data.iterator.asInputStream)
-    catch { case e: Exception => s"Error while parsing protobuf: $e".left }
+    catch { case e: Exception => s"Error while parsing protobuf data $data: $e".left }
   }
 }
