@@ -2,7 +2,6 @@ package launch
 
 import java.util.concurrent.TimeUnit
 
-import akka.http.scaladsl.model.HttpHeader
 import app.actors.GCMSender
 import app.actors.net_client.ControlSecretKey
 import com.typesafe.config.Config
@@ -26,7 +25,7 @@ object RTConfig {
   // Time to live
   case class TTL(duration: FiniteDuration) extends AnyVal
 
-  case class GCM(key: GCM.Key, authHeader: HttpHeader)
+  case class GCM(key: GCM.Key)
   object GCM {
     case class Key(value: String) extends AnyVal
   }
@@ -45,8 +44,7 @@ object RTConfig {
       case true =>
         for {
           gcmKey <- config.readStr(key("google.gcm.server_api_key")).map(key => GCM.Key(key))
-          gcmAuthHeader <- GCMSender.authHeader(gcmKey)
-        } yield Some(GCM(gcmKey, gcmAuthHeader))
+        } yield Some(GCM(gcmKey))
     }
     val gamesManager = config.readDuration(key("games_manager.background_heartbeat_ttl"))
       .map(d => GamesManager(TTL(d)))

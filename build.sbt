@@ -31,7 +31,7 @@ val rootSettings = commonSettings ++ Seq(
   libraryDependencies ++= Seq(
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-typed-experimental" % akkaVersion,
-    "com.typesafe.akka" %% "akka-http-experimental" % "1.0",
+    "net.databinder.dispatch" %% "dispatch-core" % "0.11.2",
     "org.scalaz" %% "scalaz-core" % scalazVersion,
     "org.scalaz" %% "scalaz-effect" % scalazVersion,
     "commons-io" % "commons-io" % "2.4",

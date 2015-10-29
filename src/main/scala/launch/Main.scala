@@ -2,10 +2,8 @@ package launch
 
 import java.nio.ByteOrder
 
-import akka.actor.{Props => UTProps}
-import akka.stream.ActorMaterializer
 import akka.typed.ScalaDSL._
-import akka.typed.{ActorSystem, PostStop, Props}
+import akka.typed.{ActorSystem, Props}
 import app.actors.game.GamesManagerActor
 import app.actors.{GCMSender, Server}
 import app.models.game.world.maps.{GameMap, GameMaps, TMXReader}
@@ -49,10 +47,8 @@ object Main {
     val db = DBDriver.Database.forURL(rtConfig.dbUrl)
 
     val main = ContextAware[Unit] { ctx =>
-      val untypedAS = akka.actor.ActorSystem("app-untyped")
-
       val gcm = rtConfig.gcm.map { gcm =>
-        val behaviour = GCMSender.behaviour(gcm.authHeader, untypedAS)
+        val behaviour = GCMSender.behaviour(gcm.key)
         val ref = ctx.spawn(Props(behaviour), "gcm-sender")
         println(s"GCM sender started: $ref")
         ref
@@ -65,11 +61,7 @@ object Main {
       val server = ctx.spawn(Props(Server.behavior(rtConfig, gamesManager, db)), "server")
       println(s"Server started: $server")
 
-      Full {
-        case Sig(_, PostStop) =>
-          untypedAS.terminate()
-          Stopped
-      }
+      Empty
     }
     ActorSystem("app", Props(main))
   }
