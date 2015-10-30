@@ -9,7 +9,7 @@ import implicits._
 trait WarpPrismStatsImpl extends EmptySpaceWarpableCompanion[WarpPrism]
 { _: WarpPrismStats.type =>
   override val maxHp = HP(250)
-  override val movement = Movement.fromTiles(6)
+  override val movement = Movement.fromTiles(7)
   override val visibility = RectDistance(4)
   override val cost = Resources(10)
   override val populationCost = Population(3)

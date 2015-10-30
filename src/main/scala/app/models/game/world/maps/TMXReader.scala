@@ -21,9 +21,9 @@ object TMXReader {
     (extractedIn(turns - 1), extractedIn(turns + 1))
 
   case class ResourceField(range: (Resources, Resources), extractionSpeed: ExtractionSpeed)
-  val MaxResource = ResourceField(extractedInRange(25), ExtractionSpeed.Fast)
+  val MaxResource = ResourceField(extractedInRange(15), ExtractionSpeed.Fast)
   val MidResource = ResourceField(extractedInRange(12), ExtractionSpeed.Medium)
-  val MinResource = ResourceField(extractedInRange(5), ExtractionSpeed.Slow)
+  val MinResource = ResourceField(extractedInRange(10), ExtractionSpeed.Slow)
 
   private[this] val FlipHorizontal = 0x80000000
   private[this] val FlipVertical = 0x40000000
